@@ -1,0 +1,5 @@
+- 数据库类型：PostgreSQL
+- 数据库名称：taiping_education
+- 用户名：taiping_user
+- 密码：taiping_password
+- 主机：localhost
