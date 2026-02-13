@@ -1,0 +1,73 @@
+好的，我们立即开始第一阶段的工程。以下是根据最新架构（四大配置文件）调整后的保姆级指令集，请交付给你的AI开发助手执行。
+
+### **第一阶段：系统初始化与核心架构实现 - AI 执行指令集**
+
+**指令1：创建项目根目录与结构**
+*   **动作**：在本地开发环境创建一个名为 `tp_education_system` 的项目根目录。在其内部创建以下子目录结构：
+    ```
+    tp_education_system/
+    ├── backend/          # FastAPI后端项目
+    ├── frontend/         # Vue.js前端项目
+    └── docs/             # 存放方案文档
+    ```
+
+*   **检查点**：确认目录结构创建成功。
+*   **理念强调**：此步骤建立项目的物理基础，为后续严格的“开发-部署”模式做准备 [[系统开发]]。
+
+**指令2：初始化Python FastAPI后端项目**
+*   **动作**：进入 `backend` 目录，执行：
+    1.  创建并激活Python虚拟环境。
+    2.  创建 `requirements.txt` 文件，写入核心依赖：`fastapi`, `uvicorn`, `sqlalchemy`, `psycopg2-binary`, `pydantic`, `python-multipart`。
+    3.  安装依赖。
+    4.  创建 `backend/main.py`，写入FastAPI应用骨架，包含一个根路由返回 `{"message": "TP Education System Backend is alive"}`。
+    5.  创建 `backend/core/` 目录，用于存放核心引擎代码。
+    6.  创建 `backend/config/` 目录，用于存放配置文件。
+*   **检查点**：运行 `uvicorn main:app --reload` 后，访问 `http://127.0.0.1:8000` 能收到JSON响应。
+*   **理念强调**：此步骤建立系统的后端技术骨架，采用指定的唯一技术栈 [[数据驱动]]。
+
+**指令3：初始化Vue.js 3前端项目**
+*   **动作**：进入 `frontend` 目录，执行：
+    1.  使用Vite官方模板创建Vue.js项目：`npm create vue@latest .`。在配置中**必须选择**：TypeScript, Vue Router, Pinia。
+    2.  安装UI库和图表库：`npm install element-plus @element-plus/icons-vue echarts vue-echarts`。
+    3.  配置Element Plus按需自动导入。
+    4.  修改 `src/App.vue`，清空模板，仅保留 `<router-view />`。
+    5.  创建 `src/views/` 和 `src/components/` 目录。
+    6.  在 `src/views/` 下创建 `Dashboard.vue`，写入简单模板 `<div>主页待开发</div>`，并在路由中将其设置为根路径。
+*   **检查点**：运行 `npm run dev` 后，浏览器能访问到一个显示“主页待开发”的空白页面。
+*   **理念强调**：此步骤建立系统的前端技术骨架和路由基础，采用指定的唯一技术栈 [[数据驱动]]。
+
+**指令4：创建四大核心配置文件的初始空结构**
+*   **动作**：在 `backend/config/` 目录下，创建以下四个JSON文件，并写入初始空结构：
+    1.  `navigation.json`: 初始内容为 `{"modules": []}`，表示空的导航结构。
+    2.  `merged_schema_mappings.json`: **这是合并后的核心文件**。初始内容为 `{"tables": {}, "mappings": []}`。其中 `“tables”` 对象用于存放所有数据表的字段属性定义（原table_schemas.json内容），`“mappings”` 数组用于存放所有字段映射与填充规则（原field_mappings.json内容） [[数据库设计]] [[动态数据]]。
+    3.  `ui_components.json`: 初始内容为 `{"components": {}}`，用于定义动态UI组件。
+    4.  `report_definitions.json`: 初始内容为 `{"reports": []}`，用于定义报表配方。
+*   **检查点**：确认四个文件已创建，且 `merged_schema_mappings.json` 结构正确。
+*   **理念强调**：这些文件是系统的“血肉”，系统所有行为、外观和流程均由它们定义，严禁硬编码 [[数据驱动]] [[动态数据]]。
+
+**指令5：实现配置文件读写接口与元数据引擎（大脑）**
+*   **动作**：在 `backend/core/` 目录下创建模块：
+    1.  `config_manager.py`: 提供统一的原子性读写函数，专门用于操作上述四个配置文件。
+    2.  `metadata_engine.py`: 创建 `MetadataEngine` 类。在其 `__init__` 方法中，通过 `config_manager` 加载所有配置文件并解析。该类必须提供关键方法，例如 `get_table_schema(table_name)` 用于从 `merged_schema_mappings.json` 的 `“tables”` 部分获取表结构 [[数据驱动]]。
+*   **检查点**：能成功从 `metadata_engine` 实例中获取到初始的空配置数据。
+*   **理念强调**：元数据引擎是系统的“大脑”，负责解析所有配置，形成系统认知，并指挥工作 [[数据驱动]]。
+
+**指令6：实现简单事件总线（神经）**
+*   **动作**：在 `backend/core/` 目录下创建 `event_bus.py`。实现一个简单的事件发布-订阅模式，核心包括 `subscribe(event_type, callback)` 和 `publish(event_type, data=None)` 方法。预定义事件类型常量，如 `EVENT_NAVIGATION_UPDATED`。
+*   **检查点**：可以编写测试代码，成功订阅并触发事件回调。
+*   **理念强调**：事件总线是系统的“神经系统”，确保配置更新后各组件能协调同步 [[数据驱动]]。
+
+**指令7：实现基于SQLAlchemy的动态数据库操作层**
+*   **动作**：在 `backend/core/` 目录下创建 `dynamic_db.py`。
+    1.  定义SQLAlchemy的 `Base` 类。
+    2.  创建 `DynamicTableManager` 类。其核心方法 `create_or_update_table_from_schema(table_name, schema_definition)` 必须：
+        *   接收从 `metadata_engine` 获取的、来自 `merged_schema_mappings.json` 中 `“tables”` 部分的某个表结构定义。
+        *   动态生成SQLAlchemy的 `Table` 对象。
+        *   在PostgreSQL中执行创建或修改表的DDL语句。
+    3.  提供通用的 `get_session` 和基础CRUD封装。
+*   **检查点**：在 `metadata_engine` 提供一份模拟表结构定义后，调用 `DynamicTableManager` 能在数据库中成功创建对应的物理表。
+*   **理念强调**：此层是系统的“双手”，能根据字段属性定义动态操作数据库，为后续“导入时动态建表”打下基础 [[数据驱动]] [[数据库设计]]。
+
+**第一阶段完成标志**：执行完以上所有指令并全部通过检查点。你将拥有一个具备“大脑”（元数据引擎）、“神经”（事件总线）和“双手”（动态数据库层）的后端框架，以及一个基础的前端容器。所有核心配置（现为四大文件）已就位，等待被数据导入功能填充和驱动 [[动态数据]]。
+
+

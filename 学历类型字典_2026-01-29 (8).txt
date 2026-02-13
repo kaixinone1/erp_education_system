@@ -1,0 +1,61 @@
+数据导入报告
+==================================================
+
+导入基本信息
+------------------------------
+导入时间：2026/1/29 14:32:11
+目标表名：education_type_dictionary
+显示表名：学历类型字典
+模块路径：hr.hr-teacher
+
+导入统计
+------------------------------
+准备导入数据：3 条
+成功导入：0 条
+失败：3 条
+成功率：0.00%
+
+失败原因详情
+------------------------------
+1. 第1行
+   错误类型：ProgrammingError
+   错误消息：(psycopg2.errors.UndefinedTable) relation "education_type_dictionary" does not exist
+LINE 1: INSERT INTO education_type_dictionary (education_type, type_...
+                    ^
+
+[SQL: INSERT INTO education_type_dictionary (education_type, type_name) VALUES (%(education_type)s, %(type_name)s)]
+[parameters: {'education_type': 1, 'type_name': '全日制'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+   原始数据：{
+  "学历类型": 1,
+  "类型名称": "全日制"
+}
+
+2. 第2行
+   错误类型：ProgrammingError
+   错误消息：(psycopg2.errors.UndefinedTable) relation "education_type_dictionary" does not exist
+LINE 1: INSERT INTO education_type_dictionary (education_type, type_...
+                    ^
+
+[SQL: INSERT INTO education_type_dictionary (education_type, type_name) VALUES (%(education_type)s, %(type_name)s)]
+[parameters: {'education_type': 2, 'type_name': '进修学历'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+   原始数据：{
+  "学历类型": 2,
+  "类型名称": "进修学历"
+}
+
+3. 第3行
+   错误类型：ProgrammingError
+   错误消息：(psycopg2.errors.UndefinedTable) relation "education_type_dictionary" does not exist
+LINE 1: INSERT INTO education_type_dictionary (education_type, type_...
+                    ^
+
+[SQL: INSERT INTO education_type_dictionary (education_type, type_name) VALUES (%(education_type)s, %(type_name)s)]
+[parameters: {'education_type': 3, 'type_name': '提升学历'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+   原始数据：{
+  "学历类型": 3,
+  "类型名称": "提升学历"
+}
+

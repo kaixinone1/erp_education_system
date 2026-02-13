@@ -1,0 +1,42 @@
+{
+  "mappings": {
+    "姓名": "name",
+    "身份证号码": "id_card",
+    "档案出生日期": "archive_birth_date",
+    "民族": "ethnicity",
+    "籍贯": "native_place",
+    "联系电话": "contact_phone",
+    "参加工作日期": "work_start_date",
+    "进入本单位日期": "entry_date",
+    "任职状态": "employment_status",
+    "学历类型": "education_type",
+    "学历": "education",
+    "学位": "degree",
+    "毕业院校": "graduate_school",
+    "专业": "major",
+    "毕业日期": "graduate_date",
+    "状态编码": "status_code",
+    "排序序号": "sort_order_sequence",
+    "是否有效": "shi_fou_you_xiao"
+  },
+  "reverse_mappings": {
+    "name": "姓名",
+    "id_card": "身份证号码",
+    "archive_birth_date": "档案出生日期",
+    "ethnicity": "民族",
+    "native_place": "籍贯",
+    "contact_phone": "联系电话",
+    "work_start_date": "参加工作日期",
+    "entry_date": "进入本单位日期",
+    "employment_status": "任职状态",
+    "education_type": "学历类型",
+    "education": "学历",
+    "degree": "学位",
+    "graduate_school": "毕业院校",
+    "major": "专业",
+    "graduate_date": "毕业日期",
+    "status_code": "状态编码",
+    "sort_order_sequence": "排序序号",
+    "shi_fou_you_xiao": "是否有效"
+  }
+}

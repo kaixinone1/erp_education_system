@@ -1,0 +1,201 @@
+{
+  "mappings": {
+    "业务清单配置": {
+      "english_name": "business_checklist",
+      "table_type": "master",
+      "created_at": "2026-02-08T10:00:00"
+    },
+    "待办工作项": {
+      "english_name": "todo_work_items",
+      "table_type": "master",
+      "created_at": "2026-02-08T10:00:00"
+    },
+    "退休证签发记录": {
+      "english_name": "retirement_cert_records",
+      "table_type": "master",
+      "created_at": "2026-02-08T10:00:00"
+    },
+    "绩效工资审批": {
+      "english_name": "performance_pay_approval",
+      "table_type": "master",
+      "created_at": "2026-02-08T10:00:00"
+    },
+    "退休呈报数据": {
+      "english_name": "retirement_report_data",
+      "table_type": "master",
+      "created_at": "2026-02-10T10:00:00",
+      "field_signature": [
+        ["教师ID", "INTEGER"],
+        ["姓名", "STRING"],
+        ["性别", "STRING"],
+        ["身份证号", "STRING"],
+        ["出生日期", "DATE"],
+        ["民族", "STRING"],
+        ["文化程度", "STRING"],
+        ["参加工作时间", "DATE"],
+        ["工作年限", "INTEGER"],
+        ["籍贯", "STRING"],
+        ["现住址", "STRING"],
+        ["职务", "STRING"],
+        ["技术职称", "STRING"],
+        ["岗位", "STRING"],
+        ["退休原因", "STRING"],
+        ["退休后居住地址", "STRING"],
+        ["退休时间", "DATE"],
+        ["单位意见", "TEXT"],
+        ["状态", "STRING"]
+      ]
+    },
+    "教师基础信息": {
+      "english_name": "teacher_basic_info",
+      "table_type": "master",
+      "created_at": "2026-02-07T23:37:34.411985",
+      "field_signature": [
+        [
+          "任职状态",
+          "STRING"
+        ],
+        [
+          "参加工作日期",
+          "DATE"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "档案出生日期",
+          "DATE"
+        ],
+        [
+          "民族",
+          "STRING"
+        ],
+        [
+          "籍贯",
+          "STRING"
+        ],
+        [
+          "联系电话",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ],
+        [
+          "进入本单位日期",
+          "DATE"
+        ]
+      ]
+    },
+    "学历字典": {
+      "english_name": "dict_education_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-02-07T23:46:47.222029",
+      "field_signature": [
+        [
+          "学历类型",
+          "STRING"
+        ]
+      ]
+    },
+    "学历类型字典": {
+      "english_name": "dict_education_type_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-02-08T00:42:56.455812",
+      "field_signature": [
+        [
+          "学历类型",
+          "STRING"
+        ]
+      ]
+    },
+    "学历层次字典": {
+      "english_name": "dict_education_level_dictionary",
+      "table_type": "master",
+      "created_at": "2026-02-08T00:44:35.960336",
+      "field_signature": [
+        [
+          "学历",
+          "STRING"
+        ]
+      ]
+    },
+    "教师学历记录": {
+      "english_name": "teacher_education_record",
+      "table_type": "master",
+      "created_at": "2026-02-08T01:05:14.305732",
+      "field_signature": [
+        [
+          "专业",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "学位",
+          "STRING"
+        ],
+        [
+          "学历",
+          "STRING"
+        ],
+        [
+          "学历类型",
+          "STRING"
+        ],
+        [
+          "毕业日期",
+          "DATE"
+        ],
+        [
+          "毕业院校",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "任职状态字典": {
+      "english_name": "dict_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-02-08T11:11:50.756787",
+      "field_signature": [
+        [
+          "任职状态",
+          "STRING"
+        ],
+        [
+          "排序序号",
+          "STRING"
+        ],
+        [
+          "是否有效",
+          "STRING"
+        ],
+        [
+          "状态编码",
+          "STRING"
+        ]
+      ]
+    }
+  },
+  "reverse_mappings": {
+    "teacher_basic_info": "教师基础信息",
+    "dict_education_dictionary": "学历字典",
+    "dict_education_level_dictionary": "学历层次字典",
+    "dict_education_type_dictionary": "学历类型字典",
+    "teacher_education_record": "教师学历记录",
+    "dict_dictionary": "任职状态字典",
+    "business_checklist": "业务清单配置",
+    "todo_work_items": "待办工作项",
+    "retirement_cert_records": "退休证签发记录",
+    "performance_pay_approval": "绩效工资审批",
+    "retirement_report_data": "退休呈报数据"
+  }
+}

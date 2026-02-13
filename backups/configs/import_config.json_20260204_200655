@@ -1,0 +1,341 @@
+{
+  "version": "3.0",
+  "description": "通用导入功能配置 - 包含统一关联规范",
+  
+  "relationship_rules": {
+    "description": "统一的关联规范，自动处理所有表的关联关系",
+    
+    "master_table": {
+      "description": "主表（教师基础信息表）",
+      "table_name": "teacher_basic",
+      "business_key": "身份证号码",
+      "primary_key": "id",
+      "identify_pattern": "(身份证|身份证号)"
+    },
+    
+    "child_table": {
+      "description": "子表关联规范",
+      "auto_link_to_master": true,
+      "link_method": {
+        "type": "business_key_to_id",
+        "description": "通过业务主键（身份证号码）关联到主表自增ID",
+        "steps": [
+          "1. 在子表中查找身份证号码字段（通过正则匹配）",
+          "2. 根据身份证号码查询主表获取对应的自增id",
+          "3. 将主表的id存入子表的teacher_id字段"
+        ]
+      },
+      "foreign_key_field": "teacher_id",
+      "business_key_field_pattern": "(身份证|身份证号)"
+    },
+    
+    "dictionary_table": {
+      "description": "字典表关联规范",
+      "auto_link": true,
+      "link_method": {
+        "type": "dict_code_to_id",
+        "description": "通过字典code关联到字典表自增ID",
+        "steps": [
+          "1. 识别字典关联字段（通过字段名匹配或配置）",
+          "2. 根据code值查询字典表获取对应的自增id",
+          "3. 将字典表的id存入当前表的{字段}_id字段",
+          "4. 将字典表的name存入当前表的{字段}_名称字段"
+        ]
+      },
+      "identify_pattern": "(职级|职务|学历|学位|职称|级别|类型|状态|部门|性别|政治面貌)",
+      "foreign_key_suffix": "_id",
+      "display_field_suffix": "_名称",
+      "code_field_suffix": "_code"
+    }
+  },
+  
+  "dictionary_tables": {
+    "description": "字典表配置",
+    "standard_fields": [
+      {"name": "id", "data_type": "SERIAL", "primary_key": true},
+      {"name": "code", "data_type": "VARCHAR", "length": 30, "unique": true},
+      {"name": "name", "data_type": "VARCHAR", "length": 50, "required": true},
+      {"name": "sort_order", "data_type": "INTEGER"},
+      {"name": "status", "data_type": "BOOLEAN", "default": true},
+      {"name": "created_at", "data_type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"}
+    ],
+    "mapping": {
+      "source_code_field": "序号",
+      "source_name_field": "名称"
+    }
+  },
+  
+  "auto_association": {
+    "description": "自动关联配置",
+    "enabled": true,
+    "rules": [
+      {
+        "name": "主表关联",
+        "trigger": "child_table_import",
+        "action": "link_to_master_by_id_card",
+        "description": "子表导入时自动通过身份证号码关联主表"
+      },
+      {
+        "name": "字典关联",
+        "trigger": "field_name_match",
+        "pattern": "(职级|职务|学历|学位|职称|级别|类型|状态|部门|性别|政治面貌)",
+        "action": "link_to_dictionary",
+        "description": "字段名匹配时自动关联字典表"
+      }
+    ]
+  },
+  
+  "field_type_mappings": {
+    "auto_detect": true,
+    "rules": [
+      {
+        "pattern": "(姓名|名字|名称)",
+        "target_field": "name",
+        "data_type": "VARCHAR",
+        "length": 50
+      },
+      {
+        "pattern": "(性别)",
+        "target_field": "gender",
+        "data_type": "VARCHAR",
+        "length": 10,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_gender"
+      },
+      {
+        "pattern": "(出生日期|日期|时间)",
+        "target_field": "date",
+        "data_type": "DATE"
+      },
+      {
+        "pattern": "(身份证|身份证号)",
+        "target_field": "id_card",
+        "data_type": "VARCHAR",
+        "length": 18,
+        "is_business_key": true,
+        "link_to_master": true
+      },
+      {
+        "pattern": "(电话|手机|联系方式)",
+        "target_field": "phone",
+        "data_type": "VARCHAR",
+        "length": 20
+      },
+      {
+        "pattern": "(邮箱|电子邮件)",
+        "target_field": "email",
+        "data_type": "VARCHAR",
+        "length": 100
+      },
+      {
+        "pattern": "(地址)",
+        "target_field": "address",
+        "data_type": "VARCHAR",
+        "length": 200
+      },
+      {
+        "pattern": "(学历|学位)",
+        "target_field": "education",
+        "data_type": "VARCHAR",
+        "length": 20,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_education"
+      },
+      {
+        "pattern": "(部门|单位)",
+        "target_field": "department",
+        "data_type": "VARCHAR",
+        "length": 50,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_department"
+      },
+      {
+        "pattern": "(职务|职位|岗位)",
+        "target_field": "position",
+        "data_type": "VARCHAR",
+        "length": 30,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_position"
+      },
+      {
+        "pattern": "(职级|级别)",
+        "target_field": "position_level",
+        "data_type": "VARCHAR",
+        "length": 20,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_position",
+        "dictionary_key_field": "code",
+        "dictionary_display_field": "name"
+      },
+      {
+        "pattern": "(职称)",
+        "target_field": "title",
+        "data_type": "VARCHAR",
+        "length": 30,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_title"
+      },
+      {
+        "pattern": "(政治面貌)",
+        "target_field": "political_status",
+        "data_type": "VARCHAR",
+        "length": 20,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_political_status"
+      },
+      {
+        "pattern": "(个人身份|身份)",
+        "target_field": "personal_identity",
+        "data_type": "VARCHAR",
+        "length": 20,
+        "link_to_dictionary": true,
+        "dictionary_table": "dict_data_personal_identity",
+        "dictionary_key_field": "code",
+        "dictionary_display_field": "个人身份",
+        "value_mapping": {
+          "1": "干部",
+          "2": "工人"
+        }
+      },
+      {
+        "pattern": "(工资|薪资|收入)",
+        "target_field": "salary",
+        "data_type": "DECIMAL",
+        "precision": 10,
+        "scale": 2
+      },
+      {
+        "pattern": "(年龄)",
+        "target_field": "age",
+        "data_type": "INTEGER"
+      },
+      {
+        "pattern": "(编号|代码|序号)",
+        "target_field": "code",
+        "data_type": "VARCHAR",
+        "length": 30
+      },
+      {
+        "pattern": "(备注|说明|描述)",
+        "target_field": "remark",
+        "data_type": "TEXT"
+      }
+    ]
+  },
+  
+  "validation_rules": {
+    "id_card": {
+      "pattern": "^\\d{17}[\\dXx]$",
+      "message": "身份证号码格式不正确",
+      "level": 1
+    },
+    "phone": {
+      "pattern": "^1\\d{10}$",
+      "message": "手机号码格式不正确",
+      "level": 1
+    },
+    "email": {
+      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+      "message": "邮箱格式不正确",
+      "level": 2
+    },
+    "date": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "message": "日期格式应为YYYY-MM-DD",
+      "level": 1
+    }
+  },
+  
+  "date_formats": {
+    "auto_convert": true,
+    "input_formats": [
+      "%Y-%m-%d",
+      "%Y/%m/%d",
+      "%Y年%m月%d日",
+      "%Y-%m-%d %H:%M:%S",
+      "%Y/%m/%d %H:%M:%S"
+    ],
+    "output_format": "%Y-%m-%d"
+  },
+  
+  "system_fields": {
+    "auto_add": true,
+    "fields": [
+      {
+        "name": "id",
+        "data_type": "SERIAL",
+        "primary_key": true
+      },
+      {
+        "name": "teacher_id",
+        "data_type": "INTEGER",
+        "description": "关联主表teacher_basic的自增id",
+        "foreign_key": {
+          "table": "teacher_basic",
+          "field": "id",
+          "link_by": "身份证号码"
+        }
+      },
+      {
+        "name": "created_at",
+        "data_type": "TIMESTAMP",
+        "default": "CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "updated_at",
+        "data_type": "TIMESTAMP",
+        "default": "CURRENT_TIMESTAMP"
+      },
+      {
+        "name": "import_batch",
+        "data_type": "VARCHAR",
+        "length": 50
+      }
+    ]
+  },
+  
+  "table_naming": {
+    "strategy": "smart",
+    "rules": {
+      "module_prefix": {
+        "from_module": true,
+        "default": "data"
+      },
+      "translation": {
+        "enabled": true,
+        "service": "pinyin"
+      },
+      "suffix": {
+        "master": "",
+        "child": "_detail",
+        "dictionary": "_dict"
+      }
+    }
+  },
+  
+  "data_type_inference": {
+    "auto_detect": true,
+    "rules": [
+      {
+        "data_type": "INTEGER",
+        "patterns": ["^-?\\d+$"]
+      },
+      {
+        "data_type": "DECIMAL",
+        "patterns": ["^-?\\d+\\.\\d+$"]
+      },
+      {
+        "data_type": "DATE",
+        "patterns": [
+          "^\\d{4}-\\d{1,2}-\\d{1,2}$",
+          "^\\d{4}/\\d{1,2}/\\d{1,2}$",
+          "^\\d{4}年\\d{1,2}月\\d{1,2}日$"
+        ]
+      },
+      {
+        "data_type": "BOOLEAN",
+        "patterns": ["^(是|否|true|false|1|0|yes|no)$"]
+      }
+    ]
+  }
+}

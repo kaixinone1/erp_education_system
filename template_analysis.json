@@ -1,0 +1,31 @@
+{
+  "template_name": "职工退休呈报表",
+  "table_count": 2,
+  "field_mapping": {
+    "基本信息": {
+      "姓名": "teacher_basic_info.name",
+      "性别": "从身份证号提取",
+      "出生年月": "teacher_basic_info.archive_birth_date",
+      "身份证号": "teacher_basic_info.id_card",
+      "民族": "teacher_basic_info.ethnicity",
+      "籍贯": "teacher_basic_info.native_place"
+    },
+    "教育信息": {
+      "文化程度/学历": "teacher_education_record.education_level (最高学历)",
+      "毕业学校": "teacher_education_record.school_name",
+      "专业": "teacher_education_record.major",
+      "学位": "teacher_education_record.degree"
+    },
+    "工作信息": {
+      "参加工作时间": "teacher_basic_info.work_start_date",
+      "工作单位": "需要新增字段或从其他表获取",
+      "职务": "需要新增字段",
+      "职称": "需要新增字段",
+      "工作年限": "根据work_start_date计算"
+    },
+    "退休信息": {
+      "年龄": "根据birth_date计算",
+      "退休日期": "根据birth_date和性别计算"
+    }
+  }
+}

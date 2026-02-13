@@ -1,0 +1,228 @@
+{
+  "modules": [
+    {
+      "id": "system",
+      "title": "系统管理",
+      "icon": "Setting",
+      "path": "/system",
+      "type": "module",
+      "children": [
+        {
+          "id": "system-modules",
+          "title": "模块管理",
+          "icon": "Grid",
+          "path": "/system/module-mgt",
+          "type": "component",
+          "component": "Modules",
+          "api_endpoint": "/api/data/modules"
+        },
+        {
+          "id": "system-tables",
+          "title": "数据表管理",
+          "icon": "List",
+          "path": "/system/table-mgt",
+          "type": "component",
+          "component": "TableManagement",
+          "api_endpoint": "/api/admin/tables"
+        },
+        {
+          "id": "system-dictionaries",
+          "title": "字典管理",
+          "icon": "Folder",
+          "path": "/system/dictionaries",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-dict_education_type_dictionary",
+              "title": "学历类型字典",
+              "name": "学历类型字典",
+              "icon": "Document",
+              "path": "/data/dict_education_type_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_education_type_dictionary",
+              "table_name": "dict_education_type_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_education_level_dictionary",
+              "title": "学历层次字典",
+              "name": "学历层次字典",
+              "icon": "Document",
+              "path": "/data/dict_education_level_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_education_level_dictionary",
+              "table_name": "dict_education_level_dictionary",
+              "table_type": "master"
+            },
+            {
+              "id": "table-dict_dictionary",
+              "title": "任职状态字典",
+              "name": "任职状态字典",
+              "icon": "Document",
+              "path": "/data/dict_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_dictionary",
+              "table_name": "dict_dictionary",
+              "table_type": "dictionary"
+            }
+          ]
+        },
+        {
+          "id": "system-checklist",
+          "title": "清单管理",
+          "icon": "List",
+          "path": "/system/checklist",
+          "type": "module",
+          "children": [
+            {
+              "id": "checklist-pushed",
+              "title": "推送清单",
+              "icon": "Bell",
+              "path": "/system/checklist/pushed",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/todo_work_items",
+              "table_name": "todo_work_items",
+              "table_type": "master"
+            },
+            {
+              "id": "checklist-templates",
+              "title": "清单模板",
+              "icon": "DocumentCopy",
+              "path": "/system/checklist/templates",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/business_checklist",
+              "table_name": "business_checklist",
+              "table_type": "master"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-center",
+      "title": "数据中心",
+      "icon": "DataLine",
+      "path": "/data-center",
+      "type": "module",
+      "children": [
+        {
+          "id": "data-import",
+          "title": "数据导入",
+          "icon": "Upload",
+          "path": "/import/workbench",
+          "type": "component",
+          "component": "DataImportWorkbench"
+        },
+        {
+          "id": "table-structure",
+          "title": "表结构管理",
+          "icon": "Setting",
+          "path": "/data/table-structure",
+          "type": "component",
+          "component": "TableStructure"
+        },
+        {
+          "id": "module-1770217750775",
+          "title": "数据清理",
+          "icon": "Setting",
+          "path": "/data-center/sub-1770217750775",
+          "type": "module",
+          "children": [
+            {
+              "id": "data-cleanup-tool",
+              "title": "数据清理工具",
+              "icon": "Delete",
+              "path": "/admin/data-cleanup",
+              "type": "component",
+              "component": "DataCleanupView"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personnel",
+      "title": "人事管理",
+      "icon": "User",
+      "path": "/personnel",
+      "type": "module",
+      "children": [
+        {
+          "id": "module-1770355257523",
+          "title": "教师管理",
+          "icon": "Folder",
+          "path": "/personnel/sub-1770355257523",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-teacher_basic_info",
+              "title": "教师基础信息",
+              "name": "教师基础信息",
+              "icon": "Document",
+              "path": "/data/teacher_basic_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_basic_info",
+              "table_name": "teacher_basic_info",
+              "table_type": "master"
+            },
+            {
+              "id": "table-teacher_education_record",
+              "title": "教师学历记录",
+              "name": "教师学历记录",
+              "icon": "Document",
+              "path": "/data/teacher_education_record",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_education_record",
+              "table_name": "teacher_education_record",
+              "table_type": "master"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "report-management",
+      "title": "报表管理",
+      "icon": "Document",
+      "path": "/report",
+      "type": "module",
+      "children": [
+        {
+          "id": "template-management",
+          "title": "模板管理",
+          "icon": "DocumentCopy",
+          "path": "/report/template-mgt",
+          "type": "component",
+          "component": "TemplateManagement"
+        },
+        {
+          "id": "retirement-business",
+          "title": "退休业务",
+          "icon": "Folder",
+          "path": "/report/retirement",
+          "type": "module",
+          "children": [
+            {
+              "id": "retirement-report-data",
+              "title": "退休呈报数据",
+              "icon": "Document",
+              "path": "/data/retirement_report_data",
+              "type": "component",
+              "component": "GenericDataView",
+              "api_endpoint": "/api/data/retirement_report_data",
+              "table_name": "retirement_report_data",
+              "table_type": "master"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

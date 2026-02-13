@@ -1,0 +1,33 @@
+# 开发日志模板 
+## 基本信息 
+- 日期: {DATE} 
+- 时间: {TIME} 
+- 开发者: {DEVELOPER} 
+- 项目: {PROJECT_NAME} 
+- 阶段: {PHASE} 
+ECHO is off.
+## 开发内容 
+- 任务描述: {TASK} 
+- 完成情况: {STATUS} 
+- 使用工具: {TOOLS} 
+- 相关文件: {FILES} 
+ECHO is off.
+## 技术细节 
+- 实现方法: {METHOD} 
+- 遇到问题: {ISSUES} 
+- 解决方案: {SOLUTIONS} 
+- 代码变更: {CODE_CHANGES} 
+ECHO is off.
+## 测试结果 
+- 测试状态: {TEST_STATUS} 
+- 测试方法: {TEST_METHOD} 
+- 测试结果: {TEST_RESULTS} 
+- 问题修复: {BUG_FIXES} 
+ECHO is off.
+## 后续计划 
+- 下一步任务: {NEXT_TASKS} 
+- 预计时间: {ESTIMATED_TIME} 
+- 依赖项: {DEPENDENCIES} 
+ECHO is off.
+## 备注 
+{NOTES} 

@@ -1,0 +1,91 @@
+{
+  "table_name": "retirement_report_data",
+  "chinese_name": "退休呈报数据",
+  "description": "职工退休呈报表数据中间表",
+  "existing_table": true,
+
+  "fields": [
+    {"name": "身份证号码", "type": "VARCHAR", "length": 18},
+    {"name": "个人编号", "type": "VARCHAR", "length": 50},
+    {"name": "岗位", "type": "VARCHAR", "length": 50},
+    {"name": "姓名", "type": "VARCHAR", "length": 50, "required": true},
+    {"name": "性别", "type": "VARCHAR", "length": 10},
+    {"name": "出生日期", "type": "DATE"},
+    {"name": "民族", "type": "VARCHAR", "length": 20},
+    {"name": "文化程度", "type": "VARCHAR", "length": 20},
+    {"name": "是否独生子女", "type": "BOOLEAN"},
+    {"name": "入党年月", "type": "VARCHAR", "length": 20},
+    {"name": "职务", "type": "VARCHAR", "length": 50},
+    {"name": "技术职称", "type": "VARCHAR", "length": 50},
+    {"name": "参加工作时间", "type": "DATE"},
+    {"name": "工作年限", "type": "INTEGER", "calculated": true},
+    {"name": "籍贯", "type": "VARCHAR", "length": 100},
+    {"name": "现住址", "type": "TEXT"},
+    {"name": "退休原因", "type": "TEXT"},
+    {"name": "退休后居住地址", "type": "TEXT"},
+    {"name": "退休时间", "type": "DATE", "calculated": true},
+    {"name": "事业管理岗位1", "type": "VARCHAR", "length": 50},
+    {"name": "对应原职务1", "type": "VARCHAR", "length": 50},
+    {"name": "薪级1", "type": "VARCHAR", "length": 50},
+    {"name": "事业专技岗位2", "type": "VARCHAR", "length": 50},
+    {"name": "对应原职务2", "type": "VARCHAR", "length": 50},
+    {"name": "薪级2", "type": "VARCHAR", "length": 50},
+    {"name": "事业工勤岗位3", "type": "VARCHAR", "length": 50},
+    {"name": "对应技术等级3", "type": "VARCHAR", "length": 50},
+    {"name": "薪级3", "type": "VARCHAR", "length": 50},
+    {"name": "最后一次职务升降时间", "type": "DATE"},
+    {"name": "事业管理岗位4", "type": "VARCHAR", "length": 50},
+    {"name": "对应原职务4", "type": "VARCHAR", "length": 50},
+    {"name": "薪级4", "type": "VARCHAR", "length": 50},
+    {"name": "事业专技岗位5", "type": "VARCHAR", "length": 50},
+    {"name": "对应原职务5", "type": "VARCHAR", "length": 50},
+    {"name": "薪级5", "type": "VARCHAR", "length": 50},
+    {"name": "事业工勤岗位6", "type": "VARCHAR", "length": 50},
+    {"name": "对应技术等级6", "type": "VARCHAR", "length": 50},
+    {"name": "薪级6", "type": "VARCHAR", "length": 50},
+    {"name": "退休时事业管理岗位7", "type": "VARCHAR", "length": 50},
+    {"name": "对应原职务7", "type": "VARCHAR", "length": 50},
+    {"name": "薪级7", "type": "VARCHAR", "length": 50},
+    {"name": "退休时事业专技岗位8", "type": "VARCHAR", "length": 50},
+    {"name": "对应原职务8", "type": "VARCHAR", "length": 50},
+    {"name": "薪级8", "type": "VARCHAR", "length": 50},
+    {"name": "退休时事业工勤岗位9", "type": "VARCHAR", "length": 50},
+    {"name": "对应技术等级9", "type": "VARCHAR", "length": 50},
+    {"name": "薪级9", "type": "VARCHAR", "length": 50},
+    {"name": "自何年何月", "type": "VARCHAR", "length": 20},
+    {"name": "至何年何月", "type": "VARCHAR", "length": 20},
+    {"name": "所在单位及职务", "type": "TEXT"},
+    {"name": "证明人及住址", "type": "TEXT"},
+    {"name": "直系亲属供养情况", "type": "TEXT"},
+    {"name": "备注", "type": "TEXT"},
+    {"name": "单位意见", "type": "TEXT"},
+    {"name": "证明人及其住址", "type": "TEXT"},
+    {"name": "直系亲属信息", "type": "TEXT"},
+    {"name": "薪级工资", "type": "VARCHAR", "length": 50},
+    {"name": "岗位工资", "type": "VARCHAR", "length": 50},
+    {"name": "技术等级", "type": "VARCHAR", "length": 50},
+    {"name": "个人身份", "type": "VARCHAR", "length": 20}
+  ],
+
+  "calculations": {
+    "work_years_calculation": {
+      "type": "retirement",
+      "description": "根据人社部发【2024】94号文件计算退休日期和工作年限",
+      "inputs": ["出生日期", "性别", "个人身份", "参加工作时间"],
+      "outputs": ["原退休日期", "延迟月数", "现退休日期", "工作年限"]
+    }
+  },
+
+  "features": {
+    "crud": true,
+    "export": ["excel", "word", "pdf"],
+    "calculator": true,
+    "import": false
+  },
+
+  "display": {
+    "table_columns": ["姓名", "性别", "出生日期", "参加工作时间", "文化程度", "个人身份", "工作年限"],
+    "searchable_fields": ["姓名", "身份证号码"],
+    "sortable_fields": ["出生日期", "参加工作时间", "工作年限"]
+  }
+}

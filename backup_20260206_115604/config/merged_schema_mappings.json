@@ -1,0 +1,1837 @@
+{
+  "tables": {
+    "teacher_basic": {
+      "name": "teacher_basic",
+      "type": "master",
+      "title": "教师基础信息",
+      "description": "教师基础信息主表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "姓名",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "身份证号码",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "档案出生日期",
+          "source_name": "档案出生日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "档案出生日期",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name"
+        },
+        {
+          "name": "民族",
+          "source_name": "民族",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "民族",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "籍贯",
+          "source_name": "籍贯",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "籍贯",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "联系电话",
+          "source_name": "联系电话",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "联系电话",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "参加工作日期",
+          "source_name": "参加工作日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "参加工作日期",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name"
+        },
+        {
+          "name": "进入本单位日期",
+          "source_name": "进入本单位日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "进入本单位日期",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name"
+        },
+        {
+          "name": "任职状态",
+          "source_name": "任职状态",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "任职状态",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        }
+      ]
+    },
+    "teacher_education": {
+      "name": "teacher_education",
+      "type": "child",
+      "title": "教育经历",
+      "description": "教师教育经历子表",
+      "primary_key": "id",
+      "parent_table": "teacher_basic",
+      "foreign_keys": [
+        {
+          "field": "teacher_id",
+          "reference_table": "teacher_basic",
+          "reference_field": "id",
+          "on_delete": "CASCADE",
+          "on_update": "CASCADE"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "auto_increment": true
+        },
+        {
+          "name": "teacher_id",
+          "type": "INTEGER",
+          "required": true,
+          "foreign_key": true,
+          "label": "教师ID"
+        },
+        {
+          "name": "education_level",
+          "type": "VARCHAR",
+          "length": 20,
+          "label": "学历",
+          "dictionary": "education_level"
+        },
+        {
+          "name": "school",
+          "type": "VARCHAR",
+          "length": 100,
+          "label": "毕业院校"
+        },
+        {
+          "name": "major",
+          "type": "VARCHAR",
+          "length": 50,
+          "label": "专业"
+        },
+        {
+          "name": "graduation_date",
+          "type": "DATE",
+          "label": "毕业时间"
+        },
+        {
+          "name": "degree",
+          "type": "VARCHAR",
+          "length": 20,
+          "label": "学位",
+          "dictionary": "degree"
+        },
+        {
+          "name": "is_highest",
+          "type": "BOOLEAN",
+          "label": "是否最高学历",
+          "default": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME"
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME"
+        }
+      ]
+    },
+    "teacher_work": {
+      "name": "teacher_work",
+      "type": "child",
+      "title": "工作经历",
+      "description": "教师工作经历子表",
+      "primary_key": "id",
+      "parent_table": "teacher_basic",
+      "foreign_keys": [
+        {
+          "field": "teacher_id",
+          "reference_table": "teacher_basic",
+          "reference_field": "id",
+          "on_delete": "CASCADE"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "auto_increment": true
+        },
+        {
+          "name": "teacher_id",
+          "type": "INTEGER",
+          "required": true,
+          "foreign_key": true,
+          "label": "教师ID"
+        },
+        {
+          "name": "work_unit",
+          "type": "VARCHAR",
+          "length": 100,
+          "label": "工作单位"
+        },
+        {
+          "name": "position",
+          "type": "VARCHAR",
+          "length": 50,
+          "label": "职务"
+        },
+        {
+          "name": "start_date",
+          "type": "DATE",
+          "label": "开始时间"
+        },
+        {
+          "name": "end_date",
+          "type": "DATE",
+          "label": "结束时间"
+        },
+        {
+          "name": "is_current",
+          "type": "BOOLEAN",
+          "label": "是否现任",
+          "default": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME"
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME"
+        }
+      ]
+    },
+    "teacher_title": {
+      "name": "teacher_title",
+      "type": "child",
+      "title": "职称变动",
+      "description": "教师职称变动记录子表",
+      "primary_key": "id",
+      "parent_table": "teacher_basic",
+      "foreign_keys": [
+        {
+          "field": "teacher_id",
+          "reference_table": "teacher_basic",
+          "reference_field": "id",
+          "on_delete": "CASCADE"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "auto_increment": true
+        },
+        {
+          "name": "teacher_id",
+          "type": "INTEGER",
+          "required": true,
+          "foreign_key": true,
+          "label": "教师ID"
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR",
+          "length": 30,
+          "label": "职称",
+          "dictionary": "title"
+        },
+        {
+          "name": "title_level",
+          "type": "VARCHAR",
+          "length": 20,
+          "label": "职称级别",
+          "dictionary": "title_level"
+        },
+        {
+          "name": "appointment_date",
+          "type": "DATE",
+          "label": "聘任日期"
+        },
+        {
+          "name": "appointment_unit",
+          "type": "VARCHAR",
+          "length": 100,
+          "label": "聘任单位"
+        },
+        {
+          "name": "certificate_no",
+          "type": "VARCHAR",
+          "length": 50,
+          "label": "证书编号"
+        },
+        {
+          "name": "is_current",
+          "type": "BOOLEAN",
+          "label": "是否现任",
+          "default": true
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME"
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME"
+        }
+      ]
+    },
+    "data_069385": {
+      "name": "data_069385",
+      "type": "master",
+      "title": "Data 069385",
+      "description": "Data 069385表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "姓名",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "身份证号码",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "档案出生日期",
+          "source_name": "档案出生日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "档案出生日期",
+          "description": ""
+        },
+        {
+          "name": "民族",
+          "source_name": "民族",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "民族",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "籍贯",
+          "source_name": "籍贯",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "籍贯",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "联系电话",
+          "source_name": "联系电话",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "联系电话",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "参加工作日期",
+          "source_name": "参加工作日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "参加工作日期",
+          "description": ""
+        },
+        {
+          "name": "进入本单位日期",
+          "source_name": "进入本单位日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "进入本单位日期",
+          "description": ""
+        },
+        {
+          "name": "任职状态",
+          "source_name": "任职状态",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "任职状态",
+          "description": "",
+          "length": 255
+        }
+      ]
+    },
+    "data_043854": {
+      "name": "data_043854",
+      "type": "master",
+      "title": "Data 043854",
+      "description": "Data 043854表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "姓名",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "身份证号码",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "档案出生日期",
+          "source_name": "档案出生日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "档案出生日期",
+          "description": ""
+        },
+        {
+          "name": "民族",
+          "source_name": "民族",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "民族",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "籍贯",
+          "source_name": "籍贯",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "籍贯",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "联系电话",
+          "source_name": "联系电话",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "联系电话",
+          "description": "",
+          "length": 255
+        },
+        {
+          "name": "参加工作日期",
+          "source_name": "参加工作日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "参加工作日期",
+          "description": ""
+        },
+        {
+          "name": "进入本单位日期",
+          "source_name": "进入本单位日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "进入本单位日期",
+          "description": ""
+        },
+        {
+          "name": "任职状态",
+          "source_name": "任职状态",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "任职状态",
+          "description": "",
+          "length": 255
+        }
+      ]
+    },
+    "education_dictionary": {
+      "name": "education_dictionary",
+      "type": "master",
+      "title": "Education Dictionary",
+      "description": "Education Dictionary表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "学历类型",
+          "source_name": "学历类型",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "学历类型",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "类型名称",
+          "source_name": "类型名称",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "类型名称",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        }
+      ]
+    },
+    "dict_education_dictionary": {
+      "name": "dict_education_dictionary",
+      "type": "dictionary",
+      "title": "Dict Education Dictionary",
+      "description": "Dict Education Dictionary表",
+      "primary_key": "code",
+      "fields": [
+        {
+          "name": "学历层次",
+          "source_name": "学历层次",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "学历层次",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "学历",
+          "source_name": "学历",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "学历",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        }
+      ]
+    },
+    "teacher_record": {
+      "name": "teacher_record",
+      "type": "child",
+      "title": "Teacher Record",
+      "description": "Teacher Record表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "姓名",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "身份证号码",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": false,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic",
+          "relation_display_field": "身份证号码",
+          "length": 255
+        },
+        {
+          "name": "学历类型",
+          "source_name": "学历类型",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "学历类型",
+          "description": "",
+          "relation_type": "to_dict",
+          "relation_table": "education_dictionary",
+          "relation_display_field": "学历类型",
+          "length": 255
+        },
+        {
+          "name": "学历",
+          "source_name": "学历",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "学历",
+          "description": "",
+          "relation_type": "to_dict",
+          "relation_table": "dict_education_dictionary",
+          "relation_display_field": "学历",
+          "length": 255
+        },
+        {
+          "name": "学位",
+          "source_name": "学位",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "学位",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "毕业院校",
+          "source_name": "毕业院校",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "毕业院校",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "专业",
+          "source_name": "专业",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "专业",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "毕业日期",
+          "source_name": "毕业日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "毕业日期",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name"
+        }
+      ],
+      "parent_table": "teacher_basic"
+    },
+    "dict_teacher_position_dictionary": {
+      "name": "dict_teacher_position_dictionary",
+      "type": "dictionary",
+      "title": "Dict Teacher Position Dictionary",
+      "description": "Dict Teacher Position Dictionary表",
+      "primary_key": "code",
+      "fields": [
+        {
+          "name": "职务",
+          "source_name": "职务",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "职务",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        }
+      ]
+    },
+    "teacher_log": {
+      "name": "teacher_log",
+      "type": "child",
+      "title": "教师职务记录",
+      "description": "教师职务记录表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "name",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 50
+        },
+        {
+          "name": "id_card",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic",
+          "relation_display_field": "身份证号码",
+          "length": 18
+        },
+        {
+          "name": "position_level",
+          "source_name": "职级",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "职级",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 20
+        },
+        {
+          "name": "position_level_id",
+          "source_name": "职级_id",
+          "type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "职级ID",
+          "description": "关联字典表ID",
+          "relation_type": "to_dict",
+          "relation_table": "dict_position",
+          "relation_display_field": "name",
+          "hidden": true
+        },
+        {
+          "name": "position_level_名称",
+          "source_name": "职级_名称",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "职级名称",
+          "description": "职级中文名称",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 50,
+          "hidden": true
+        },
+        {
+          "name": "appointment_no",
+          "source_name": "任职文号",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "任职文号",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 50
+        },
+        {
+          "name": "start_date",
+          "source_name": "起始日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "起始日期",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name"
+        },
+        {
+          "name": "confirm_date",
+          "source_name": "认定日期",
+          "type": "DATE",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "认定日期",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name"
+        }
+      ],
+      "parent_table": "teacher_basic"
+    },
+    "dict_data_personal_identity": {
+      "name": "dict_data_personal_identity",
+      "type": "dictionary",
+      "title": "Dict Data Personal Identity",
+      "description": "Dict Data Personal Identity表",
+      "primary_key": "code",
+      "fields": [
+        {
+          "name": "个人身份",
+          "source_name": "个人身份",
+          "type": "VARCHAR",
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "label": "个人身份",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        }
+      ]
+    },
+    "teacher_personal_identity": {
+      "name": "teacher_personal_identity",
+      "type": "child",
+      "title": "教师个人身份",
+      "description": "教师个人身份表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "name",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 50
+        },
+        {
+          "name": "id_card",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": true,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic",
+          "relation_display_field": "身份证号码",
+          "length": 18
+        },
+        {
+          "name": "personal_identity",
+          "source_name": "个人身份",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "个人身份",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 20
+        },
+        {
+          "name": "personal_identity_id",
+          "source_name": "个人身份_id",
+          "type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "个人身份ID",
+          "description": "关联字典表ID",
+          "relation_type": "to_dict",
+          "relation_table": "dict_data_personal_identity",
+          "relation_display_field": "name",
+          "hidden": true
+        },
+        {
+          "name": "personal_identity_name",
+          "source_name": "个人身份_name",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "个人身份名称",
+          "description": "个人身份中文名称",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 50,
+          "hidden": true
+        }
+      ],
+      "parent_table": "teacher_basic"
+    },
+    "dict_data_dictionary": {
+      "name": "dict_data_dictionary",
+      "type": "dictionary",
+      "title": "Dict Data Dictionary",
+      "description": "Dict Data Dictionary表",
+      "primary_key": "code",
+      "fields": [
+        {
+          "name": "人才类型",
+          "source_name": "人才类型",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": true,
+          "indexed": false,
+          "label": "人才类型",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        }
+      ]
+    },
+    "dict_teacher_info": {
+      "name": "dict_teacher_info",
+      "type": "child",
+      "title": "Dict Teacher Info",
+      "description": "Dict Teacher Info表",
+      "primary_key": "id",
+      "fields": [
+        {
+          "name": "姓名",
+          "source_name": "姓名",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "姓名",
+          "description": "",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "length": 255
+        },
+        {
+          "name": "身份证号码",
+          "source_name": "身份证号码",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "身份证号码",
+          "description": "",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic",
+          "relation_display_field": "身份证号码",
+          "length": 255
+        },
+        {
+          "name": "人才类型",
+          "source_name": "人才类型",
+          "type": "VARCHAR",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "label": "人才类型",
+          "description": "",
+          "relation_type": "to_dict",
+          "relation_table": "dict_data_dictionary",
+          "relation_display_field": "人才类型",
+          "length": 255
+        }
+      ],
+      "parent_table": "teacher_basic"
+    }
+  },
+  "dictionaries": {
+    "education_level": {
+      "name": "education_level",
+      "title": "学历",
+      "description": "学历字典表",
+      "type": "dictionary",
+      "primary_key": "code",
+      "items": [
+        {
+          "code": "primary",
+          "name": "小学",
+          "sort_order": 1
+        },
+        {
+          "code": "junior",
+          "name": "初中",
+          "sort_order": 2
+        },
+        {
+          "code": "senior",
+          "name": "高中",
+          "sort_order": 3
+        },
+        {
+          "code": "technical",
+          "name": "中专",
+          "sort_order": 4
+        },
+        {
+          "code": "college",
+          "name": "大专",
+          "sort_order": 5
+        },
+        {
+          "code": "bachelor",
+          "name": "本科",
+          "sort_order": 6
+        },
+        {
+          "code": "master",
+          "name": "硕士",
+          "sort_order": 7
+        },
+        {
+          "code": "doctor",
+          "name": "博士",
+          "sort_order": 8
+        }
+      ]
+    },
+    "degree": {
+      "name": "degree",
+      "title": "学位",
+      "description": "学位字典表",
+      "type": "dictionary",
+      "primary_key": "code",
+      "items": [
+        {
+          "code": "none",
+          "name": "无",
+          "sort_order": 1
+        },
+        {
+          "code": "bachelor",
+          "name": "学士",
+          "sort_order": 2
+        },
+        {
+          "code": "master",
+          "name": "硕士",
+          "sort_order": 3
+        },
+        {
+          "code": "doctor",
+          "name": "博士",
+          "sort_order": 4
+        }
+      ]
+    },
+    "title": {
+      "name": "title",
+      "title": "职称",
+      "description": "职称字典表",
+      "type": "dictionary",
+      "primary_key": "code",
+      "items": [
+        {
+          "code": "assistant",
+          "name": "助教",
+          "sort_order": 1
+        },
+        {
+          "code": "lecturer",
+          "name": "讲师",
+          "sort_order": 2
+        },
+        {
+          "code": "associate_professor",
+          "name": "副教授",
+          "sort_order": 3
+        },
+        {
+          "code": "professor",
+          "name": "教授",
+          "sort_order": 4
+        }
+      ]
+    },
+    "title_level": {
+      "name": "title_level",
+      "title": "职称级别",
+      "description": "职称级别字典表",
+      "type": "dictionary",
+      "primary_key": "code",
+      "items": [
+        {
+          "code": "primary",
+          "name": "初级",
+          "sort_order": 1
+        },
+        {
+          "code": "intermediate",
+          "name": "中级",
+          "sort_order": 2
+        },
+        {
+          "code": "senior",
+          "name": "高级",
+          "sort_order": 3
+        },
+        {
+          "code": "senior_senior",
+          "name": "正高级",
+          "sort_order": 4
+        }
+      ]
+    },
+    "gender": {
+      "name": "gender",
+      "title": "性别",
+      "description": "性别字典表",
+      "type": "dictionary",
+      "primary_key": "code",
+      "items": [
+        {
+          "code": "male",
+          "name": "男",
+          "sort_order": 1
+        },
+        {
+          "code": "female",
+          "name": "女",
+          "sort_order": 2
+        }
+      ]
+    },
+    "department": {
+      "name": "department",
+      "title": "部门",
+      "description": "部门字典表",
+      "type": "dictionary",
+      "primary_key": "code",
+      "hierarchical": true,
+      "items": [
+        {
+          "code": "academic",
+          "name": "教务处",
+          "sort_order": 1
+        },
+        {
+          "code": "personnel",
+          "name": "人事处",
+          "sort_order": 2
+        },
+        {
+          "code": "finance",
+          "name": "财务处",
+          "sort_order": 3
+        },
+        {
+          "code": "science",
+          "name": "科研处",
+          "sort_order": 4
+        },
+        {
+          "code": "student",
+          "name": "学生处",
+          "sort_order": 5
+        }
+      ]
+    }
+  },
+  "mappings": [
+    {
+      "table": "teacher_basic",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "created_at": "2026-02-02T16:59:42.716772",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "created_at": "2026-02-02T16:59:42.716808",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "档案出生日期",
+      "target_field": "档案出生日期",
+      "data_type": "DATE",
+      "created_at": "2026-02-02T16:59:42.716822",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "民族",
+      "target_field": "民族",
+      "data_type": "VARCHAR",
+      "created_at": "2026-02-02T16:59:42.716831",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "籍贯",
+      "target_field": "籍贯",
+      "data_type": "VARCHAR",
+      "created_at": "2026-02-02T16:59:42.716840",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "联系电话",
+      "target_field": "联系电话",
+      "data_type": "VARCHAR",
+      "created_at": "2026-02-02T16:59:42.716847",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "参加工作日期",
+      "target_field": "参加工作日期",
+      "data_type": "DATE",
+      "created_at": "2026-02-02T16:59:42.716855",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "进入本单位日期",
+      "target_field": "进入本单位日期",
+      "data_type": "DATE",
+      "created_at": "2026-02-02T16:59:42.716864",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "teacher_basic",
+      "source_field": "任职状态",
+      "target_field": "任职状态",
+      "data_type": "VARCHAR",
+      "created_at": "2026-02-02T16:59:42.716871",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T21:28:25.636698"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T21:28:25.636726"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "档案出生日期",
+      "target_field": "档案出生日期",
+      "data_type": "DATE",
+      "created_at": "2026-01-31T21:28:25.636738"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "民族",
+      "target_field": "民族",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T21:28:25.636748"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "籍贯",
+      "target_field": "籍贯",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T21:28:25.636756"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "联系电话",
+      "target_field": "联系电话",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T21:28:25.636764"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "参加工作日期",
+      "target_field": "参加工作日期",
+      "data_type": "DATE",
+      "created_at": "2026-01-31T21:28:25.636771"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "进入本单位日期",
+      "target_field": "进入本单位日期",
+      "data_type": "DATE",
+      "created_at": "2026-01-31T21:28:25.636778"
+    },
+    {
+      "table": "data_069385",
+      "source_field": "任职状态",
+      "target_field": "任职状态",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T21:28:25.636786"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T23:02:00.524798"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T23:02:00.524827"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "档案出生日期",
+      "target_field": "档案出生日期",
+      "data_type": "DATE",
+      "created_at": "2026-01-31T23:02:00.524840"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "民族",
+      "target_field": "民族",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T23:02:00.524850"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "籍贯",
+      "target_field": "籍贯",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T23:02:00.524858"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "联系电话",
+      "target_field": "联系电话",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T23:02:00.524865"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "参加工作日期",
+      "target_field": "参加工作日期",
+      "data_type": "DATE",
+      "created_at": "2026-01-31T23:02:00.524873"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "进入本单位日期",
+      "target_field": "进入本单位日期",
+      "data_type": "DATE",
+      "created_at": "2026-01-31T23:02:00.524880"
+    },
+    {
+      "table": "data_043854",
+      "source_field": "任职状态",
+      "target_field": "任职状态",
+      "data_type": "VARCHAR",
+      "created_at": "2026-01-31T23:02:00.524888"
+    },
+    {
+      "table": "education_dictionary",
+      "source_field": "学历类型",
+      "target_field": "学历类型",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T17:46:27.842559"
+    },
+    {
+      "table": "education_dictionary",
+      "source_field": "类型名称",
+      "target_field": "类型名称",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T17:46:27.842586"
+    },
+    {
+      "table": "dict_education_dictionary",
+      "source_field": "学历层次",
+      "target_field": "学历层次",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T19:18:42.179744"
+    },
+    {
+      "table": "dict_education_dictionary",
+      "source_field": "学历",
+      "target_field": "学历",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T19:18:42.179780"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T14:07:57.166408"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "relation_type": "to_master",
+      "relation_table": "teacher_basic",
+      "relation_display_field": "身份证号码",
+      "created_at": "2026-02-03T14:07:57.166432"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "学历类型",
+      "target_field": "学历类型",
+      "data_type": "VARCHAR",
+      "relation_type": "to_dict",
+      "relation_table": "education_dictionary",
+      "relation_display_field": "学历类型",
+      "created_at": "2026-02-03T14:07:57.166442"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "学历",
+      "target_field": "学历",
+      "data_type": "VARCHAR",
+      "relation_type": "to_dict",
+      "relation_table": "dict_education_dictionary",
+      "relation_display_field": "学历",
+      "created_at": "2026-02-03T14:07:57.166449"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "学位",
+      "target_field": "学位",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T14:07:57.166455"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "毕业院校",
+      "target_field": "毕业院校",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T14:07:57.166462"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "专业",
+      "target_field": "专业",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T14:07:57.166468"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "毕业日期",
+      "target_field": "毕业日期",
+      "data_type": "DATE",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T14:07:57.166474"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "教师ID",
+      "target_field": "teacher_id",
+      "data_type": "INTEGER",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T23:25:14.664200"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "记录类型",
+      "target_field": "record_type",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T23:25:14.664231"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "记录内容",
+      "target_field": "record_content",
+      "data_type": "TEXT",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T23:25:14.664248"
+    },
+    {
+      "table": "teacher_record",
+      "source_field": "记录日期",
+      "target_field": "record_date",
+      "data_type": "DATE",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-02T23:25:14.664261"
+    },
+    {
+      "table": "dict_teacher_position_dictionary",
+      "source_field": "序号",
+      "target_field": "序号",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T17:58:05.418509"
+    },
+    {
+      "table": "dict_teacher_position_dictionary",
+      "source_field": "职务",
+      "target_field": "职务",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-03T18:07:27.199706"
+    },
+    {
+      "table": "teacher_log",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T11:43:44.677933"
+    },
+    {
+      "table": "teacher_log",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "relation_type": "to_master",
+      "relation_table": "teacher_basic",
+      "relation_display_field": "身份证号码",
+      "created_at": "2026-02-04T11:43:44.677961"
+    },
+    {
+      "table": "teacher_log",
+      "source_field": "职级",
+      "target_field": "职级",
+      "data_type": "VARCHAR",
+      "relation_type": "to_dict",
+      "relation_table": "dict_teacher_position_dictionary",
+      "relation_display_field": "职务",
+      "created_at": "2026-02-04T11:43:44.677971"
+    },
+    {
+      "table": "teacher_log",
+      "source_field": "任职文号",
+      "target_field": "任职文号",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T11:43:44.677979"
+    },
+    {
+      "table": "teacher_log",
+      "source_field": "起始日期",
+      "target_field": "起始日期",
+      "data_type": "DATE",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T11:43:44.677986"
+    },
+    {
+      "table": "teacher_log",
+      "source_field": "认定日期",
+      "target_field": "认定日期",
+      "data_type": "DATE",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T11:43:44.677993"
+    },
+    {
+      "table": "dict_data_personal_identity",
+      "source_field": "个人身份",
+      "target_field": "个人身份",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T13:47:54.031919"
+    },
+    {
+      "table": "teacher_personal_identity",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T15:31:08.575875"
+    },
+    {
+      "table": "teacher_personal_identity",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "relation_type": "to_master",
+      "relation_table": "teacher_basic",
+      "relation_display_field": "身份证号码",
+      "created_at": "2026-02-04T15:31:08.575900"
+    },
+    {
+      "table": "teacher_personal_identity",
+      "source_field": "个人身份",
+      "target_field": "个人身份",
+      "data_type": "VARCHAR",
+      "relation_type": "to_dict",
+      "relation_table": "dict_data_personal_identity",
+      "relation_display_field": "个人身份",
+      "created_at": "2026-02-04T15:31:08.575910"
+    },
+    {
+      "table": "dict_data_dictionary",
+      "source_field": "人才类型",
+      "target_field": "人才类型",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T18:11:13.353451"
+    },
+    {
+      "table": "dict_teacher_info",
+      "source_field": "姓名",
+      "target_field": "姓名",
+      "data_type": "VARCHAR",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "created_at": "2026-02-04T18:14:23.719948"
+    },
+    {
+      "table": "dict_teacher_info",
+      "source_field": "身份证号码",
+      "target_field": "身份证号码",
+      "data_type": "VARCHAR",
+      "relation_type": "to_master",
+      "relation_table": "teacher_basic",
+      "relation_display_field": "身份证号码",
+      "created_at": "2026-02-04T18:14:23.719959"
+    },
+    {
+      "table": "dict_teacher_info",
+      "source_field": "人才类型",
+      "target_field": "人才类型",
+      "data_type": "VARCHAR",
+      "relation_type": "to_dict",
+      "relation_table": "dict_data_dictionary",
+      "relation_display_field": "人才类型",
+      "created_at": "2026-02-04T18:14:23.719963"
+    }
+  ],
+  "relationships": {
+    "teacher_basic": {
+      "children": [
+        "teacher_education",
+        "teacher_work",
+        "teacher_title",
+        "teacher_record",
+        "teacher_history",
+        "teacher_archive",
+        "teacher_log",
+        "teacher_personal_identity",
+        "dict_teacher_info"
+      ],
+      "dictionaries": [
+        "education_level",
+        "degree",
+        "title",
+        "title_level",
+        "gender",
+        "department"
+      ]
+    }
+  }
+}

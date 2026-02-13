@@ -1,0 +1,106 @@
+{
+  "mappings": {
+    "教师职务字典": {
+      "english_name": "dict_teacher_position_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-02-03T17:58:05.108337",
+      "field_signature": [
+        [
+          "序号",
+          "STRING"
+        ],
+        [
+          "职务",
+          "STRING"
+        ]
+      ]
+    },
+    "教师职务记录": {
+      "english_name": "teacher_log",
+      "table_type": "child",
+      "created_at": "2026-02-04T09:22:16.722860",
+      "field_signature": [
+        [
+          "任职文号",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "职级",
+          "STRING"
+        ],
+        [
+          "认定日期",
+          "DATE"
+        ],
+        [
+          "起始日期",
+          "DATE"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "个人身份字典": {
+      "english_name": "dict_data_personal_identity",
+      "table_type": "dictionary",
+      "created_at": "2026-02-04T13:47:53.744413",
+      "field_signature": [
+        [
+          "个人身份",
+          "STRING"
+        ]
+      ]
+    },
+    "教师个人身份": {
+      "english_name": "teacher_personal_identity",
+      "table_type": "child",
+      "created_at": "2026-02-04T13:50:18.226844",
+      "field_signature": [
+        [
+          "个人身份",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "教师人才类型": {
+      "english_name": "dict_teacher_info",
+      "table_type": "child",
+      "created_at": "2026-02-04T18:12:43.594326",
+      "field_signature": [
+        [
+          "人才类型",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    }
+  },
+  "reverse_mappings": {
+    "dict_teacher_position_dictionary": "教师职务字典",
+    "teacher_log": "教师职务记录",
+    "dict_data_personal_identity": "个人身份字典",
+    "teacher_personal_identity": "教师个人身份",
+    "dict_teacher_info": "教师人才类型"
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "modules": [
+    {
+      "id": "system",
+      "title": "系统管理",
+      "icon": "Setting",
+      "path": "/system",
+      "type": "module",
+      "children": [
+        {
+          "id": "system-modules",
+          "title": "模块管理",
+          "icon": "Grid",
+          "path": "/system/module-mgt",
+          "type": "component",
+          "component": "Modules",
+          "api_endpoint": "/api/data/modules"
+        },
+        {
+          "id": "module-1770025441816",
+          "title": "字典管理",
+          "icon": "Folder",
+          "path": "/system/sub-1770025441816",
+          "type": "module",
+          "children": [
+            {
+              "id": "system-education_dictionary",
+              "title": "学历类型字典",
+              "icon": "Document",
+              "path": "/system/module-1770025441816/education_dictionary",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/education_dictionary",
+              "table_name": "education_dictionary",
+              "table_type": "master",
+              "created_at": "2026-02-02T17:46:27.857511"
+            },
+            {
+              "id": "system-dict_education_dictionary",
+              "title": "学历层次字典",
+              "icon": "Collection",
+              "path": "/system/module-1770025441816/dict_education_dictionary",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/dict_education_dictionary",
+              "table_name": "dict_education_dictionary",
+              "table_type": "dictionary",
+              "created_at": "2026-02-02T19:18:42.196019"
+            },
+            {
+              "id": "system-dict_data_personal_identity",
+              "title": "个人身份字典",
+              "icon": "Collection",
+              "path": "/system/module-1770025441816/dict_data_personal_identity",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/dict_data_personal_identity",
+              "table_name": "dict_data_personal_identity",
+              "table_type": "dictionary",
+              "created_at": "2026-02-04T13:47:54.052730"
+            },
+            {
+              "id": "system-dict_data_dictionary",
+              "title": "人才类型字典",
+              "icon": "Collection",
+              "path": "/system/module-1770025441816/dict_data_dictionary",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/dict_data_dictionary",
+              "table_name": "dict_data_dictionary",
+              "table_type": "dictionary",
+              "created_at": "2026-02-04T18:11:13.370988"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-center",
+      "title": "数据中心",
+      "icon": "PieChart",
+      "path": "/data-center",
+      "type": "module",
+      "children": [
+        {
+          "id": "data-import",
+          "title": "数据导入",
+          "icon": "Upload",
+          "path": "/import/workbench",
+          "type": "component",
+          "component": "DataImportWorkbench",
+          "api_endpoint": "/api/data/data_import"
+        },
+        {
+          "id": "table-structure",
+          "title": "表结构管理",
+          "icon": "Setting",
+          "path": "/data/table-structure",
+          "type": "component",
+          "component": "TableStructure",
+          "api_endpoint": "/api/table-structure"
+        }
+      ]
+    },
+    {
+      "id": "module-1769848858485",
+      "title": "人事管理",
+      "icon": "Setting",
+      "path": "/module-1769848858485",
+      "type": "module",
+      "children": [
+        {
+          "id": "module-1769848871781",
+          "title": "教师管理",
+          "icon": "Setting",
+          "path": "/module-1769848858485/sub-1769848871781",
+          "type": "module",
+          "children": [
+            {
+              "id": "module-1769848858485-teacher_basic",
+              "title": "教师基础信息",
+              "icon": "Document",
+              "path": "/module-1769848858485/module-1769848871781/teacher_basic",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/teacher_basic",
+              "table_name": "teacher_basic",
+              "table_type": "master",
+              "created_at": "2026-02-02T16:59:42.734224"
+            },
+            {
+              "id": "module-1769848858485-teacher_record",
+              "title": "教师学历记录",
+              "icon": "Document",
+              "path": "/module-1769848858485/module-1769848871781/teacher_record",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/teacher_record",
+              "table_name": "teacher_record",
+              "table_type": "child",
+              "created_at": "2026-02-03T14:07:57.182475"
+            },
+            {
+              "id": "module-1769848858485-dict_teacher_position_dictionary",
+              "title": "教师职务字典",
+              "icon": "Collection",
+              "path": "/module-1769848858485/module-1769848871781/dict_teacher_position_dictionary",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/dict_teacher_position_dictionary",
+              "table_name": "dict_teacher_position_dictionary",
+              "table_type": "dictionary",
+              "created_at": "2026-02-03T18:07:27.216790"
+            },
+            {
+              "id": "module-1769848858485-teacher_log",
+              "title": "教师职务记录",
+              "icon": "Document",
+              "path": "/module-1769848858485/module-1769848871781/teacher_log",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/teacher_log",
+              "table_name": "teacher_log",
+              "table_type": "child",
+              "created_at": "2026-02-04T11:43:44.696391"
+            },
+            {
+              "id": "module-1769848858485-teacher_personal_identity",
+              "title": "教师个人身份",
+              "icon": "Document",
+              "path": "/module-1769848858485/module-1769848871781/teacher_personal_identity",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/teacher_personal_identity",
+              "table_name": "teacher_personal_identity",
+              "table_type": "child",
+              "created_at": "2026-02-04T15:31:08.594101"
+            },
+            {
+              "id": "module-1769848858485-dict_teacher_info",
+              "title": "教师人才类型",
+              "icon": "Document",
+              "path": "/module-1769848858485/module-1769848871781/dict_teacher_info",
+              "type": "component",
+              "component": "DataTable",
+              "api_endpoint": "/api/data/dict_teacher_info",
+              "table_name": "dict_teacher_info",
+              "table_type": "child",
+              "created_at": "2026-02-04T18:14:23.725697"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
