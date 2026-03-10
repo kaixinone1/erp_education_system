@@ -320,10 +320,13 @@ const handleCalculate = (row: any) => {
 
 // 查看报表 - 跳转到统一报表查看页面
 const viewReport = (row: any) => {
+  console.log('【AutoTableManager】viewReport 被调用，row:', row)
   // 直接使用 template_id - 从行数据中获取
   const templateId = row.template_id || props.tableName.replace('_data', '')
   const encodedTemplateId = encodeURIComponent(templateId)
-  router.push(`/report-view/${encodedTemplateId}/${row.teacher_id}`)
+  const teacherId = row.teacher_id || 0
+  console.log('【AutoTableManager】跳转参数:', { templateId, teacherId, encodedTemplateId })
+  router.push(`/report-view/${encodedTemplateId}/${teacherId}`)
 }
 
 // 导出

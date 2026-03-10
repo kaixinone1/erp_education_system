@@ -1,73 +1,49 @@
-#!/usr/bin/env python3
 """
-调试API查询
+直接测试 API，找出问题
 """
+import requests
+import json
 
-import psycopg2
+# 测试两个模板
+templates = [
+    ('枣阳市机关事业单位养老保险改革过渡期内职务升降退休人员信息申报表htm', 293),
+    ('职工退休呈报表html', 273)
+]
 
-DB_PARAMS = {
-    'host': 'localhost',
-    'database': 'taiping_education',
-    'user': 'taiping_user',
-    'password': 'taiping_password'
-}
-
-conn = psycopg2.connect(**DB_PARAMS)
-cursor = conn.cursor()
-
-try:
-    # 检查表中的字段
-    print("1. 检查 teacher_log 表字段:")
-    cursor.execute("""
-        SELECT column_name
-        FROM information_schema.columns
-        WHERE table_name = 'teacher_log'
-        ORDER BY ordinal_position
-    """)
-    columns = [row[0] for row in cursor.fetchall()]
-    print(f"   字段: {columns}")
+for template_id, teacher_id in templates:
+    print(f'\n{"="*60}')
+    print(f'测试模板: {template_id}')
+    print(f'教师ID: {teacher_id}')
+    print(f'{"="*60}')
     
-    # 检查 dict_position 表
-    print("\n2. 检查 dict_position 表:")
-    cursor.execute("SELECT id, code, name FROM dict_position")
-    for row in cursor.fetchall():
-        print(f"   {row}")
+    # URL编码
+    from urllib.parse import quote
+    encoded_template = quote(template_id)
+    url = f'http://localhost:8000/api/template-field-mapping/fill-data/{encoded_template}?teacher_id={teacher_id}'
     
-    # 测试简单查询
-    print("\n3. 测试简单查询:")
-    cursor.execute("SELECT COUNT(*) FROM teacher_log")
-    count = cursor.fetchone()[0]
-    print(f"   总条数: {count}")
-    
-    # 测试带JOIN的查询
-    print("\n4. 测试带JOIN的查询:")
     try:
-        cursor.execute("""
-            SELECT t.name, t.id_card, t.position_level, 
-                   dict_position.name as position_level_名称
-            FROM teacher_log t
-            LEFT JOIN dict_position ON CAST(t.position_level AS TEXT) = CAST(dict_position.code AS TEXT)
-            LIMIT 5
-        """)
-        rows = cursor.fetchall()
-        print(f"   返回 {len(rows)} 条:")
-        for row in rows:
-            print(f"   {row}")
+        response = requests.get(url, timeout=10)
+        result = response.json()
+        
+        print(f'状态码: {response.status_code}')
+        print(f'API状态: {result.get("status")}')
+        print(f'消息: {result.get("message")}')
+        print(f'数据键数: {len(result.get("data", {}))}')
+        
+        if result.get('unmapped_placeholders'):
+            print(f'未映射占位符: {len(result["unmapped_placeholders"])}个')
+            print(f'前3个: {result["unmapped_placeholders"][:3]}')
+        
+        # 打印数据
+        data = result.get('data', {})
+        if data:
+            print('\n前5个数据:')
+            for i, (key, value) in enumerate(list(data.items())[:5]):
+                print(f'  {key}: {value}')
+        else:
+            print('\n数据为空!')
+            
     except Exception as e:
-        print(f"   查询失败: {e}")
-    
-    # 检查 position_level 字段的值
-    print("\n5. 检查 position_level 字段的值:")
-    cursor.execute("SELECT DISTINCT position_level FROM teacher_log LIMIT 10")
-    values = [row[0] for row in cursor.fetchall()]
-    print(f"   值: {values}")
-    
-    # 检查 dict_position.code 的值
-    print("\n6. 检查 dict_position.code 的值:")
-    cursor.execute("SELECT code FROM dict_position")
-    codes = [row[0] for row in cursor.fetchall()]
-    print(f"   值: {codes}")
-    
-finally:
-    cursor.close()
-    conn.close()
+        print(f'请求失败: {e}')
+
+print('\n\n测试完成')

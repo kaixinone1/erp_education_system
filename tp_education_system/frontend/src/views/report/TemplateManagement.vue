@@ -416,7 +416,7 @@ const selectTeacher = async (teacher: any) => {
 }
 
 // 下载填充后的模板
-const downloadFilledTemplate = async (templateId: number, fillData: any) => {
+const downloadFilledTemplate = async (templateId: string, fillData: any) => {
   try {
     const response = await fetch(`/api/templates/${templateId}/fill`, {
       method: 'POST',

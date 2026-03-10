@@ -183,14 +183,42 @@ def validate_mapping(
     return True, ""
 
 
-def get_intermediate_tables() -> List[Dict[str, Any]]:
-    """获取所有可用的中间表列表（带中文名）"""
+def get_source_tables() -> List[Dict[str, Any]]:
+    """获取所有可用的源数据表列表（带中文名）- 不包括中间表、字典表、系统表"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
     try:
-        # 加载表名中文映射
-        table_name_cn = load_table_name_cn()
+        # 预设的源数据表中文名称
+        source_table_names = {
+            'teacher_basic_info': '教师基础信息',
+            'teacher_education_record': '教师学历信息',
+            'teacher_training_records': '教师培训记录',
+            'retirement_report_form': '退休呈报表',
+            'retirement_cert_records': '退休证记录',
+            'performance_pay_approval': '绩效工资审批',
+            'business_checklist': '业务清单',
+            'navigation_modules': '导航模块',
+            'todo_work': '待办工作',
+        }
+        
+        # 需要排除的表名模式
+        exclude_prefixes = ['pg_', 'sql_', 'dict_', 'template_']
+        exclude_tables = [
+            'intermediate_tables', 
+            'document_templates', 
+            'template_field_mapping',
+            'template_usage_records',
+            'template_field_mappings',
+            'template_page_settings',
+            'template_placeholders',
+            'template_regions'
+        ]
+        
+        # 获取已定义的中间表（需要排除）
+        cursor.execute("SELECT table_name FROM intermediate_tables")
+        for row in cursor.fetchall():
+            exclude_tables.append(row[0])
         
         # 从数据库获取所有表
         cursor.execute("""
@@ -204,23 +232,34 @@ def get_intermediate_tables() -> List[Dict[str, Any]]:
         tables = []
         for row in cursor.fetchall():
             table_name = row[0]
-            # 过滤掉系统表和字典表
-            if table_name.startswith('dict_') or table_name.startswith('pg_'):
+            
+            # 过滤掉：前缀匹配
+            if any(table_name.startswith(prefix) for prefix in exclude_prefixes):
+                continue
+            # 过滤掉：精确匹配
+            if table_name in exclude_tables:
                 continue
             
-            # 获取中文名，如果没有则使用原名
-            cn_name = table_name_cn.get(table_name, table_name)
+            # 获取中文名
+            cn_name = source_table_names.get(table_name, table_name)
             
             tables.append({
                 "name": table_name,
-                "label": cn_name,  # 使用中文名
-                "type": "intermediate"
+                "name_cn": cn_name,
+                "label": cn_name,
+                "type": "source"
             })
         
         return tables
     finally:
         cursor.close()
         conn.close()
+
+
+def get_intermediate_tables() -> List[Dict[str, Any]]:
+    """获取所有可用的中间表列表（带中文名）- 兼容旧版本"""
+    # 调用新的源数据表函数
+    return get_source_tables()
 
 
 def save_field_mapping(

@@ -1,21 +1,31 @@
-#!/usr/bin/env python3
-"""测试 API 返回的数据"""
+"""
+测试API返回的数据结构
+"""
 import requests
 
-# 测试获取退休呈报表详细数据
-response = requests.get('http://localhost:8000/api/retirement/data/detail/273')
-data = response.json()
+url = 'http://localhost:8000/api/auto-table/retirement_report_data/list?page=1&pageSize=10'
 
-print(f"状态码: {response.status_code}")
-print(f"响应内容: {data}")
-
-if data.get('status') == 'success' and 'data' in data:
-    print("\nAPI 返回的字段：")
-    for key, value in data['data'].items():
-        print(f"  {key}: {value}")
+try:
+    response = requests.get(url, timeout=10)
+    result = response.json()
     
-    # 检查是否有个人身份字段
-    if '个人身份' in data['data']:
-        print(f"\n✓ 个人身份字段存在，值为: {data['data']['个人身份']}")
+    print('API返回的完整数据结构:')
+    print(f'  status: {result.get("status")}')
+    print(f'  total: {result.get("total")}')
+    print(f'  page: {result.get("page")}')
+    print(f'  page_size: {result.get("page_size")}')
+    print(f'  data 类型: {type(result.get("data"))}')
+    print(f'  data 长度: {len(result.get("data", []))}')
+    
+    if result.get("data"):
+        print(f'\n第一条数据:')
+        print(result["data"][0])
+    
+    # 检查是否有 items 字段
+    if "items" in result:
+        print(f'\n有 items 字段，长度: {len(result["items"])}')
     else:
-        print("\n✗ 个人身份字段不存在")
+        print(f'\n没有 items 字段')
+        
+except Exception as e:
+    print(f'请求失败: {e}')

@@ -116,21 +116,18 @@ async def get_table_fields(table_name: str):
 async def get_template_placeholders(template_id: str):
     """获取模板中的所有占位符（通用版本）"""
     try:
-        # 尝试将template_id转换为整数
-        try:
-            template_id_int = int(template_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"无效的模板ID: {template_id}")
+        # 支持字符串类型的模板ID
+        template_id_str = template_id
         
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 从document_templates表获取模板内容
+        # 从document_templates表获取模板内容（支持字符串ID）
         cursor.execute("""
             SELECT template_name, file_path 
             FROM document_templates 
-            WHERE id = %s
-        """, (template_id_int,))
+            WHERE template_id = %s
+        """, (template_id_str,))
         
         row = cursor.fetchone()
         if not row:
@@ -271,11 +268,8 @@ async def save_field_mapping(data: dict = Body(...)):
 async def get_field_mapping(template_id: str):
     """获取模板的字段映射关系"""
     try:
-        # 尝试将template_id转换为整数
-        try:
-            template_id_int = int(template_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"无效的模板ID: {template_id}")
+        # 支持字符串类型的模板ID
+        template_id_str = template_id
         
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -287,7 +281,7 @@ async def get_field_mapping(template_id: str):
             FROM template_field_mapping
             WHERE template_id = %s
             ORDER BY id
-        """, (template_id_int,))
+        """, (template_id_str,))
         
         rows = cursor.fetchall()
         
@@ -324,56 +318,230 @@ async def get_field_mapping(template_id: str):
 
 @router.get("/fill-data/{template_id}")
 async def get_fill_data(template_id: str, teacher_id: int):
-    """获取填报数据（根据模板映射和教师ID）"""
+    """获取填报数据（强制字段映射版本）
+    
+    所有模板都通过中间表获取数据，所有占位符都必须配置字段映射：
+    1. 获取模板信息
+    2. 从模板中提取所有 {{占位符}}
+    3. 读取字段映射配置（占位符 → 中间表字段）
+    4. 检查所有占位符是否都有映射配置
+    5. 根据映射从中间表查询数据
+    6. 返回填充数据
+    """
+    print(f"【DEBUG】get_fill_data 被调用: template_id={template_id}, teacher_id={teacher_id}")
     try:
-        # 尝试将template_id转换为整数
-        try:
-            template_id_int = int(template_id)
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"无效的模板ID: {template_id}")
-        
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 1. 获取模板的字段映射
+        # 1. 获取模板信息
         cursor.execute("""
-            SELECT placeholder_name, intermediate_table, intermediate_field
+            SELECT file_path, intermediate_table 
+            FROM document_templates 
+            WHERE template_id = %s
+        """, (template_id,))
+        
+        template_row = cursor.fetchone()
+        if not template_row:
+            print(f"【DEBUG】模板不存在: {template_id}")
+            raise HTTPException(status_code=404, detail="模板不存在")
+        
+        file_path = template_row[0]
+        default_table = template_row[1]  # 模板关联的默认中间表
+        print(f"【DEBUG】模板文件路径: {file_path}, 默认表: {default_table}")
+        
+        # 2. 从模板中提取占位符
+        file_format = file_path.split('.')[-1].lower() if '.' in file_path else 'html'
+        placeholders = _extract_placeholders_from_file(file_path, file_format)
+        print(f"【DEBUG】提取到的占位符数量: {len(placeholders)}")
+        print(f"【DEBUG】前5个占位符: {placeholders[:5]}")
+        
+        if not placeholders:
+            print(f"【DEBUG】没有提取到占位符")
+            return {
+                "status": "success",
+                "template_id": template_id,
+                "teacher_id": teacher_id,
+                "data": {}
+            }
+        
+        # 3. 读取字段映射配置（占位符 → 中间表字段）
+        cursor.execute("""
+            SELECT placeholder_name, intermediate_table, intermediate_field, aggregate_func, filter_condition
             FROM template_field_mapping
-            WHERE template_id = %s AND is_active = TRUE
-        """, (template_id_int,))
+            WHERE template_id = %s AND is_active = true
+        """, (template_id,))
         
-        mappings = cursor.fetchall()
-        if not mappings:
-            raise HTTPException(status_code=404, detail="该模板未配置字段映射")
+        mappings = {}
+        rows = cursor.fetchall()
+        print(f"【DEBUG】数据库中的字段映射数量: {len(rows)}")
         
-        # 2. 获取中间表名
-        intermediate_table = mappings[0][1]
+        for row in rows:
+            placeholder_name = row[0]
+            intermediate_table = row[1] or default_table
+            intermediate_field = row[2]
+            aggregate_func = row[3] if len(row) > 3 else ''
+            filter_condition = row[4] if len(row) > 4 else ''
+            if intermediate_field:  # 必须有字段映射
+                mappings[placeholder_name] = {
+                    'table': intermediate_table,
+                    'field': intermediate_field,
+                    'aggregate_func': aggregate_func,
+                    'filter_condition': filter_condition
+                }
         
-        # 3. 构建查询字段
-        fields = [m[2] for m in mappings]
-        field_list = ', '.join(fields)
+        print(f"【DEBUG】构建的 mappings 数量: {len(mappings)}")
+        print(f"【DEBUG】mappings 的 keys: {list(mappings.keys())[:5]}")
         
-        # 4. 从中间表查询该教师的数据
-        cursor.execute(f"""
-            SELECT {field_list}
-            FROM {intermediate_table}
-            WHERE teacher_id = %s
-            LIMIT 1
-        """, (teacher_id,))
+        # 4. 检查所有占位符是否都有映射配置
+        unmapped_placeholders = []
+        for placeholder in placeholders:
+            field_name = placeholder.strip('{}')
+            if field_name not in mappings:
+                unmapped_placeholders.append(field_name)
         
-        row = cursor.fetchone()
-        if not row:
-            raise HTTPException(status_code=404, detail="未找到该教师的数据")
+        print(f"【DEBUG】未映射的占位符: {unmapped_placeholders}")
         
-        # 5. 构建返回数据（占位符 -> 值）
+        if unmapped_placeholders:
+            print(f"【DEBUG】存在未映射占位符，返回错误")
+            return {
+                "status": "error",
+                "template_id": template_id,
+                "teacher_id": teacher_id,
+                "message": f"以下占位符未配置字段映射: {', '.join(unmapped_placeholders)}",
+                "unmapped_placeholders": unmapped_placeholders,
+                "data": {}
+            }
+        
+        # 5. 从中间表查询数据
         data = {}
-        for i, mapping in enumerate(mappings):
-            placeholder = mapping[0]
-            value = row[i] if i < len(row) else None
-            data[placeholder] = value
+        for placeholder in placeholders:
+            field_name = placeholder.strip('{}')
+            mapping = mappings[field_name]
+            table_name = mapping['table']
+            field = mapping['field']
+            aggregate_func = mapping.get('aggregate_func', '')
+            filter_condition = mapping.get('filter_condition', '')
+            
+            try:
+                # 验证表名和字段名，防止SQL注入
+                # 只允许字母、数字、下划线和中文字符
+                import re
+                if not re.match(r'^[\w\u4e00-\u9fa5]+$', table_name):
+                    print(f"表名包含非法字符: {table_name}")
+                    data[field_name] = ''
+                    continue
+                if not re.match(r'^[\w\u4e00-\u9fa5]+$', field):
+                    print(f"字段名包含非法字符: {field}")
+                    data[field_name] = ''
+                    continue
+                
+                # 构建WHERE条件
+                where_conditions = [f'teacher_id = %s']
+                params = [teacher_id]
+                
+                # 添加自定义过滤条件
+                if filter_condition:
+                    # 支持多种条件格式：
+                    # 1. 单条件: 字段名='值'
+                    # 2. 多条件: 字段名='值' AND 字段2='值2'
+                    # 3. OR条件: 字段名='值1' OR 字段名='值2'
+                    # 安全验证：只允许中文、字母、数字、下划线、单引号、=、AND、OR、空格
+                    safe_pattern = r"^[\w\u4e00-\u9fa5\s'\"=]+(?:\s+(?:AND|OR)\s+[\w\u4e00-\u9fa5\s'\"=]+)*$"
+                    if re.match(safe_pattern, filter_condition.strip(), re.IGNORECASE):
+                        where_conditions.append(filter_condition.strip())
+                    else:
+                        print(f"过滤条件格式不安全，已忽略: {filter_condition}")
+                
+                where_clause = ' AND '.join(where_conditions)
+                
+                # 判断是否使用聚合函数
+                if aggregate_func and aggregate_func.upper() in ('COUNT', 'SUM', 'MAX', 'MIN', 'AVG'):
+                    # 聚合查询：统计符合条件的记录数/总和等
+                    safe_field = f'"{field}"' if field != '*' else field
+                    query = f'SELECT {aggregate_func}({safe_field}) FROM "{table_name}" WHERE {where_clause}'
+                    cursor.execute(query, tuple(params))
+                else:
+                    # 普通查询
+                    query = f'SELECT "{field}" FROM "{table_name}" WHERE {where_clause}'
+                    cursor.execute(query, tuple(params))
+                
+                row = cursor.fetchone()
+                if row and row[0] is not None:
+                    data[field_name] = row[0]
+                else:
+                    data[field_name] = ''
+            except Exception as e:
+                print(f"查询字段失败 {field_name} from {table_name}.{field}: {e}")
+                data[field_name] = ''
+                # 回滚事务，避免影响后续查询
+                try:
+                    conn.rollback()
+                except:
+                    pass
         
         cursor.close()
         conn.close()
+        
+        # 6. 自动计算小计字段
+        # 规则：如果字段名以"小计"结尾，尝试计算 人数 * 月工资标准
+        for field_name in list(data.keys()):
+            if field_name.endswith('小计'):
+                # 提取前缀，如 "正高级小计" -> "正高级"
+                prefix = field_name[:-2]  # 去掉"小计"
+                
+                # 寻找对应的人数和工资字段
+                count_field = f"{prefix}人数"
+                salary_field = f"{prefix}月工资标准"
+                
+                # 如果人数和工资字段都存在，计算小计
+                if count_field in data and salary_field in data:
+                    try:
+                        count_val = float(data[count_field]) if data[count_field] else 0
+                        salary_val = float(data[salary_field]) if data[salary_field] else 0
+                        data[field_name] = count_val * salary_val
+                        print(f"【DEBUG】自动计算 {field_name} = {count_val} * {salary_val} = {data[field_name]}")
+                    except (ValueError, TypeError) as e:
+                        print(f"【DEBUG】计算 {field_name} 失败: {e}")
+                        data[field_name] = ''
+        
+        # 7. 自动计算合计字段
+        # 规则：如果字段名包含"合计"或"总计"，尝试汇总相关字段
+        for field_name in list(data.keys()):
+            if '合计' in field_name or '总计' in field_name:
+                # 提取类别前缀，如 "行政管理人员合计" -> 找所有"行政管理人员"相关的小计
+                # 或者找所有小计字段求和
+                total = 0
+                has_value = False
+                
+                # 尝试找到所有小计字段并求和
+                for key in data.keys():
+                    if key.endswith('小计') and data[key]:
+                        try:
+                            val = float(data[key])
+                            total += val
+                            has_value = True
+                        except (ValueError, TypeError):
+                            pass
+                
+                if has_value:
+                    data[field_name] = total
+                    print(f"【DEBUG】自动计算 {field_name} = {total}")
+        
+        # 8. 自动计算绩效人数（所有类别人数之和）
+        if '绩效人数' in data:
+            total_count = 0
+            has_value = False
+            for key in data.keys():
+                if key.endswith('人数') and key != '绩效人数' and data[key]:
+                    try:
+                        val = float(data[key])
+                        total_count += val
+                        has_value = True
+                    except (ValueError, TypeError):
+                        pass
+            if has_value:
+                data['绩效人数'] = int(total_count)
+                print(f"【DEBUG】自动计算 绩效人数 = {total_count}")
         
         return {
             "status": "success",
@@ -386,6 +554,120 @@ async def get_fill_data(template_id: str, teacher_id: int):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取填报数据失败: {str(e)}")
+
+
+def _extract_placeholders_from_file(file_path: str, file_format: str) -> list:
+    """从文件中提取 {{占位符}}"""
+    placeholders = []
+    
+    if not os.path.exists(file_path):
+        return placeholders
+    
+    try:
+        if file_format == 'docx':
+            # Word文档
+            from docx import Document
+            doc = Document(file_path)
+            
+            # 从段落中提取
+            for para in doc.paragraphs:
+                placeholders.extend(_extract_placeholders_from_text(para.text))
+            
+            # 从表格中提取
+            for table in doc.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        placeholders.extend(_extract_placeholders_from_text(cell.text))
+        
+        elif file_format in ('html', 'htm'):
+            # HTML文件 - 尝试多种编码
+            content = None
+            for encoding in ['utf-8', 'gbk', 'gb2312', 'gb18030', 'latin-1']:
+                try:
+                    with open(file_path, 'r', encoding=encoding) as f:
+                        content = f.read()
+                    break
+                except UnicodeDecodeError:
+                    continue
+            
+            if content:
+                placeholders.extend(_extract_placeholders_from_text(content))
+            else:
+                print(f"无法读取HTML文件: {file_path}")
+        
+        elif file_format == 'xlsx':
+            # Excel文件
+            from openpyxl import load_workbook
+            wb = load_workbook(file_path)
+            ws = wb.active
+            
+            for row in ws.iter_rows():
+                for cell in row:
+                    if cell.value:
+                        placeholders.extend(_extract_placeholders_from_text(str(cell.value)))
+        
+        # 去重
+        return list(set(placeholders))
+    
+    except Exception as e:
+        print(f"提取占位符失败: {e}")
+        return placeholders
+
+
+def _extract_placeholders_from_text(text: str) -> list:
+    """从文本中提取 {{占位符}}，并清理HTML标签"""
+    import re
+    from html.parser import HTMLParser
+    
+    try:
+        # 提取 {{...}} 中的内容
+        pattern = r'\{\{([^}]+)\}\}'
+        matches = re.findall(pattern, text)
+        
+        # 清理HTML标签，只保留纯文本
+        class MLStripper(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.reset()
+                self.fed = []
+            def handle_data(self, d):
+                self.fed.append(d)
+            def get_data(self):
+                return ''.join(self.fed)
+        
+        def strip_tags(html):
+            if not html:
+                return ''
+            s = MLStripper()
+            try:
+                s.feed(html)
+                return s.get_data()
+            except Exception as e:
+                # 如果解析失败，使用正则表达式移除标签
+                print(f"HTML解析失败，使用正则移除标签: {e}")
+                return re.sub(r'<[^>]+>', '', html)
+        
+        cleaned_matches = []
+        for match in matches:
+            try:
+                # 清理HTML标签
+                clean_text = strip_tags(match).strip()
+                # 移除多余的空白字符
+                clean_text = re.sub(r'\s+', '', clean_text)
+                if clean_text:  # 只保留非空的
+                    # 验证占位符内容，只允许字母、数字、下划线和中文字符
+                    if re.match(r'^[\w\u4e00-\u9fa5]+$', clean_text):
+                        cleaned_matches.append('{{' + clean_text + '}}')
+                    else:
+                        print(f"占位符包含非法字符，跳过: {clean_text}")
+            except Exception as e:
+                print(f"处理占位符时出错: {e}, match: {match}")
+                continue
+        
+        return cleaned_matches
+    except Exception as e:
+        print(f"提取占位符时出错: {e}")
+        return []
 
 
 @router.get("/preview/{template_id}")
@@ -576,26 +858,13 @@ async def save_html_content(template_id: str, request: dict = Body(...)):
             # 获取模板基本信息（支持id或template_id查询）
             template_row = None
             
-            # 先尝试用id查询（如果是数字）
-            try:
-                id_int = int(template_id)
-                cursor.execute("""
-                    SELECT id, template_id, template_name, file_path
-                    FROM document_templates
-                    WHERE id = %s
-                """, (id_int,))
-                template_row = cursor.fetchone()
-            except ValueError:
-                pass  # 不是数字，继续用template_id查询
-            
-            # 如果没找到，尝试用template_id字段查询
-            if not template_row:
-                cursor.execute("""
-                    SELECT id, template_id, template_name, file_path
-                    FROM document_templates
-                    WHERE template_id = %s
-                """, (str(template_id),))
-                template_row = cursor.fetchone()
+            # 统一使用template_id字段查询（支持字符串ID）
+            cursor.execute("""
+                SELECT id, template_id, template_name, file_path
+                FROM document_templates
+                WHERE template_id = %s
+            """, (template_id,))
+            template_row = cursor.fetchone()
             
             if not template_row:
                 raise HTTPException(status_code=404, detail=f"模板不存在: {template_id}")

@@ -329,14 +329,25 @@ def create_auto_table_routes(table_name: str) -> APIRouter:
     @router.get("/detail/{teacher_id}")
     async def get_detail(teacher_id: int):
         """获取单条数据详情"""
-        data = manager.get_by_teacher_id(teacher_id)
-        if not data:
-            raise HTTPException(status_code=404, detail="数据不存在")
-        
-        return {
-            "status": "success",
-            "data": data
-        }
+        try:
+            data = manager.get_by_teacher_id(teacher_id)
+            if not data:
+                # 返回空数据而不是404错误，让前端知道数据不存在但API调用成功
+                return {
+                    "status": "success",
+                    "data": {},
+                    "message": "数据不存在，请先汇集数据"
+                }
+            
+            return {
+                "status": "success",
+                "data": data
+            }
+        except Exception as e:
+            print(f"获取详情失败: {e}")
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail=f"获取详情失败: {str(e)}")
     
     # 更新
     @router.put("/update/{teacher_id}")

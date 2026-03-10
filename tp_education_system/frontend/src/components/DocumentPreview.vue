@@ -56,7 +56,7 @@ import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 
 const props = defineProps<{
-  templateId: number
+  templateId: string
   templateName: string
   teacherId: number
   teacherName: string

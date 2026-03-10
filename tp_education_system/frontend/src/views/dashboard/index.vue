@@ -181,24 +181,39 @@
             <div v-else-if="rawTodoList.length === 0" class="empty-wrapper">
               <el-empty description="暂无待办工作" :image-size="80" />
             </div>
-            <el-table v-else :data="todoList" style="width: 100%">
-              <el-table-column prop="title" label="任务名称" min-width="250" />
+            <el-table v-else :data="todoList" style="width: 100%" :row-class-name="rowClassName">
+              <el-table-column prop="title" label="任务名称" min-width="250">
+                <template #default="{ row }">
+                  <span :class="{ 'gray-text': row.isGray }">{{ row.title }}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="type" label="类型" width="120">
                 <template #default="{ row }">
-                  <el-tag type="warning">{{ row.type }}</el-tag>
+                  <el-tag :type="row.isGray ? 'info' : 'warning'">{{ row.type }}</el-tag>
                 </template>
               </el-table-column>
               <el-table-column prop="status" label="状态" width="100">
                 <template #default="{ row }">
-                  <el-tag :type="row.status === 'pending' ? 'danger' : 'success'">
-                    {{ row.status === 'pending' ? '待处理' : '已完成' }}
+                  <el-tag :type="row.isGray ? 'info' : (row.status === 'pending' ? 'danger' : 'success')">
+                    {{ row.isGray ? '已完成' : (row.status === 'pending' ? '待处理' : '处理中') }}
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column prop="time" label="创建时间" width="120" />
+              <el-table-column prop="time" label="时间" width="120">
+                <template #default="{ row }">
+                  <span :class="{ 'gray-text': row.isGray }">{{ row.time }}</span>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" width="100" fixed="right">
                 <template #default="{ row }">
-                  <el-button type="primary" size="small" @click="handleTodo(row)">处理</el-button>
+                  <el-button 
+                    :type="row.isGray ? 'info' : 'primary'" 
+                    size="small" 
+                    @click="handleTodo(row)"
+                    :disabled="row.isGray"
+                  >
+                    {{ row.isGray ? '已完成' : '处理' }}
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -230,6 +245,7 @@
       v-model="drawerVisible"
       :todo-data="selectedTodo"
       @close="drawerVisible = false"
+      @status-changed="handleStatusChanged"
     />
   </div>
 </template>
@@ -271,20 +287,64 @@ const selectedTodo = ref<any>(null)
 // 原始待办数据
 const rawTodoList = ref<any[]>([])
 
-// 计算属性：待办工作列表（显示所有）
+// 计算属性：待办工作列表
+// 1. 完成度100%的显示灰色字体
+// 2. 已完成的排在未完成后面
+// 3. 已完成的按完成日期排序
 const todoList = computed(() => {
   console.log('rawTodoList:', rawTodoList.value)
-  const mapped = rawTodoList.value
-    .filter(todo => todo.status === 'pending')
-    .map(todo => ({
-      id: todo.id,
-      teacher_id: todo.teacher_id,
-      teacher_name: todo.teacher_name,
-      title: `新增${todo.teacher_name}退休业务清单（共${todo.total_tasks}项，已完成${todo.completed_tasks}项）`,
-      type: `${todo.teacher_name}退休呈报`,
-      time: formatDate(todo.created_at),
-      status: todo.status
-    }))
+  
+  // 计算每个待办的完成度
+  const todosWithProgress = rawTodoList.value.map(todo => {
+    const progress = todo.total_tasks > 0 ? Math.round((todo.completed_tasks / todo.total_tasks) * 100) : 0
+    return {
+      ...todo,
+      progress,
+      isFullyCompleted: progress >= 100
+    }
+  })
+  
+  // 分离未完成和已完成的待办
+  const pendingTodos = todosWithProgress.filter(todo => !todo.isFullyCompleted)
+  const completedTodos = todosWithProgress.filter(todo => todo.isFullyCompleted)
+  
+  // 已完成的按完成日期排序（如果有completed_at字段，否则按created_at排序）
+  completedTodos.sort((a, b) => {
+    const dateA = new Date(a.completed_at || a.updated_at || a.created_at)
+    const dateB = new Date(b.completed_at || b.updated_at || b.created_at)
+    return dateB.getTime() - dateA.getTime() // 降序，最新的在前
+  })
+  
+  // 映射未完成的待办
+  const pendingMapped = pendingTodos.map(todo => ({
+    id: todo.id,
+    teacher_id: todo.teacher_id,
+    teacher_name: todo.teacher_name,
+    title: `新增${todo.teacher_name}退休业务清单（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，${todo.progress}%）`,
+    type: `${todo.teacher_name}退休呈报`,
+    time: formatDate(todo.created_at),
+    status: todo.status,
+    isCompleted: false,
+    isGray: false,
+    progress: todo.progress
+  }))
+  
+  // 映射已完成的待办（显示灰色）
+  const completedMapped = completedTodos.map(todo => ({
+    id: todo.id,
+    teacher_id: todo.teacher_id,
+    teacher_name: todo.teacher_name,
+    title: `✓ ${todo.teacher_name}退休业务清单（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，100%）`,
+    type: `${todo.teacher_name}退休呈报 - 已完成`,
+    time: formatDate(todo.completed_at || todo.updated_at || todo.created_at),
+    status: todo.status,
+    isCompleted: true,
+    isGray: true,
+    progress: 100
+  }))
+  
+  // 合并：未完成的在前，已完成的在后
+  const mapped = [...pendingMapped, ...completedMapped]
   console.log('mapped todoList:', mapped)
   return mapped
 })
@@ -298,6 +358,11 @@ const formatDate = (dateStr: string): string => {
     month: '2-digit',
     day: '2-digit'
   })
+}
+
+// 表格行样式类名
+const rowClassName = ({ row }: { row: any }) => {
+  return row.isGray ? 'completed-row' : ''
 }
 
 // 加载待办列表
@@ -334,6 +399,19 @@ const handleTodo = (row: any) => {
     // 直接传递完整的原始数据，与PushedChecklistView保持一致
     selectedTodo.value = originalTodo
     drawerVisible.value = true
+  }
+}
+
+// 处理状态变更 - 只更新当前待办的数据，不刷新整个列表
+const handleStatusChanged = (data: { todoId: number, completedCount: number, totalCount: number, status: string }) => {
+  console.log('状态变更:', data)
+  
+  // 在 rawTodoList 中找到对应的待办并更新
+  const todoIndex = rawTodoList.value.findIndex(todo => todo.id === data.todoId)
+  if (todoIndex !== -1) {
+    rawTodoList.value[todoIndex].completed_tasks = data.completedCount
+    rawTodoList.value[todoIndex].status = data.status
+    console.log('已更新待办数据:', rawTodoList.value[todoIndex])
   }
 }
 
@@ -616,6 +694,19 @@ const educationStructureOption = {
 
 .empty-wrapper {
   padding: 40px 0;
+}
+
+/* 已完成任务的灰色样式 */
+.gray-text {
+  color: #909399 !important;
+}
+
+:deep(.completed-row) {
+  background-color: #f5f7fa !important;
+}
+
+:deep(.completed-row:hover) {
+  background-color: #e4e7ed !important;
 }
 
 /* 响应式设计 */

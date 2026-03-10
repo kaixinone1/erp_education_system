@@ -26,6 +26,32 @@
           "api_endpoint": "/api/admin/tables"
         },
         {
+          "id": "system-data-migration",
+          "title": "数据迁移工具",
+          "icon": "Switch",
+          "path": "/system/data-migration",
+          "type": "component",
+          "component": "DataMigration"
+        },
+        {
+          "id": "system-tag-relations",
+          "title": "标签关系管理",
+          "icon": "Connection",
+          "path": "/system/tag-relations",
+          "type": "component",
+          "component": "GenericData",
+          "api_endpoint": "/api/data/employee_tag_relations",
+          "table_name": "employee_tag_relations"
+        },
+        {
+          "id": "system-universal-template",
+          "title": "通用模板管理",
+          "icon": "Document",
+          "path": "/system/universal-template",
+          "type": "component",
+          "component": "UniversalTemplate"
+        },
+        {
           "id": "system-dictionaries",
           "title": "字典管理",
           "icon": "Folder",
@@ -67,6 +93,54 @@
               "api_endpoint": "/api/data/dict_dictionary",
               "table_name": "dict_dictionary",
               "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_personal_identity_dictionary",
+              "title": "个人身份字典",
+              "name": "个人身份字典",
+              "icon": "Document",
+              "path": "/data/dict_personal_identity_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_personal_identity_dictionary",
+              "table_name": "dict_personal_identity_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_unit_dictionary",
+              "title": "单位名称字典",
+              "name": "单位名称字典",
+              "icon": "Document",
+              "path": "/data/dict_unit_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_unit_dictionary",
+              "table_name": "dict_unit_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-personal_dict_dictionary",
+              "title": "标签字典",
+              "name": "标签字典",
+              "icon": "Document",
+              "path": "/data/personal_dict_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/personal_dict_dictionary",
+              "table_name": "personal_dict_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-id_card",
+              "title": "身份证属性",
+              "name": "身份证属性",
+              "icon": "Document",
+              "path": "/data/id_card",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/id_card",
+              "table_name": "id_card",
+              "table_type": "child"
             }
           ]
         },
@@ -100,6 +174,14 @@
               "table_type": "master"
             }
           ]
+        },
+        {
+          "id": "system-intermediate-table",
+          "title": "中间表管理",
+          "icon": "Grid",
+          "path": "/system/intermediate-table",
+          "type": "component",
+          "component": "IntermediateTableManager"
         }
       ]
     },
@@ -181,6 +263,30 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/teacher_education_record",
               "table_name": "teacher_education_record",
+              "table_type": "master"
+            },
+            {
+              "id": "table-teacher_personal_identity",
+              "title": "教师个人身份",
+              "name": "教师个人身份",
+              "icon": "Document",
+              "path": "/data/teacher_personal_identity",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_personal_identity",
+              "table_name": "teacher_personal_identity",
+              "table_type": "master"
+            },
+            {
+              "id": "table-teacher_unit",
+              "title": "教师所在单位",
+              "name": "教师所在单位",
+              "icon": "Document",
+              "path": "/data/teacher_unit",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_unit",
+              "table_name": "teacher_unit",
               "table_type": "master"
             }
           ]

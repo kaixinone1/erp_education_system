@@ -76,6 +76,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
   (e: 'close'): void
+  (e: 'status-changed', data: { todoId: number, completedCount: number, totalCount: number, status: string }): void
 }>()
 
 // 可见性
@@ -142,20 +143,47 @@ const handleTaskComplete = async (index: number, completed: boolean) => {
     })
     if (!response.ok) throw new Error('更新失败')
     ElMessage.success(completed ? '任务已完成' : '任务已取消')
+    
+    // 计算当前完成数量
+    const currentCompletedCount = taskItems.value.filter(t => t.完成状态).length
+    const currentStatus = currentCompletedCount >= totalCount.value ? 'completed' : 'pending'
+    
+    // 触发状态变更事件，传递更新后的数据
+    emit('status-changed', {
+      todoId: props.todoData?.id,
+      completedCount: currentCompletedCount,
+      totalCount: totalCount.value,
+      status: currentStatus
+    })
   } catch (error) {
     ElMessage.error('状态更新失败')
     taskItems.value[index].完成状态 = !completed
   }
 }
 
-// 处理填报 - 直接使用 task 中的 template_id
+// 处理填报 - 支持通用模板
 const handleFill = (task: any) => {
-  const teacherId = props.todoData?.teacher_id
+  // 确保 teacherId 是数字类型
+  const teacherIdRaw = props.todoData?.teacher_id
+  const teacherId = typeof teacherIdRaw === 'string' ? parseInt(teacherIdRaw) : teacherIdRaw
+  
   const tableName = task.目标
   const taskParams = task.参数 || {}
   
   // 直接从任务参数获取 template_id
   const templateId = taskParams.template_id
+  const templateType = taskParams.template_type || 'old'  // 'old' 或 'universal'
+  
+  console.log('【ChecklistDrawer】填报参数:', {
+    teacherIdRaw,
+    teacherId,
+    teacherIdType: typeof teacherId,
+    tableName,
+    templateId,
+    templateType,
+    todoData: props.todoData,
+    task: task
+  })
   
   if (!templateId) {
     ElMessage.error('任务未配置模板ID')
@@ -167,15 +195,27 @@ const handleFill = (task: any) => {
     return
   }
   
-  // 跳转到报表页面
-  const encodedTemplateId = encodeURIComponent(templateId)
-  router.push({
-    path: `/report-view/${encodedTemplateId}/${teacherId}`,
-    query: { 
-      mode: 'fill',
-      table: tableName 
-    }
-  })
+  // 根据模板类型跳转到不同页面
+  if (templateType === 'universal') {
+    // 通用模板 - 跳转到通用模板导出页面
+    const encodedTemplateId = encodeURIComponent(templateId)
+    router.push({
+      path: `/universal-report/${encodedTemplateId}/${teacherId}`,
+      query: { 
+        teacher_name: props.todoData?.teacher_name || ''
+      }
+    })
+  } else {
+    // 旧模板 - 跳转到报表页面
+    const encodedTemplateId = encodeURIComponent(templateId)
+    router.push({
+      path: `/report-view/${encodedTemplateId}/${teacherId}`,
+      query: { 
+        mode: 'fill',
+        table: tableName 
+      }
+    })
+  }
   
   visible.value = false
 }

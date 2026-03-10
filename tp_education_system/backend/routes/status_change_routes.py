@@ -54,6 +54,7 @@ async def process_status_change(data: Dict[str, Any]):
         """, (target_status, teacher_id))
         
         # 如果状态变更为退休，自动汇集退休呈报表数据
+        data_collection_error = None
         if target_status == '退休':
             try:
                 # 查询教师基础信息
@@ -67,6 +68,9 @@ async def process_status_change(data: Dict[str, Any]):
                 
                 teacher_row = cursor.fetchone()
                 if teacher_row:
+                    # 获取身份证号
+                    id_card = teacher_row[2]  # id_card
+                    
                     # 查询最高学历信息（通过 teacher_id 关联）
                     cursor.execute("""
                         SELECT education, graduate_date, graduate_school, major
@@ -78,11 +82,11 @@ async def process_status_change(data: Dict[str, Any]):
                     
                     education_row = cursor.fetchone()
                     
-                    # 处理数据（id_card已经在上面获取）
+                    # 处理数据
                     
                     # 出生日期：优先使用档案出生日期，否则从身份证提取
                     birth_date = teacher_row[3]  # archive_birth_date
-                    if not birth_date and len(id_card) == 18:
+                    if not birth_date and id_card and len(id_card) == 18:
                         try:
                             birth_date = f"{id_card[6:10]}-{id_card[10:12]}-{id_card[12:14]}"
                         except:
@@ -90,7 +94,7 @@ async def process_status_change(data: Dict[str, Any]):
                     
                     # 从身份证号提取性别
                     gender = None
-                    if len(id_card) == 18:
+                    if id_card and len(id_card) == 18:
                         try:
                             gender_code = int(id_card[16])
                             gender = "男" if gender_code % 2 == 1 else "女"
@@ -236,9 +240,11 @@ async def process_status_change(data: Dict[str, Any]):
                     
                     print(f"已自动汇集退休呈报表数据: 教师ID={teacher_id}, 姓名={teacher_row[1]}")
             except Exception as e:
-                print(f"自动汇集退休呈报表数据失败: {e}")
+                error_msg = f"自动汇集退休呈报表数据失败: {str(e)}"
+                print(error_msg)
                 import traceback
                 traceback.print_exc()
+                data_collection_error = error_msg
                 # 不影响主流程，继续执行
         
         # 根据目标状态查找匹配的清单模板并创建待办
@@ -306,11 +312,21 @@ async def process_status_change(data: Dict[str, Any]):
             
             # 检查是否已存在该待办
             cursor.execute("""
-                SELECT id FROM todo_work_items
+                SELECT id FROM todo_work
                 WHERE 教师ID = %s AND 清单ID = %s AND 状态 = 'pending'
             """, (teacher_id, checklist_id))
             
             if not cursor.fetchone():
+                # 判断模板类型（检查是否是通用模板）
+                template_type = 'old'
+                if associated_template_id:
+                    cursor.execute("""
+                        SELECT 1 FROM universal_templates WHERE template_id = %s
+                    """, (associated_template_id,))
+                    if cursor.fetchone():
+                        template_type = 'universal'
+                        print(f"【状态变更】检测到通用模板: {associated_template_id}")
+                
                 # 处理任务项，添加关联模板ID到任务参数
                 processed_task_items = []
                 for task in task_items:
@@ -320,12 +336,13 @@ async def process_status_change(data: Dict[str, Any]):
                     # 如果清单模板有关联模板ID，且任务没有指定模板ID，则使用清单的模板ID
                     if associated_template_id and not processed_task['参数'].get('template_id'):
                         processed_task['参数']['template_id'] = associated_template_id
+                        processed_task['参数']['template_type'] = template_type
                     processed_task_items.append(processed_task)
                 
                 # 创建待办工作
                 total_tasks = len(processed_task_items)
                 cursor.execute("""
-                    INSERT INTO todo_work_items 
+                    INSERT INTO todo_work 
                     (教师ID, 清单ID, 清单名称, 教师姓名, 任务项列表, 总任务数, 已完成数, 状态)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
@@ -351,13 +368,22 @@ async def process_status_change(data: Dict[str, Any]):
         cursor.close()
         conn.close()
         
-        return {
+        # 构建响应
+        response_data = {
             "status": "success",
             "message": f"状态变更处理成功",
             "teacher_id": teacher_id,
             "new_status": target_status,
             "created_checklists": created_checklists
         }
+        
+        # 如果数据汇集有错误，添加警告信息
+        if data_collection_error:
+            response_data["status"] = "warning"
+            response_data["message"] = f"状态更新成功，但数据汇集失败: {data_collection_error}"
+            response_data["data_collection_error"] = data_collection_error
+        
+        return response_data
         
     except HTTPException:
         raise

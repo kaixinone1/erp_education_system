@@ -14,7 +14,7 @@
               <el-option
               v-for="table in tableList"
               :key="table.name"
-              :label="table.has_chinese_name ? `${table.chinese_name} (${table.name})` : table.name"
+              :label="table.has_chinese_name ? table.chinese_name : table.name"
               :value="table.name"
             />
             </el-select>
@@ -568,6 +568,11 @@ const handleTableChange = async () => {
 
 // 获取字段中文名称
 const getFieldChineseName = (row: any) => {
+  // 优先使用后端返回的 chinese_name
+  if (row.chinese_name && row.chinese_name !== row.name) {
+    return row.chinese_name
+  }
+  // 如果没有，尝试从配置中查找
   const config = tableInfo.value.config?.fields || []
   const fieldConfig = config.find((f: any) => f.name === row.name)
   return fieldConfig?.chinese_name || row.name

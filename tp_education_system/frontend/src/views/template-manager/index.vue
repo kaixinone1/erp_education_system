@@ -509,10 +509,10 @@ const editTemplate = (template: any) => {
 
 // 配置字段映射
 const configFieldMapping = (template: any) => {
-  // 使用数字id而不是template_id字符串
+  // 使用template_id字符串，不进行URL编码，让Vue Router自动处理
   console.log('跳转字段映射页面，模板对象:', template)
-  console.log('模板ID:', template.id)
-  router.push(`/template-field-mapping/${template.id}`)
+  console.log('模板ID:', template.template_id)
+  router.push(`/template-field-mapping/${template.template_id}`)
 }
 
 // 预览模板 - 使用统一的ReportView

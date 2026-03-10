@@ -121,6 +121,9 @@ async def save_config(data: Dict[str, Any]):
             raise HTTPException(status_code=400, detail="配置文件名称不能为空")
         
         # 准备配置数据
+        # 如果选择了覆盖模式，传入 ID 以便更新
+        overwrite = data.get("overwrite", False)
+        
         config_data = {
             'config_name': config_name,
             'table_name': table_name,
@@ -128,7 +131,8 @@ async def save_config(data: Dict[str, Any]):
             'parent_table': data.get("parent_table", ""),
             'source_file_pattern': data.get("source_file_pattern", f"*{config_name}*"),
             'field_mappings': data.get("field_configs", []),
-            'id': data.get("id")  # 如果有ID则更新，否则新建
+            'id': data.get("id") if not overwrite else None,  # 覆盖模式不传ID，强制新建
+            'overwrite': overwrite  # 传递覆盖标志
         }
         
         # 使用 FieldConfigManager 保存

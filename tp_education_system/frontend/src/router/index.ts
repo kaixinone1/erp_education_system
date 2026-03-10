@@ -36,6 +36,33 @@ const router = createRouter({
             title: "数据表管理",
             icon: "List"
           }
+        },
+        {
+          path: "data-migration",
+          name: "dataMigration",
+          component: () => import("../views/system/DataMigration.vue"),
+          meta: {
+            title: "数据迁移工具",
+            icon: "Switch"
+          }
+        },
+        {
+          path: "tag-relations",
+          name: "tagRelations",
+          component: () => import("../views/system/TagRelations.vue"),
+          meta: {
+            title: "标签关系管理",
+            icon: "Connection"
+          }
+        },
+        {
+          path: "universal-template",
+          name: "universalTemplate",
+          component: () => import("../views/system/UniversalTemplate.vue"),
+          meta: {
+            title: "通用模板管理",
+            icon: "Document"
+          }
         }
       ]
     },
@@ -119,6 +146,25 @@ const router = createRouter({
         icon: "Document"
       }
     },
+    // 通用模板报表查看路由
+    {
+      path: "/universal-report/:templateId/:teacherId?",
+      name: "universalReportView",
+      component: () => import("../views/report/UniversalReportView.vue"),
+      meta: {
+        title: "通用模板导出",
+        icon: "Document"
+      }
+    },
+    {
+      path: "/scheduled-templates",
+      name: "scheduledTemplates",
+      component: () => import("../views/report/ScheduledTemplateView.vue"),
+      meta: {
+        title: "固定时段任务",
+        icon: "Timer"
+      }
+    },
     // 清单管理子模块路由
     {
       path: "/system/checklist/pushed",
@@ -132,11 +178,19 @@ const router = createRouter({
     {
       path: "/system/checklist/templates",
       name: "checklistTemplates",
-      component: () => import("../views/data/GenericDataView.vue"),
+      component: () => import("../views/checklist/ChecklistTemplateView.vue"),
       meta: {
         title: "清单模板",
-        icon: "DocumentCopy",
-        tableName: "business_checklist"
+        icon: "DocumentCopy"
+      }
+    },
+    {
+      path: "/system/intermediate-table",
+      name: "intermediateTableManager",
+      component: () => import("../views/intermediate-table/IntermediateTableManager.vue"),
+      meta: {
+        title: "中间表管理",
+        icon: "Grid"
       }
     },
     // 报表管理子模块路由

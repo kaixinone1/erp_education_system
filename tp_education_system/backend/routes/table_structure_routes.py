@@ -110,6 +110,9 @@ async def get_all_tables():
 async def get_table_structure(table_name: str):
     """获取表结构详情"""
     try:
+        # 获取配置信息
+        config = read_json_file(SCHEMA_FILE)
+        
         with engine.connect() as conn:
             # 获取列信息
             result = conn.execute(text("""
@@ -126,9 +129,24 @@ async def get_table_structure(table_name: str):
             """), {"table_name": table_name})
             
             columns = []
+            # 获取配置中的字段中文名映射
+            table_config = config.get("tables", {}).get(table_name, {})
+            # 字段可能是数组格式
+            field_list = table_config.get("fields", [])
+            if isinstance(field_list, list):
+                # 从字段数组中查找中文名
+                field_name_map = {f.get("targetField"): f.get("sourceField") for f in field_list if f.get("targetField")}
+            else:
+                field_name_map = {}
+            
             for row in result:
+                col_name = row.column_name
+                # 查找字段中文名
+                chinese_name = field_name_map.get(col_name, col_name)
+                
                 columns.append({
-                    "name": row.column_name,
+                    "name": col_name,
+                    "chinese_name": chinese_name,
                     "data_type": row.data_type,
                     "is_nullable": row.is_nullable == "YES",
                     "max_length": row.character_maximum_length,
@@ -161,10 +179,6 @@ async def get_table_structure(table_name: str):
                     "name": row.indexname,
                     "definition": row.indexdef
                 })
-            
-            # 获取配置信息
-            config = read_json_file(SCHEMA_FILE)
-            table_config = config.get("tables", {}).get(table_name, {})
             
             return {
                 "table_name": table_name,

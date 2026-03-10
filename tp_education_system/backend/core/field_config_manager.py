@@ -138,13 +138,20 @@ class FieldConfigManager:
         global_mappings = data.get('global_mappings', {})
 
         # 检查配置名称是否重复（排除当前编辑的配置）
+        # 如果是覆盖模式，则跳过重复检查
+        overwrite = config_data.get('overwrite', False)
         existing_config = self.get_config_by_name(config_name)
-        if existing_config and existing_config.get('id') != config_data.get('id'):
-            return {
-                'success': False,
-                'message': f'配置名称 "{config_name}" 已存在',
-                'status': 'name_conflict'
-            }
+        
+        if existing_config:
+            # 如果是覆盖模式且找到了同名配置，获取其ID用于更新
+            if overwrite:
+                config_data['id'] = existing_config.get('id')
+            elif existing_config.get('id') != config_data.get('id'):
+                return {
+                    'success': False,
+                    'message': f'配置名称 "{config_name}" 已存在',
+                    'status': 'name_conflict'
+                }
 
         # 检查英文表名是否重复
         if table_name:

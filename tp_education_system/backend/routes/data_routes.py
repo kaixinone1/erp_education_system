@@ -14,6 +14,40 @@ engine = create_engine(DATABASE_URL)
 CONFIG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
 SCHEMA_FILE = os.path.join(CONFIG_DIR, 'merged_schema_mappings.json')
 
+
+def convert_chinese_to_english_fields(table_name: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    """将中文字段名转换为英文字段名"""
+    try:
+        with open(SCHEMA_FILE, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        
+        tables_config = config.get('tables', {})
+        table_config = tables_config.get(table_name, {})
+        fields_config = table_config.get('fields', [])
+        
+        # 构建中文到英文的映射
+        chinese_to_english = {}
+        for field in fields_config:
+            source = field.get('sourceField', '')  # 中文名
+            target = field.get('targetField', '')   # 英文名
+            if source and target:
+                chinese_to_english[source] = target
+        
+        # 转换数据
+        converted = {}
+        for key, value in data.items():
+            # 如果是中文字段名，转换为英文
+            if key in chinese_to_english:
+                converted[chinese_to_english[key]] = value
+            else:
+                # 保留原字段名
+                converted[key] = value
+        
+        return converted
+    except Exception as e:
+        print(f"字段名转换失败: {e}")
+        return data
+
 # 默认字典关联配置
 # 注意：只配置实际存在的字典表，code_field 必须是字典表的实际主键字段
 DEFAULT_DICT_MAPPINGS = {
@@ -604,12 +638,42 @@ async def export_data(data: Dict[str, Any]):
 async def create_record(table_name: str, data: Dict[str, Any]):
     """创建记录"""
     try:
-        # 这里应该插入实际的数据库
-        return {
-            "status": "success",
-            "message": "创建成功",
-            "id": 1
-        }
+        # 转换中文字段名为英文字段名
+        data = convert_chinese_to_english_fields(table_name, data)
+        
+        with engine.connect() as conn:
+            # 构建 INSERT 语句
+            columns = []
+            placeholders = []
+            params = {}
+            
+            for key, value in data.items():
+                columns.append(key)
+                placeholders.append(f":{key}")
+                params[key] = value
+            
+            if not columns:
+                return {
+                    "status": "success",
+                    "message": "没有数据",
+                    "id": None
+                }
+            
+            sql = f"""
+                INSERT INTO {table_name} ({', '.join(columns)})
+                VALUES ({', '.join(placeholders)})
+                RETURNING id
+            """
+            
+            result = conn.execute(text(sql), params)
+            new_id = result.fetchone()[0]
+            conn.commit()
+            
+            return {
+                "status": "success",
+                "message": "创建成功",
+                "id": new_id
+            }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"创建失败: {str(e)}")
 
@@ -618,6 +682,9 @@ async def create_record(table_name: str, data: Dict[str, Any]):
 async def update_record(table_name: str, record_id: int, data: Dict[str, Any]):
     """更新记录"""
     try:
+        # 转换中文字段名为英文字段名
+        data = convert_chinese_to_english_fields(table_name, data)
+        
         with engine.connect() as conn:
             # 构建 UPDATE 语句
             set_clauses = []

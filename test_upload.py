@@ -1,23 +1,33 @@
-#!/usr/bin/env python3
-"""测试上传API"""
 import requests
 
+# 测试上传接口
+url = 'http://localhost:8000/api/templates/upload'
+
+# 准备测试数据
+test_html = """
+<!DOCTYPE html>
+<html>
+<head><title>测试模板</title></head>
+<body>
+    <h1>姓名: {{姓名}}</h1>
+    <p>性别: {{性别}}</p>
+</body>
+</html>
+"""
+
+# 写入临时文件
+with open('test_template.htm', 'w', encoding='utf-8') as f:
+    f.write(test_html)
+
 # 测试上传
-url = "http://localhost:8000/api/templates/upload"
+with open('test_template.htm', 'rb') as f:
+    files = {'file': ('test_template.htm', f, 'text/html')}
+    data = {
+        'template_id': 'test_2026',
+        'template_name': '测试模板',
+        'description': '测试'
+    }
+    r = requests.post(url, data=data, files=files)
 
-# 准备表单数据
-files = {
-    'file': ('test.pdf', open(r'd:\erp_thirteen\tp_education_system\backend\templates\职工退休申报表.pdf', 'rb'), 'application/pdf')
-}
-data = {
-    'template_id': 'test_template_001',
-    'template_name': '测试模板',
-    'description': '测试上传'
-}
-
-try:
-    response = requests.post(url, files=files, data=data)
-    print(f"状态码: {response.status_code}")
-    print(f"响应: {response.json()}")
-except Exception as e:
-    print(f"错误: {e}")
+print(f"Status: {r.status_code}")
+print(f"Response: {r.text}")

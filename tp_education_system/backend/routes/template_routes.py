@@ -96,14 +96,22 @@ async def upload_template(
 
         # 插入字段映射
         for idx, field in enumerate(fields):
+            # 清理字段名称，移除空字符
+            field_name = field.get('name', f'field_{idx}')
+            field_label = field.get('label', f'字段{idx+1}')
+            if isinstance(field_name, str):
+                field_name = field_name.replace('\x00', '').strip()
+            if isinstance(field_label, str):
+                field_label = field_label.replace('\x00', '').strip()
+            
             cursor.execute("""
                 INSERT INTO template_field_mappings 
                 (template_id, field_name, field_label, field_type, position_type, position_data, default_value, data_source, sort_order, created_at)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 template_id,
-                field.get('name', f'field_{idx}'),
-                field.get('label', f'字段{idx+1}'),
+                field_name,
+                field_label,
                 field.get('field_type', 'text'),
                 'coordinate',
                 json.dumps(field.get('position_data', {})),
@@ -112,6 +120,78 @@ async def upload_template(
                 idx,
                 datetime.now()
             ))
+
+        # 使用新的模板分析器分析页面设置和占位符
+        try:
+            import sys
+            sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from services.template_analyzer import TemplateAnalyzer
+            
+            # 分析模板
+            template_info = TemplateAnalyzer.analyze(file_path, template_id)
+            
+            # 删除旧的页面设置
+            cursor.execute("""
+                DELETE FROM template_page_settings WHERE template_id = %s
+            """, (template_id,))
+            
+            # 插入新的页面设置
+            cursor.execute("""
+                INSERT INTO template_page_settings 
+                (template_id, paper_size, orientation, width_cm, height_cm, 
+                 margin_left_cm, margin_right_cm, margin_top_cm, margin_bottom_cm, 
+                 created_at, updated_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                template_id,
+                template_info.page_settings.paper_size,
+                template_info.page_settings.orientation,
+                template_info.page_settings.width_cm,
+                template_info.page_settings.height_cm,
+                template_info.page_settings.margin_left_cm,
+                template_info.page_settings.margin_right_cm,
+                template_info.page_settings.margin_top_cm,
+                template_info.page_settings.margin_bottom_cm,
+                datetime.now(),
+                datetime.now()
+            ))
+            
+            # 删除旧的占位符
+            cursor.execute("""
+                DELETE FROM template_placeholders WHERE template_id = %s
+            """, (template_id,))
+            
+            # 插入新的占位符
+            for ph in template_info.placeholders:
+                cursor.execute("""
+                    INSERT INTO template_placeholders 
+                    (template_id, placeholder_name, format_type, 
+                     table_index, row_index, cell_index, 
+                     page_num, x_pos, y_pos, css_selector,
+                     created_at, updated_at)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    template_id,
+                    ph.name,
+                    ph.format_type,
+                    ph.table_index,
+                    ph.row_index,
+                    ph.cell_index,
+                    ph.page_num,
+                    ph.x_pos,
+                    ph.y_pos,
+                    ph.css_selector,
+                    datetime.now(),
+                    datetime.now()
+                ))
+            
+            print(f"✓ 模板 {template_id} 分析完成: {template_info.page_settings.paper_size} {template_info.page_settings.orientation}, {len(template_info.placeholders)}个占位符")
+            
+        except Exception as e:
+            print(f"模板分析失败: {e}")
+            import traceback
+            traceback.print_exc()
+            # 不影响主流程
 
         conn.commit()
         cursor.close()
@@ -612,6 +692,396 @@ async def extract_template_fields(template_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"字段提取失败: {str(e)}")
+
+
+@router.post("/{template_id}/export-excel")
+async def export_excel(template_id: str, data: Dict[str, Any]):
+    """
+    导出报表为Excel格式
+    使用新的模板导出器，100%保留原始格式
+    """
+    try:
+        import sys
+        import asyncio
+        import tempfile
+        from concurrent.futures import ThreadPoolExecutor
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from services.template_exporter import ExcelExporter
+        
+        # 获取模板文件路径
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT file_path, file_name FROM document_templates WHERE template_id = %s
+        """, (template_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="模板不存在")
+        
+        template_path, file_name = row
+        
+        if not os.path.exists(template_path):
+            raise HTTPException(status_code=404, detail="模板文件不存在")
+        
+        # 获取填充数据
+        fill_data = data.get('data', {})
+        teacher_id = data.get('teacher_id', '')
+        
+        # 生成输出文件路径
+        output_filename = f"{template_id}_{teacher_id}_已填充.xlsx"
+        output_path = os.path.join(tempfile.gettempdir(), output_filename)
+        
+        # 使用线程池运行同步的Excel导出
+        def export_excel_sync():
+            return ExcelExporter.export(template_path, output_path, fill_data)
+        
+        loop = asyncio.get_event_loop()
+        with ThreadPoolExecutor() as pool:
+            result_path = await loop.run_in_executor(pool, export_excel_sync)
+        
+        if not result_path or not os.path.exists(result_path):
+            raise HTTPException(status_code=500, detail="Excel生成失败")
+        
+        # 返回Excel文件
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            result_path,
+            filename=f"{template_id}_{teacher_id}_已填充.xlsx",
+            media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"Excel导出错误: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"导出Excel失败: {str(e)}")
+
+
+@router.post("/{template_id}/export-pdf")
+async def export_filled_pdf(template_id: str, data: Dict[str, Any]):
+    """
+    导出填充后的PDF文件
+    使用新的模板导出器，100%保留原始格式
+    """
+    try:
+        import sys
+        import asyncio
+        import tempfile
+        from concurrent.futures import ThreadPoolExecutor
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from services.template_exporter import PDFExporter
+        
+        # 获取模板文件路径
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT file_path, file_name FROM document_templates WHERE template_id = %s
+        """, (template_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="模板不存在")
+        
+        template_path, file_name = row
+        
+        if not os.path.exists(template_path):
+            raise HTTPException(status_code=404, detail="模板文件不存在")
+        
+        # 获取填充数据
+        fill_data = data.get('data', {})
+        teacher_id = data.get('teacher_id', '')
+        
+        # 生成输出文件路径
+        output_filename = f"{template_id}_{teacher_id}_已填充.pdf"
+        output_path = os.path.join(tempfile.gettempdir(), output_filename)
+        
+        # 使用线程池运行同步的PDF导出
+        def export_pdf_sync():
+            return PDFExporter.export(template_path, output_path, fill_data)
+        
+        loop = asyncio.get_event_loop()
+        with ThreadPoolExecutor() as pool:
+            result_path = await loop.run_in_executor(pool, export_pdf_sync)
+        
+        if not result_path or not os.path.exists(result_path):
+            raise HTTPException(status_code=500, detail="PDF生成失败")
+        
+        # 返回生成的PDF文件
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            result_path,
+            filename=f"{template_id}_{teacher_id}_已填充.pdf",
+            media_type='application/pdf'
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"PDF导出错误: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"导出PDF失败: {str(e)}")
+
+
+@router.post("/{template_id}/export-word")
+async def export_filled_word(template_id: str, data: Dict[str, Any]):
+    """
+    导出填充后的Word文件
+    根据当前template_id查找对应的Word模板进行导出
+    """
+    print(f"【Word导出】开始导出: template_id={template_id}")
+    try:
+        import tempfile
+        import os
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 1. 首先尝试直接用template_id查找Word模板
+        cursor.execute("SELECT file_path, file_name FROM document_templates WHERE template_id = %s", (template_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="模板不存在")
+        
+        template_path = row[0]
+        
+        # 2. 如果当前模板不是Word格式，查找对应的Word模板
+        word_template_path = None
+        if not template_path.lower().endswith('.docx'):
+            # 提取基础名称
+            base_name = os.path.basename(template_path)
+            # 去掉最后的 .html 或 .htm 后缀
+            if base_name.lower().endswith('.html'):
+                clean_name = base_name[:-5]
+            elif base_name.lower().endswith('.htm'):
+                clean_name = base_name[:-4]
+            else:
+                clean_name = base_name
+            
+            print(f"base_name={base_name}, clean_name={clean_name}")
+            
+            word_template_path = None
+            
+            # 方式1: 从数据库查询该模板对应的Word模板
+            cursor.execute("""
+                SELECT file_path FROM document_templates 
+                WHERE template_id = %s
+                LIMIT 1
+            """, (clean_name,))
+            word_row = cursor.fetchone()
+            
+            if not word_row or not word_row[0]:
+                # 方式2: 查找文件名包含clean_name的.docx模板
+                cursor.execute("""
+                    SELECT file_path FROM document_templates 
+                    WHERE file_path LIKE %s AND file_path LIKE %s
+                    LIMIT 1
+                """, (f"%{clean_name}%", "%.docx%"))
+                word_row = cursor.fetchone()
+            
+            if word_row and word_row[0] and os.path.exists(word_row[0]):
+                word_template_path = word_row[0]
+                print(f"从数据库找到Word模板: {word_template_path}")
+            
+            # 方式3: 如果数据库中没有，去templates目录扫描所有.docx文件
+            if not word_template_path:
+                templates_dir = os.path.dirname(template_path)
+                print(f"在目录中扫描Word模板: {templates_dir}")
+                if os.path.exists(templates_dir):
+                    for f in os.listdir(templates_dir):
+                        if f.lower().endswith('.docx'):
+                            # 检查文件名是否与当前模板相关
+                            if clean_name in f or f.replace('.docx', '') in base_name:
+                                word_template_path = os.path.join(templates_dir, f)
+                                print(f"从目录扫描找到Word模板: {word_template_path}")
+                                break
+            
+            if not word_template_path:
+                cursor.close()
+                conn.close()
+                raise HTTPException(status_code=404, detail=f"未找到模板 '{template_id}' 对应的Word模板，请在模板管理中上传Word模板")
+            
+            template_path = word_template_path
+        
+        cursor.close()
+        conn.close()
+        
+        # 验证模板文件存在且是Word格式
+        if not template_path or not os.path.exists(template_path):
+            raise HTTPException(status_code=404, detail=f"模板文件不存在: {template_path}")
+        
+        if not template_path.lower().endswith('.docx'):
+            raise HTTPException(status_code=400, detail=f"模板不是Word格式 (.docx)，无法导出。请上传Word模板。当前模板: {template_path}")
+        
+        # 获取填充数据
+        fill_data = data.get('data', {})
+        teacher_id = data.get('teacher_id', '')
+        
+        # 生成输出文件路径
+        output_path = os.path.join(tempfile.gettempdir(), f"{template_id}_{teacher_id}_已填充.docx")
+        
+        # 导出Word
+        from services.universal_word_exporter import export_word as universal_export_word
+        result_path = universal_export_word(template_path, output_path, fill_data)
+        
+        # 返回生成的Word文件
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            result_path,
+            filename=f"{os.path.basename(template_path).replace('.docx', '')}_{teacher_id}_已填充.docx",
+            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"Word导出错误: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"导出Word失败: {str(e)}")
+
+
+@router.get("/{template_id}/download")
+async def download_template_file(template_id: str):
+    """
+    下载原始模板文件（PDF格式）
+    用于直接打印
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT file_path, file_name, template_name 
+            FROM document_templates 
+            WHERE template_id = %s
+        """, (template_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if not row:
+            raise HTTPException(status_code=404, detail="模板不存在")
+
+        file_path, file_name, template_name = row
+        
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail="文件不存在")
+
+        # 返回文件
+        from fastapi.responses import FileResponse
+        return FileResponse(
+            file_path, 
+            filename=file_name or f"{template_id}.pdf",
+            media_type='application/pdf'
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"下载文件失败: {str(e)}")
+
+
+@router.get("/{template_id}/page-info")
+async def get_template_page_info(template_id: str, page: int = Query(1, description="页码")):
+    """
+    获取模板页面信息（尺寸、方向等）
+    优先从数据库读取，如果不存在则实时检测
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 1. 优先从数据库读取页面设置
+        cursor.execute("""
+            SELECT page_width, page_height, is_landscape, paper_size
+            FROM template_page_settings
+            WHERE template_id = %s
+        """, (template_id,))
+        
+        settings_row = cursor.fetchone()
+        
+        if settings_row:
+            # 使用数据库中保存的设置
+            cursor.close()
+            conn.close()
+            
+            return {
+                "status": "success",
+                "page_width": float(settings_row[0]),
+                "page_height": float(settings_row[1]),
+                "is_landscape": settings_row[2],
+                "paper_size": settings_row[3],
+                "source": "database"
+            }
+        
+        # 2. 数据库中没有，实时检测（兼容旧模板）
+        import sys
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from services.a3_region_detector import A3RegionDetector
+
+        cursor.execute("""
+            SELECT file_path FROM document_templates WHERE template_id = %s
+        """, (template_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            cursor.close()
+            conn.close()
+            raise HTTPException(status_code=404, detail="模板不存在")
+
+        file_path = row[0]
+        if not os.path.exists(file_path):
+            cursor.close()
+            conn.close()
+            raise HTTPException(status_code=404, detail="文件不存在")
+
+        # 检测页面信息
+        detector = A3RegionDetector(file_path)
+        preview_data = detector.get_region_preview_data(page_num=page)
+
+        if preview_data:
+            page_width = preview_data["page_width"]
+            page_height = preview_data["page_height"]
+            is_landscape = page_width > page_height
+            paper_size = 'A3' if (page_width > 600 or page_height > 900) else 'A4'
+            
+            cursor.close()
+            conn.close()
+            
+            return {
+                "status": "success",
+                "page_width": page_width,
+                "page_height": page_height,
+                "is_landscape": is_landscape,
+                "paper_size": paper_size,
+                "source": "detected"
+            }
+        else:
+            cursor.close()
+            conn.close()
+            
+            # 普通A4格式，使用默认尺寸
+            return {
+                "status": "success",
+                "page_width": 595,
+                "page_height": 842,
+                "is_landscape": False,
+                "paper_size": 'A4',
+                "source": "default"
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取页面信息失败: {str(e)}")
 
 
 @router.post("/{template_id}/html-fields")

@@ -12,52 +12,57 @@
       </template>
 
       <div class="mapping-content">
-        <!-- 选择中间表 -->
-        <div class="section">
-          <h3>1. 选择数据来源（中间表）</h3>
-          <el-select 
-            v-model="selectedTable" 
-            placeholder="请选择中间表"
-            @change="handleTableChange"
-            style="width: 300px"
-          >
-            <el-option
-              v-for="table in intermediateTables"
-              :key="table.name"
-              :label="table.name_cn"
-              :value="table.name"
-            />
-          </el-select>
-        </div>
+        <!-- 说明 -->
+        <el-alert
+          title="每个模板占位符都可以从不同的数据源表获取数据，可使用聚合函数和过滤条件进行统计"
+          type="info"
+          :closable="false"
+          style="margin-bottom: 20px"
+        />
 
-        <!-- 字段映射 -->
-        <div class="section" v-if="selectedTable">
-          <h3>2. 配置字段映射</h3>
-          <p class="tip">请将模板占位符与中间表字段进行匹配</p>
+        <!-- 字段映射表格 -->
+        <div class="section">
+          <h3>配置字段映射</h3>
+          <p class="tip">请为每个模板占位符配置数据源表、字段、聚合函数和过滤条件。示例：统计副处级人数 → 数据源表:教师基础信息, 字段:id, 聚合函数:COUNT, 过滤条件:行政级别='副处级'</p>
           
           <el-table :data="mappingList" border style="width: 100%">
-            <el-table-column prop="placeholder" label="模板占位符" width="200">
+            <el-table-column prop="placeholder" label="模板占位符" width="140">
               <template #default="{ row }">
                 <el-tag type="primary">{{ row.placeholder }}</el-tag>
               </template>
             </el-table-column>
             
-            <el-table-column label="映射关系" width="100" align="center">
-              <template #default>
-                <el-icon><ArrowRight /></el-icon>
+            <el-table-column label="数据源表" min-width="160">
+              <template #default="{ row }">
+                <el-select 
+                  v-model="row.selectedTable" 
+                  placeholder="选择数据源表"
+                  style="width: 100%"
+                  clearable
+                  @change="(val) => handleRowTableChange(row, val)"
+                >
+                  <el-option
+                    v-for="table in sourceTables"
+                    :key="table.name"
+                    :label="table.name_cn"
+                    :value="table.name"
+                  />
+                </el-select>
               </template>
             </el-table-column>
             
-            <el-table-column label="中间表字段" min-width="300">
-              <template #default="{ row, $index }">
+            <el-table-column label="字段" min-width="130">
+              <template #default="{ row }">
                 <el-select 
                   v-model="row.selectedField" 
-                  placeholder="请选择字段"
+                  placeholder="选择字段"
                   style="width: 100%"
                   clearable
+                  :disabled="!row.selectedTable"
+                  @change="() => { row.aggregateFunc = ''; row.filterCondition = '' }"
                 >
                   <el-option
-                    v-for="field in tableFields"
+                    v-for="field in getFieldsForTable(row.selectedTable)"
                     :key="field.name"
                     :label="field.name_cn"
                     :value="field.name"
@@ -69,7 +74,60 @@
               </template>
             </el-table-column>
             
-            <el-table-column label="状态" width="100" align="center">
+            <el-table-column label="聚合函数" width="110">
+              <template #default="{ row }">
+                <el-select 
+                  v-model="row.aggregateFunc" 
+                  placeholder="无"
+                  style="width: 100%"
+                  clearable
+                  :disabled="!row.selectedField"
+                >
+                  <el-option label="计数 COUNT" value="COUNT" />
+                  <el-option label="求和 SUM" value="SUM" />
+                  <el-option label="最大值 MAX" value="MAX" />
+                  <el-option label="最小值 MIN" value="MIN" />
+                  <el-option label="平均值 AVG" value="AVG" />
+                </el-select>
+              </template>
+            </el-table-column>
+            
+            <el-table-column label="过滤条件" min-width="220">
+              <template #default="{ row }">
+                <div class="filter-condition-cell">
+                  <el-select
+                    v-model="row.selectedFilterTemplate"
+                    placeholder="选择预设条件"
+                    style="width: 100%; margin-bottom: 5px"
+                    clearable
+                    :disabled="!row.selectedField"
+                    @change="(val) => handleFilterTemplateChange(row, val)"
+                  >
+                    <el-option-group
+                      v-for="group in filterConditionGroups"
+                      :key="group.category"
+                      :label="group.category"
+                    >
+                      <el-option
+                        v-for="item in group.conditions"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.filter_condition"
+                      />
+                    </el-option-group>
+                  </el-select>
+                  <el-input
+                    v-model="row.filterCondition"
+                    placeholder="或自定义: 行政级别='副处级'"
+                    :disabled="!row.selectedField"
+                    clearable
+                    size="small"
+                  />
+                </div>
+              </template>
+            </el-table-column>
+            
+            <el-table-column label="状态" width="80" align="center">
               <template #default="{ row }">
                 <el-tag v-if="row.selectedField" type="success">已配置</el-tag>
                 <el-tag v-else type="warning">未配置</el-tag>
@@ -79,7 +137,7 @@
         </div>
 
         <!-- 统计信息 -->
-        <div class="section" v-if="selectedTable">
+        <div class="section">
           <el-alert
             :title="`已配置 ${configuredCount}/${mappingList.length} 个字段映射`"
             :type="configuredCount === mappingList.length ? 'success' : 'info'"
@@ -100,77 +158,130 @@ import { ArrowRight } from '@element-plus/icons-vue'
 const route = useRoute()
 const router = useRouter()
 
-// 模板信息
-const templateId = computed(() => Number(route.params.id))
+const templateId = computed(() => {
+  const id = route.params.id as string
+  try {
+    return decodeURIComponent(id)
+  } catch {
+    return id
+  }
+})
 const templateName = ref('')
 
-// 中间表列表
-const intermediateTables = ref<any[]>([])
-const selectedTable = ref('')
-const selectedTableCn = ref('')
+const sourceTables = ref<any[]>([])
+const tableFieldsMap = ref<Record<string, any[]>>({})
+const filterConditionGroups = ref<any[]>([])
 
-// 表字段列表
-const tableFields = ref<any[]>([])
-
-// 映射列表
 const mappingList = ref<any[]>([])
 
-// 保存状态
 const saving = ref(false)
 
-// 计算已配置的字段数
 const configuredCount = computed(() => {
   return mappingList.value.filter(m => m.selectedField).length
 })
 
-// 返回上一页
 const goBack = () => {
   router.back()
 }
 
-// 获取中间表列表
-const loadIntermediateTables = async () => {
+const loadSourceTables = async () => {
   try {
     const response = await fetch('/api/template-field-mapping/intermediate-tables')
     if (response.ok) {
       const result = await response.json()
-      intermediateTables.value = result.tables || []
+      sourceTables.value = result.tables || []
+      
+      for (const table of sourceTables.value) {
+        await loadTableFields(table.name)
+      }
     }
   } catch (error) {
-    console.error('加载中间表列表失败:', error)
-    ElMessage.error('加载中间表列表失败')
+    console.error('加载源数据表列表失败:', error)
+    ElMessage.error('加载源数据表列表失败')
   }
 }
 
-// 获取模板占位符
-const loadTemplatePlaceholders = async () => {
+const loadTableFields = async (tableName: string) => {
   try {
-    console.log('正在加载模板占位符，模板ID:', templateId.value)
-    console.log('路由参数id:', route.params.id)
-    const url = `/api/template-field-mapping/template-placeholders/${templateId.value}`
-    console.log('请求URL:', url)
-    const response = await fetch(url)
-    console.log('API响应状态:', response.status)
-    console.log('API响应状态文本:', response.statusText)
+    const response = await fetch(`/api/template-field-mapping/table-fields/${tableName}`)
     if (response.ok) {
       const result = await response.json()
-      console.log('API返回数据:', result)
+      tableFieldsMap.value[tableName] = result.fields || []
+    }
+  } catch (error) {
+    console.error(`加载表 ${tableName} 字段失败:`, error)
+  }
+}
+
+const getFieldsForTable = (tableName: string) => {
+  return tableFieldsMap.value[tableName] || []
+}
+
+const loadFilterConditions = async () => {
+  try {
+    const response = await fetch('/api/filter-conditions/list')
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success') {
+        // 按类别分组
+        const grouped: Record<string, any[]> = {}
+        result.data.forEach((item: any) => {
+          if (!grouped[item.category]) {
+            grouped[item.category] = []
+          }
+          grouped[item.category].push(item)
+        })
+        
+        filterConditionGroups.value = Object.entries(grouped).map(([category, conditions]) => ({
+          category,
+          conditions
+        }))
+      }
+    }
+  } catch (error) {
+    console.error('加载过滤条件失败:', error)
+  }
+}
+
+const handleFilterTemplateChange = (row: any, filterCondition: string) => {
+  if (filterCondition) {
+    row.filterCondition = filterCondition
+  }
+}
+
+const loadTemplatePlaceholders = async () => {
+  try {
+    if (!templateId.value || templateId.value === 'undefined' || templateId.value === '') {
+      ElMessage.error('模板ID无效，请先选择模板')
+      // 跳转到模板列表
+      setTimeout(() => {
+        router.push('/template-manager')
+      }, 1500)
+      return
+    }
+    
+    const url = `/api/template-field-mapping/template-placeholders/${templateId.value}`
+    const response = await fetch(url)
+    
+    if (response.ok) {
+      const result = await response.json()
       templateName.value = result.template_name
-      // 初始化映射列表
+      
       if (result.placeholders && result.placeholders.length > 0) {
         mappingList.value = result.placeholders.map((p: any) => ({
           placeholder: p.name,
           placeholderCn: p.name_cn,
-          selectedField: ''
+          selectedTable: '',
+          selectedField: '',
+          aggregateFunc: '',
+          filterCondition: '',
+          selectedFilterTemplate: ''
         }))
-        console.log('映射列表已更新:', mappingList.value)
       } else {
-        console.warn('API返回的占位符为空')
         mappingList.value = []
       }
     } else {
-      console.error('API响应失败:', response.statusText)
-      ElMessage.error('加载模板占位符失败: ' + response.statusText)
+      ElMessage.error('加载模板占位符失败')
     }
   } catch (error) {
     console.error('加载模板占位符失败:', error)
@@ -178,37 +289,26 @@ const loadTemplatePlaceholders = async () => {
   }
 }
 
-// 获取表字段
-const loadTableFields = async (tableName: string) => {
-  try {
-    const response = await fetch(`/api/template-field-mapping/table-fields/${tableName}`)
-    if (response.ok) {
-      const result = await response.json()
-      tableFields.value = result.fields || []
-      selectedTableCn.value = result.table_name_cn
-    }
-  } catch (error) {
-    console.error('加载表字段失败:', error)
-    ElMessage.error('加载表字段失败')
-  }
-}
-
-// 加载已保存的映射
 const loadSavedMapping = async () => {
   try {
-    const response = await fetch(`/api/template-field-mapping/get-mapping/${templateId.value}`)
+    if (!templateId.value || templateId.value === 'undefined' || templateId.value === '') {
+      return
+    }
+    
+    const encodedTemplateId = encodeURIComponent(templateId.value)
+    const response = await fetch(`/api/template-field-mapping/get-mapping/${encodedTemplateId}`)
+    
     if (response.ok) {
       const result = await response.json()
-      if (result.intermediate_table) {
-        selectedTable.value = result.intermediate_table
-        selectedTableCn.value = result.intermediate_table_cn
-        // 加载表字段
-        await loadTableFields(result.intermediate_table)
-        // 恢复映射
+      
+      if (result.mappings && result.mappings.length > 0) {
         result.mappings.forEach((m: any) => {
           const item = mappingList.value.find(item => item.placeholder === m.placeholder)
           if (item) {
-            item.selectedField = m.field
+            item.selectedTable = m.table || m.intermediate_table || ''
+            item.selectedField = m.field || m.intermediate_field || ''
+            item.aggregateFunc = m.aggregate_func || ''
+            item.filterCondition = m.filter_condition || ''
           }
         })
       }
@@ -218,28 +318,20 @@ const loadSavedMapping = async () => {
   }
 }
 
-// 选择表变化
-const handleTableChange = async (tableName: string) => {
-  if (!tableName) return
-  
-  const table = intermediateTables.value.find(t => t.name === tableName)
-  if (table) {
-    selectedTableCn.value = table.name_cn
-  }
-  
-  await loadTableFields(tableName)
-  // 清空已选择的字段
-  mappingList.value.forEach(m => m.selectedField = '')
+const handleRowTableChange = (row: any, tableName: string) => {
+  row.selectedField = ''
+  row.aggregateFunc = ''
+  row.filterCondition = ''
 }
 
-// 保存映射
 const saveMapping = async () => {
-  if (!selectedTable.value) {
-    ElMessage.warning('请先选择中间表')
+  const configuredMappings = mappingList.value.filter(m => m.selectedField)
+  
+  if (configuredMappings.length === 0) {
+    ElMessage.warning('请至少配置一个字段映射')
     return
   }
   
-  // 检查是否有未配置的字段
   const unconfigured = mappingList.value.filter(m => !m.selectedField)
   if (unconfigured.length > 0) {
     const confirm = await ElMessageBox.confirm(
@@ -258,34 +350,31 @@ const saveMapping = async () => {
   saving.value = true
   
   try {
-    const mappings = mappingList.value
-      .filter(m => m.selectedField)
-      .map(m => {
-        const field = tableFields.value.find(f => f.name === m.selectedField)
-        return {
-          placeholder: m.placeholder,
-          field: m.selectedField,
-          field_cn: field?.name_cn || m.selectedField
-        }
+    for (const mapping of configuredMappings) {
+      const tableName = mapping.selectedTable
+      const fields = tableFieldsMap.value[tableName] || []
+      const field = fields.find(f => f.name === mapping.selectedField)
+      
+      await fetch('/api/template-field-mapping/save-mapping', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          template_id: templateId.value,
+          template_name: templateName.value,
+          intermediate_table: mapping.selectedTable,
+          intermediate_table_cn: sourceTables.value.find(t => t.name === mapping.selectedTable)?.name_cn || '',
+          mappings: [{
+            placeholder: mapping.placeholder,
+            field: mapping.selectedField,
+            field_cn: field?.name_cn || mapping.selectedField,
+            aggregate_func: mapping.aggregateFunc || '',
+            filter_condition: mapping.filterCondition || ''
+          }]
+        })
       })
-    
-    const response = await fetch('/api/template-field-mapping/save-mapping', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        template_id: templateId.value,
-        template_name: templateName.value,
-        intermediate_table: selectedTable.value,
-        intermediate_table_cn: selectedTableCn.value,
-        mappings
-      })
-    })
-    
-    if (response.ok) {
-      ElMessage.success('保存成功')
-    } else {
-      throw new Error('保存失败')
     }
+    
+    ElMessage.success('保存成功')
   } catch (error) {
     console.error('保存映射失败:', error)
     ElMessage.error('保存失败')
@@ -294,16 +383,10 @@ const saveMapping = async () => {
   }
 }
 
-// 初始化
 onMounted(async () => {
-  console.log('FieldMapping页面挂载')
-  console.log('路由参数:', route.params)
-  console.log('模板ID:', templateId.value)
-  await Promise.all([
-    loadIntermediateTables(),
-    loadTemplatePlaceholders()
-  ])
-  // 加载已保存的映射
+  await loadSourceTables()
+  await loadFilterConditions()
+  await loadTemplatePlaceholders()
   await loadSavedMapping()
 })
 </script>
@@ -314,7 +397,7 @@ onMounted(async () => {
 }
 
 .mapping-card {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -349,5 +432,10 @@ onMounted(async () => {
   color: #999;
   font-size: 12px;
   margin-left: 5px;
+}
+
+.filter-condition-cell {
+  display: flex;
+  flex-direction: column;
 }
 </style>

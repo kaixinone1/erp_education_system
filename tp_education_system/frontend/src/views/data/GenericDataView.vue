@@ -1093,14 +1093,10 @@ const handleStatusChange = async (row: any, newStatus: string) => {
         }
       )
 
-      // 用户确认，更新前端显示
-      row['employment_status'] = newStatus
-
-      // 然后调用API更新状态并触发清单
-      await updateTeacherStatus(teacherId, teacherName, oldStatus, newStatus)
+      // 先调用API更新状态并触发清单
+      await updateTeacherStatus(teacherId, teacherName, oldStatus, newStatus, row)
     } catch (error: any) {
-      // 用户取消，恢复原状态
-      row['employment_status'] = oldStatus
+      // 用户取消，不做任何操作
       if (error !== 'cancel') {
         console.error('状态变更失败:', error)
         ElMessage.error(`状态变更失败: ${error.message || '未知错误'}`)
@@ -1110,7 +1106,7 @@ const handleStatusChange = async (row: any, newStatus: string) => {
 }
 
 // 更新教师状态
-const updateTeacherStatus = async (teacherId: number, teacherName: string, oldStatus: string, newStatus: string) => {
+const updateTeacherStatus = async (teacherId: number, teacherName: string, oldStatus: string, newStatus: string, row: any) => {
   try {
     console.log('调用状态变更API:', { teacherId, teacherName, oldStatus, newStatus })
     
@@ -1130,7 +1126,16 @@ const updateTeacherStatus = async (teacherId: number, teacherName: string, oldSt
     if (response.ok) {
       const result = await response.json()
       console.log('API响应数据:', result)
-      ElMessage.success('状态更新成功')
+      
+      // API调用成功，更新前端状态
+      row['employment_status'] = newStatus
+      
+      // 根据响应状态显示不同消息
+      if (result.status === 'warning') {
+        ElMessage.warning(result.message || '状态更新成功，但数据汇集失败')
+      } else {
+        ElMessage.success('状态更新成功')
+      }
 
       // 如果创建了清单，显示提示
       if (result.created_checklists && result.created_checklists.length > 0) {
