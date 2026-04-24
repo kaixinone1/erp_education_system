@@ -222,6 +222,7 @@
             v-else-if="field.type === 'DATE'"
             v-model="formData[field.name]"
             type="date"
+            value-format="YYYY-MM-DD"
             :placeholder="`请选择${field.label || field.source_name || field.name}`"
             style="width: 100%"
           />
@@ -229,6 +230,7 @@
             v-else-if="field.type === 'DATETIME'"
             v-model="formData[field.name]"
             type="datetime"
+            value-format="YYYY-MM-DD HH:mm:ss"
             :placeholder="`请选择${field.label || field.source_name || field.name}`"
             style="width: 100%"
           />
@@ -311,7 +313,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Refresh, Search, Setting } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import RetirementCalculatorDialog from '@/components/RetirementCalculatorDialog.vue'
@@ -320,6 +322,7 @@ import CommonActionBar from '@/components/data/CommonActionBar.vue'
 import DynamicActionBar from '@/components/data/DynamicActionBar.vue'
 
 const route = useRoute()
+const router = useRouter()
 const tagsStore = useTagsStore()
 
 // 表名和标题
@@ -1242,6 +1245,66 @@ const checkPrefillParams = () => {
     
     // 清除URL参数，避免刷新时重复打开
     router.replace({ path: route.path })
+  }
+  
+  // 如果有 teacher_id 或 teacher_name，自动搜索定位教师
+  if (query.teacher_id || query.teacher_name) {
+    const teacherId = query.teacher_id as string
+    const teacherName = query.teacher_name as string
+    
+    console.log('从待办跳转，需要定位教师:', { teacherId, teacherName })
+    
+    // 使用教师姓名作为搜索关键词
+    if (teacherName) {
+      searchKeyword.value = teacherName
+    } else if (teacherId) {
+      searchKeyword.value = teacherId
+    }
+    
+    // 清除URL参数，避免刷新时重复搜索
+    router.replace({ path: route.path })
+    
+    // 数据加载后，高亮并滚动到对应行
+    setTimeout(() => {
+      highlightTeacherRow(teacherId, teacherName)
+    }, 500)
+  }
+}
+
+// 高亮并滚动到指定教师行
+const highlightTeacherRow = (teacherId?: string, teacherName?: string) => {
+  if (!dataTable.value) return
+  
+  // 在表格数据中查找匹配的教师
+  const targetRow = tableData.value.find((row: any) => {
+    if (teacherId && row.id === parseInt(teacherId)) return true
+    if (teacherName && row.name === teacherName) return true
+    if (teacherName && row.teacher_name === teacherName) return true
+    return false
+  })
+  
+  if (targetRow) {
+    console.log('找到目标教师:', targetRow)
+    
+    // 选中该行
+    dataTable.value.toggleRowSelection(targetRow, true)
+    
+    // 滚动到该行
+    dataTable.value.setCurrentRow(targetRow)
+    
+    // 高亮显示
+    ElMessage.success(`已定位到教师: ${targetRow.name || targetRow.teacher_name || teacherName}`)
+    
+    // 如果有指定字段需要编辑，自动打开编辑对话框
+    const query = route.query
+    if (query.mode === 'edit' && query.field) {
+      setTimeout(() => {
+        handleEdit(targetRow)
+      }, 300)
+    }
+  } else {
+    console.log('未找到目标教师，当前搜索关键词:', searchKeyword.value)
+    ElMessage.warning(`未找到教师: ${teacherName || teacherId}，请手动搜索`)
   }
 }
 </script>

@@ -182,6 +182,80 @@
           "path": "/system/intermediate-table",
           "type": "component",
           "component": "IntermediateTableManager"
+        },
+        {
+          "id": "system-octogenarian",
+          "title": "高龄补贴管理",
+          "icon": "FirstAidKit",
+          "path": "/system/octogenarian",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-高龄老人补贴信息",
+              "title": "高龄老人补贴信息",
+              "name": "高龄老人补贴信息",
+              "icon": "Document",
+              "path": "/data/高龄老人补贴信息",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/高龄老人补贴信息",
+              "table_name": "高龄老人补贴信息",
+              "table_type": "master"
+            },
+            {
+              "id": "table-死亡登记信息",
+              "title": "死亡登记信息",
+              "name": "死亡登记信息",
+              "icon": "Document",
+              "path": "/data/死亡登记信息",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/死亡登记信息",
+              "table_name": "死亡登记信息",
+              "table_type": "master"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "todo-management",
+      "title": "预警督办",
+      "icon": "Warning",
+      "path": "/todo",
+      "type": "module",
+      "children": [
+        {
+          "id": "todo-business",
+          "title": "待办业务管理",
+          "icon": "List",
+          "path": "/todo/business",
+          "type": "component",
+          "component": "TodoBusiness"
+        },
+        {
+          "id": "todo-templates",
+          "title": "清单模板",
+          "icon": "DocumentCopy",
+          "path": "/todo/template",
+          "type": "component",
+          "component": "checklist/ChecklistTemplateView"
+        },
+        {
+          "id": "todo-work",
+          "title": "待办工作",
+          "icon": "Bell",
+          "path": "/todo/work",
+          "type": "component",
+          "component": "TodoWork"
+        },
+        {
+          "id": "todo-history",
+          "title": "待办历史",
+          "icon": "Clock",
+          "path": "/todo/history",
+          "type": "component",
+          "component": "TodoHistory"
         }
       ]
     },
@@ -199,6 +273,14 @@
           "path": "/import/workbench",
           "type": "component",
           "component": "DataImportWorkbench"
+        },
+        {
+          "id": "template-import-test",
+          "title": "测试导入模板功能",
+          "icon": "Upload",
+          "path": "/template-import-test",
+          "type": "component",
+          "component": "TemplateImportTest"
         },
         {
           "id": "table-structure",
@@ -288,8 +370,69 @@
               "api_endpoint": "/api/data/teacher_unit",
               "table_name": "teacher_unit",
               "table_type": "master"
+            },
+            {
+              "id": "table-teacher_title_info",
+              "title": "教师职称信息",
+              "name": "教师职称信息",
+              "icon": "Document",
+              "path": "/data/teacher_title_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_title_info",
+              "table_name": "teacher_title_info",
+              "table_type": "master"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "performance-management",
+      "title": "绩效管理",
+      "icon": "Money",
+      "path": "/performance",
+      "type": "module",
+      "children": [
+        {
+          "id": "performance-pay-approval",
+          "title": "绩效工资审批",
+          "icon": "Document",
+          "path": "/performance/pay-approval",
+          "type": "component",
+          "component": "PerformancePayApproval"
+        },
+        {
+          "id": "performance-pay-history",
+          "title": "绩效工资历史",
+          "icon": "Clock",
+          "path": "/performance/pay-history",
+          "type": "component",
+          "component": "PerformancePayHistory"
+        },
+        {
+          "id": "performance-pay-statistics",
+          "title": "绩效工资统计",
+          "icon": "TrendCharts",
+          "path": "/performance/pay-statistics",
+          "type": "component",
+          "component": "PerformancePayStatistics"
+        },
+        {
+          "id": "performance-pay-upload",
+          "title": "绩效工资上传",
+          "icon": "Upload",
+          "path": "/performance/pay-upload",
+          "type": "component",
+          "component": "PerformancePayUpload"
+        },
+        {
+          "id": "performance-standards",
+          "title": "绩效标准设置",
+          "icon": "Setting",
+          "path": "/performance/standards",
+          "type": "component",
+          "component": "PerformanceStandards"
         }
       ]
     },
@@ -325,6 +468,14 @@
               "api_endpoint": "/api/data/retirement_report_data",
               "table_name": "retirement_report_data",
               "table_type": "master"
+            },
+            {
+              "id": "retirement-estimate",
+              "title": "退休测算",
+              "icon": "Calculator",
+              "path": "/report/retirement/estimate",
+              "type": "component",
+              "component": "retirement/RetirementEstimate"
             }
           ]
         }

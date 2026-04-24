@@ -63,6 +63,86 @@ const router = createRouter({
             title: "通用模板管理",
             icon: "Document"
           }
+        },
+        {
+          path: "todo-business",
+          name: "todoBusiness",
+          component: () => import("../views/system/TodoBusiness.vue"),
+          meta: {
+            title: "待办业务",
+            icon: "List"
+          }
+        },
+        {
+          path: "todo-template",
+          name: "todoTemplate",
+          component: () => import("../views/system/TodoTemplate.vue"),
+          meta: {
+            title: "清单模板",
+            icon: "DocumentChecked"
+          }
+        },
+        {
+          path: "todo-work",
+          name: "todoWork",
+          component: () => import("../views/system/TodoWork.vue"),
+          meta: {
+            title: "待办工作",
+            icon: "Bell"
+          }
+        },
+        {
+          path: "todo-history",
+          name: "todoHistory",
+          component: () => import("../views/system/TodoHistory.vue"),
+          meta: {
+            title: "待办历史",
+            icon: "Clock"
+          }
+        }
+      ]
+    },
+    // 预警督办模块
+    {
+      path: "/todo",
+      name: "todoManagement",
+      redirect: "/todo/work",
+      children: [
+        {
+          path: "business",
+          name: "todoBusinessNew",
+          component: () => import("../views/system/TodoBusiness.vue"),
+          meta: {
+            title: "待办业务管理",
+            icon: "List"
+          }
+        },
+        {
+          path: "template",
+          name: "todoTemplateNew",
+          component: () => import("../views/checklist/ChecklistTemplateView.vue"),
+          meta: {
+            title: "清单模板",
+            icon: "DocumentCopy"
+          }
+        },
+        {
+          path: "work",
+          name: "todoWorkNew",
+          component: () => import("../views/system/TodoWork.vue"),
+          meta: {
+            title: "待办工作",
+            icon: "Bell"
+          }
+        },
+        {
+          path: "history",
+          name: "todoHistory",
+          component: () => import("../views/system/TodoHistory.vue"),
+          meta: {
+            title: "待办历史",
+            icon: "Clock"
+          }
         }
       ]
     },
@@ -203,6 +283,15 @@ const router = createRouter({
         icon: "Document"
       }
     },
+    {
+      path: "/report/retirement/estimate",
+      name: "retirementEstimate",
+      component: () => import("../views/retirement/RetirementEstimate.vue"),
+      meta: {
+        title: "退休测算",
+        icon: "Calculator"
+      }
+    },
     // 表结构管理
     {
       path: "/data/table-structure",
@@ -314,6 +403,69 @@ const router = createRouter({
       }
     },
 
+    // 绩效管理模块
+    {
+      path: "/performance",
+      name: "performance",
+      redirect: "/performance/pay-approval",
+      children: [
+        {
+          path: "pay-approval",
+          name: "performancePayApproval",
+          component: () => import("../views/performance/PerformancePayApproval.vue"),
+          meta: {
+            title: "绩效工资审批",
+            icon: "Document"
+          }
+        },
+        {
+          path: "pay-history",
+          name: "performancePayHistory",
+          component: () => import("../views/performance/PerformancePayHistory.vue"),
+          meta: {
+            title: "绩效工资历史",
+            icon: "Clock"
+          }
+        },
+        {
+          path: "pay-statistics",
+          name: "performancePayStatistics",
+          component: () => import("../views/performance/PerformancePayStatistics.vue"),
+          meta: {
+            title: "绩效工资统计",
+            icon: "TrendCharts"
+          }
+        },
+        {
+          path: "pay-upload",
+          name: "performancePayUpload",
+          component: () => import("../views/performance/PerformancePayUpload.vue"),
+          meta: {
+            title: "绩效工资上传",
+            icon: "Upload"
+          }
+        },
+        {
+          path: "standards",
+          name: "performanceStandards",
+          component: () => import("../views/performance/PerformanceStandards.vue"),
+          meta: {
+            title: "绩效标准设置",
+            icon: "Setting"
+          }
+        }
+      ]
+    },
+    // 测试导入模板功能
+    {
+      path: "/template-import-test",
+      name: "templateImportTest",
+      component: () => import("../views/template-import-test/index.vue"),
+      meta: {
+        title: "测试导入模板功能",
+        icon: "Upload"
+      }
+    },
     // 文件上传测试
     {
       path: "/test-upload",
