@@ -140,7 +140,31 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/id_card",
               "table_name": "id_card",
-              "table_type": "child"
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_salary_dictionary",
+              "title": "绩效工资标准字典",
+              "name": "绩效工资标准字典",
+              "icon": "Document",
+              "path": "/data/dict_salary_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_salary_dictionary",
+              "table_name": "dict_salary_dictionary",
+              "table_type": "master"
+            },
+            {
+              "id": "table-dict_subsidy_dictionary",
+              "title": "乡镇补贴标准字典",
+              "name": "乡镇补贴标准字典",
+              "icon": "Document",
+              "path": "/data/dict_subsidy_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_subsidy_dictionary",
+              "table_name": "dict_subsidy_dictionary",
+              "table_type": "dictionary"
             }
           ]
         },

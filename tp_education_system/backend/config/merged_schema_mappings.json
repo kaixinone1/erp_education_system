@@ -2844,6 +2844,79 @@
       ],
       "updated_at": "2026-03-05T08:37:57.813719"
     },
+    "dict_salary_dictionary": {
+      "chinese_name": "绩效工资标准字典",
+      "type": "master",
+      "parent_table": "",
+      "fields": [
+        {
+          "sourceField": "岗位",
+          "targetField": "post_1",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "post_1"
+        },
+        {
+          "sourceField": "月绩效工资标准",
+          "targetField": "month_performance_salary",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "month_performance_salary"
+        }
+      ],
+      "updated_at": "2026-04-24T15:21:34.116878"
+    },
+    "dict_subsidy_dictionary": {
+      "chinese_name": "乡镇补贴标准字典",
+      "type": "dictionary",
+      "parent_table": "",
+      "fields": [
+        {
+          "sourceField": "乡镇补贴标准",
+          "targetField": "subsidy_1",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "subsidy_1"
+        }
+      ],
+      "updated_at": "2026-04-24T15:22:44.268056"
+    },
     "id_card": {
       "chinese_name": "身份证属性",
       "type": "child",
@@ -3383,6 +3456,49 @@
         }
       ],
       "updated_at": "2026-03-05T10:00:05.699238"
+    },
+    "personal_dict_salary_dictionary": {
+      "chinese_name": "绩效工资标准字典",
+      "type": "dictionary",
+      "parent_table": "",
+      "fields": [
+        {
+          "name": "岗位",
+          "chinese_name": "岗位",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "月绩效工资标准",
+          "chinese_name": "月绩效工资标准",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        }
+      ],
+      "updated_at": "2026-04-24T15:00:22.483638"
+    },
+    "work_dict_dictionary": {
+      "chinese_name": "乡镇补贴标准字典",
+      "type": "dictionary",
+      "parent_table": "",
+      "fields": [
+        {
+          "name": "乡镇补贴标准",
+          "chinese_name": "乡镇补贴标准",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        }
+      ],
+      "updated_at": "2026-04-24T15:22:35.676117"
     }
   },
   "dictionaries": {},
@@ -3625,6 +3741,21 @@
     "组织关系挂靠": {
       "target": "zu_zhi_guan_xi_gua_kao",
       "table": "id_card",
+      "data_type": "VARCHAR"
+    },
+    "岗位": {
+      "target": "post_1",
+      "table": "dict_salary_dictionary",
+      "data_type": "VARCHAR"
+    },
+    "月绩效工资标准": {
+      "target": "month_performance_salary",
+      "table": "dict_salary_dictionary",
+      "data_type": "VARCHAR"
+    },
+    "乡镇补贴标准": {
+      "target": "subsidy_1",
+      "table": "dict_subsidy_dictionary",
       "data_type": "VARCHAR"
     }
   }

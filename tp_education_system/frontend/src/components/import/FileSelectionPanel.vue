@@ -204,7 +204,10 @@ const mainModules = computed(() => {
 // 计算属性：子模块列表
 const subModules = computed(() => {
   const mainModule = mainModules.value.find((m: any) => m.id === selectedMainModule.value)
-  return mainModule?.children || []
+  // 获取主模块的所有子模块（children），包括module和component类型
+  return mainModule?.children?.filter((child: any) => 
+    child.type === 'module' || child.type === 'component'
+  ) || []
 })
 
 // 计算属性：是否可以进行下一步

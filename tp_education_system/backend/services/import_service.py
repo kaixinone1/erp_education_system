@@ -695,10 +695,28 @@ class ImportService:
             
             # 保存导航配置
             print(f"[导航配置] 正在保存到文件...")
+            print(f"[导航配置] 保存前 target children 数量: {len(target.get('children', []))}")
             with open(self.navigation_file, 'w', encoding='utf-8') as f:
                 json.dump(nav_config, f, ensure_ascii=False, indent=2)
             
             print(f"[导航配置] 保存成功！")
+            
+            # 验证保存结果
+            with open(self.navigation_file, 'r', encoding='utf-8') as f:
+                saved_config = json.load(f)
+            # 找到对应的模块和子模块，验证表是否添加成功
+            for mod in saved_config.get('modules', []):
+                if mod.get('id') == module_id:
+                    print(f"[导航配置] 验证: 找到模块 {module_id}")
+                    for sm in mod.get('children', []):
+                        if sm.get('id') == sub_module_id:
+                            print(f"[导航配置] 验证: 找到子模块 {sub_module_id}, 子模块children数量: {len(sm.get('children', []))}")
+                            for child in sm.get('children', []):
+                                if child.get('table_name') == table_name:
+                                    print(f"[导航配置] 验证成功: 找到表节点 {table_name}")
+                        elif sub_module_id == '' and sm.get('table_name') == table_name:
+                            print(f"[导航配置] 验证成功: 在模块下找到表节点 {table_name}")
+                    break
             
         except Exception as e:
             print(f"[导航配置] 更新失败: {e}")
