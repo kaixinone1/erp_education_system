@@ -1,49 +1,57 @@
-# 数据库信息文件夹（包含大量Excel文件，不需要版本控制）
-数据库信息/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
 
-# 临时文件
-~$
-*.tmp
-*.temp
+# Node
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# 日志文件
-*.log
-logs/
-
-# 环境配置文件
-.env
-.env.local
-.env.*.local
-
-# 编辑器相关文件
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# 操作系统相关文件
-Thumbs.db
+# OS
 .DS_Store
+Thumbs.db
 
-# 构建产物
-dist/
-build/
+# Logs
+*.log
+logs/
 
-# 依赖包
-node_modules/
-venv/
-env/
+# Database
+*.db
+*.sqlite
 
-# 测试相关
-coverage/
-.nyc_output/
+# Uploads
+uploads/exports/*.html
+uploads/exports/*.xlsx
+uploads/exports/*.doc
 
-# 备份文件
+# Test
+test_*.py
+check_*.py
+debug_*.py
+fix_*.py
+verify_*.py
+
+# Backup files
+*.zip
 *.bak
-*.backup
+*.tmp
 
-# 其他临时文件
-.cache/
-tmp/
-temp/
+# Chinese temp files
+*相关资料*/
+*备份*/
