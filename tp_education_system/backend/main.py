@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from routes.import_routes import router as import_router
 from routes.data_routes import router as data_router
 from routes.table_structure_routes import router as table_structure_router
@@ -19,6 +20,11 @@ from routes.filter_condition_routes import router as filter_condition_router
 from routes.migration_routes import router as migration_router
 from routes.tag_relations_routes import router as tag_relations_router
 from routes.universal_template_routes import router as universal_template_router
+from routes.todo_system_routes import router as todo_system_router
+from routes.menu_routes_new import router as menu_router
+from routes.performance_pay_routes import router as performance_pay_router
+from routes.template_import_test import router as template_import_test_router
+from routes.aggregate_query_routes import router as aggregate_query_router
 import json
 import os
 
@@ -31,6 +37,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 静态文件服务 - 用于模板文件预览
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads", "templates_test")
+EXPORT_DIR = os.path.join(os.path.dirname(__file__), "uploads", "exports")
+os.makedirs(EXPORT_DIR, exist_ok=True)
+app.mount("/template-files", StaticFiles(directory=UPLOAD_DIR), name="template-files")
+app.mount("/exports", StaticFiles(directory=EXPORT_DIR), name="exports")
 
 # 配置文件路径
 CONFIG_DIR = os.path.join(os.path.dirname(__file__), 'config')
@@ -134,6 +147,29 @@ app.include_router(filter_condition_router)
 app.include_router(migration_router)
 app.include_router(tag_relations_router)
 app.include_router(universal_template_router)
+app.include_router(todo_system_router)
+print("[OK] 待办系统路由已注册")
+
+# 注册退休测算路由
+from routes.retirement_routes import router as retirement_router
+app.include_router(retirement_router)
+print("[OK] 退休测算路由已注册")
+
+# 注册菜单管理路由
+app.include_router(menu_router)
+print("[OK] 菜单管理路由已注册")
+
+# 注册绩效工资审批路由
+app.include_router(performance_pay_router)
+print("[OK] 绩效工资审批路由已注册")
+
+# 注册模板导入测试路由
+app.include_router(template_import_test_router)
+print("[OK] 模板导入测试路由已注册")
+
+# 注册聚合查询路由
+app.include_router(aggregate_query_router)
+print("[OK] 聚合查询路由已注册")
 
 # 注册通用中间表框架路由（旧框架，保留兼容）
 from utils.intermediate_table_framework import register_intermediate_table, create_intermediate_table_routes
@@ -144,7 +180,7 @@ try:
         os.path.join(CONFIG_DIR, 'intermediate_tables', 'retirement_report_data.json')
     )
     app.include_router(create_intermediate_table_routes('retirement_report_data'))
-    print("✓ 退休呈报数据中间表已注册到旧框架")
+    print("[OK] 退休呈报数据中间表已注册到旧框架")
 except Exception as e:
     print(f"注册退休呈报数据中间表失败: {e}")
 
@@ -154,14 +190,14 @@ from utils.auto_table_framework import create_auto_table_routes, create_dynamic_
 # 注册通用动态路由 - 支持任意表名
 try:
     app.include_router(create_dynamic_auto_table_router())
-    print("✓ 通用自动表路由已注册（支持任意表名）")
+    print("[OK] 通用自动表路由已注册（支持任意表名）")
 except Exception as e:
     print(f"注册通用自动表路由失败: {e}")
 
 # 注册退休呈报表到新框架（逐步迁移）
 try:
     app.include_router(create_auto_table_routes('retirement_report_data'))
-    print("✓ 退休呈报表已注册到新框架")
+    print("[OK] 退休呈报表已注册到新框架")
 except Exception as e:
     print(f"注册退休呈报表到新框架失败: {e}")
 
@@ -169,7 +205,7 @@ except Exception as e:
 try:
     from utils.intermediate_table_manager import create_intermediate_table_manager_routes
     app.include_router(create_intermediate_table_manager_routes())
-    print("✓ 中间表管理路由已注册")
+    print("[OK] 中间表管理路由已注册")
 except Exception as e:
     print(f"注册中间表管理路由失败: {e}")
 
@@ -236,3 +272,16 @@ async def select_folder(data: dict):
         return {"status": "cancelled", "message": "用户取消选择"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+# 启动服务器
+if __name__ == "__main__":
+    # 启动定时任务
+    try:
+        from services.scheduler_service import start_scheduler
+        start_scheduler()
+    except Exception as e:
+        print(f"[WARN] 定时任务启动失败: {e}")
+    
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

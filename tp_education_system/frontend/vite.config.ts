@@ -23,9 +23,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8001',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         rewrite: (path) => path
+      },
+      '/template-files': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
       }
     },
     // 优化热更新性能

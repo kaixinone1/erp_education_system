@@ -2,20 +2,23 @@
   <div class="app-container">
     <!-- 顶部Header -->
     <Header />
-    
+
     <div class="main-layout">
       <!-- 左侧Sidebar -->
       <Sidebar />
-      
+
       <!-- 主内容区 -->
       <div class="main-content">
         <!-- 多标签导航栏 -->
         <TagsView />
-        
+
         <!-- 主工作区域 -->
         <AppMain />
       </div>
     </div>
+
+    <!-- 待办业务触发提示弹窗 -->
+    <TodoTriggerDialog />
   </div>
 </template>
 
@@ -25,6 +28,7 @@ import Header from './components/Layout/Header.vue'
 import Sidebar from './components/Layout/Sidebar.vue'
 import TagsView from './components/Layout/TagsView.vue'
 import AppMain from './components/Layout/AppMain.vue'
+import TodoTriggerDialog from './components/TodoTriggerDialog.vue'
 
 onMounted(() => {
   console.log('应用已挂载')

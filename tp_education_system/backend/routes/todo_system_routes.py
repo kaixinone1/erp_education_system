@@ -55,10 +55,21 @@ def update_stats_table(cursor, todo_id, update_data=None):
     # 计算任务统计
     if task_items:
         if isinstance(task_items, str):
-            task_items = json.loads(task_items)
-        total_tasks = len(task_items)
-        completed_tasks = sum(1 for t in task_items if t.get('status') == 'completed' or t.get('completed') == True)
-        progress = int(completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+            try:
+                task_items = json.loads(task_items)
+            except:
+                task_items = []
+        elif not isinstance(task_items, list):
+            task_items = []
+        
+        if isinstance(task_items, list):
+            total_tasks = len(task_items)
+            completed_tasks = sum(1 for t in task_items if t.get('status') == 'completed' or t.get('completed') == True)
+            progress = int(completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+        else:
+            total_tasks = 0
+            completed_tasks = 0
+            progress = 0
     else:
         total_tasks = 0
         completed_tasks = 0

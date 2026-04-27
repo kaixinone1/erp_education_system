@@ -28,6 +28,178 @@ def get_db_connection():
     return psycopg2.connect(**DATABASE_CONFIG)
 
 
+def create_trigger_event(teacher_id: int, teacher_name: str, old_status: str, new_status: str, template_code: str = None):
+    """创建待办清单（自动确认，无需手动确认）
+    返回: (success: bool, message: str, existing_todo_id: int or None)
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    trigger_reason = f'教师 {teacher_name} 的任职状态从 "{old_status}" 变为 "{new_status}"'
+    
+    # 优先从 business_checklist 表获取用户配置的任务项
+    cursor.execute("""
+        SELECT id, 清单名称, 任务项列表
+        FROM business_checklist 
+        WHERE 触发条件::text LIKE %s
+        LIMIT 1
+    """, (f'%{new_status}%',))
+    checklist = cursor.fetchone()
+    
+    if checklist:
+        checklist_id, template_name, task_items = checklist
+        
+        # 检查是否已存在相同待办（相同template_id + teacher_id + pending状态）
+        cursor.execute("""
+            SELECT id, status FROM todo_items 
+            WHERE teacher_id = %s AND template_id = %s AND status = 'pending'
+        """, (teacher_id, str(checklist_id)))
+        existing = cursor.fetchone()
+        
+        if existing:
+            print(f"[触发] 跳过：教师{teacher_name}已有相同待办(ID:{existing[0]})")
+            cursor.close()
+            conn.close()
+            return (False, "已存在相同待办", existing[0])
+        
+        # 解析任务项列表
+        if isinstance(task_items, str):
+            try:
+                task_items = json.loads(task_items)
+            except:
+                task_items = []
+        
+        # 截止日期默认为30天
+        due_date_rule = 30
+        
+        # 计算截止日期
+        due_date = None
+        try:
+            from datetime import timedelta
+            due_date = datetime.now().date() + timedelta(days=due_date_rule)
+        except:
+            pass
+        
+        # 获取业务类型
+        business_type = 'RETIREMENT'
+        
+        # 将task_items转为JSON字符串
+        task_items_json = json.dumps(task_items) if task_items else '[]'
+        
+        # 创建待办事项
+        cursor.execute("""
+            INSERT INTO todo_items (
+                template_id, business_type, teacher_id, teacher_name,
+                title, description, status, priority, due_date, task_items,
+                created_by, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
+        """, (
+            str(checklist_id),
+            business_type,
+            teacher_id,
+            teacher_name,
+            f"{template_name} - {teacher_name}",
+            trigger_reason,
+            'pending',
+            'normal',
+            due_date,
+            task_items_json,
+            'system',
+            datetime.now()
+        ))
+        
+        todo_id = cursor.fetchone()[0]
+        conn.commit()
+        print(f"[触发] 从business_checklist创建待办: ID={todo_id}, 教师={teacher_name}, 清单={template_name}")
+        cursor.close()
+        conn.close()
+        return (True, "创建成功", todo_id)
+    
+    # 如果business_checklist没有，尝试从todo_templates获取
+    if not template_code:
+        cursor.execute("""
+            SELECT template_code FROM trigger_conditions 
+            WHERE listen_table = 'teacher_basic_info' 
+              AND listen_field = 'employment_status'
+              AND trigger_value = %s
+              AND is_enabled = true
+            LIMIT 1
+        """, (new_status,))
+        result = cursor.fetchone()
+        if result:
+            template_code = result[0]
+    
+    if not template_code:
+        print(f"[触发] 没有找到模板代码，跳过创建待办: {trigger_reason}")
+        cursor.close()
+        conn.close()
+        return
+    
+    # 获取模板详情
+    cursor.execute("""
+        SELECT template_name, task_flow, due_date_rule
+        FROM todo_templates
+        WHERE template_code = %s
+    """, (template_code,))
+    template = cursor.fetchone()
+    
+    if not template:
+        print(f"[触发] 没有找到模板: {template_code}")
+        cursor.close()
+        conn.close()
+        return
+    
+    template_name, task_flow, due_date_rule = template
+    
+    # 计算截止日期
+    due_date = None
+    if due_date_rule:
+        try:
+            from datetime import timedelta
+            days = int(due_date_rule)
+            due_date = datetime.now().date() + timedelta(days=days)
+        except:
+            pass
+    
+    # 获取业务类型
+    business_type = template_code.split('_')[0] if template_code else 'CUSTOM'
+    
+    # 将task_flow转为JSON字符串
+    task_flow_json = json.dumps(task_flow) if task_flow else '[]'
+    
+    # 创建待办事项
+    cursor.execute("""
+        INSERT INTO todo_items (
+            template_id, business_type, teacher_id, teacher_name,
+            title, description, status, priority, due_date, task_items,
+            created_by, created_at
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        RETURNING id
+    """, (
+        template_code,
+        business_type,
+        teacher_id,
+        teacher_name,
+        f"{template_name} - {teacher_name}",
+        trigger_reason,
+        'pending',
+        'normal',
+        due_date,
+        task_flow_json,
+        'system',
+        datetime.now()
+    ))
+    
+    todo_id = cursor.fetchone()[0]
+    
+    conn.commit()
+    print(f"[触发] 从todo_templates创建待办: ID={todo_id}, 教师={teacher_name}, 模板={template_code}")
+    
+    cursor.close()
+    conn.close()
+
+
 @router.post("/process")
 async def process_status_change(data: Dict[str, Any]):
     """
@@ -46,12 +218,26 @@ async def process_status_change(data: Dict[str, Any]):
         conn = get_db_connection()
         cursor = conn.cursor()
         
+        # 获取变更前的状态和教师姓名
+        cursor.execute("""
+            SELECT employment_status, name FROM teacher_basic_info WHERE id = %s
+        """, (teacher_id,))
+        row = cursor.fetchone()
+        old_status = row[0] if row else None
+        teacher_name = data.get("teacher_name") or (row[1] if row else "未知")
+        
         # 更新教师状态
         cursor.execute("""
             UPDATE teacher_basic_info 
             SET employment_status = %s, updated_at = CURRENT_TIMESTAMP
             WHERE id = %s
         """, (target_status, teacher_id))
+        
+        conn.commit()
+        
+        # 实时触发提醒
+        if old_status and old_status != target_status:
+            create_trigger_event(teacher_id, teacher_name, old_status, target_status)
         
         # 如果状态变更为退休，自动汇集退休呈报表数据
         data_collection_error = None

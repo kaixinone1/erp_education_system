@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>测试后端API</title>
+</head>
+<body>
+    <h1>测试模板导入后端API</h1>
+    
+    <h2>1. 测试后端是否启动</h2>
+    <button onclick="testRoot()">测试根路径</button>
+    <div id="root-result"></div>
+    
+    <h2>2. 测试模板列表</h2>
+    <button onclick="testList()">测试列表接口</button>
+    <div id="list-result"></div>
+    
+    <h2>3. 测试上传</h2>
+    <input type="file" id="file-input" accept=".html,.pdf,.xlsx,.docx">
+    <button onclick="testUpload()">上传测试</button>
+    <div id="upload-result"></div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8001';
+        
+        async function testRoot() {
+            try {
+                const response = await fetch(API_BASE + '/');
+                const result = await response.json();
+                document.getElementById('root-result').innerHTML = 
+                    `<span style="color: green;">✅ 后端正常运行!</span><br>` +
+                    `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (e) {
+                document.getElementById('root-result').innerHTML = 
+                    `<span style="color: red;">❌ 后端无法访问: ${e.message}</span>`;
+            }
+        }
+        
+        async function testList() {
+            try {
+                const response = await fetch(API_BASE + '/api/template-import-test/list');
+                const result = await response.json();
+                document.getElementById('list-result').innerHTML = 
+                    `<span style="color: green;">✅ 列表接口正常!</span><br>` +
+                    `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (e) {
+                document.getElementById('list-result').innerHTML = 
+                    `<span style="color: red;">❌ 列表接口失败: ${e.message}</span>`;
+            }
+        }
+        
+        async function testUpload() {
+            const fileInput = document.getElementById('file-input');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('请先选择文件');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                const response = await fetch(API_BASE + '/api/template-import-test/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    document.getElementById('upload-result').innerHTML = 
+                        `<span style="color: green;">✅ 上传成功!</span><br>` +
+                        `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+                } else {
+                    document.getElementById('upload-result').innerHTML = 
+                        `<span style="color: red;">❌ 上传失败!</span><br>` +
+                        `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+                }
+            } catch (e) {
+                document.getElementById('upload-result').innerHTML = 
+                    `<span style="color: red;">❌ 请求异常: ${e.message}</span>`;
+            }
+        }
+        
+        // 页面加载时自动测试
+        window.onload = function() {
+            testRoot();
+            testList();
+        };
+    </script>
+</body>
+</html>

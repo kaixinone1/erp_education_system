@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import FileResponse
 from typing import List, Dict, Any, Optional
 import json
 import os
@@ -498,22 +499,20 @@ async def get_table_data(
 
 @router.post("/export")
 async def export_data(data: Dict[str, Any]):
-    """导出数据到文件"""
+    """导出数据到文件（直接下载）"""
     try:
         table_name = data.get('table_name', '')
         export_data_list = data.get('data', [])
         format_type = data.get('format', 'excel')
         filename = data.get('filename', f'export_{table_name}')
-        export_path = data.get('path', 'D:\\exports')
         
-        # 确保导出目录存在
-        os.makedirs(export_path, exist_ok=True)
+        # 使用临时目录
+        import tempfile
+        temp_dir = tempfile.gettempdir()
         
         if format_type == 'excel':
-            # 导出为Excel
-            file_path = os.path.join(export_path, f"{filename}.xlsx")
-
-            # 使用pandas导出Excel
+            file_path = os.path.join(temp_dir, f"{filename}.xlsx")
+            
             import pandas as pd
             from openpyxl import load_workbook
             from openpyxl.utils import get_column_letter
@@ -521,14 +520,12 @@ async def export_data(data: Dict[str, Any]):
             df = pd.DataFrame(export_data_list)
             df.to_excel(file_path, index=False, engine='openpyxl')
 
-            # 自适应列宽
             wb = load_workbook(file_path)
             ws = wb.active
 
             for column in ws.columns:
                 max_length = 0
                 column_letter = get_column_letter(column[0].column)
-
                 for cell in column:
                     try:
                         if cell.value:
@@ -537,23 +534,19 @@ async def export_data(data: Dict[str, Any]):
                                 max_length = cell_length
                     except:
                         pass
-
-                # 设置列宽，最小15，最大50，加上一些边距
                 adjusted_width = min(max(max_length + 2, 15), 50)
                 ws.column_dimensions[column_letter].width = adjusted_width
 
             wb.save(file_path)
-
-            return {
-                "status": "success",
-                "file_path": file_path,
-                "format": "excel",
-                "record_count": len(export_data_list)
-            }
+            
+            return FileResponse(
+                file_path, 
+                filename=f"{filename}.xlsx",
+                media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
             
         elif format_type == 'pdf':
-            # 导出为PDF
-            file_path = os.path.join(export_path, f"{filename}.pdf")
+            file_path = os.path.join(temp_dir, f"{filename}.pdf")
             
             # 使用reportlab生成PDF
             from reportlab.lib import colors
@@ -591,16 +584,14 @@ async def export_data(data: Dict[str, Any]):
             
             doc.build(elements)
             
-            return {
-                "status": "success",
-                "file_path": file_path,
-                "format": "pdf",
-                "record_count": len(export_data_list)
-            }
+            return FileResponse(
+                file_path, 
+                filename=f"{filename}.pdf",
+                media_type='application/pdf'
+            )
             
         elif format_type == 'sql':
-            # 导出为SQL
-            file_path = os.path.join(export_path, f"{filename}.sql")
+            file_path = os.path.join(temp_dir, f"{filename}.sql")
             
             with open(file_path, 'w', encoding='utf-8') as f:
                 # 写入表结构（简化版）
@@ -620,12 +611,11 @@ async def export_data(data: Dict[str, Any]):
                     values = ', '.join(value_list)
                     f.write(f"INSERT INTO \"{table_name}\" ({columns}) VALUES ({values});\n")
             
-            return {
-                "status": "success",
-                "file_path": file_path,
-                "format": "sql",
-                "record_count": len(export_data_list)
-            }
+            return FileResponse(
+                file_path, 
+                filename=f"{filename}.sql",
+                media_type='application/sql'
+            )
         else:
             raise HTTPException(status_code=400, detail=f"不支持的导出格式: {format_type}")
             

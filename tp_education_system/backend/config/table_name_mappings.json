@@ -312,6 +312,32 @@
         ]
       ]
     },
+    "绩效工资标准字典": {
+      "english_name": "dict_salary_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-03-31T10:57:00.000000",
+      "field_signature": [
+        [
+          "岗位",
+          "STRING"
+        ],
+        [
+          "月绩效工资",
+          "STRING"
+        ]
+      ]
+    },
+    "乡镇补贴标准字典": {
+      "english_name": "dict_subsidy_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-04-01T10:49:00.000000",
+      "field_signature": [
+        [
+          "补贴金额",
+          "STRING"
+        ]
+      ]
+    },
     "身份证属性": {
       "english_name": "id_card",
       "table_type": "child",
@@ -430,6 +456,84 @@
           "STRING"
         ]
       ]
+    },
+    "岗位聘任信息": {
+      "english_name": "information",
+      "table_type": "master",
+      "created_at": "2026-04-24T15:30:22.786889",
+      "field_signature": [
+        [
+          "原聘职务",
+          "STRING"
+        ],
+        [
+          "取得高一级职称时间",
+          "STRING"
+        ],
+        [
+          "备注",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "学段",
+          "STRING"
+        ],
+        [
+          "已评职称",
+          "STRING"
+        ],
+        [
+          "批准文号",
+          "STRING"
+        ],
+        [
+          "是否占岗",
+          "STRING"
+        ],
+        [
+          "是否已评未聘",
+          "STRING"
+        ],
+        [
+          "现受聘岗位名称",
+          "STRING"
+        ],
+        [
+          "现受聘岗位等级",
+          "STRING"
+        ],
+        [
+          "现岗位聘用时间",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "岗位设置遗留绩效统计表": {
+      "english_name": "personal_statistics",
+      "table_type": "master",
+      "created_at": "2026-04-27T16:53:29.616144",
+      "field_signature": [
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ],
+        [
+          "金额",
+          "STRING"
+        ]
+      ]
     }
   },
   "reverse_mappings": {
@@ -456,6 +560,10 @@
     "dict_unit_dictionary": "单位名称字典",
     "teacher_unit": "教师所在单位",
     "personal_dict_dictionary": "标签字典",
-    "id_card": "身份证属性"
+    "dict_salary_dictionary": "绩效工资标准字典",
+    "dict_subsidy_dictionary": "乡镇补贴标准字典",
+    "id_card": "身份证属性",
+    "information": "岗位聘任信息",
+    "personal_statistics": "岗位设置遗留绩效统计表"
   }
 }

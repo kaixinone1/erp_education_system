@@ -175,48 +175,13 @@
       <el-card class="info-card">
         <el-tabs v-model="activeTab">
           <el-tab-pane label="待办工作" name="todo">
-            <div v-if="loading" class="loading-wrapper">
-              <el-skeleton :rows="3" animated />
-            </div>
-            <div v-else-if="rawTodoList.length === 0" class="empty-wrapper">
-              <el-empty description="暂无待办工作" :image-size="80" />
-            </div>
-            <el-table v-else :data="todoList" style="width: 100%" :row-class-name="rowClassName">
-              <el-table-column prop="title" label="任务名称" min-width="250">
-                <template #default="{ row }">
-                  <span :class="{ 'gray-text': row.isGray }">{{ row.title }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="type" label="类型" width="120">
-                <template #default="{ row }">
-                  <el-tag :type="row.isGray ? 'info' : 'warning'">{{ row.type }}</el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column prop="status" label="状态" width="100">
-                <template #default="{ row }">
-                  <el-tag :type="row.isGray ? 'info' : (row.status === 'pending' ? 'danger' : 'success')">
-                    {{ row.isGray ? '已完成' : (row.status === 'pending' ? '待处理' : '处理中') }}
-                  </el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column prop="time" label="时间" width="120">
-                <template #default="{ row }">
-                  <span :class="{ 'gray-text': row.isGray }">{{ row.time }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="100" fixed="right">
-                <template #default="{ row }">
-                  <el-button 
-                    :type="row.isGray ? 'info' : 'primary'" 
-                    size="small" 
-                    @click="handleTodo(row)"
-                    :disabled="row.isGray"
-                  >
-                    {{ row.isGray ? '已完成' : '处理' }}
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <!-- 使用统一的TodoList组件 -->
+            <TodoList 
+              ref="todoListRef"
+              :showTabs="false" 
+              :showCompleted="true"
+              @action="handleTodoAction"
+            />
           </el-tab-pane>
           <el-tab-pane label="资讯信息" name="news">
             <el-menu :default-active="activeNewsTab" class="news-menu" mode="horizontal">
@@ -247,6 +212,35 @@
       @close="drawerVisible = false"
       @status-changed="handleStatusChanged"
     />
+
+    <!-- 退回原因对话框 -->
+    <el-dialog
+      v-model="returnDialogVisible"
+      title="退回原因（必填）"
+      width="500px"
+      :close-on-click-modal="false"
+    >
+      <el-alert
+        title="该待办已完成，退回后需要重新办理"
+        type="warning"
+        :closable="false"
+        style="margin-bottom: 20px"
+      />
+      <el-form label-width="100px">
+        <el-form-item label="退回原因" required>
+          <el-input
+            v-model="returnReason"
+            type="textarea"
+            :rows="4"
+            placeholder="请详细说明退回原因，以便后续处理"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="returnDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitReturn">确认退回</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -255,6 +249,7 @@ import { ref, computed, onMounted } from 'vue'
 import { User, Document, Check, Star, OfficeBuilding, View } from '@element-plus/icons-vue'
 import VChart from 'vue-echarts'
 import ChecklistDrawer from '../../components/ChecklistDrawer.vue'
+import TodoList from '../../components/TodoList.vue'
 import * as echarts from 'echarts/core'
 import { BarChart, PieChart } from 'echarts/charts'
 import {
@@ -283,65 +278,79 @@ const activeNewsTab = ref('latest')
 const loading = ref(false)
 const drawerVisible = ref(false)
 const selectedTodo = ref<any>(null)
+const todoListRef = ref<any>(null)
 
 // 原始待办数据
 const rawTodoList = ref<any[]>([])
 
 // 计算属性：待办工作列表
-// 1. 完成度100%的显示灰色字体
-// 2. 已完成的排在未完成后面
-// 3. 已完成的按完成日期排序
 const todoList = computed(() => {
   console.log('rawTodoList:', rawTodoList.value)
   
   // 计算每个待办的完成度
   const todosWithProgress = rawTodoList.value.map(todo => {
     const progress = todo.total_tasks > 0 ? Math.round((todo.completed_tasks / todo.total_tasks) * 100) : 0
+    // 严格根据状态判断是否已完成（与Header.vue和TodoWork.vue保持一致）
+    const isFullyCompleted = todo.status === 'completed'
     return {
       ...todo,
       progress,
-      isFullyCompleted: progress >= 100
+      isFullyCompleted
     }
   })
   
-  // 分离未完成和已完成的待办
-  const pendingTodos = todosWithProgress.filter(todo => !todo.isFullyCompleted)
-  const completedTodos = todosWithProgress.filter(todo => todo.isFullyCompleted)
+  // 分离未完成和已完成的待办（根据状态判断）
+  const pendingTodos = todosWithProgress.filter(todo => todo.status !== 'completed')
+  const completedTodos = todosWithProgress.filter(todo => todo.status === 'completed')
   
-  // 已完成的按完成日期排序（如果有completed_at字段，否则按created_at排序）
+  // 已完成的按完成日期排序
   completedTodos.sort((a, b) => {
     const dateA = new Date(a.completed_at || a.updated_at || a.created_at)
     const dateB = new Date(b.completed_at || b.updated_at || b.created_at)
-    return dateB.getTime() - dateA.getTime() // 降序，最新的在前
+    return dateB.getTime() - dateA.getTime()
   })
   
   // 映射未完成的待办
-  const pendingMapped = pendingTodos.map(todo => ({
-    id: todo.id,
-    teacher_id: todo.teacher_id,
-    teacher_name: todo.teacher_name,
-    title: `新增${todo.teacher_name}退休业务清单（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，${todo.progress}%）`,
-    type: `${todo.teacher_name}退休呈报`,
-    time: formatDate(todo.created_at),
-    status: todo.status,
-    isCompleted: false,
-    isGray: false,
-    progress: todo.progress
-  }))
+  const pendingMapped = pendingTodos.map(todo => {
+    const checklistName = todo.checklist_name || '待办任务'
+    const teacherName = todo.teacher_name || '未知'
+    const baseTitle = todo.title || `${teacherName} - ${checklistName}`
+    return {
+      id: todo.id,
+      teacher_id: todo.teacher_id,
+      teacher_name: teacherName,
+      title: `${baseTitle}（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，${todo.progress}%）`,
+      type: checklistName,
+      time: formatDate(todo.created_at),
+      status: todo.status,
+      isCompleted: false,
+      isGray: false,
+      progress: todo.progress,
+      checklist_id: todo.checklist_id,
+      checklist_name: checklistName
+    }
+  })
   
-  // 映射已完成的待办（显示灰色）
-  const completedMapped = completedTodos.map(todo => ({
-    id: todo.id,
-    teacher_id: todo.teacher_id,
-    teacher_name: todo.teacher_name,
-    title: `✓ ${todo.teacher_name}退休业务清单（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，100%）`,
-    type: `${todo.teacher_name}退休呈报 - 已完成`,
-    time: formatDate(todo.completed_at || todo.updated_at || todo.created_at),
-    status: todo.status,
-    isCompleted: true,
-    isGray: true,
-    progress: 100
-  }))
+  // 映射已完成的待办
+  const completedMapped = completedTodos.map(todo => {
+    const checklistName = todo.checklist_name || '待办任务'
+    const teacherName = todo.teacher_name || '未知'
+    const baseTitle = todo.title || `${teacherName} - ${checklistName}`
+    return {
+      id: todo.id,
+      teacher_id: todo.teacher_id,
+      teacher_name: teacherName,
+      title: `✓ ${baseTitle}（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，100%）`,
+      type: `${checklistName} - 已完成`,
+      time: formatDate(todo.completed_at || todo.updated_at || todo.created_at),
+      status: todo.status,
+      isCompleted: true,
+      isGray: true,
+      progress: 100,
+      checklist_id: todo.checklist_id,
+      checklist_name: checklistName
+    }
+  })
   
   // 合并：未完成的在前，已完成的在后
   const mapped = [...pendingMapped, ...completedMapped]
@@ -370,12 +379,27 @@ const loadTodoList = async () => {
   loading.value = true
   try {
     console.log('开始加载待办列表...')
-    const response = await fetch('/api/todo-work/list')
+    const response = await fetch('/api/todo-system/todo-list')
     console.log('待办列表API响应:', response.status)
     if (response.ok) {
       const result = await response.json()
       console.log('待办列表数据:', result)
-      rawTodoList.value = result.data || []
+      // 转换数据格式以兼容现有代码
+      rawTodoList.value = (result.data || []).map((todo: any) => ({
+        id: todo.id,
+        teacher_id: todo.teacher_id,
+        teacher_name: todo.teacher_name,
+        title: todo.title,
+        task_items: todo.task_items,
+        checklist_id: todo.template_id,
+        checklist_name: todo.business_type_display || todo.template_name || '待办任务',
+        status: todo.status,
+        total_tasks: todo.total_tasks || 0,
+        completed_tasks: todo.completed_tasks || 0,
+        created_at: todo.created_at,
+        completed_at: todo.completed_at,
+        updated_at: todo.created_at
+      }))
       console.log('rawTodoList:', rawTodoList.value)
       console.log('todoList:', todoList.value)
     } else {
@@ -390,23 +414,57 @@ const loadTodoList = async () => {
   }
 }
 
-// 处理待办工作 - 打开清单抽屉
-const handleTodo = (row: any) => {
+// 退回对话框
+const returnDialogVisible = ref(false)
+const returnReason = ref('')
+const currentReturnTodo = ref<any>(null)
+
+// 处理待办工作（来自TodoList组件的action事件）
+const handleTodoAction = (row: any) => {
   console.log('处理待办:', row)
-  // 从rawTodoList中找到完整的待办数据
-  const originalTodo = rawTodoList.value.find(todo => todo.id === row.id)
-  if (originalTodo) {
-    // 直接传递完整的原始数据，与PushedChecklistView保持一致
-    selectedTodo.value = originalTodo
+  if (row.isCompleted) {
+    // 已完成，显示退回对话框
+    currentReturnTodo.value = row
+    returnReason.value = ''
+    returnDialogVisible.value = true
+  } else {
+    // 未完成，打开处理抽屉
+    selectedTodo.value = row.rawData
     drawerVisible.value = true
   }
 }
 
-// 处理状态变更 - 只更新当前待办的数据，不刷新整个列表
+// 提交退回
+const submitReturn = async () => {
+  if (!returnReason.value.trim()) {
+    ElMessage.warning('请输入退回原因')
+    return
+  }
+  
+  try {
+    const response = await fetch(`/api/todo-system/todo/${currentReturnTodo.value.id}/return`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason: returnReason.value })
+    })
+    
+    if (response.ok) {
+      ElMessage.success('已退回')
+      returnDialogVisible.value = false
+      // 刷新TodoList组件
+      todoListRef.value?.refresh()
+    } else {
+      ElMessage.error('退回失败')
+    }
+  } catch (error) {
+    console.error('退回失败:', error)
+    ElMessage.error('退回失败')
+  }
+}
+
+// 处理状态变更
 const handleStatusChanged = (data: { todoId: number, completedCount: number, totalCount: number, status: string }) => {
   console.log('状态变更:', data)
-  
-  // 在 rawTodoList 中找到对应的待办并更新
   const todoIndex = rawTodoList.value.findIndex(todo => todo.id === data.todoId)
   if (todoIndex !== -1) {
     rawTodoList.value[todoIndex].completed_tasks = data.completedCount
@@ -439,144 +497,63 @@ const newsList = ref([
   }
 ])
 
-// 专技岗位分布图表配置
+// 图表配置
 const techPositionOption = {
-  title: {
-    text: '专技岗位分布',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
-    }
-  },
-  grid: {
-    left: '3%',
-    right: '4%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: {
-    type: 'category',
-    data: ['初级', '中级', '高级', '正高级', '特级']
-  },
-  yAxis: {
-    type: 'value',
-    name: '人数'
-  },
-  series: [
-    {
-      data: [300, 350, 250, 100, 50],
-      type: 'bar',
-      itemStyle: {
-        color: '#1890FF'
-      }
-    }
-  ]
+  title: { text: '专技岗位分布', left: 'center' },
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+  grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+  xAxis: { type: 'category', data: ['初级', '中级', '高级', '正高级', '特级'] },
+  yAxis: { type: 'value', name: '人数' },
+  series: [{ data: [300, 350, 250, 100, 50], type: 'bar', itemStyle: { color: '#1890FF' } }]
 }
 
-// 职级分布图表配置
 const rankDistributionOption = {
-  title: {
-    text: '职级分布',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    orient: 'vertical',
-    left: 'left'
-  },
-  series: [
-    {
-      name: '职级',
-      type: 'pie',
-      radius: '60%',
-      data: [
-        { value: 400, name: '科员' },
-        { value: 300, name: '副科级' },
-        { value: 250, name: '正科级' },
-        { value: 150, name: '处级' }
-      ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
-        }
-      }
-    }
-  ]
+  title: { text: '职级分布', left: 'center' },
+  tooltip: { trigger: 'item' },
+  legend: { orient: 'vertical', left: 'left' },
+  series: [{
+    name: '职级',
+    type: 'pie',
+    radius: '60%',
+    data: [
+      { value: 400, name: '科员' },
+      { value: 300, name: '副科级' },
+      { value: 250, name: '正科级' },
+      { value: 150, name: '处级' }
+    ],
+    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+  }]
 }
 
-// 性别比例图表配置
 const genderRatioOption = {
-  title: {
-    text: '性别比例',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    orient: 'vertical',
-    left: 'left'
-  },
-  series: [
-    {
-      name: '性别',
-      type: 'pie',
-      radius: '60%',
-      data: [
-        { value: 250, name: '男' },
-        { value: 225, name: '女' }
-      ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
-        }
-      }
-    }
-  ]
+  title: { text: '性别比例', left: 'center' },
+  tooltip: { trigger: 'item' },
+  legend: { orient: 'vertical', left: 'left' },
+  series: [{
+    name: '性别',
+    type: 'pie',
+    radius: '60%',
+    data: [{ value: 250, name: '男' }, { value: 225, name: '女' }],
+    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+  }]
 }
 
-// 学历结构图表配置
 const educationStructureOption = {
-  title: {
-    text: '学历结构',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    orient: 'vertical',
-    left: 'left'
-  },
-  series: [
-    {
-      name: '学历',
-      type: 'pie',
-      radius: '60%',
-      data: [
-        { value: 50, name: '博士' },
-        { value: 180, name: '硕士' },
-        { value: 220, name: '本科' },
-        { value: 25, name: '专科及以下' }
-      ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
-        }
-      }
-    }
-  ]
+  title: { text: '学历结构', left: 'center' },
+  tooltip: { trigger: 'item' },
+  legend: { orient: 'vertical', left: 'left' },
+  series: [{
+    name: '学历',
+    type: 'pie',
+    radius: '60%',
+    data: [
+      { value: 50, name: '博士' },
+      { value: 180, name: '硕士' },
+      { value: 220, name: '本科' },
+      { value: 25, name: '专科及以下' }
+    ],
+    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+  }]
 }
 </script>
 
@@ -602,7 +579,6 @@ const educationStructureOption = {
   color: #606266;
 }
 
-/* 快捷入口区域 */
 .quick-entry-section {
   margin-bottom: 30px;
 }
@@ -645,7 +621,6 @@ const educationStructureOption = {
   opacity: 0.8;
 }
 
-/* 图表分析区域 */
 .chart-analysis-section {
   margin-bottom: 30px;
 }
@@ -669,7 +644,6 @@ const educationStructureOption = {
   height: 100%;
 }
 
-/* 信息流区域 */
 .info-flow-section {
   margin-bottom: 30px;
 }
@@ -696,7 +670,6 @@ const educationStructureOption = {
   padding: 40px 0;
 }
 
-/* 已完成任务的灰色样式 */
 .gray-text {
   color: #909399 !important;
 }
@@ -709,7 +682,6 @@ const educationStructureOption = {
   background-color: #e4e7ed !important;
 }
 
-/* 响应式设计 */
 @media screen and (max-width: 1200px) {
   .el-col {
     margin-bottom: 20px;

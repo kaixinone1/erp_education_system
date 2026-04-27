@@ -1,7 +1,8 @@
 // 前端事件总线实现
 // 用于组件间通信，特别是标签更新时的事件通知
 
-import type { AnyFunction } from '@vue/shared'
+// 定义函数类型
+type AnyFunction = (...args: any[]) => any
 
 // 预定义事件类型常量
 export const EVENT_NAVIGATION_UPDATED = 'navigation_updated'

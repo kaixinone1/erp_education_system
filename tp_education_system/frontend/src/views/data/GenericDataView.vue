@@ -923,11 +923,30 @@ const executeExport = async () => {
         break
       case 'all':
       default:
-        // 获取所有数据
+        // 获取所有数据（包括筛选条件）
         console.log('正在获取全部数据...')
-        const response = await fetch(
-          `/api/data/${tableName.value}?page=1&size=10000`
-        )
+        let allDataUrl = `/api/data/${tableName.value}?page=1&size=10000`
+        
+        // 添加搜索关键词
+        if (searchKeyword.value) {
+          allDataUrl += `&keyword=${encodeURIComponent(searchKeyword.value)}`
+        }
+        
+        // 添加筛选条件
+        const filterParams: Record<string, string> = {}
+        Object.entries(filterForm.value).forEach(([key, value]) => {
+          if (value !== '' && value !== null && value !== undefined) {
+            filterParams[key] = String(value)
+          }
+        })
+        
+        if (Object.keys(filterParams).length > 0) {
+          allDataUrl += `&filter=${encodeURIComponent(JSON.stringify(filterParams))}`
+        }
+        
+        console.log('全部数据URL:', allDataUrl)
+        
+        const response = await fetch(allDataUrl)
         console.log('API响应状态:', response.status)
         if (response.ok) {
           const result = await response.json()
@@ -956,18 +975,34 @@ const executeExport = async () => {
         table_name: tableName.value,
         data: exportData,
         format: exportForm.value.format,
-        filename: exportForm.value.filename,
-        path: exportForm.value.path
+        filename: exportForm.value.filename || tableName.value,
+        path: ''
       })
     })
     
     if (exportResponse.ok) {
-      const result = await exportResponse.json()
-      console.log('导出成功，返回结果:', JSON.stringify(result, null, 2))
-      console.log('result类型:', typeof result)
-      console.log('result.keys:', Object.keys(result))
-      const savedPath = result.file_path || result.path || JSON.stringify(result)
-      ElMessage.success(`导出成功，文件保存到: ${savedPath}`)
+      // 处理文件下载
+      const blob = await exportResponse.blob()
+      const contentDisposition = exportResponse.headers.get('content-disposition')
+      let filename = exportForm.value.filename || tableName.value
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+        if (match) {
+          filename = match[1].replace(/['"]/g, '')
+        }
+      }
+      
+      // 创建下载链接
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename + '.' + (exportForm.value.format || 'xlsx')
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      
+      ElMessage.success('导出成功')
       exportDialogVisible.value = false
     } else {
       const error = await exportResponse.json()

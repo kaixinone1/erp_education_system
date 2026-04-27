@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import psycopg2
+import json
 
 conn = psycopg2.connect(
     host='localhost',
@@ -9,34 +12,50 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
-# 检查 business_checklist 表
-cursor.execute("""
-    SELECT column_name, data_type 
-    FROM information_schema.columns 
-    WHERE table_name = 'business_checklist'
-    ORDER BY ordinal_position
-""")
+print("=" * 60)
+print("查询 business_checklist 表中的清单模板")
+print("=" * 60)
 
-columns = cursor.fetchall()
-print('business_checklist 表字段:')
-for col in columns:
-    print(f'  {col[0]}: {col[1]}')
+cursor.execute('''
+    SELECT id, 清单名称, 触发条件, 任务项列表, 是否有效
+    FROM business_checklist
+    ORDER BY id
+''')
 
-# 获取数据条数
-cursor.execute("SELECT COUNT(*) FROM business_checklist")
-count = cursor.fetchone()[0]
-print(f'\n数据条数: {count}')
+rows = cursor.fetchall()
+print(f"\n共有 {len(rows)} 个清单模板:\n")
 
-# 显示前3条数据
-if count > 0:
-    cursor.execute("SELECT * FROM business_checklist LIMIT 3")
-    rows = cursor.fetchall()
-    print('\n前3条数据:')
-    for i, row in enumerate(rows):
-        print(f'\n行{i+1}:')
-        for j, col in enumerate(columns):
-            if j < len(row):
-                print(f'  {col[0]}: {row[j]}')
+for row in rows:
+    print(f"ID: {row[0]}")
+    print(f"清单名称: {row[1]}")
+    print(f"是否有效: {row[4]}")
+
+    if row[2]:
+        try:
+            trigger = json.loads(row[2]) if isinstance(row[2], str) else row[2]
+            print(f"触发条件: {trigger}")
+        except:
+            print(f"触发条件: {row[2]}")
+
+    if row[3]:
+        try:
+            tasks = json.loads(row[3]) if isinstance(row[3], str) else row[3]
+            if isinstance(tasks, list):
+                print(f"任务数量: {len(tasks)}")
+                for i, task in enumerate(tasks):
+                    title = task.get('标题', '未命名')
+                    task_type = task.get('类型', 'N/A')
+                    target = task.get('目标', 'N/A')
+                    print(f"  {i+1}. {title} (类型:{task_type}, 目标:{target})")
+            else:
+                print(f"任务项列表: {tasks}")
+        except Exception as e:
+            print(f"任务项列表: 解析失败 - {e}")
+            print(f"  原始数据: {row[3][:200]}...")
+    else:
+        print("任务项列表: 无")
+
+    print("-" * 40)
 
 cursor.close()
 conn.close()

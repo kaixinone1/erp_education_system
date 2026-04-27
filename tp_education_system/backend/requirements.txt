@@ -7,3 +7,9 @@ python-multipart
 pydantic-settings
 pandas
 openpyxl
+apscheduler
+python-dateutil
+beautifulsoup4
+lxml
+python-docx
+chardet

@@ -453,6 +453,15 @@ const router = createRouter({
             title: "绩效标准设置",
             icon: "Setting"
           }
+        },
+        {
+          path: "aggregate-query",
+          name: "aggregateQuery",
+          component: () => import("../views/AggregateQuery.vue"),
+          meta: {
+            title: "聚合查询",
+            icon: "Search"
+          }
         }
       ]
     },

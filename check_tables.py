@@ -1,48 +1,54 @@
-import psycopg2
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""检查数据库中教师相关的表"""
 
-conn = psycopg2.connect(
-    host='localhost',
-    port='5432',
-    database='taiping_education',
-    user='taiping_user',
-    password='taiping_password'
-)
-cursor = conn.cursor()
+import sys
+sys.path.append('d:\\erp_thirteen\\tp_education_system\\backend')
 
-# 获取所有表
-cursor.execute("""
-    SELECT table_name 
-    FROM information_schema.tables 
-    WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
-    ORDER BY table_name
-""")
+from database.db_config import get_db_connection
 
-print('数据库中的所有表：')
-print('=' * 50)
-for row in cursor.fetchall():
-    print(f'  {row[0]}')
+def check_teacher_tables():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # 查询所有教师相关的表
+    cursor.execute("""
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema='public' 
+        AND (table_name LIKE '%teacher%' 
+             OR table_name LIKE '%岗位%'
+             OR table_name LIKE '%聘任%'
+             OR table_name LIKE '%资格%'
+             OR table_name LIKE '%职称%'
+             OR table_name LIKE '%performance%'
+             OR table_name LIKE '%position%')
+        ORDER BY table_name
+    """)
+    
+    tables = cursor.fetchall()
+    print('=' * 60)
+    print('数据库中教师相关的表：')
+    print('=' * 60)
+    for t in tables:
+        print(f'  - {t[0]}')
+    
+    # 查询所有表
+    print('\n' + '=' * 60)
+    print('数据库中所有表：')
+    print('=' * 60)
+    cursor.execute("""
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema='public'
+        ORDER BY table_name
+    """)
+    all_tables = cursor.fetchall()
+    for t in all_tables:
+        print(f'  - {t[0]}')
+    
+    cursor.close()
+    conn.close()
 
-# 查找包含身份证或属性的表
-cursor.execute("""
-    SELECT table_name 
-    FROM information_schema.tables 
-    WHERE table_schema = 'public' 
-    AND table_type = 'BASE TABLE'
-    AND (table_name LIKE '%identity%' 
-         OR table_name LIKE '%card%'
-         OR table_name LIKE '%属性%'
-         OR table_name LIKE '%身份证%')
-    ORDER BY table_name
-""")
-
-print('\n可能的身份证属性相关表：')
-print('=' * 50)
-rows = cursor.fetchall()
-if rows:
-    for row in rows:
-        print(f'  {row[0]}')
-else:
-    print('  未找到相关表')
-
-cursor.close()
-conn.close()
+if __name__ == '__main__':
+    check_teacher_tables()

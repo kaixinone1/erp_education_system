@@ -19,14 +19,46 @@
       "description": "教师主表数据",
       "table_name": "teacher_basic_info",
       "fields": [
-        {"name": "id", "label": "教师ID", "type": "INTEGER"},
-        {"name": "name", "label": "姓名", "type": "VARCHAR"},
-        {"name": "gender", "label": "性别", "type": "VARCHAR"},
-        {"name": "id_card", "label": "身份证号", "type": "VARCHAR"},
-        {"name": "birth_date", "label": "出生日期", "type": "DATE"},
-        {"name": "ethnicity", "label": "民族", "type": "VARCHAR"},
-        {"name": "education", "label": "文化程度", "type": "VARCHAR"},
-        {"name": "work_start_date", "label": "参加工作时间", "type": "DATE"}
+        {
+          "name": "id",
+          "label": "教师ID",
+          "type": "INTEGER"
+        },
+        {
+          "name": "name",
+          "label": "姓名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "gender",
+          "label": "性别",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "id_card",
+          "label": "身份证号",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "birth_date",
+          "label": "出生日期",
+          "type": "DATE"
+        },
+        {
+          "name": "ethnicity",
+          "label": "民族",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "education",
+          "label": "文化程度",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "work_start_date",
+          "label": "参加工作时间",
+          "type": "DATE"
+        }
       ]
     },
     "retirement_report_data": {
@@ -34,39 +66,99 @@
       "description": "退休业务中间表",
       "table_name": "retirement_report_data",
       "fields": []
+    },
+    "teacher_personal_identity": {
+      "name": "教师个人身份",
+      "description": "教师个人身份信息",
+      "table_name": "teacher_personal_identity",
+      "fields": [
+        {
+          "name": "id",
+          "label": "ID",
+          "type": "INTEGER"
+        },
+        {
+          "name": "name",
+          "label": "姓名",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "id_card",
+          "label": "身份证号",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "ge_ren_shen_fen",
+          "label": "个人身份",
+          "type": "VARCHAR"
+        }
+      ]
     }
   },
   "common_fields": {
-    "id": {"label": "记录编号", "type": "system"},
-    "teacher_id": {"label": "教师编号", "type": "system"},
-    "template_id": {"label": "模板编号", "type": "system"},
-    "created_at": {"label": "创建时间", "type": "system"},
-    "updated_at": {"label": "更新时间", "type": "system"}
+    "id": {
+      "label": "记录编号",
+      "type": "system"
+    },
+    "teacher_id": {
+      "label": "教师编号",
+      "type": "system"
+    },
+    "template_id": {
+      "label": "模板编号",
+      "type": "system"
+    },
+    "created_at": {
+      "label": "创建时间",
+      "type": "system"
+    },
+    "updated_at": {
+      "label": "更新时间",
+      "type": "system"
+    }
   },
   "auto_mapping_rules": [
     {
       "placeholder_pattern": "姓名",
-      "field_candidates": ["name", "姓名", "教师姓名"],
+      "field_candidates": [
+        "name",
+        "姓名",
+        "教师姓名"
+      ],
       "priority": 1
     },
     {
       "placeholder_pattern": "性别",
-      "field_candidates": ["gender", "性别"],
+      "field_candidates": [
+        "gender",
+        "性别"
+      ],
       "priority": 1
     },
     {
       "placeholder_pattern": "身份证",
-      "field_candidates": ["id_card", "身份证号码", "身份证号", "身份证"],
+      "field_candidates": [
+        "id_card",
+        "身份证号码",
+        "身份证号",
+        "身份证"
+      ],
       "priority": 1
     },
     {
       "placeholder_pattern": "出生日期",
-      "field_candidates": ["birth_date", "出生日期"],
+      "field_candidates": [
+        "birth_date",
+        "出生日期"
+      ],
       "priority": 1
     },
     {
       "placeholder_pattern": "民族",
-      "field_candidates": ["ethnicity", "民族"],
+      "field_candidates": [
+        "ethnicity",
+        "民族"
+      ],
       "priority": 1
     }
   ]

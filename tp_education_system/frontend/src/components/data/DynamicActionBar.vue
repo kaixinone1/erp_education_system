@@ -133,7 +133,7 @@ const getDefaultActions = () => {
       label: '批量导出',
       icon: 'Download',
       type: 'default',
-      requireSelection: true
+      requireSelection: false
     }
   ]
 }

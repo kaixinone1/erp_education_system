@@ -99,26 +99,26 @@
             <div v-if="selectedField.position_type === 'table'" class="position-form">
               <el-form label-width="100px" size="small">
                 <el-form-item label="表格序号">
-                  <el-input-number 
-                    :model-value="(selectedField.position_data.table_index || 0) + 1" 
-                    @update:model-value="val => selectedField.position_data.table_index = (val || 1) - 1"
-                    :min="1" 
+                  <el-input-number
+                    :model-value="(selectedField.position_data.table_index || 0) + 1"
+                    @update:model-value="(val: number | undefined) => selectedField.position_data.table_index = (val || 1) - 1"
+                    :min="1"
                   />
                   <span class="form-tip">从1开始计数</span>
                 </el-form-item>
                 <el-form-item label="行号">
-                  <el-input-number 
-                    :model-value="(selectedField.position_data.row_index || 0) + 1" 
-                    @update:model-value="val => selectedField.position_data.row_index = (val || 1) - 1"
-                    :min="1" 
+                  <el-input-number
+                    :model-value="(selectedField.position_data.row_index || 0) + 1"
+                    @update:model-value="(val: number | undefined) => selectedField.position_data.row_index = (val || 1) - 1"
+                    :min="1"
                   />
                   <span class="form-tip">从1开始计数</span>
                 </el-form-item>
                 <el-form-item label="列号">
-                  <el-input-number 
-                    :model-value="(selectedField.position_data.cell_index || 0) + 1" 
-                    @update:model-value="val => selectedField.position_data.cell_index = (val || 1) - 1"
-                    :min="1" 
+                  <el-input-number
+                    :model-value="(selectedField.position_data.cell_index || 0) + 1"
+                    @update:model-value="(val: number | undefined) => selectedField.position_data.cell_index = (val || 1) - 1"
+                    :min="1"
                   />
                   <span class="form-tip">从1开始计数</span>
                 </el-form-item>
@@ -127,10 +127,10 @@
             <div v-else-if="selectedField.position_type === 'paragraph'" class="position-form">
               <el-form label-width="100px" size="small">
                 <el-form-item label="段落序号">
-                  <el-input-number 
-                    :model-value="(selectedField.position_data.paragraph_index || 0) + 1" 
-                    @update:model-value="val => selectedField.position_data.paragraph_index = (val || 1) - 1"
-                    :min="1" 
+                  <el-input-number
+                    :model-value="(selectedField.position_data.paragraph_index || 0) + 1"
+                    @update:model-value="(val: number | undefined) => selectedField.position_data.paragraph_index = (val || 1) - 1"
+                    :min="1"
                   />
                   <span class="form-tip">从1开始计数</span>
                 </el-form-item>

@@ -224,8 +224,24 @@ import {
 import { ElMessage } from 'element-plus'
 import { eventBus, EVENT_TAGS_UPDATED } from '@/utils/eventBus'
 
+// 导航节点接口定义
+interface NavigationNode {
+  id: string
+  title: string
+  icon: string
+  path: string
+  type: 'module' | 'component' | 'report'
+  children?: NavigationNode[]
+  component?: string
+  table?: string
+  table_name?: string
+  report?: string
+  reportId?: string
+  api_endpoint?: string
+}
+
 // 元模块配置 - 仅系统管理和模块管理
-const getMetaModules = () => [
+const getMetaModules = (): NavigationNode[] => [
   {
     id: "system",
     title: "系统管理",
@@ -246,9 +262,9 @@ const getMetaModules = () => [
   }
 ]
 
-const navigationData = ref([])
-const selectedNode = ref(null)
-const tree = ref(null)
+const navigationData = ref<NavigationNode[]>([])
+const selectedNode = ref<NavigationNode | null>(null)
+const tree = ref<any>(null)
 
 // 树节点属性配置
 const treeProps = {
@@ -257,7 +273,7 @@ const treeProps = {
 }
 
 // 根据节点属性获取图标
-const getNodeIcon = (data) => {
+const getNodeIcon = (data: NavigationNode): any => {
   if (data.type === 'module') {
     return Setting
   } else if (data.type === 'component') {
@@ -279,12 +295,12 @@ const loadNavigationData = async () => {
         navigationData.value = data.modules
       } else {
         // 如果后端返回空数据，使用默认数据
-        navigationData.value = defaultNavigationData
+        navigationData.value = getMetaModules()
       }
     } else {
       console.error('获取导航数据失败:', response.status)
       // 使用默认数据
-      navigationData.value = defaultNavigationData
+      navigationData.value = getMetaModules()
     }
   } catch (error) {
     console.error('加载导航数据失败:', error)
@@ -297,18 +313,18 @@ const loadNavigationData = async () => {
 }
 
 // 处理节点点击事件
-const handleNodeClick = (data) => {
+const handleNodeClick = (data: NavigationNode) => {
   selectedNode.value = data
 }
 
 // 获取节点的根路径（用于生成新节点的路径）
-const getRootPath = (node) => {
+const getRootPath = (node: NavigationNode | null): string => {
   // 如果是顶级节点，使用其path
   if (!node) return ''
-  
+
   // 找到顶级模块的路径
   let rootPath = ''
-  const findRoot = (nodes, targetId) => {
+  const findRoot = (nodes: NavigationNode[], targetId: string): string => {
     for (const n of nodes) {
       if (n.id === targetId) {
         return n.path

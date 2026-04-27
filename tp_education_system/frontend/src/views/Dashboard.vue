@@ -26,12 +26,12 @@
         <el-table v-else :data="pendingTodos" style="width: 100%" border>
           <el-table-column prop="taskName" label="任务名称" min-width="300">
             <template #default="{ row }">
-              <span>新增退休教师{{ row.teacher_name }}业务清单（共{{ row.total_tasks }}项，已完成{{ row.completed_tasks }}项）</span>
+              <span>{{ row.teacher_name }} - {{ row.checklist_name || '待办任务' }}（共{{ row.total_tasks }}项，已完成{{ row.completed_tasks }}项）</span>
             </template>
           </el-table-column>
-          <el-table-column prop="checklist_type" label="类型" width="150">
+          <el-table-column prop="checklist_type" label="类型" width="200">
             <template #default="{ row }">
-              <el-tag type="warning">{{ row.teacher_name }}退休呈报</el-tag>
+              <el-tag type="warning">{{ row.checklist_name || '待办任务' }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="created_at" label="截止时间" width="150">
@@ -127,8 +127,6 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
   Bell,
-  Document,
-  ArrowRight,
   Grid,
   User,
   Setting,
@@ -273,7 +271,6 @@ onMounted(() => {
   gap: 8px;
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
 }
 
 .loading-wrapper {
@@ -300,17 +297,17 @@ onMounted(() => {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
-  gap: 8px;
 }
 
 .quick-item:hover {
-  background-color: #e4e7ed;
+  background-color: #e6f7ff;
   transform: translateY(-2px);
 }
 
 .quick-item .el-icon {
-  font-size: 28px;
-  color: #409eff;
+  font-size: 32px;
+  color: #1890ff;
+  margin-bottom: 8px;
 }
 
 .quick-item span {
@@ -333,23 +330,13 @@ onMounted(() => {
 
 .stat-value {
   font-size: 28px;
-  font-weight: 700;
-  color: #409eff;
+  font-weight: 600;
+  color: #1890ff;
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-size: 14px;
   color: #606266;
-}
-
-@media (max-width: 768px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .todo-card {
-    grid-column: span 1;
-  }
 }
 </style>
