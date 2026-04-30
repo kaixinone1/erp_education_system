@@ -1,0 +1,30 @@
+{
+  "config_name": "单位名称字典",
+  "display_name": "单位名称字典",
+  "chinese_title": "单位名称字典",
+  "table_name": "dict_unit_dictionary",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "单位",
+      "targetField": "单位",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-03-04T15:31:13.461307",
+  "updated_at": "2026-03-04T15:31:32.686113"
+}

@@ -23,7 +23,9 @@ from routes.universal_template_routes import router as universal_template_router
 from routes.todo_system_routes import router as todo_system_router
 from routes.menu_routes_new import router as menu_router
 from routes.performance_pay_routes import router as performance_pay_router
+from routes.performance_pay_history_routes import router as performance_pay_history_router
 from routes.performance_pay_template import router as performance_pay_template_router
+from routes.performance_pay_export_routes import router as performance_pay_export_router
 from routes.template_import_test import router as template_import_test_router
 from routes.aggregate_query_routes import router as aggregate_query_router
 import json
@@ -171,7 +173,9 @@ print("[OK] 菜单管理路由已注册")
 
 # 注册绩效工资审批路由
 app.include_router(performance_pay_router)
+app.include_router(performance_pay_history_router)
 app.include_router(performance_pay_template_router, prefix="/api/performance-pay-approval", tags=["绩效审批表模板"])
+app.include_router(performance_pay_export_router)
 print("[OK] 绩效工资审批路由已注册")
 
 # 注册模板导入测试路由

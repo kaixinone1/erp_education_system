@@ -1,0 +1,74 @@
+{
+  "reports": [
+    {
+      "id": "retirement_report_form",
+      "name": "退休呈报表",
+      "description": "教师退休呈报表",
+      "template_file": "templates/retirement_report_form.docx",
+      "output_format": "docx",
+      "page_settings": {
+        "paper_size": "A4",
+        "orientation": "portrait",
+        "margin_top": 2.54,
+        "margin_bottom": 2.54,
+        "margin_left": 3.17,
+        "margin_right": 3.17
+      },
+      "data_mapping": {
+        "教师姓名": "teacher_name",
+        "身份证号": "id_card",
+        "出生日期": "birth_date",
+        "参加工作时间": "work_start_date",
+        "退休日期": "retirement_date",
+        "职务": "position",
+        "职称": "title"
+      }
+    },
+    {
+      "id": "position_upgrade_form",
+      "name": "职务升降表",
+      "description": "教师职务升降表",
+      "template_file": "templates/position_upgrade_form.docx",
+      "output_format": "docx",
+      "page_settings": {
+        "paper_size": "A4",
+        "orientation": "portrait",
+        "margin_top": 2.54,
+        "margin_bottom": 2.54,
+        "margin_left": 3.17,
+        "margin_right": 3.17
+      },
+      "data_mapping": {
+        "教师姓名": "teacher_name",
+        "身份证号": "id_card",
+        "原职务": "original_position",
+        "新职务": "new_position",
+        "变动日期": "change_date",
+        "变动原因": "change_reason"
+      }
+    },
+    {
+      "id": "retirement_treatment_approval",
+      "name": "退休待遇审批表",
+      "description": "退休待遇审批表",
+      "template_file": "templates/retirement_treatment_approval.docx",
+      "output_format": "docx",
+      "page_settings": {
+        "paper_size": "A4",
+        "orientation": "portrait",
+        "margin_top": 2.54,
+        "margin_bottom": 2.54,
+        "margin_left": 3.17,
+        "margin_right": 3.17
+      },
+      "data_mapping": {
+        "教师姓名": "teacher_name",
+        "身份证号": "id_card",
+        "退休前职务": "pre_retirement_position",
+        "退休前职称": "pre_retirement_title",
+        "工作年限": "work_years",
+        "退休待遇": "retirement_benefits"
+      }
+    }
+  ]
+}

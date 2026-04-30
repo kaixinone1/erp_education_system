@@ -518,14 +518,12 @@ const handleSave = async () => {
 
 const handleExport = async (format: string) => {
   if (format === 'print') {
-    // 创建打印窗口
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
       ElMessage.error('无法打开打印窗口，请允许弹出窗口')
       return
     }
     
-    // 获取表格HTML内容
     const printArea = document.getElementById('printArea')
     if (!printArea) {
       ElMessage.error('未找到打印内容')
@@ -533,7 +531,6 @@ const handleExport = async (format: string) => {
       return
     }
     
-    // 构建打印页面
     const printContent = `
       <!DOCTYPE html>
       <html>
@@ -541,44 +538,12 @@ const handleExport = async (format: string) => {
         <meta charset="utf-8">
         <title>绩效工资审批表</title>
         <style>
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-          body {
-            font-family: SimSun, Songti SC, serif;
-            background: white;
-          }
-          .a4-container {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            margin: 0 auto;
-            background: white;
-          }
-          table {
-            border-collapse: collapse;
-            width: 100%;
-            table-layout: fixed;
-            page-break-inside: avoid;
-          }
-          td {
-            border: 1px solid #000;
-            padding: 4px 6px;
-            font-size: 11px;
-            vertical-align: top;
-            page-break-inside: avoid;
-          }
-          @media print {
-            body {
-              margin: 0;
-              padding: 0;
-            }
-            .a4-container {
-              box-shadow: none;
-            }
-          }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: SimSun, Songti SC, serif; background: white; }
+          .a4-container { width: 210mm; min-height: 297mm; padding: 15mm; margin: 0 auto; background: white; }
+          table { border-collapse: collapse; width: 100%; table-layout: fixed; page-break-inside: avoid; }
+          td { border: 1px solid #000; padding: 4px 6px; font-size: 11px; vertical-align: top; page-break-inside: avoid; }
+          @media print { body { margin: 0; padding: 0; } .a4-container { box-shadow: none; } }
         </style>
       </head>
       <body>
@@ -587,17 +552,12 @@ const handleExport = async (format: string) => {
       </html>
     `
     
-    // 写入打印窗口
     printWindow.document.write(printContent)
     printWindow.document.close()
     
-    // 等待内容加载后执行打印
     printWindow.onload = () => {
       printWindow.print()
-      // 打印后自动关闭窗口
-      setTimeout(() => {
-        printWindow.close()
-      }, 100)
+      setTimeout(() => { printWindow.close() }, 100)
     }
     
     return
@@ -605,22 +565,54 @@ const handleExport = async (format: string) => {
   
   exporting.value = true
   try {
-    const response = await fetch(`/api/performance-pay-approval/export?format=${format}`, {
+    const exportData = {
+      年月: currentYearMonth.value,
+      填报单位: '太平中心学校',
+      填报时间: getCurrentDate(),
+      绩效人数合计: dynamicData.totals.performance_count || 0,
+      绩效工资合计: dynamicData.totals.performance_total || 0,
+      在职人数: dynamicData.subsidies.count || 0,
+      乡镇补贴标准: dynamicData.subsidies.standard || 350,
+      乡镇补贴合计: dynamicData.subsidies.total || 0,
+      遗留问题人数: dynamicData.totals.legacy_count || 0,
+      遗留问题金额: dynamicData.totals.legacy_total || 0,
+      无补贴人数: dynamicData.no_subsidy_count || 0,
+      无补贴名单: dynamicData.no_subsidy_names || '',
+      退休干部: dynamicData.retirees.cadre_count || 0,
+      退休职工: dynamicData.retirees.worker_count || 0,
+      离休干部人数: dynamicData.retirees.retired_count || 0,
+      备注: dynamicData.notes || ''
+    }
+    
+    const response = await fetch('/api/performance-pay-export/excel', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 年月: currentYearMonth.value })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: exportData,
+        year_month: currentYearMonth.value
+      })
     })
-    if (!response.ok) throw new Error('导出失败')
+    
+    if (!response.ok) {
+      throw new Error('导出失败')
+    }
     
     const blob = await response.blob()
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `绩效工资审批表_${currentYearMonth.value}.${format === 'excel' ? 'xlsx' : 'pdf'}`
+    a.download = `绩效工资审批表_${currentYearMonth.value}.xlsx`
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
-    ElMessage.success(`已导出 ${format.toUpperCase()} 格式`)
+    
+    ElMessage.success('已导出 Excel 格式')
+    
   } catch (error: any) {
+    console.error('导出错误:', error)
     ElMessage.error(error.message || '导出失败')
   } finally {
     exporting.value = false

@@ -1,0 +1,30 @@
+{
+  "config_name": "学历字典字段配置",
+  "display_name": "学历字典字段配置",
+  "chinese_title": "学历字典字段配置",
+  "table_name": "dict_education_dictionary",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "学历类型",
+      "targetField": "学历类型",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": true,
+      "unique": true,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-02-07T23:46:34.425496",
+  "updated_at": "2026-02-07T23:46:34.425496"
+}

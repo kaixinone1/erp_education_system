@@ -1,0 +1,30 @@
+{
+  "config_name": "乡镇补贴标准字典",
+  "display_name": "乡镇补贴标准字典",
+  "chinese_title": "乡镇补贴标准字典",
+  "table_name": "work_dict_dictionary",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "乡镇补贴标准",
+      "targetField": "乡镇补贴标准",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-04-24T15:22:35.408985",
+  "updated_at": "2026-04-24T15:22:35.408985"
+}

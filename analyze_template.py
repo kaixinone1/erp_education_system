@@ -1,59 +1,30 @@
-#!/usr/bin/env python3
-"""分析模板ID的存储和流转"""
-import psycopg2
-import json
+import zipfile
+import xml.etree.ElementTree as ET
 
-conn = psycopg2.connect(
-    host="localhost",
-    port="5432",
-    database="taiping_education",
-    user="taiping_user",
-    password="taiping_password"
-)
-cursor = conn.cursor()
-
-print("=" * 70)
-print("1. 数据库中的文档模板")
-print("=" * 70)
-cursor.execute("""
-    SELECT id, template_id, template_name, file_name, created_at
-    FROM document_templates
-    ORDER BY created_at DESC
-""")
-for row in cursor.fetchall():
-    print(f"\nID: {row[0]}")
-    print(f"  template_id: {row[1]}")
-    print(f"  template_name: {row[2]}")
-    print(f"  file_name: {row[3]}")
-    print(f"  created_at: {row[4]}")
-
-print("\n" + "=" * 70)
-print("2. 清单模板中配置的template_id")
-print("=" * 70)
-cursor.execute("""
-    SELECT id, 清单名称, 任务项列表
-    FROM checklist_templates
-    WHERE 是否有效 = true
-""")
-for row in cursor.fetchall():
-    print(f"\n清单: {row[1]} (ID: {row[0]})")
-    tasks = row[2] if row[2] else []
-    for task in tasks:
-        if task.get('类型') == '填报':
-            params = task.get('参数', {})
-            template_id = params.get('template_id') or params.get('模板ID')
-            if template_id:
-                print(f"  任务: {task.get('标题')}")
-                print(f"    template_id: {template_id}")
-
-print("\n" + "=" * 70)
-print("3. 检查模板文件是否存在")
-print("=" * 70)
-cursor.execute("SELECT template_id, file_path FROM document_templates")
-for row in cursor.fetchall():
-    import os
-    exists = "✓ 存在" if os.path.exists(row[1]) else "✗ 不存在"
-    print(f"{row[0]}: {exists}")
-
-cursor.close()
-conn.close()
+# 解析Excel模板
+with zipfile.ZipFile(r'd:\erp_thirteen\数据库信息\模板\义务教育学校教职工绩效工资审批表(1).html', 'r') as z:
+    # 读取sheet数据
+    with z.open('xl/worksheets/sheet1.xml') as f:
+        tree = ET.parse(f)
+        root = tree.getroot()
+        
+        ns = {'': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+        
+        # 获取列宽
+        cols = root.findall('.//{http://schemas.openxmlformats.org/spreadsheetml/2006/main}col')
+        print('=== 列宽配置 ===')
+        for col in cols:
+            print(f"列{col.get('min')}-{col.get('max')}: {col.get('width')} 字符")
+        
+        # 获取行高
+        rows = root.findall('.//{http://schemas.openxmlformats.org/spreadsheetml/2006/main}row')
+        print(f'\n=== 总行数: {len(rows)} ===')
+        print('行高配置:')
+        for i, row in enumerate(rows):
+            print(f"行{i+1}: {row.get('ht')}pt")
+        
+        # 获取合并单元格
+        merges = root.findall('.//{http://schemas.openxmlformats.org/spreadsheetml/2006/main}mergeCell')
+        print(f'\n=== 合并单元格数量: {len(merges)} ===')
+        for merge in merges[:20]:
+            print(f"  {merge.get('ref')}")

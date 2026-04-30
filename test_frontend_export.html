@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>绩效工资审批表导出测试</title>
+    <style>
+        body { font-family: SimSun, serif; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        button { padding: 10px 20px; font-size: 16px; background: #409EFF; color: white; border: none; cursor: pointer; }
+        button:hover { background: #67c23a; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>绩效工资审批表导出测试</h1>
+        <p>点击按钮测试导出功能：</p>
+        <button onclick="testExport()">导出Excel</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function testExport() {
+            const result = document.getElementById('result');
+            result.innerHTML = '正在导出...';
+            
+            try {
+                // 模拟前端数据
+                const exportData = {
+                    '年月': '2026年5月',
+                    '填报单位': '太平中心学校',
+                    '填报时间': '2026年4月30日',
+                    '绩效人数合计': 50,
+                    '绩效工资合计': 65000,
+                    '在职人数': 45,
+                    '乡镇补贴标准': 350,
+                    '乡镇补贴合计': 15750,
+                    '遗留问题人数': 2,
+                    '遗留问题金额': 3000,
+                    '无补贴人数': 5,
+                    '无补贴名单': '张三、李四、王五',
+                    '退休干部': 3,
+                    '退休职工': 5,
+                    '离休干部人数': 1,
+                    '备注': '测试数据'
+                };
+
+                const response = await fetch('http://localhost:8000/api/performance-pay-export/excel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: exportData,
+                        year_month: '2026年5月'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP错误: ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '绩效工资审批表_2026年5月.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                result.innerHTML = '<span style="color: green;">✅ 导出成功！文件已下载</span>';
+                
+            } catch (error) {
+                result.innerHTML = `<span style="color: red;">❌ 导出失败: ${error.message}</span>`;
+                console.error('导出错误:', error);
+            }
+        }
+    </script>
+</body>
+</html>
