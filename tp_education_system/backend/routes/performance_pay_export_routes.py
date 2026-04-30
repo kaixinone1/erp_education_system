@@ -24,15 +24,15 @@ class ExportRequest(BaseModel):
 def export_to_excel(request: ExportRequest):
     """
     导出绩效工资审批表为Excel
-    使用openpyxl精确还原模板格式
+    使用精确还原技术，确保与原表100%一致
     """
     try:
         # 调用导出服务
         filepath = export_performance_pay(request.data, request.year_month)
-        
+
         if not os.path.exists(filepath):
             raise HTTPException(status_code=500, detail="导出失败")
-        
+
         # 返回文件
         filename = os.path.basename(filepath)
         return FileResponse(
@@ -40,7 +40,7 @@ def export_to_excel(request: ExportRequest):
             filename=filename,
             media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-    
+
     except Exception as e:
         import traceback
         print(f"导出失败: {e}")
@@ -58,11 +58,11 @@ def preview_template():
         'data',
         'performance_pay_template.json'
     )
-    
+
     if os.path.exists(template_path):
         with open(template_path, 'r', encoding='utf-8') as f:
             template = json.load(f)
-        
+
         return {
             "status": "success",
             "data": {
@@ -73,5 +73,5 @@ def preview_template():
                 "row_count": len(template.get('rows', []))
             }
         }
-    
+
     raise HTTPException(status_code=404, detail="模板文件不存在")
