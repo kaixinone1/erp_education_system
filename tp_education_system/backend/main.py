@@ -23,6 +23,7 @@ from routes.universal_template_routes import router as universal_template_router
 from routes.todo_system_routes import router as todo_system_router
 from routes.menu_routes_new import router as menu_router
 from routes.performance_pay_routes import router as performance_pay_router
+from routes.performance_pay_template import router as performance_pay_template_router
 from routes.template_import_test import router as template_import_test_router
 from routes.aggregate_query_routes import router as aggregate_query_router
 import json
@@ -44,6 +45,10 @@ EXPORT_DIR = os.path.join(os.path.dirname(__file__), "uploads", "exports")
 os.makedirs(EXPORT_DIR, exist_ok=True)
 app.mount("/template-files", StaticFiles(directory=UPLOAD_DIR), name="template-files")
 app.mount("/exports", StaticFiles(directory=EXPORT_DIR), name="exports")
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+TEMPLATE_DIR = os.path.join(STATIC_DIR, "templates")
+app.mount("/templates", StaticFiles(directory=TEMPLATE_DIR), name="templates")
 
 # 配置文件路径
 CONFIG_DIR = os.path.join(os.path.dirname(__file__), 'config')
@@ -106,6 +111,11 @@ NAVIGATION_DATA = load_navigation_from_file()
 
 @app.get("/")
 def root():
+    import os
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(index_path):
+        from fastapi.responses import FileResponse
+        return FileResponse(index_path)
     return {"message": "Backend is running"}
 
 # 导航API - 使用 navigation.json 文件
@@ -161,6 +171,7 @@ print("[OK] 菜单管理路由已注册")
 
 # 注册绩效工资审批路由
 app.include_router(performance_pay_router)
+app.include_router(performance_pay_template_router, prefix="/api/performance-pay-approval", tags=["绩效审批表模板"])
 print("[OK] 绩效工资审批路由已注册")
 
 # 注册模板导入测试路由

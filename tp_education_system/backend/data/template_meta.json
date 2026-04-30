@@ -1,0 +1,3242 @@
+{
+  "page_setup": {
+    "margins": {
+      "top": 72,
+      "right": 54,
+      "bottom": 72,
+      "left": 54
+    },
+    "paper_width": 595,
+    "paper_height": 842,
+    "orientation": "portrait",
+    "table_width": 2549.8
+  },
+  "col_widths": [],
+  "rows": [
+    {
+      "height": "54",
+      "cells": [
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "54",
+          "style": "height:27.00pt;width:79.60pt;",
+          "class": [
+            "xl68"
+          ],
+          "width": "159.20"
+        },
+        {
+          "text": "2026年5月",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "width:119.10pt;border-right:none;border-bottom:none;",
+          "class": [
+            "xl69"
+          ],
+          "width": "238.20"
+        },
+        {
+          "text": "义务教育学校教职工绩效工资审批表",
+          "rowspan": 1,
+          "colspan": 5,
+          "height": "",
+          "style": "width:270.25pt;mso-ignore:colspan;",
+          "class": [
+            "xl70"
+          ],
+          "width": "540.50"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:22.50pt;",
+          "class": [
+            "xl70"
+          ],
+          "width": "45"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:63.35pt;",
+          "class": [
+            "xl71"
+          ],
+          "width": "126.70"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:49.75pt;",
+          "class": [
+            "xl72"
+          ],
+          "width": "99.50"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:58.65pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "117.30"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:88.50pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "177"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:66.00pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "132"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50.80pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": "101.60"
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "填报单位：",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "太平镇中心学校",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl67"
+          ],
+          "width": ""
+        },
+        {
+          "text": "填报时间:",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl73"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2026年4月28日",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl74"
+          ],
+          "width": ""
+        },
+        {
+          "text": "单位：",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl73"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人、元",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 13,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "项目",
+          "rowspan": 2,
+          "colspan": 1,
+          "height": "100",
+          "style": "height:50.00pt;border-right:.5pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl75"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人数",
+          "rowspan": 2,
+          "colspan": 1,
+          "height": "",
+          "style": "border-right:.5pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl76"
+          ],
+          "width": ""
+        },
+        {
+          "text": "标准",
+          "rowspan": 2,
+          "colspan": 1,
+          "height": "",
+          "style": "border-right:.5pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl76"
+          ],
+          "width": ""
+        },
+        {
+          "text": "小计",
+          "rowspan": 2,
+          "colspan": 1,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl77"
+          ],
+          "width": ""
+        },
+        {
+          "text": "呈报单位意见",
+          "rowspan": 8,
+          "colspan": 1,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl78"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl79"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 4,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl80"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl81"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "行政管理人员",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl85"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl86"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl86"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl87"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "1、副处级",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl88"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl90"
+          ],
+          "width": ""
+        },
+        {
+          "text": "据实填写，同意呈报。",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:none;",
+          "class": [
+            "xl91"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "2、正科级",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl88"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl90"
+          ],
+          "width": ""
+        },
+        {
+          "text": "（盖章）",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:none;",
+          "class": [
+            "xl93"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "3、副科级",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl88"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl90"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "4、科员级",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl88"
+          ],
+          "width": ""
+        },
+        {
+          "text": "5",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1185",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl95"
+          ],
+          "width": ""
+        },
+        {
+          "text": "5925",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl90"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "5、办事员级",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl96"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl97"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl97"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl98"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2026年4月28日",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl99"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "专业技术人员",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl101"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl102"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl102"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl103"
+          ],
+          "width": ""
+        },
+        {
+          "text": "教育局意见",
+          "rowspan": 9,
+          "colspan": 1,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl82"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl79"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 4,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl80"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl81"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "1、正高级",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl88"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl89"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1862",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl95"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl90"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "2、高级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl104"
+          ],
+          "width": ""
+        },
+        {
+          "text": "44",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1523",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "67012",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 11,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl108"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "3、一级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl109"
+          ],
+          "width": ""
+        },
+        {
+          "text": "136",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1309",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "178024",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "4、二级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl109"
+          ],
+          "width": ""
+        },
+        {
+          "text": "150",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1241",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "186150",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "（盖章）",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:none;",
+          "class": [
+            "xl93"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "5、三级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl110"
+          ],
+          "width": ""
+        },
+        {
+          "text": "19",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl111"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1128",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl112"
+          ],
+          "width": ""
+        },
+        {
+          "text": "21432",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl113"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "工人",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl114"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl115"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl115"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl116"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "1、高级技师",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl104"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "2、技师",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl104"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1331",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2662",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2026年4月29日",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl117"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "3、高级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl104"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1219",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人事部门意见",
+          "rowspan": 12,
+          "colspan": 1,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl119"
+          ],
+          "width": ""
+        },
+        {
+          "text": "根据相关文件及有关规定，经审核，同意你单位：",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:none;",
+          "class": [
+            "xl120"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "4、中级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl104"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1185",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "基础性绩效工资",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl122"
+          ],
+          "width": ""
+        },
+        {
+          "text": "357",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "462311",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "元；",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl125"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "5、初级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl104"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1106",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl106"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1106",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl107"
+          ],
+          "width": ""
+        },
+        {
+          "text": "生活补贴",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl122"
+          ],
+          "width": ""
+        },
+        {
+          "text": "356",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "124600",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "元；",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl125"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "6、普工",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl110"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl111"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1106",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl112"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl113"
+          ],
+          "width": ""
+        },
+        {
+          "text": "合计：",
+          "rowspan": 1,
+          "colspan": 4,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl126"
+          ],
+          "width": ""
+        },
+        {
+          "text": "586911",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl128"
+          ],
+          "width": ""
+        },
+        {
+          "text": "元",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl129"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "绩效工资合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl130"
+          ],
+          "width": ""
+        },
+        {
+          "text": "357",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl131"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl131"
+          ],
+          "width": ""
+        },
+        {
+          "text": "462311",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl132"
+          ],
+          "width": ""
+        },
+        {
+          "text": "岗位设置遗留",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl122"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "675.24",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "元。",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl125"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "乡镇补贴合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl133"
+          ],
+          "width": ""
+        },
+        {
+          "text": "356",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl134"
+          ],
+          "width": ""
+        },
+        {
+          "text": "350",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl134"
+          ],
+          "width": ""
+        },
+        {
+          "text": "124600",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl135"
+          ],
+          "width": ""
+        },
+        {
+          "text": "总计：",
+          "rowspan": 1,
+          "colspan": 4,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl126"
+          ],
+          "width": ""
+        },
+        {
+          "text": "587586.24",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl128"
+          ],
+          "width": ""
+        },
+        {
+          "text": "元",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl129"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "74",
+      "cells": [
+        {
+          "text": "岗位设置遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "74",
+          "style": "height:37.00pt;",
+          "class": [
+            "xl136"
+          ],
+          "width": ""
+        },
+        {
+          "text": "李发金",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl137"
+          ],
+          "width": ""
+        },
+        {
+          "text": "321.3",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl138"
+          ],
+          "width": ""
+        },
+        {
+          "text": "321.3",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl139"
+          ],
+          "width": ""
+        },
+        {
+          "text": "无乡镇补贴",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl122"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "人：",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl140"
+          ],
+          "width": ""
+        },
+        {
+          "text": "柯坤",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl125"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "74",
+      "cells": [
+        {
+          "text": "岗位设置遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "74",
+          "style": "height:37.00pt;",
+          "class": [
+            "xl141"
+          ],
+          "width": ""
+        },
+        {
+          "text": "张照凯",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl142"
+          ],
+          "width": ""
+        },
+        {
+          "text": "353.94",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl143"
+          ],
+          "width": ""
+        },
+        {
+          "text": "353.94",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl144"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 4,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl126"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl128"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl129"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "72",
+      "cells": [
+        {
+          "text": "岗位设置遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "72",
+          "style": "height:36.00pt;",
+          "class": [
+            "xl145"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl146"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl111"
+          ],
+          "width": ""
+        },
+        {
+          "text": "675.24",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl113"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "退休干部",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl147"
+          ],
+          "width": ""
+        },
+        {
+          "text": "447",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl148"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl149"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl150"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl83"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 3,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl84"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "退休工人",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl141"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl143"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl105"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl151"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:none;border-bottom:none;",
+          "class": [
+            "xl122"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl124"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 2,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:none;",
+          "class": [
+            "xl152"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "50",
+      "cells": [
+        {
+          "text": "离休干部",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "50",
+          "style": "height:25.00pt;",
+          "class": [
+            "xl153"
+          ],
+          "width": ""
+        },
+        {
+          "text": "1",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl146"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl111"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "",
+          "class": [
+            "xl154"
+          ],
+          "width": ""
+        },
+        {
+          "text": "2026年4月30日",
+          "rowspan": 1,
+          "colspan": 6,
+          "height": "",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl156"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "260",
+      "cells": [
+        {
+          "text": "备注：1.退休教师死亡2人：赵明安、候兴志",
+          "rowspan": 1,
+          "colspan": 11,
+          "height": "260",
+          "style": "height:130.00pt;border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "class": [
+            "xl158"
+          ],
+          "width": ""
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 12,
+          "height": "",
+          "style": "mso-ignore:colspan;",
+          "class": [
+            "xl66"
+          ],
+          "width": ""
+        }
+      ]
+    },
+    {
+      "height": "25",
+      "cells": [
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:80;",
+          "class": [],
+          "width": "159"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:44;",
+          "class": [],
+          "width": "88"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:75;",
+          "class": [],
+          "width": "150"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:54;",
+          "class": [],
+          "width": "108"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:35;",
+          "class": [],
+          "width": "70"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:51;",
+          "class": [],
+          "width": "102"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:102;",
+          "class": [],
+          "width": "203"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:29;",
+          "class": [],
+          "width": "58"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:23;",
+          "class": [],
+          "width": "45"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:63;",
+          "class": [],
+          "width": "127"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:50;",
+          "class": [],
+          "width": "100"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:51;",
+          "class": [],
+          "width": "102"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:59;",
+          "class": [],
+          "width": "117"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:89;",
+          "class": [],
+          "width": "177"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:66;",
+          "class": [],
+          "width": "132"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "height": "",
+          "style": "width:51;",
+          "class": [],
+          "width": "102"
+        }
+      ]
+    }
+  ],
+  "total_rows": 33
+}

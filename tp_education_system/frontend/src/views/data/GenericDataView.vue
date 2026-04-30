@@ -122,6 +122,65 @@
                     :value="option.value"
                   />
                 </el-select>
+                <!-- 现受聘岗位名称列(post_2) - 显示为下拉菜单 -->
+                <el-select
+                  v-else-if="field.name === 'post_2' && (tableName === 'information' || tableName.value === 'information')"
+                  :model-value="row[field.name]"
+                  size="small"
+                  style="width: 100%"
+                  @change="(val) => handlePostChange(row, 'post_2', val)"
+                >
+                  <el-option label="高级教师" value="高级教师" />
+                  <el-option label="一级教师" value="一级教师" />
+                  <el-option label="二级教师" value="二级教师" />
+                  <el-option label="三级教师" value="三级教师" />
+                </el-select>
+                <!-- 现受聘岗位等级列(post_level) - 显示为下拉菜单 -->
+                <el-select
+                  v-else-if="field.name === 'post_level' && (tableName === 'information' || tableName.value === 'information')"
+                  :model-value="row[field.name]"
+                  size="small"
+                  style="width: 100%"
+                  @change="(val) => handlePostChange(row, 'post_level', val)"
+                >
+                  <el-option-group label="专技岗位">
+                    <el-option label="一级专技" value="一级专技" />
+                    <el-option label="二级专技" value="二级专技" />
+                    <el-option label="三级专技" value="三级专技" />
+                    <el-option label="四级专技" value="四级专技" />
+                    <el-option label="五级专技" value="五级专技" />
+                    <el-option label="六级专技" value="六级专技" />
+                    <el-option label="七级专技" value="七级专技" />
+                    <el-option label="八级专技" value="八级专技" />
+                    <el-option label="九级专技" value="九级专技" />
+                    <el-option label="十级专技" value="十级专技" />
+                    <el-option label="11级专技" value="11级专技" />
+                    <el-option label="12级专技" value="12级专技" />
+                    <el-option label="13级专技" value="13级专技" />
+                  </el-option-group>
+                  <el-option-group label="工勤岗位">
+                    <el-option label="高级技师" value="高级技师" />
+                    <el-option label="技师" value="技师" />
+                    <el-option label="高级工" value="高级工" />
+                    <el-option label="中级工" value="中级工" />
+                    <el-option label="初级工" value="初级工" />
+                    <el-option label="普工" value="普工" />
+                  </el-option-group>
+                  <el-option-group label="管理岗位">
+                    <el-option label="九级管理" value="九级管理" />
+                  </el-option-group>
+                </el-select>
+                <!-- 现岗位聘用时间列(post_time) - 显示为日期选择器 -->
+                <el-date-picker
+                  v-else-if="field.name === 'post_time' && (tableName === 'information' || tableName.value === 'information')"
+                  :model-value="row[field.name]"
+                  size="small"
+                  type="month"
+                  value-format="YYYY.MM"
+                  placeholder="选择月份"
+                  style="width: 100%"
+                  @change="(val) => handlePostChange(row, 'post_time', val)"
+                />
                 <!-- 通用字典关联显示 - 如果存在 {字段名}_name 则显示中文名称 -->
                 <span v-else-if="row[getDictAlias(field.name)]">
                   {{ row[getDictAlias(field.name)] }}
@@ -198,8 +257,61 @@
           :label="field.label || field.source_name || field.name"
           :prop="field.name"
         >
+          <!-- 现受聘岗位名称 - 下拉菜单 -->
+          <el-select
+            v-if="field.name === 'post_2' && (tableName === 'information' || tableName.value === 'information')"
+            v-model="formData[field.name]"
+            placeholder="选择现受聘岗位名称"
+            style="width: 100%"
+          >
+            <el-option label="高级教师" value="高级教师" />
+            <el-option label="一级教师" value="一级教师" />
+            <el-option label="二级教师" value="二级教师" />
+            <el-option label="三级教师" value="三级教师" />
+          </el-select>
+          <el-select
+            v-else-if="field.name === 'post_level' && (tableName === 'information' || tableName.value === 'information')"
+            v-model="formData[field.name]"
+            placeholder="选择现受聘岗位等级"
+            style="width: 100%"
+          >
+            <el-option-group label="专技岗位">
+              <el-option label="一级专技" value="一级专技" />
+              <el-option label="二级专技" value="二级专技" />
+              <el-option label="三级专技" value="三级专技" />
+              <el-option label="四级专技" value="四级专技" />
+              <el-option label="五级专技" value="五级专技" />
+              <el-option label="六级专技" value="六级专技" />
+              <el-option label="七级专技" value="七级专技" />
+              <el-option label="八级专技" value="八级专技" />
+              <el-option label="九级专技" value="九级专技" />
+              <el-option label="十级专技" value="十级专技" />
+              <el-option label="11级专技" value="11级专技" />
+              <el-option label="12级专技" value="12级专技" />
+              <el-option label="13级专技" value="13级专技" />
+            </el-option-group>
+            <el-option-group label="工勤岗位">
+              <el-option label="高级技师" value="高级技师" />
+              <el-option label="技师" value="技师" />
+              <el-option label="高级工" value="高级工" />
+              <el-option label="中级工" value="中级工" />
+              <el-option label="初级工" value="初级工" />
+              <el-option label="普工" value="普工" />
+            </el-option-group>
+            <el-option-group label="管理岗位">
+              <el-option label="九级管理" value="九级管理" />
+            </el-option-group>
+          </el-select>
+          <el-date-picker
+            v-else-if="field.name === 'post_time' && (tableName === 'information' || tableName.value === 'information')"
+            v-model="formData[field.name]"
+            type="month"
+            value-format="YYYY.MM"
+            placeholder="选择月份"
+            style="width: 100%"
+          />
           <el-input
-            v-if="field.type === 'VARCHAR' || field.type === 'TEXT'"
+            v-else-if="field.type === 'VARCHAR' || field.type === 'TEXT'"
             v-model="formData[field.name]"
             :type="field.type === 'TEXT' ? 'textarea' : 'text'"
             :rows="field.type === 'TEXT' ? 3 : 1"
@@ -1193,6 +1305,54 @@ const updateTeacherStatus = async (teacherId: number, teacherName: string, oldSt
     // 刷新数据以恢复显示
     loadData()
   }
+}
+
+// 处理岗位变更
+const handlePostChange = async (row: any, fieldName: string, newValue: string) => {
+  const oldValue = row[fieldName]
+  const teacherName = row['name'] || row['姓名']
+  const recordId = row.id
+
+  console.log('岗位变更:', { teacherName, fieldName, oldValue, newValue })
+
+  if (newValue === oldValue) {
+    return
+  }
+
+  setTimeout(async () => {
+    try {
+      await ElMessageBox.confirm(
+        `确定要将 ${teacherName} 的"${fieldName}"从 "${oldValue}" 变更为 "${newValue}" 吗？`,
+        '确认岗位变更',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+
+      const response = await fetch(`/api/data/information/${recordId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [fieldName]: newValue })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        ElMessage.success('岗位更新成功')
+        loadData()
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || '更新失败')
+      }
+    } catch (error: any) {
+      if (error !== 'cancel') {
+        console.error('岗位变更失败:', error)
+        ElMessage.error(`岗位变更失败: ${error.message || '未知错误'}`)
+        loadData()
+      }
+    }
+  }, 100)
 }
 
 // 专用按钮事件

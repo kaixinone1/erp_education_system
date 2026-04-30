@@ -1,0 +1,1351 @@
+{
+  "page_setup": {
+    "margins": {
+      "top": 72,
+      "right": 54,
+      "bottom": 72,
+      "left": 54
+    },
+    "paper_width": 595,
+    "paper_height": 842,
+    "orientation": "portrait",
+    "original_table_width": 846.0,
+    "scale": 0.7033
+  },
+  "col_widths": [
+    "84",
+    "100",
+    "100",
+    "100",
+    "75",
+    "auto"
+  ],
+  "rows": [
+    {
+      "height": 27.0,
+      "cells": [
+        {
+          "text": "2026年5月 义务教育学校教职工绩效工资审批表",
+          "rowspan": 1,
+          "colspan": 6,
+          "class": "title",
+          "style": "text-align:center;font-size:16pt;font-weight:bold;border:none;margin-bottom:10px;",
+          "no_border": true
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "填报单位： 太平镇中心学校 填报时间: 2026年4月28日 单位： 人、元",
+          "rowspan": 1,
+          "colspan": 6,
+          "class": "info",
+          "style": "text-align:left;font-size:11pt;border:none;padding-left:5px;margin-bottom:5px;",
+          "no_border": true
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "项目",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl75",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "人数",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl76",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "标准",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl76",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "小计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl77",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "呈报单位意见",
+          "rowspan": 7,
+          "colspan": 1,
+          "class": "xl78",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "据实填写，同意呈报。（盖章）2026年4月28日",
+          "rowspan": 7,
+          "colspan": 1,
+          "class": "xl79",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "行政管理人员",
+          "rowspan": 1,
+          "colspan": 4,
+          "class": "xl80",
+          "style": "height:25.00pt;border-right:1.0pt solid windowtext;border-bottom:.5pt solid windowtext;",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "1、副处级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl83",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl85",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "2、正科级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl83",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl85",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "3、副科级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl83",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl85",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "4、科员级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl83",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl86",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl85",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "5、办事员级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl87",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl88",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl88",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl89",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "专业技术人员",
+          "rowspan": 1,
+          "colspan": 4,
+          "class": "xl90",
+          "style": "height:25.00pt;border-right:1.0pt solid windowtext;border-bottom:.5pt solid windowtext;",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "教育局意见",
+          "rowspan": 9,
+          "colspan": 1,
+          "class": "xl78",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "（盖章）2026年4月29日",
+          "rowspan": 9,
+          "colspan": 1,
+          "class": "xl93",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "1、正高级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl83",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl84",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl86",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl85",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "2、高级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl94",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "3、一级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl99",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "4、二级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl99",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "5、三级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl100",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl101",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl102",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl103",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "工人",
+          "rowspan": 1,
+          "colspan": 4,
+          "class": "xl104",
+          "style": "height:25.00pt;border-right:1.0pt solid windowtext;border-bottom:.5pt solid windowtext;",
+          "no_border": false,
+          "align": "left"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "1、高级技师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl94",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "2、技师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl94",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "3、高级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl94",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "人事部门意见",
+          "rowspan": 12,
+          "colspan": 1,
+          "class": "xl107",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "根据相关文件及有关规定，经审核，同意你单位：基础性绩效工资0人，0元；生活补贴0人，0元；合计0人，0元；岗位设置遗留0人，0元；总计0人，0元。无乡镇补贴0人，姓名。2026年4月29日",
+          "rowspan": 12,
+          "colspan": 1,
+          "class": "xl108",
+          "style": "border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "4、中级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl94",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "1185",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "5、初级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl94",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "1",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl95",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "1106",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl96",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "1106",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl97",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "6、普工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl100",
+          "style": "height:25.00pt;",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl101",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "1106",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl102",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "xl103",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "绩效工资合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "乡镇补贴合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 37.0,
+      "cells": [
+        {
+          "text": "岗位设置遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 37.0,
+      "cells": [
+        {
+          "text": "岗位设置遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 36.0,
+      "cells": [
+        {
+          "text": "岗位设置遗留问题合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "退休干部",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "退休工人",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "离休干部",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "1",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "",
+          "style": "",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 35.0,
+      "cells": [
+        {
+          "text": "备注：",
+          "rowspan": 1,
+          "colspan": 6,
+          "class": "xl131",
+          "style": "height:35.00pt;border-right:1.0pt solid windowtext;border-bottom:1.0pt solid windowtext;",
+          "no_border": false,
+          "align": "left",
+          "isNotesRow": true
+        }
+      ]
+    }
+  ],
+  "total_rows": 31,
+  "total_cols": 6
+}

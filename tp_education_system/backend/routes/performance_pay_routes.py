@@ -112,7 +112,20 @@ class YearMonthRequest(BaseModel):
 
 @router.get("/current")
 def get_current_month_data(year: int = datetime.now().year, month: int = datetime.now().month):
-    """获取当前月的数据"""
+    """获取指定月份的数据"""
+    filename = f"performance_pay_{year}_{month:02d}.json"
+    filepath = os.path.join(DATA_DIR, filename)
+    
+    if os.path.exists(filepath):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return {"status": "success", "data": data}
+    
+    return {"status": "success", "data": None}
+
+@router.get("/data/{year}/{month}")
+def get_month_data(year: int, month: int):
+    """获取指定月份的数据"""
     filename = f"performance_pay_{year}_{month:02d}.json"
     filepath = os.path.join(DATA_DIR, filename)
     
@@ -149,6 +162,33 @@ def save_data(data: PerformancePayData):
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data.dict(), f, ensure_ascii=False, indent=2)
         
+        # 保存教师状态快照（用于下月比较变化）
+        try:
+            teacher_snapshot = {}
+            conn2 = get_db_connection()
+            cursor2 = conn2.cursor()
+            cursor2.execute("""
+                SELECT t.id_card, t.name, t.employment_status, i.post_2
+                FROM teacher_basic_info t
+                LEFT JOIN information i ON t.id_card = i.id_card
+            """)
+            for row in cursor2.fetchall():
+                teacher_snapshot[row[0]] = {
+                    'name': row[1],
+                    'status': row[2],
+                    'post': row[3]
+                }
+            cursor2.close()
+            conn2.close()
+            
+            # 保存快照
+            snapshot_file = os.path.join(DATA_DIR, f'{year}_{month:02d}_teachers.json')
+            with open(snapshot_file, 'w', encoding='utf-8') as f:
+                json.dump(teacher_snapshot, f, ensure_ascii=False)
+            print(f"教师状态快照已保存: {snapshot_file}")
+        except Exception as e:
+            print(f"保存教师状态快照失败: {e}")
+        
         # 自动备份Excel
         try:
             from utils.excel_export import export_performance_pay_approval
@@ -177,10 +217,28 @@ def load_from_database(req: YearMonthRequest):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        data = {
-            '填报单位': '太平中心学校',
-            '年月': f"{req.year}年{req.month}月",
-            '填报时间': datetime.now().strftime('%Y年%m月%d日'),
+        result_data = {
+            'administrative': {},
+            'professional': {},
+            'worker': {},
+            'totals': {
+                'performance_count': 0,
+                'performance_total': 0,
+                'legacy_count': 0,
+                'legacy_total': 0
+            },
+            'subsidies': {
+                'count': 0,
+                'standard': 0,
+                'total': 0
+            },
+            'legacy': [],
+            'retirees': {
+                'cadre_count': 0,
+                'worker_count': 0,
+                'retired_count': 0
+            },
+            'notes': ''
         }
         
         salary_standards = {}
@@ -229,70 +287,128 @@ def load_from_database(req: YearMonthRequest):
         except Exception as e:
             print(f"读取岗位信息失败: {e}")
         
-        data['副处级人数'] = position_counts.get('副处级', 0)
-        data['副处级标准'] = salary_standards.get('副处级', 0)
-        data['正科级人数'] = position_counts.get('正科级', 0)
-        data['正科级标准'] = salary_standards.get('正科级', 0)
-        data['副科级人数'] = position_counts.get('副科级', 0)
-        data['副科级标准'] = salary_standards.get('副科级', 0)
-        data['科员级人数'] = position_counts.get('九级管理', position_counts.get('科员级', 0))
-        data['科员级标准'] = salary_standards.get('九级管理', salary_standards.get('科员级', 1185))
-        data['办事员级人数'] = position_counts.get('办事员级', 0)
-        data['办事员级标准'] = salary_standards.get('办事员级', 0)
+        result_data['administrative'] = {
+            '副处级': {
+                'count': position_counts.get('副处级', 0),
+                'standard': salary_standards.get('副处级', 0),
+                'subtotal': position_counts.get('副处级', 0) * salary_standards.get('副处级', 0)
+            },
+            '正科级': {
+                'count': position_counts.get('正科级', 0),
+                'standard': salary_standards.get('正科级', 0),
+                'subtotal': position_counts.get('正科级', 0) * salary_standards.get('正科级', 0)
+            },
+            '副科级': {
+                'count': position_counts.get('副科级', 0),
+                'standard': salary_standards.get('副科级', 0),
+                'subtotal': position_counts.get('副科级', 0) * salary_standards.get('副科级', 0)
+            },
+            '科员级': {
+                'count': position_counts.get('九级管理', position_counts.get('科员级', 0)),
+                'standard': salary_standards.get('九级管理', salary_standards.get('科员级', 1185)),
+                'subtotal': position_counts.get('九级管理', position_counts.get('科员级', 0)) * salary_standards.get('九级管理', salary_standards.get('科员级', 1185))
+            },
+            '办事员级': {
+                'count': position_counts.get('办事员级', 0),
+                'standard': salary_standards.get('办事员级', 0),
+                'subtotal': position_counts.get('办事员级', 0) * salary_standards.get('办事员级', 0)
+            }
+        }
         
-        data['正高级教师人数'] = position_counts.get('正高级教师', 0)
-        data['正高级教师标准'] = salary_standards.get('正高级教师', 1862)
-        data['高级教师人数'] = position_counts.get('高级教师', 0)
-        data['高级教师标准'] = salary_standards.get('高级教师', 1523)
-        data['一级教师人数'] = position_counts.get('一级教师', 0)
-        data['一级教师标准'] = salary_standards.get('一级教师', 1309)
-        data['二级教师人数'] = position_counts.get('二级教师', 0)
-        data['二级教师标准'] = salary_standards.get('二级教师', 1241)
-        data['三级教师人数'] = position_counts.get('三级教师', 0)
-        data['三级教师标准'] = salary_standards.get('三级教师', 1128)
+        result_data['professional'] = {
+            '正高级': {
+                'count': position_counts.get('正高级教师', 0),
+                'standard': salary_standards.get('正高级教师', 1862),
+                'subtotal': position_counts.get('正高级教师', 0) * salary_standards.get('正高级教师', 1862)
+            },
+            '高级教师': {
+                'count': position_counts.get('高级教师', 0),
+                'standard': salary_standards.get('高级教师', 1523),
+                'subtotal': position_counts.get('高级教师', 0) * salary_standards.get('高级教师', 1523)
+            },
+            '一级教师': {
+                'count': position_counts.get('一级教师', 0),
+                'standard': salary_standards.get('一级教师', 1309),
+                'subtotal': position_counts.get('一级教师', 0) * salary_standards.get('一级教师', 1309)
+            },
+            '二级教师': {
+                'count': position_counts.get('二级教师', 0),
+                'standard': salary_standards.get('二级教师', 1241),
+                'subtotal': position_counts.get('二级教师', 0) * salary_standards.get('二级教师', 1241)
+            },
+            '三级教师': {
+                'count': position_counts.get('三级教师', 0),
+                'standard': salary_standards.get('三级教师', 1128),
+                'subtotal': position_counts.get('三级教师', 0) * salary_standards.get('三级教师', 1128)
+            }
+        }
         
-        data['高级技师人数'] = position_counts.get('高级技师', 0)
-        data['高级技师标准'] = salary_standards.get('高级技师', 0)
-        data['技师人数'] = position_counts.get('技师', 0)
-        data['技师标准'] = salary_standards.get('技师', 1331)
-        data['高级工人数'] = position_counts.get('高级工', 0)
-        data['高级工标准'] = salary_standards.get('高级工', 1219)
-        data['中级工人数'] = position_counts.get('中级工', 0)
-        data['中级工标准'] = salary_standards.get('中级工', 1185)
-        data['初级工人数'] = position_counts.get('初级工', 0)
-        data['初级工标准'] = salary_standards.get('初级工', 1106)
-        data['普工人数'] = position_counts.get('普通工', position_counts.get('普工', 0))
-        data['普工标准'] = salary_standards.get('普通工', salary_standards.get('普工', 1106))
+        result_data['worker'] = {
+            '高级技师': {
+                'count': position_counts.get('高级技师', 0),
+                'standard': salary_standards.get('高级技师', 0),
+                'subtotal': position_counts.get('高级技师', 0) * salary_standards.get('高级技师', 0)
+            },
+            '技师': {
+                'count': position_counts.get('技师', 0),
+                'standard': salary_standards.get('技师', 1331),
+                'subtotal': position_counts.get('技师', 0) * salary_standards.get('技师', 1331)
+            },
+            '高级工': {
+                'count': position_counts.get('高级工', 0),
+                'standard': salary_standards.get('高级工', 1219),
+                'subtotal': position_counts.get('高级工', 0) * salary_standards.get('高级工', 1219)
+            },
+            '中级工': {
+                'count': position_counts.get('中级工', 0),
+                'standard': salary_standards.get('中级工', 1185),
+                'subtotal': position_counts.get('中级工', 0) * salary_standards.get('中级工', 1185)
+            },
+            '初级工': {
+                'count': position_counts.get('初级工', 0),
+                'standard': salary_standards.get('初级工', 1106),
+                'subtotal': position_counts.get('初级工', 0) * salary_standards.get('初级工', 1106)
+            }
+        }
         
         total_count = sum([
-            data['副处级人数'], data['正科级人数'], data['副科级人数'],
-            data['科员级人数'], data['办事员级人数'],
-            data['正高级教师人数'], data['高级教师人数'],
-            data['一级教师人数'], data['二级教师人数'], data['三级教师人数'],
-            data['高级技师人数'], data['技师人数'], data['高级工人数'],
-            data['中级工人数'], data['初级工人数'], data['普工人数']
+            result_data['administrative']['副处级']['count'],
+            result_data['administrative']['正科级']['count'],
+            result_data['administrative']['副科级']['count'],
+            result_data['administrative']['科员级']['count'],
+            result_data['administrative']['办事员级']['count'],
+            result_data['professional']['正高级']['count'],
+            result_data['professional']['高级教师']['count'],
+            result_data['professional']['一级教师']['count'],
+            result_data['professional']['二级教师']['count'],
+            result_data['professional']['三级教师']['count'],
+            result_data['worker']['高级技师']['count'],
+            result_data['worker']['技师']['count'],
+            result_data['worker']['高级工']['count'],
+            result_data['worker']['中级工']['count'],
+            result_data['worker']['初级工']['count']
         ])
-        data['绩效人数合计'] = total_count
         
         total_amount = sum([
-            data['副处级人数'] * data['副处级标准'],
-            data['正科级人数'] * data['正科级标准'],
-            data['副科级人数'] * data['副科级标准'],
-            data['科员级人数'] * data['科员级标准'],
-            data['办事员级人数'] * data['办事员级标准'],
-            data['正高级教师人数'] * data['正高级教师标准'],
-            data['高级教师人数'] * data['高级教师标准'],
-            data['一级教师人数'] * data['一级教师标准'],
-            data['二级教师人数'] * data['二级教师标准'],
-            data['三级教师人数'] * data['三级教师标准'],
-            data['高级技师人数'] * data['高级技师标准'],
-            data['技师人数'] * data['技师标准'],
-            data['高级工人数'] * data['高级工标准'],
-            data['中级工人数'] * data['中级工标准'],
-            data['初级工人数'] * data['初级工标准'],
-            data['普工人数'] * data['普工标准']
+            result_data['administrative']['副处级']['subtotal'],
+            result_data['administrative']['正科级']['subtotal'],
+            result_data['administrative']['副科级']['subtotal'],
+            result_data['administrative']['科员级']['subtotal'],
+            result_data['administrative']['办事员级']['subtotal'],
+            result_data['professional']['正高级']['subtotal'],
+            result_data['professional']['高级教师']['subtotal'],
+            result_data['professional']['一级教师']['subtotal'],
+            result_data['professional']['二级教师']['subtotal'],
+            result_data['professional']['三级教师']['subtotal'],
+            result_data['worker']['高级技师']['subtotal'],
+            result_data['worker']['技师']['subtotal'],
+            result_data['worker']['高级工']['subtotal'],
+            result_data['worker']['中级工']['subtotal'],
+            result_data['worker']['初级工']['subtotal']
         ])
-        data['绩效工资合计'] = total_amount
+        
+        result_data['totals']['performance_count'] = total_count
+        result_data['totals']['performance_total'] = total_amount
         
         # 乡镇补贴人数：同时勾选了"绩效"和"乡镇补贴"标签的人员
         subsidy_employee_ids = set()
@@ -308,7 +424,6 @@ def load_from_database(req: YearMonthRequest):
                 performance_id = performance_tag[0]
                 subsidy_id = subsidy_tag[0]
                 
-                # 获取同时拥有这两个标签的人员ID（使用 intersect）
                 cursor.execute("""
                     SELECT employee_id FROM employee_tag_relations WHERE tag_id = %s
                     INTERSECT
@@ -319,30 +434,57 @@ def load_from_database(req: YearMonthRequest):
                     if row[0]:
                         subsidy_employee_ids.add(row[0])
                 
-                data['在职人数'] = len(subsidy_employee_ids)
+                result_data['subsidies']['count'] = len(subsidy_employee_ids)
                 print(f"同时有绩效和乡镇补贴标签的人员数量: {len(subsidy_employee_ids)}")
             else:
-                data['在职人数'] = 0
+                result_data['subsidies']['count'] = 0
         except Exception as e:
             print(f"读取乡镇补贴人数失败: {e}")
-            data['在职人数'] = 0
-        
+            result_data['subsidies']['count'] = 0
+    
         # 乡镇补贴标准
-        data['乡镇补贴标准'] = 350
+        result_data['subsidies']['standard'] = 350
         try:
             cursor.execute("SELECT subsidy_amount FROM town_subsidy_standards WHERE is_active = true LIMIT 1")
             row = cursor.fetchone()
             if row and row[0]:
-                data['乡镇补贴标准'] = float(row[0])
+                result_data['subsidies']['standard'] = float(row[0])
         except Exception as e:
             print(f"读取乡镇补贴标准失败: {e}")
         
-        data['乡镇补贴合计'] = data['在职人数'] * data['乡镇补贴标准']
+        result_data['subsidies']['total'] = result_data['subsidies']['count'] * result_data['subsidies']['standard']
+        
+        # 有绩效标签但没有乡镇补贴的人员名单
+        no_subsidy_names = []
+        try:
+            print("=== 开始查询无乡镇补贴人员 ===")
+            cursor.execute("""
+                SELECT t.name 
+                FROM teacher_basic_info t
+                JOIN employee_tag_relations etr1 ON t.id = etr1.employee_id
+                JOIN personal_dict_dictionary pdd1 ON etr1.tag_id = pdd1.id
+                WHERE pdd1.biao_qian = '绩效工资'
+                AND NOT EXISTS (
+                    SELECT 1 FROM employee_tag_relations etr2
+                    JOIN personal_dict_dictionary pdd2 ON etr2.tag_id = pdd2.id
+                    WHERE etr2.employee_id = t.id AND pdd2.biao_qian = '乡镇补贴'
+                )
+            """)
+            
+            for row in cursor.fetchall():
+                if row[0]:
+                    no_subsidy_names.append(row[0])
+            
+            print(f"有绩效但无乡镇补贴的人员名单: {no_subsidy_names}")
+            
+            result_data['no_subsidy_names'] = '、'.join(no_subsidy_names) if no_subsidy_names else ''
+            result_data['no_subsidy_count'] = len(no_subsidy_names)
+        except Exception as e:
+            print(f"读取无乡镇补贴人员失败: {e}")
+            result_data['no_subsidy_names'] = ''
+            result_data['no_subsidy_count'] = 0
         
         # 退休人员统计 - 支持数字和中文两种存储方式
-        data['退休干部'] = 0
-        data['退休职工'] = 0
-        data['离休干部人数'] = 0
         try:
             # 退休干部 = 任职状态为"退休" 且 个人身份为"干部"或"1"
             cursor.execute("""
@@ -352,7 +494,7 @@ def load_from_database(req: YearMonthRequest):
                 WHERE tbi.employment_status = '退休' AND (tpi.ge_ren_shen_fen = '1' OR tpi.ge_ren_shen_fen = '干部')
             """)
             row = cursor.fetchone()
-            data['退休干部'] = int(row[0] or 0) if row else 0
+            result_data['retirees']['cadre_count'] = int(row[0] or 0) if row else 0
             
             # 退休工人 = 任职状态为"退休" 且 个人身份为"工人"或"2"
             cursor.execute("""
@@ -362,23 +504,19 @@ def load_from_database(req: YearMonthRequest):
                 WHERE tbi.employment_status = '退休' AND (tpi.ge_ren_shen_fen = '2' OR tpi.ge_ren_shen_fen = '工人')
             """)
             row = cursor.fetchone()
-            data['退休职工'] = int(row[0] or 0) if row else 0
+            result_data['retirees']['worker_count'] = int(row[0] or 0) if row else 0
             
             # 离休干部 = 任职状态为"离休"
             cursor.execute("SELECT COUNT(*) FROM teacher_basic_info WHERE employment_status = '离休'")
             row = cursor.fetchone()
-            data['离休干部人数'] = int(row[0] or 0) if row else 0
+            result_data['retirees']['retired_count'] = int(row[0] or 0) if row else 0
             
-            print(f"退休干部: {data['退休干部']}, 退休职工: {data['退休职工']}, 离休干部: {data['离休干部人数']}")
+            print(f"退休干部: {result_data['retirees']['cadre_count']}, 退休职工: {result_data['retirees']['worker_count']}, 离休干部: {result_data['retirees']['retired_count']}")
         except Exception as e:
             print(f"读取退休人数失败: {e}")
         
         # 遗留问题 - 从 personal_statistics 表读取
-        data['遗留问题详情'] = ''
-        data['遗留问题人数'] = 0
-        data['遗留问题金额'] = 0
         try:
-            # 读取所有遗留问题人员 - field_63是字符串类型
             cursor.execute("""
                 SELECT name, field_63 
                 FROM personal_statistics 
@@ -396,65 +534,198 @@ def load_from_database(req: YearMonthRequest):
                     except:
                         pass
                 
-                data['遗留问题人数'] = len(names)
-                data['遗留问题金额'] = total_amount
-                data['遗留问题详情'] = '、'.join(names)
+                result_data['totals']['legacy_count'] = len(names)
+                result_data['totals']['legacy_total'] = total_amount
+                result_data['legacy'] = [{'name': row[0], 'amount': float(row[1]) if row[1] else 0} for row in rows]
                 
-            print(f"遗留问题人数: {data['遗留问题人数']}, 金额: {data['遗留问题金额']}, 详情: {data['遗留问题详情']}")
+            print(f"遗留问题人数: {result_data['totals']['legacy_count']}, 金额: {result_data['totals']['legacy_total']}")
         except Exception as e:
-            print(f"读取乡镇补贴标准失败: {e}")
+            print(f"读取遗留问题失败: {e}")
         
-        # 无补贴人数：有"绩效工资"标签但没有"乡镇补贴"标签的人员
-        data['无补贴人数'] = 0
-        data['无补贴名单'] = ''
         try:
-            # 获取绩效工资标签的ID
-            cursor.execute("SELECT id FROM personal_dict_dictionary WHERE biao_qian = '绩效工资'")
-            performance_tag = cursor.fetchone()
-            # 获取乡镇补贴标签的ID
-            cursor.execute("SELECT id FROM personal_dict_dictionary WHERE biao_qian = '乡镇补贴'")
-            subsidy_tag = cursor.fetchone()
+            report_month = f"{req.year}-{req.month:02d}"
             
-            if performance_tag:
-                performance_id = performance_tag[0]
+            cursor.execute("""
+                SELECT remark_type, teacher_name, original_status, new_status, 
+                       original_post, new_post, change_category, change_detail
+                FROM performance_pay_remarks
+                WHERE report_period = %s
+                ORDER BY id
+            """, (report_month,))
+            
+            remarks_records = cursor.fetchall()
+            
+            notes_groups = {}
+            
+            for row in remarks_records:
+                remark_type = row[0]
+                teacher_name = row[1]
+                original_status = row[2] if row[2] else ''
+                new_status = row[3] if row[3] else ''
+                original_post = row[4] if row[4] else ''
+                new_post = row[5] if row[5] else ''
+                change_category = row[6] if row[6] else ''
+                change_detail = row[7] if row[7] else ''
                 
-                # 获取所有有绩效工资标签的人员
-                cursor.execute("SELECT employee_id FROM employee_tag_relations WHERE tag_id = %s", (performance_id,))
-                performance_employees = set(row[0] for row in cursor.fetchall() if row[0])
+                key = None
+                group_label = ''
                 
-                if subsidy_tag:
-                    subsidy_id = subsidy_tag[0]
-                    # 获取有乡镇补贴标签的人员
-                    cursor.execute("SELECT employee_id FROM employee_tag_relations WHERE tag_id = %s", (subsidy_id,))
-                    subsidy_employees = set(row[0] for row in cursor.fetchall() if row[0])
-                    
-                    # 无补贴 = 有绩效但没有乡镇补贴
-                    no_subsidy_ids = performance_employees - subsidy_employees
-                else:
-                    no_subsidy_ids = performance_employees
+                if change_category == 'status_change':
+                    if new_status in ['调离']:
+                        level = original_post if original_post else '教师'
+                        key = f'调离_{level}'
+                        group_label = f'{level}调离'
+                    elif new_status in ['调出']:
+                        level = original_post if original_post else '教师'
+                        key = f'调出_{level}'
+                        group_label = f'{level}调出'
+                    elif new_status in ['离职']:
+                        level = original_post if original_post else '教师'
+                        key = f'离职_{level}'
+                        group_label = f'{level}离职'
+                    elif new_status in ['辞职']:
+                        level = original_post if original_post else '教师'
+                        key = f'辞职_{level}'
+                        group_label = f'{level}辞职'
+                    elif new_status in ['死亡']:
+                        if original_status == '退休':
+                            key = '去世_退休'
+                            group_label = '退休教师死亡'
+                        else:
+                            level = original_post if original_post else '教师'
+                            key = f'死亡_{level}'
+                            if level == '教师':
+                                group_label = '教师死亡'
+                            else:
+                                group_label = f'{level}死亡'
+                    elif new_status in ['退休'] and original_status == '在职':
+                        level = original_post if original_post else '教师'
+                        key = f'退休_{level}'
+                        if level == '教师':
+                            group_label = '教师退休'
+                        else:
+                            group_label = f'{level}退休'
+                    elif new_status in ['病休']:
+                        level = original_post if original_post else '教师'
+                        key = f'病休_{level}'
+                        group_label = f'{level}病休'
+                    elif new_status in ['延迟退休']:
+                        level = original_post if original_post else '教师'
+                        key = f'延迟退休_{level}'
+                        group_label = f'{level}延迟退休'
+                    elif new_status in ['在职'] and original_status == '退休':
+                        level = original_post if original_post else '教师'
+                        key = f'返聘_{level}'
+                        group_label = f'{level}返聘'
+                    elif new_status in ['挂职锻炼']:
+                        level = original_post if original_post else '教师'
+                        key = f'挂职_{level}'
+                        group_label = f'{level}挂职锻炼'
+                    elif new_status in ['待岗']:
+                        level = original_post if original_post else '教师'
+                        key = f'待岗_{level}'
+                        group_label = f'{level}待岗'
+                    elif new_status in ['停薪留职']:
+                        level = original_post if original_post else '教师'
+                        key = f'停薪留职_{level}'
+                        group_label = f'{level}停薪留职'
                 
-                data['无补贴人数'] = len(no_subsidy_ids)
+                elif change_category == 'position_change':
+                    if original_post == '一级教师' and new_post == '高级教师':
+                        key = '晋升_一级_高级'
+                        group_label = '一级教师晋升高级教师'
+                    elif original_post == '二级教师' and new_post == '一级教师':
+                        key = '晋升_二级_一级'
+                        group_label = '二级教师晋升一级教师'
+                    elif original_post == '三级教师' and new_post == '二级教师':
+                        key = '晋升_三级_二级'
+                        group_label = '三级教师晋升二级教师'
+                    elif original_post == '三级教师' and new_post == '一级教师':
+                        key = '晋升_三级_一级'
+                        group_label = '三级教师晋升一级教师'
+                    elif original_post == '二级教师' and new_post == '高级教师':
+                        key = '晋升_二级_高级'
+                        group_label = '二级教师晋升高级教师'
+                    elif '高级工' in original_post and '技师' in new_post:
+                        key = f'晋升_{original_post}_{new_post}'
+                        group_label = f'{original_post}晋升{new_post}'
+                    elif '技师' in original_post and '高级技师' in new_post:
+                        key = f'晋升_{original_post}_{new_post}'
+                        group_label = f'{original_post}晋升{new_post}'
+                    elif '初级工' in original_post and '中级工' in new_post:
+                        key = f'晋升_{original_post}_{new_post}'
+                        group_label = f'{original_post}晋升{new_post}'
+                    elif '中级工' in original_post and '高级工' in new_post:
+                        key = f'晋升_{original_post}_{new_post}'
+                        group_label = f'{original_post}晋升{new_post}'
+                    elif '九级管理' in original_post and '八级管理' in new_post:
+                        key = f'晋升_{original_post}_{new_post}'
+                        group_label = f'{original_post}晋升{new_post}'
+                    elif '八级管理' in original_post and '七级管理' in new_post:
+                        key = f'晋升_{original_post}_{new_post}'
+                        group_label = f'{original_post}晋升{new_post}'
+                    else:
+                        # 其他岗位变更
+                        key = f'岗位变更_{original_post}_{new_post}'
+                        group_label = f'{original_post}变更为{new_post}'
                 
-                # 获取姓名列表
-                if no_subsidy_ids:
-                    placeholders = ','.join(['%s'] * len(no_subsidy_ids))
-                    cursor.execute(f"""
-                        SELECT name FROM teacher_basic_info 
-                        WHERE id IN ({placeholders})
-                    """, list(no_subsidy_ids))
-                    names = [row[0] for row in cursor.fetchall() if row[0]]
-                    data['无补贴名单'] = '、'.join(names)
+                elif change_category == 'new_add':
+                    if change_detail == 'transfer_in' or '调入' in change_detail:
+                        level = new_post if new_post else (original_post if original_post else '教师')
+                        key = f'调入_{level}'
+                        group_label = f'{level}调入'
+                    elif change_detail == 'new_hire' or '新录聘' in change_detail:
+                        level = new_post if new_post else (original_post if original_post else '教师')
+                        key = f'新录聘_{level}'
+                        group_label = f'{level}新录聘'
+                    elif change_detail == 'management':
+                        level = new_post if new_post else (original_post if original_post else '九级管理')
+                        key = f'管理新增_{level}'
+                        group_label = f'{level}新增'
+                    elif change_detail == 'graduate' or '应届' in change_detail or '毕业生' in change_detail:
+                        level = new_post if new_post else (original_post if original_post else '教师')
+                        key = f'应届_{level}'
+                        group_label = f'{level}应届毕业生'
+                    elif change_detail == 'talent' or '引进' in change_detail:
+                        level = new_post if new_post else (original_post if original_post else '教师')
+                        key = f'引进_{level}'
+                        group_label = f'{level}人才引进'
+                    elif change_detail == 'intern' or '见习' in change_detail:
+                        level = new_post if new_post else (original_post if original_post else '教师')
+                        key = f'见习_{level}'
+                        group_label = f'{level}见习期'
+                    else:
+                        # 默认处理新增人员
+                        level = new_post if new_post else '教师'
+                        key = f'新增_{level}'
+                        group_label = f'{level}调入'
                 
-                print(f"无补贴人数: {data['无补贴人数']}, 名单: {data['无补贴名单']}")
+                if key and teacher_name:
+                    if key not in notes_groups:
+                        notes_groups[key] = {'label': group_label, 'names': []}
+                    notes_groups[key]['names'].append(teacher_name)
+            
+            notes_parts = []
+            seq = 1
+            for key, group in notes_groups.items():
+                count = len(group['names'])
+                names_str = '、'.join(group['names'])
+                if count > 0:
+                    notes_parts.append(f"{seq}.{group['label']}{count}人：{names_str}")
+                    seq += 1
+            
+            result_data['notes'] = '\n     '.join(notes_parts) if notes_parts else ''
+            print(f"备注信息: {result_data['notes']}")
         except Exception as e:
-            print(f"读取无补贴人数失败: {e}")
-        
-        data['备注'] = ''
+            print(f"读取备注信息失败: {e}")
+            import traceback
+            print(traceback.format_exc())
+            result_data['notes'] = ''
         
         cursor.close()
         conn.close()
         
-        return {"status": "success", "data": data}
+        return {"status": "success", "data": result_data}
         
     except Exception as e:
         import traceback

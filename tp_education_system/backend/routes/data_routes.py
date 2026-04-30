@@ -11,6 +11,19 @@ router = APIRouter(prefix="/api/data", tags=["data"])
 DATABASE_URL = "postgresql://taiping_user:taiping_password@localhost:5432/taiping_education"
 engine = create_engine(DATABASE_URL)
 
+# 数据库连接配置
+DATABASE_CONFIG = {
+    'host': 'localhost',
+    'port': '5432',
+    'database': 'taiping_education',
+    'user': 'taiping_user',
+    'password': 'taiping_password'
+}
+
+def get_db_connection():
+    import psycopg2
+    return psycopg2.connect(**DATABASE_CONFIG)
+
 # 配置文件路径
 CONFIG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
 SCHEMA_FILE = os.path.join(CONFIG_DIR, 'merged_schema_mappings.json')
@@ -628,6 +641,9 @@ async def export_data(data: Dict[str, Any]):
 async def create_record(table_name: str, data: Dict[str, Any]):
     """创建记录"""
     try:
+        # 保存原始数据用于备注写入
+        original_data = data.copy()
+        
         # 转换中文字段名为英文字段名
         data = convert_chinese_to_english_fields(table_name, data)
         
@@ -659,6 +675,14 @@ async def create_record(table_name: str, data: Dict[str, Any]):
             new_id = result.fetchone()[0]
             conn.commit()
             
+            # 如果是岗位聘任信息表(information)，写入新增人员备注
+            if table_name == 'information':
+                await handle_new_employee_remarks(original_data)
+            
+            # 如果是教师基础信息表(teacher_basic_info)，写入新增人员备注
+            if table_name == 'teacher_basic_info':
+                await handle_new_teacher_remarks(original_data, new_id)
+            
             return {
                 "status": "success",
                 "message": "创建成功",
@@ -668,12 +692,368 @@ async def create_record(table_name: str, data: Dict[str, Any]):
         raise HTTPException(status_code=500, detail=f"创建失败: {str(e)}")
 
 
+async def handle_post_change_remarks(record_id: int, new_post: str):
+    """处理岗位变更，写入备注信息表"""
+    conn = None
+    cursor = None
+    try:
+        from datetime import datetime
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 获取原岗位和教师信息
+        cursor.execute("""
+            SELECT i.post_2, i.教师ID, t.name
+            FROM information i
+            LEFT JOIN teacher_basic_info t ON i.教师ID = t.id
+            WHERE i.id = %s
+        """, (record_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            return
+        
+        original_post = row[0]
+        teacher_id = row[1]
+        teacher_name = row[2]
+        
+        # 如果岗位没有变化，不写入
+        if original_post == new_post or not new_post:
+            return
+        
+        # 判断是否是晋升
+        promotion_mapping = {
+            '一级教师': {'高级教师': '一级教师晋升高级教师'},
+            '二级教师': {'一级教师': '二级教师晋升一级教师'},
+            '三级教师': {'二级教师': '三级教师晋升二级教师'},
+        }
+        
+        current_month = datetime.now().strftime('%Y-%m')
+        change_category = 'position_change'
+        change_detail = ''
+        remark_label = ''
+        
+        if original_post in promotion_mapping and new_post in promotion_mapping[original_post]:
+            remark_label = promotion_mapping[original_post][new_post]
+        else:
+            # 其他岗位变化
+            remark_label = f'{original_post}变更为{new_post}'
+        
+        # 写入备注信息表
+        cursor.execute("""
+            INSERT INTO performance_pay_remarks (
+                report_period, remark_type, teacher_id, teacher_name,
+                original_status, new_status, original_post, new_post,
+                change_category, change_detail, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        """, (
+            current_month,
+            'position_change',
+            teacher_id,
+            teacher_name,
+            None,  # original_status
+            None,  # new_status
+            original_post,
+            new_post,
+            change_category,
+            remark_label
+        ))
+        conn.commit()
+        print(f"[备注] 已写入岗位变更: {teacher_name} {original_post}->{new_post}")
+        
+    except Exception as e:
+        print(f"[备注] 写入岗位变更失败: {e}")
+        if conn:
+            try:
+                conn.rollback()
+            except:
+                pass
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+async def handle_status_change_remarks(record_id: int, new_status: str):
+    """处理教师状态变更，写入备注信息表"""
+    conn = None
+    cursor = None
+    try:
+        from datetime import datetime
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 获取教师原有信息（包括身份证号）
+        cursor.execute("""
+            SELECT id, name, employment_status, id_card 
+            FROM teacher_basic_info 
+            WHERE id = %s
+        """, (record_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            return
+        
+        teacher_id = row[0]
+        teacher_name = row[1]
+        old_status = row[2]
+        id_card = row[3]
+        
+        # 如果状态没有变化，不写入
+        if old_status == new_status or not new_status:
+            return
+        
+        # 获取原岗位信息（使用身份证号查询）
+        original_post = None
+        if id_card:
+            cursor.execute("""
+                SELECT post_2 FROM information WHERE id_card = %s
+            """, (id_card,))
+            post_row = cursor.fetchone()
+            if post_row:
+                original_post = post_row[0]
+        
+        current_month = datetime.now().strftime('%Y-%m')
+        
+        # 写入备注信息表
+        cursor.execute("""
+            INSERT INTO performance_pay_remarks (
+                report_period, remark_type, teacher_id, teacher_name,
+                original_status, new_status, original_post, new_post,
+                change_category, change_detail, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        """, (
+            current_month,
+            'status_change',
+            teacher_id,
+            teacher_name,
+            old_status,
+            new_status,
+            original_post,
+            None,
+            'status_change',
+            f'{old_status}->{new_status}'
+        ))
+        conn.commit()
+        print(f"[备注] 已写入状态变更: {teacher_name} {old_status}->{new_status}")
+        
+    except Exception as e:
+        print(f"[备注] 写入状态变更失败: {e}")
+        if conn:
+            try:
+                conn.rollback()
+            except:
+                pass
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+async def handle_new_employee_remarks(data: dict):
+    """处理新增人员，写入备注信息表"""
+    conn = None
+    cursor = None
+    try:
+        from datetime import datetime
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 获取教师ID和姓名
+        teacher_id = data.get('教师ID') or data.get('teacher_id')
+        teacher_name = data.get('姓名') or data.get('name')
+        post_2 = data.get('post_2') or data.get('现受聘岗位名称')
+        remark = data.get('备注') or data.get('remark') or ''
+        
+        if not teacher_id or not teacher_name:
+            return
+        
+        current_month = datetime.now().strftime('%Y-%m')
+        
+        # 检查当前月份是否已存在该教师的新增记录，避免重复
+        cursor.execute("""
+            SELECT COUNT(*) FROM performance_pay_remarks 
+            WHERE report_period = %s AND teacher_id = %s AND remark_type = 'new_add'
+        """, (current_month, teacher_id))
+        count = cursor.fetchone()[0]
+        if count > 0:
+            print(f"[备注] 教师 {teacher_name} 本月已有新增记录，跳过写入")
+            return
+        change_category = 'new_add'
+        change_detail = 'transfer_in'
+        
+        # 根据备注字段判断新增类型
+        if '新录聘' in remark or '招聘' in remark:
+            change_detail = 'new_hire'
+            remark_label = f'{post_2}新录聘' if post_2 else '教师新录聘'
+        elif '应届' in remark or '毕业生' in remark:
+            change_detail = 'graduate'
+            remark_label = f'{post_2}应届毕业生' if post_2 else '教师应届毕业生'
+        elif '引进' in remark or '高层次' in remark:
+            change_detail = 'talent'
+            remark_label = f'{post_2}人才引进' if post_2 else '教师人才引进'
+        elif '见习' in remark or '实习' in remark:
+            change_detail = 'intern'
+            remark_label = f'{post_2}见习期' if post_2 else '教师见习期'
+        elif '管理' in remark or '九级管理' in (post_2 or ''):
+            change_detail = 'management'
+            remark_label = f'{post_2}新增' if post_2 else '九级管理新增'
+        else:
+            change_detail = 'transfer_in'
+            remark_label = f'{post_2}调入' if post_2 else '教师调入'
+        
+        # 写入备注信息表
+        cursor.execute("""
+            INSERT INTO performance_pay_remarks (
+                report_period, remark_type, teacher_id, teacher_name,
+                original_status, new_status, original_post, new_post,
+                change_category, change_detail, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        """, (
+            current_month,
+            'new_add',
+            teacher_id,
+            teacher_name,
+            None,  # original_status
+            '在职',  # new_status
+            None,  # original_post
+            post_2,  # new_post
+            change_category,
+            remark_label
+        ))
+        conn.commit()
+        print(f"[备注] 已写入新增人员: {teacher_name}")
+        
+    except Exception as e:
+        print(f"[备注] 写入新增人员失败: {e}")
+        if conn:
+            try:
+                conn.rollback()
+            except:
+                pass
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+async def handle_new_teacher_remarks(data: dict, new_id: int):
+    """处理教师基础信息表新增人员，写入备注信息表"""
+    conn = None
+    cursor = None
+    try:
+        from datetime import datetime
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 获取教师ID和姓名
+        teacher_id = new_id
+        teacher_name = data.get('姓名') or data.get('name') or data.get('teacher_name')
+        remark = data.get('备注') or data.get('remark') or ''
+        
+        if not teacher_id or not teacher_name:
+            return
+        
+        # 检查当前月份是否已存在该教师的新增记录，避免重复
+        current_month = datetime.now().strftime('%Y-%m')
+        cursor.execute("""
+            SELECT COUNT(*) FROM performance_pay_remarks 
+            WHERE report_period = %s AND teacher_id = %s AND remark_type = 'new_add'
+        """, (current_month, teacher_id))
+        count = cursor.fetchone()[0]
+        if count > 0:
+            print(f"[备注] 教师 {teacher_name} 本月已有新增记录，跳过写入")
+            return
+        
+        # 从岗位聘任信息表获取岗位信息
+        post_2 = None
+        cursor.execute("""
+            SELECT post_2 FROM information WHERE teacher_id = %s
+        """, (teacher_id,))
+        post_row = cursor.fetchone()
+        if post_row:
+            post_2 = post_row[0]
+        
+        current_month = datetime.now().strftime('%Y-%m')
+        change_category = 'new_add'
+        
+        # 根据备注字段判断新增类型
+        if '新录聘' in remark or '招聘' in remark:
+            change_detail = 'new_hire'
+            remark_label = f'{post_2}新录聘' if post_2 else '教师新录聘'
+        elif '应届' in remark or '毕业生' in remark:
+            change_detail = 'graduate'
+            remark_label = f'{post_2}应届毕业生' if post_2 else '教师应届毕业生'
+        elif '引进' in remark or '高层次' in remark:
+            change_detail = 'talent'
+            remark_label = f'{post_2}人才引进' if post_2 else '教师人才引进'
+        elif '见习' in remark or '实习' in remark:
+            change_detail = 'intern'
+            remark_label = f'{post_2}见习期' if post_2 else '教师见习期'
+        elif '管理' in remark or '九级管理' in (post_2 or ''):
+            change_detail = 'management'
+            remark_label = f'{post_2}新增' if post_2 else '九级管理新增'
+        else:
+            change_detail = 'transfer_in'
+            remark_label = f'{post_2}调入' if post_2 else '教师调入'
+        
+        # 写入备注信息表
+        cursor.execute("""
+            INSERT INTO performance_pay_remarks (
+                report_period, remark_type, teacher_id, teacher_name,
+                original_status, new_status, original_post, new_post,
+                change_category, change_detail, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        """, (
+            current_month,
+            'new_add',
+            teacher_id,
+            teacher_name,
+            None,  # original_status
+            '在职',  # new_status
+            None,  # original_post
+            post_2,  # new_post
+            change_category,
+            remark_label
+        ))
+        conn.commit()
+        print(f"[备注] 已写入新增教师: {teacher_name}")
+        
+    except Exception as e:
+        print(f"[备注] 写入新增教师失败: {e}")
+        if conn:
+            try:
+                conn.rollback()
+            except:
+                pass
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
 @router.put("/{table_name}/{record_id}")
 async def update_record(table_name: str, record_id: int, data: Dict[str, Any]):
     """更新记录"""
     try:
         # 转换中文字段名为英文字段名
         data = convert_chinese_to_english_fields(table_name, data)
+        
+        # 如果是岗位聘任信息表(information)，检查岗位变更并写入备注表
+        if table_name == 'information' and 'post_2' in data:
+            await handle_post_change_remarks(record_id, data.get('post_2'))
+        
+        # 如果是教师基础信息表(teacher_basic_info)，检查状态变更并写入备注表
+        if table_name == 'teacher_basic_info' and 'employment_status' in data:
+            await handle_status_change_remarks(record_id, data.get('employment_status'))
         
         with engine.connect() as conn:
             # 构建 UPDATE 语句

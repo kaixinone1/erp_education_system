@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router"
+import { createRouter, createWebHashHistory } from "vue-router"
 import Dashboard from "../views/dashboard/index.vue"
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
@@ -165,6 +165,77 @@ const router = createRouter({
         title: "数据管理",
         icon: "Document"
       }
+    },
+    // 绩效管理模块
+    {
+      path: "/performance",
+      name: "performance",
+      redirect: "/performance/pay-approval",
+      children: [
+        {
+          path: "pay-approval",
+          name: "performancePayApproval",
+          component: () => import("../views/performance/PerformancePayApproval.vue"),
+          meta: {
+            title: "绩效工资审批",
+            icon: "Document"
+          }
+        },
+        {
+          path: "pay-history",
+          name: "performancePayHistory",
+          component: () => import("../views/performance/PerformancePayHistory.vue"),
+          meta: {
+            title: "绩效工资历史",
+            icon: "Clock"
+          }
+        },
+        {
+          path: "pay-statistics",
+          name: "performancePayStatistics",
+          component: () => import("../views/performance/PerformancePayStatistics.vue"),
+          meta: {
+            title: "绩效工资统计",
+            icon: "TrendCharts"
+          }
+        },
+        {
+          path: "pay-upload",
+          name: "performancePayUpload",
+          component: () => import("../views/performance/PerformancePayUpload.vue"),
+          meta: {
+            title: "绩效工资上传",
+            icon: "Upload"
+          }
+        },
+        {
+          path: "standards",
+          name: "performanceStandards",
+          component: () => import("../views/performance/PerformanceStandards.vue"),
+          meta: {
+            title: "绩效标准设置",
+            icon: "Setting"
+          }
+        },
+        {
+          path: "aggregate-query",
+          name: "aggregateQuery",
+          component: () => import("../views/AggregateQuery.vue"),
+          meta: {
+            title: "聚合查询",
+            icon: "Search"
+          }
+        },
+        {
+          path: "test-table",
+          name: "testTable",
+          component: () => import("../views/performance/TestTable.vue"),
+          meta: {
+            title: "测试表格",
+            icon: "Document"
+          }
+        }
+      ]
     },
     // 模块数据节点路由 - 匹配 /module-id/table-name 格式
     {
@@ -403,68 +474,6 @@ const router = createRouter({
       }
     },
 
-    // 绩效管理模块
-    {
-      path: "/performance",
-      name: "performance",
-      redirect: "/performance/pay-approval",
-      children: [
-        {
-          path: "pay-approval",
-          name: "performancePayApproval",
-          component: () => import("../views/performance/PerformancePayApproval.vue"),
-          meta: {
-            title: "绩效工资审批",
-            icon: "Document"
-          }
-        },
-        {
-          path: "pay-history",
-          name: "performancePayHistory",
-          component: () => import("../views/performance/PerformancePayHistory.vue"),
-          meta: {
-            title: "绩效工资历史",
-            icon: "Clock"
-          }
-        },
-        {
-          path: "pay-statistics",
-          name: "performancePayStatistics",
-          component: () => import("../views/performance/PerformancePayStatistics.vue"),
-          meta: {
-            title: "绩效工资统计",
-            icon: "TrendCharts"
-          }
-        },
-        {
-          path: "pay-upload",
-          name: "performancePayUpload",
-          component: () => import("../views/performance/PerformancePayUpload.vue"),
-          meta: {
-            title: "绩效工资上传",
-            icon: "Upload"
-          }
-        },
-        {
-          path: "standards",
-          name: "performanceStandards",
-          component: () => import("../views/performance/PerformanceStandards.vue"),
-          meta: {
-            title: "绩效标准设置",
-            icon: "Setting"
-          }
-        },
-        {
-          path: "aggregate-query",
-          name: "aggregateQuery",
-          component: () => import("../views/AggregateQuery.vue"),
-          meta: {
-            title: "聚合查询",
-            icon: "Search"
-          }
-        }
-      ]
-    },
     // 测试导入模板功能
     {
       path: "/template-import-test",

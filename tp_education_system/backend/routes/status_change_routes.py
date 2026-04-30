@@ -232,9 +232,75 @@ async def process_status_change(data: Dict[str, Any]):
             SET employment_status = %s, updated_at = CURRENT_TIMESTAMP
             WHERE id = %s
         """, (target_status, teacher_id))
-        
+
         conn.commit()
-        
+
+        # 自动写入备注信息表 - 使用独立连接避免影响主事务
+        if old_status and old_status != target_status:
+            remark_conn = None
+            remark_cursor = None
+            try:
+                # 使用独立连接处理备注写入
+                remark_conn = get_db_connection()
+                remark_cursor = remark_conn.cursor()
+                
+                # 获取教师的身份证号（用于查询岗位信息）
+                id_card = None
+                remark_cursor.execute("""
+                    SELECT id_card FROM teacher_basic_info WHERE id = %s
+                """, (teacher_id,))
+                id_card_row = remark_cursor.fetchone()
+                if id_card_row:
+                    id_card = id_card_row[0]
+                
+                # 获取原岗位信息（使用身份证号查询）
+                original_post = None
+                if id_card:
+                    remark_cursor.execute("""
+                        SELECT post_2 FROM information WHERE id_card = %s
+                    """, (id_card,))
+                    post_row = remark_cursor.fetchone()
+                    if post_row:
+                        original_post = post_row[0]
+
+                # 获取当前年月
+                from datetime import datetime
+                current_month = datetime.now().strftime('%Y-%m')
+
+                # 写入备注信息表
+                remark_cursor.execute("""
+                    INSERT INTO performance_pay_remarks (
+                        report_period, remark_type, teacher_id, teacher_name,
+                        original_status, new_status, original_post, new_post,
+                        change_category, change_detail, created_at
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+                """, (
+                    current_month,
+                    'status_change',
+                    teacher_id,
+                    teacher_name,
+                    old_status,
+                    target_status,
+                    original_post,
+                    None,
+                    'status_change',
+                    f'{old_status}->{target_status}'
+                ))
+                remark_conn.commit()
+                print(f"[备注] 已写入任职状态变更: {teacher_name} {old_status}->{target_status}")
+            except Exception as e:
+                print(f"[备注] 写入备注信息失败: {e}")
+                if remark_conn:
+                    try:
+                        remark_conn.rollback()
+                    except:
+                        pass
+            finally:
+                if remark_cursor:
+                    remark_cursor.close()
+                if remark_conn:
+                    remark_conn.close()
+
         # 实时触发提醒
         if old_status and old_status != target_status:
             create_trigger_event(teacher_id, teacher_name, old_status, target_status)
@@ -431,7 +497,16 @@ async def process_status_change(data: Dict[str, Any]):
                 import traceback
                 traceback.print_exc()
                 data_collection_error = error_msg
-                # 不影响主流程，继续执行
+                # 回滚事务避免abort
+                try:
+                    conn.rollback()
+                except:
+                    pass
+                # 重新开启事务
+                try:
+                    conn.commit()
+                except:
+                    pass
         
         # 根据目标状态查找匹配的清单模板并创建待办
         created_checklists = []
@@ -452,14 +527,26 @@ async def process_status_change(data: Dict[str, Any]):
         for checklist_row in all_checklists:
             checklist_id = checklist_row[0]
             checklist_name = checklist_row[1]
-            task_items = checklist_row[2] if isinstance(checklist_row[2], list) else json.loads(checklist_row[2]) if checklist_row[2] else []
-            trigger_condition = checklist_row[3] if isinstance(checklist_row[3], dict) else json.loads(checklist_row[3]) if checklist_row[3] else {}
+            
+            # 安全解析JSON字段，避免事务abort
+            try:
+                task_items = checklist_row[2] if isinstance(checklist_row[2], (dict, list)) else json.loads(checklist_row[2]) if checklist_row[2] else []
+            except (json.JSONDecodeError, TypeError) as e:
+                print(f"解析task_items失败: {e}, 使用空列表")
+                task_items = []
+            
+            try:
+                trigger_condition = checklist_row[3] if isinstance(checklist_row[3], dict) else (checklist_row[3] if isinstance(checklist_row[3], list) else json.loads(checklist_row[3]) if checklist_row[3] else {})
+            except (json.JSONDecodeError, TypeError) as e:
+                print(f"解析trigger_condition失败: {e}, 使用空字典")
+                trigger_condition = {}
+            
             associated_template_id = checklist_row[4]  # 关联模板ID
             
             print(f"检查清单: {checklist_name}, 触发条件: {trigger_condition}, 关联模板: {associated_template_id}")
             
             # 检查触发条件是否匹配当前状态
-            target_statuses = trigger_condition.get("target_status", [])
+            target_statuses = trigger_condition.get("target_status", []) if isinstance(trigger_condition, dict) else []
             print(f"  target_statuses: {target_statuses}, 类型: {type(target_statuses)}")
             
             if isinstance(target_statuses, str):
