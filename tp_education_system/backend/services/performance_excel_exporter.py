@@ -76,7 +76,7 @@ class PerformancePayExcelExporter:
         """
         normalized = {
             '年月': data.get('年月', data.get('year_month', '')),
-            '填报单位': data.get('填报单位', '太平镇中心学校'),
+            '填报单位': data.get('填报单位', ''),
         }
 
         # 处理 totals
@@ -127,10 +127,10 @@ class PerformancePayExcelExporter:
 
         # ===== 第1行：标题 =====
         ws['B1'] = today_str  # 日期
-        ws['D1'] = f"{data.get('年月', '2026年5月')} 义务教育学校教职工绩效工资审批表"
+        ws['D1'] = f"{data.get('年月', '')} 义务教育学校教职工绩效工资审批表"
 
         # ===== 第2行：填报信息 =====
-        ws['B2'] = data.get('填报单位', '太平镇中心学校')
+        ws['B2'] = data.get('填报单位', '')
         ws['G2'] = today_str
 
         # ===== 获取数据 =====
