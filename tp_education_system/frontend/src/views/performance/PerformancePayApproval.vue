@@ -13,14 +13,11 @@
               <el-icon><Check /></el-icon>
               保存
             </el-button>
-            <el-dropdown @command="handleExport" split-button type="warning" :loading="exporting">
+            <el-dropdown split-button type="warning">
               <el-icon><Document /></el-icon>
               导出
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="excel">导出 Excel</el-dropdown-item>
-                  <el-dropdown-item command="pdf">导出 PDF</el-dropdown-item>
-                  <el-dropdown-item command="print">打印</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -63,7 +60,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Document, Download, Check } from '@element-plus/icons-vue'
 
 const saving = ref(false)
-const exporting = ref(false)
 const loadingData = ref(false)
 const loadingTemplate = ref(false)
 const monthDialogVisible = ref(false)
@@ -109,127 +105,6 @@ const dynamicData = reactive({
 const hasLoadedData = ref(false)
 
 const colWidths = ['84pt', '50pt', '50pt', '50pt', '25pt', 'auto']
-
-const getCellData = () => {
-  if (!templateData.rows || templateData.rows.length === 0) {
-    return {}
-  }
-  
-  const cellData = {}
-  
-  templateData.rows.forEach((row: any, rowIdx: number) => {
-    if (!row.cells || row.cells.length === 0) return
-    
-    const rowText = row.cells[0]?.text || ''
-    const isMiddleWorkerRow = rowText.includes('中级工')
-    const isJuniorWorkerRow = rowText.includes('初级工')
-    const isOrdinaryWorkerRow = rowText.includes('普工')
-    const isRetiredCadreRow = rowText.includes('退休干部')
-    const isRetiredWorkerRow = rowText.includes('退休工人')
-    const isRetiredCadreRow2 = rowText.includes('离休干部')
-    const isDataRow = isMiddleWorkerRow || isJuniorWorkerRow || isOrdinaryWorkerRow || isRetiredCadreRow || isRetiredWorkerRow || isRetiredCadreRow2
-    
-    row.cells.forEach((cell: any, cellIdx: number) => {
-      let text = cell.text || ''
-      let colIdx = cellIdx
-      
-      if (hasLoadedData.value) {
-        if (rowText.includes('项目') === false &&
-            rowText.includes('行政管理人员') === false && rowText.includes('专业技术人员') === false && 
-            rowText.includes('工人') === false && rowText.includes('合计') === false && 
-            rowText.includes('乡镇补贴') === false && rowText.includes('遗留问题') === false &&
-            rowText.includes('退休') === false && rowText.includes('离休') === false) {
-          if (cellIdx === 1) {
-            let count = ''
-            if (rowText.includes('副处级')) count = dynamicData.administrative['副处级']?.count || ''
-            else if (rowText.includes('正科级')) count = dynamicData.administrative['正科级']?.count || ''
-            else if (rowText.includes('副科级')) count = dynamicData.administrative['副科级']?.count || ''
-            else if (rowText.includes('科员级')) count = dynamicData.administrative['科员级']?.count || ''
-            else if (rowText.includes('办事员级')) count = dynamicData.administrative['办事员级']?.count || ''
-            else if (rowText.includes('正高级')) count = dynamicData.professional['正高级']?.count || ''
-            else if (rowText.includes('高级教师')) count = dynamicData.professional['高级教师']?.count || ''
-            else if (rowText.includes('一级教师')) count = dynamicData.professional['一级教师']?.count || ''
-            else if (rowText.includes('二级教师')) count = dynamicData.professional['二级教师']?.count || ''
-            else if (rowText.includes('三级教师')) count = dynamicData.professional['三级教师']?.count || ''
-            else if (rowText.includes('高级技师')) count = dynamicData.worker['高级技师']?.count || ''
-            else if (rowText.includes('技师')) count = dynamicData.worker['技师']?.count || ''
-            else if (rowText.includes('高级工')) count = dynamicData.worker['高级工']?.count || ''
-            else if (isMiddleWorkerRow) count = dynamicData.worker['中级工']?.count || ''
-            else if (isJuniorWorkerRow) count = dynamicData.worker['初级工']?.count || ''
-            text = count || ''
-          } else if (cellIdx === 2) {
-            let standard = ''
-            if (rowText.includes('副处级')) standard = dynamicData.administrative['副处级']?.standard || ''
-            else if (rowText.includes('正科级')) standard = dynamicData.administrative['正科级']?.standard || ''
-            else if (rowText.includes('副科级')) standard = dynamicData.administrative['副科级']?.standard || ''
-            else if (rowText.includes('科员级')) standard = dynamicData.administrative['科员级']?.standard || ''
-            else if (rowText.includes('办事员级')) standard = dynamicData.administrative['办事员级']?.standard || ''
-            else if (rowText.includes('正高级')) standard = dynamicData.professional['正高级']?.standard || ''
-            else if (rowText.includes('高级教师')) standard = dynamicData.professional['高级教师']?.standard || ''
-            else if (rowText.includes('一级教师')) standard = dynamicData.professional['一级教师']?.standard || ''
-            else if (rowText.includes('二级教师')) standard = dynamicData.professional['二级教师']?.standard || ''
-            else if (rowText.includes('三级教师')) standard = dynamicData.professional['三级教师']?.standard || ''
-            else if (rowText.includes('高级技师')) standard = dynamicData.worker['高级技师']?.standard || ''
-            else if (rowText.includes('技师')) standard = dynamicData.worker['技师']?.standard || ''
-            else if (rowText.includes('高级工')) standard = dynamicData.worker['高级工']?.standard || ''
-            else if (isMiddleWorkerRow) standard = dynamicData.worker['中级工']?.standard || ''
-            else if (isJuniorWorkerRow) standard = dynamicData.worker['初级工']?.standard || ''
-            text = standard || ''
-          } else if (cellIdx === 3) {
-            let subtotal = ''
-            if (rowText.includes('副处级')) subtotal = dynamicData.administrative['副处级']?.subtotal || ''
-            else if (rowText.includes('正科级')) subtotal = dynamicData.administrative['正科级']?.subtotal || ''
-            else if (rowText.includes('副科级')) subtotal = dynamicData.administrative['副科级']?.subtotal || ''
-            else if (rowText.includes('科员级')) subtotal = dynamicData.administrative['科员级']?.subtotal || ''
-            else if (rowText.includes('办事员级')) subtotal = dynamicData.administrative['办事员级']?.subtotal || ''
-            else if (rowText.includes('正高级')) subtotal = dynamicData.professional['正高级']?.subtotal || ''
-            else if (rowText.includes('高级教师')) subtotal = dynamicData.professional['高级教师']?.subtotal || ''
-            else if (rowText.includes('一级教师')) subtotal = dynamicData.professional['一级教师']?.subtotal || ''
-            else if (rowText.includes('二级教师')) subtotal = dynamicData.professional['二级教师']?.subtotal || ''
-            else if (rowText.includes('三级教师')) subtotal = dynamicData.professional['三级教师']?.subtotal || ''
-            else if (rowText.includes('高级技师')) subtotal = dynamicData.worker['高级技师']?.subtotal || ''
-            else if (rowText.includes('技师')) subtotal = dynamicData.worker['技师']?.subtotal || ''
-            else if (rowText.includes('高级工')) subtotal = dynamicData.worker['高级工']?.subtotal || ''
-            else if (isMiddleWorkerRow) subtotal = dynamicData.worker['中级工']?.subtotal || ''
-            else if (isJuniorWorkerRow) subtotal = dynamicData.worker['初级工']?.subtotal || ''
-            text = subtotal || ''
-          }
-        } else if (rowText.includes('绩效工资合计')) {
-          if (cellIdx === 1) text = dynamicData.totals.performance_count || ''
-          else if (cellIdx === 3) text = dynamicData.totals.performance_total || ''
-        } else if (rowText.includes('乡镇补贴合计')) {
-          if (cellIdx === 1) text = dynamicData.subsidies.count || ''
-          else if (cellIdx === 2) text = dynamicData.subsidies.standard || ''
-          else if (cellIdx === 3) text = dynamicData.subsidies.total || ''
-        } else if (rowText.includes('岗位设置遗留问题')) {
-          if (!rowText.includes('合计')) {
-            const legacyIndex = rowText.match(/\d+/) ? parseInt(rowText.match(/\d+/)[0]) - 1 : 0
-            if (dynamicData.legacy && dynamicData.legacy.length > 0 && legacyIndex >= 0 && legacyIndex < dynamicData.legacy.length) {
-              if (cellIdx === 1) text = dynamicData.legacy[legacyIndex]?.name || ''
-              else if (cellIdx === 2 || cellIdx === 3) text = dynamicData.legacy[legacyIndex]?.amount || ''
-            }
-          } else {
-            if (cellIdx === 1) text = dynamicData.totals.legacy_count || ''
-            else if (cellIdx === 3) text = dynamicData.totals.legacy_total || ''
-          }
-        } else if (isRetiredCadreRow) {
-          if (cellIdx === 1) text = dynamicData.retirees.cadre_count || ''
-        } else if (rowText.includes('退休工人')) {
-          if (cellIdx === 1) text = dynamicData.retirees.worker_count || ''
-        } else if (rowText.includes('离休干部')) {
-          if (cellIdx === 1) text = dynamicData.retirees.retired_count || ''
-        } else if (isDataRow) {
-          text = ''
-        }
-      }
-      
-      const cellId = `${String.fromCharCode(65 + colIdx)}${rowIdx + 1}`
-      cellData[cellId] = text
-    })
-  })
-  
-  return cellData
-}
 
 const tableHtml = computed(() => {
   if (!templateData.rows || templateData.rows.length === 0) {
@@ -634,96 +509,6 @@ const handleSave = async () => {
     ElMessage.error(error.message || '保存失败')
   } finally {
     saving.value = false
-  }
-}
-
-const handleExport = async (format: string) => {
-  if (format === 'print') {
-    const printWindow = window.open('', '_blank')
-    if (!printWindow) {
-      ElMessage.error('无法打开打印窗口，请允许弹出窗口')
-      return
-    }
-    
-    const printArea = document.getElementById('printArea')
-    if (!printArea) {
-      ElMessage.error('未找到打印内容')
-      printWindow.close()
-      return
-    }
-    
-    const printContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <title>绩效工资审批表</title>
-        <style>
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { font-family: SimSun, Songti SC, serif; background: white; }
-          .a4-container { width: 210mm; min-height: 297mm; padding: 15mm; margin: 0 auto; background: white; }
-          table { border-collapse: collapse; width: 100%; table-layout: fixed; page-break-inside: avoid; }
-          td { border: 1px solid #000; padding: 4px 6px; font-size: 11px; vertical-align: top; page-break-inside: avoid; }
-          @media print { body { margin: 0; padding: 0; } .a4-container { box-shadow: none; } }
-        </style>
-      </head>
-      <body>
-        ${printArea.innerHTML}
-      </body>
-      </html>
-    `
-    
-    printWindow.document.write(printContent)
-    printWindow.document.close()
-    
-    printWindow.onload = () => {
-      printWindow.print()
-      setTimeout(() => { printWindow.close() }, 100)
-    }
-    
-    return
-  }
-  
-  exporting.value = true
-  try {
-    const response = await fetch('/api/performance-pay-export/excel', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        html: tableHtml.value,
-        cells: {
-          'G2': getCurrentDate(),
-          'F10': getNextDate(),
-          'F19': getNextDate(),
-          'F31': getNextDate()
-        },
-        year_month: currentYearMonth.value
-      })
-    })
-    
-    if (!response.ok) {
-      throw new Error('导出失败')
-    }
-    
-    const blob = await response.blob()
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `绩效工资审批表_${currentYearMonth.value}.xlsx`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
-    
-    ElMessage.success('已导出 Excel 格式')
-    
-  } catch (error: any) {
-    console.error('导出错误:', error)
-    ElMessage.error(error.message || '导出失败')
-  } finally {
-    exporting.value = false
   }
 }
 

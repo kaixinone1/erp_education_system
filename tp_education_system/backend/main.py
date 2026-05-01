@@ -25,7 +25,6 @@ from routes.menu_routes_new import router as menu_router
 from routes.performance_pay_routes import router as performance_pay_router
 from routes.performance_pay_history_routes import router as performance_pay_history_router
 from routes.performance_pay_template import router as performance_pay_template_router
-from routes.performance_pay_export_routes import router as performance_pay_export_router
 from routes.template_import_test import router as template_import_test_router
 from routes.aggregate_query_routes import router as aggregate_query_router
 import json
@@ -43,10 +42,8 @@ app.add_middleware(
 
 # 静态文件服务 - 用于模板文件预览
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads", "templates_test")
-EXPORT_DIR = os.path.join(os.path.dirname(__file__), "uploads", "exports")
-os.makedirs(EXPORT_DIR, exist_ok=True)
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/template-files", StaticFiles(directory=UPLOAD_DIR), name="template-files")
-app.mount("/exports", StaticFiles(directory=EXPORT_DIR), name="exports")
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 TEMPLATE_DIR = os.path.join(STATIC_DIR, "templates")
@@ -175,7 +172,6 @@ print("[OK] 菜单管理路由已注册")
 app.include_router(performance_pay_router)
 app.include_router(performance_pay_history_router)
 app.include_router(performance_pay_template_router, prefix="/api/performance-pay-approval", tags=["绩效审批表模板"])
-app.include_router(performance_pay_export_router)
 print("[OK] 绩效工资审批路由已注册")
 
 # 注册模板导入测试路由
