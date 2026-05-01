@@ -122,6 +122,8 @@ class PerformancePayExcelExporter:
     def _update_data(self, ws, data: Dict):
         """更新数据到工作表"""
         # ===== 第1行：标题 =====
+        ws['B1'] = None  # 清除B1中的原始日期
+        ws['C1'] = None  # 清除C1（因为B1:C1是合并单元格）
         ws['D1'] = f"{data.get('年月', '')} 义务教育学校教职工绩效工资审批表"
 
         # ===== 第2行：填报信息 =====
