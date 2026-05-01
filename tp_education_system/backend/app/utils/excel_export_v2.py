@@ -110,7 +110,7 @@ def export_performance_pay_approval_v2(data: dict, output_dir=None) -> str:
     # ===== 呈报单位意见（F3:F9区域 - 添加外边框）=====
     ws.unmerge_cells('F3:F9')
 
-    thin = Side(border_style='thin', color='000000')
+    thin = Side(border_style='medium', color='000000')
 
     ws['F6'] = "据实填写，同意呈报。"
     ws['F6'].font = Font(name='宋体', size=11)
@@ -228,7 +228,8 @@ def export_performance_pay_approval_v2(data: dict, output_dir=None) -> str:
     ws['F26'] = f"无乡镇补贴{noSubsidyCount}人，{noSubsidyNames}。"
     for row in range(21, 27):
         ws[f'F{row}'].font = Font(name='宋体', size=10)
-        ws[f'F{row}'].alignment = Alignment(horizontal='right', vertical='top', wrap_text=True, indent=8)
+        ws[f'F{row}'].alignment = Alignment(horizontal='right', vertical='center', wrap_text=True, indent=8)
+        ws.row_dimensions[row].height = 25
 
     ws['F30'] = next_date
     ws['F30'].font = Font(name='宋体', size=11)
