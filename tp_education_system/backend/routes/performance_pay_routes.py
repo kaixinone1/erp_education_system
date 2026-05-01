@@ -756,6 +756,29 @@ def export_data(data: PerformancePayData, format: str = "excel"):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/export-v2-test")
+def export_data_v2_test(data: dict):
+    """测试导出接口"""
+    print(f"收到数据: {data}")
+    return {"status": "success", "message": "收到数据", "data": data}
+
+
+@router.post("/export-v2")
+def export_data_v2(data: dict):
+    """导出数据（使用模板2格式 - 6列版）"""
+    try:
+        from app.utils.excel_export_v2 import export_performance_pay_approval_v2
+        print(f"导出数据 - 备注字段: {repr(data.get('备注', ''))}")
+        print(f"导出数据 - notes字段: {repr(data.get('notes', ''))}")
+        filepath = export_performance_pay_approval_v2(data)
+        return FileResponse(filepath, filename=f"绩效工资审批表_{data.get('年月', '未知')}.xlsx")
+    except Exception as e:
+        import traceback
+        print(f"导出失败: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/history")
 def get_history():
     """获取历史记录列表"""
