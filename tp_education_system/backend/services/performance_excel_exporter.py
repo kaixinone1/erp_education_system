@@ -236,3 +236,37 @@ def export_performance_pay(data: Dict, year_month: str) -> str:
     """导出绩效工资审批表的便捷函数"""
     exporter = PerformancePayExcelExporter()
     return exporter.export_with_template(data, year_month)
+
+
+def export_performance_pay_simple(cells: Dict[str, str], year_month: str) -> str:
+    """
+    简单的导出函数：前端发送每个单元格的内容，后端只写入，不做任何处理
+    cells: 字典，键为单元格ID（如"A1", "B2"），值为单元格内容
+    """
+    # 1. 复制原始模板文件
+    template_path = r"D:\erp_thirteen\数据库信息\模板\义务教育学校教职工绩效工资审批表.xlsx"
+    output_dir = os.path.join(os.path.dirname(__file__), 'exports')
+    os.makedirs(output_dir, exist_ok=True)
+
+    filename = f"绩效工资审批表_{year_month}.xlsx"
+    filepath = os.path.join(output_dir, filename)
+    shutil.copy2(template_path, filepath)
+
+    # 2. 打开复制后的文件
+    wb = load_workbook(filepath)
+    ws = wb.active
+
+    # 3. 设置页面居中（水平居中打印）
+    ws.page_setup.centerHorizontally = True
+    ws.page_setup.centerVertically = False
+
+    # 4. 写入单元格数据（不做任何处理）
+    for cell_id, value in cells.items():
+        try:
+            ws[cell_id] = value if value else None
+        except Exception as e:
+            print(f"写入单元格 {cell_id} 失败: {e}")
+
+    # 5. 保存
+    wb.save(filepath)
+    return filepath

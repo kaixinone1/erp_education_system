@@ -714,7 +714,8 @@ def load_from_database(req: YearMonthRequest):
                     notes_parts.append(f"{seq}.{group['label']}{count}人：{names_str}")
                     seq += 1
             
-            result_data['notes'] = ''  # 不自动生成备注，保持与网页显示一致
+            result_data['notes'] = '\n     '.join(notes_parts) if notes_parts else ''
+            print(f"备注信息: {result_data['notes']}")
         except Exception as e:
             print(f"读取备注信息失败: {e}")
             import traceback

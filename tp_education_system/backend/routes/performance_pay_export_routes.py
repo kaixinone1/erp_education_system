@@ -13,22 +13,22 @@ import json
 router = APIRouter(prefix="/api/performance-pay-export", tags=["绩效工资导出"])
 
 # 导入导出服务
-from services.performance_excel_exporter import export_performance_pay
+from services.performance_excel_exporter import export_performance_pay_simple
 
 class ExportRequest(BaseModel):
     """导出请求模型"""
-    data: Dict[str, Any]
+    cells: Dict[str, Any]
     year_month: str
 
 @router.post("/excel")
 def export_to_excel(request: ExportRequest):
     """
     导出绩效工资审批表为Excel
-    使用精确还原技术，确保与原表100%一致
+    前端发送每个单元格的内容，后端只写入，不做任何处理
     """
     try:
         # 调用导出服务
-        filepath = export_performance_pay(request.data, request.year_month)
+        filepath = export_performance_pay_simple(request.cells, request.year_month)
 
         if not os.path.exists(filepath):
             raise HTTPException(status_code=500, detail="导出失败")
