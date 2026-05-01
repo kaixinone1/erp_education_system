@@ -582,17 +582,13 @@ const handleExport = async (format: string) => {
       退休干部: dynamicData.retirees.cadre_count || 0,
       退休职工: dynamicData.retirees.worker_count || 0,
       离休干部人数: dynamicData.retirees.retired_count || 0,
-      备注: dynamicData.notes || '',
+      // 注意：不发送备注字段，因为导出应与网页显示一致
       // 详细分类数据
       administrative: dynamicData.administrative || {},
       professional: dynamicData.professional || {},
       worker: dynamicData.worker || {},
       legacy: dynamicData.legacy || []
     }
-    
-    console.log('导出数据中的备注:', exportData.备注)
-    console.log('dynamicData.notes:', dynamicData.notes)
-    console.log('完整exportData:', exportData)
     
     const response = await fetch('/api/performance-pay-export/excel', {
       method: 'POST',
