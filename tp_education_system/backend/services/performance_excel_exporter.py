@@ -35,13 +35,17 @@ class PerformancePayExcelExporter:
         wb = load_workbook(filepath)
         ws = wb.active
 
-        # 3. 转换数据格式（支持扁平结构和嵌套结构）
+        # 3. 设置页面居中（水平居中打印）
+        ws.page_setup.centerHorizontally = True
+        ws.page_setup.centerVertically = False
+
+        # 4. 转换数据格式（支持扁平结构和嵌套结构）
         normalized_data = self._normalize_data(data)
 
-        # 4. 修改数据
+        # 5. 修改数据
         self._update_data(ws, normalized_data)
 
-        # 5. 保存
+        # 6. 保存
         wb.save(filepath)
         return filepath
 
