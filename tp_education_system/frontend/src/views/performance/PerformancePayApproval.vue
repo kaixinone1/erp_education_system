@@ -590,6 +590,10 @@ const handleExport = async (format: string) => {
       legacy: dynamicData.legacy || []
     }
     
+    console.log('导出数据中的备注:', exportData.备注)
+    console.log('dynamicData.notes:', dynamicData.notes)
+    console.log('完整exportData:', exportData)
+    
     const response = await fetch('/api/performance-pay-export/excel', {
       method: 'POST',
       headers: {
