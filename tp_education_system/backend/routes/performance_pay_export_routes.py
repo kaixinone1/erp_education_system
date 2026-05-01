@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/performance-pay-export", tags=["绩效工资导�
 class ExportRequest(BaseModel):
     """导出请求模型"""
     html: str
-    date: str
+    dates: Dict[str, str]
     year_month: str
 
 @router.post("/excel")
@@ -25,7 +25,7 @@ def export_to_excel(request: ExportRequest):
     """
     try:
         from services.performance_excel_exporter import export_from_html
-        filepath = export_from_html(request.html, request.date, request.year_month)
+        filepath = export_from_html(request.html, request.dates, request.year_month)
 
         if not os.path.exists(filepath):
             raise HTTPException(status_code=500, detail="导出失败")
