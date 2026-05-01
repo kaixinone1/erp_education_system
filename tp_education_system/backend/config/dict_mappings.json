@@ -1,0 +1,31 @@
+{
+  "teacher_basic_info": {
+    "民族": {"table": "dict_nation_dictionary", "code": "id", "name": "民族"},
+    "婚姻状况": {"table": "dict_marital_status_dictionary", "code": "id", "name": "婚姻状况"},
+    "政治面貌": {"table": "dict_politics_status_dictionary", "code": "id", "name": "政治面貌"},
+    "任职状态": {"table": "dict_dictionary", "code": "id", "name": "employment_status"},
+    "学历": {"table": "dict_education_level_dictionary", "code": "id", "name": "education"},
+    "职称": {"table": "dict_title_dictionary", "code": "id", "name": "professional_title"},
+    "个人身份": {"table": "dict_personal_identity_dictionary", "code": "id", "name": "ge_ren_shen_fen"},
+    "编制": {"table": "dict_unit_dictionary", "code": "id", "name": "unit"},
+    "岗位等级": {"table": "dict_grade_dictionary", "code": "id", "name": "post_level"},
+    "是否干部": {"table": "dict_dictionary", "code": "id", "name": "is_cadre"}
+  },
+  "teacher_personal_identity": {
+    "个人身份": {"table": "dict_personal_identity_dictionary", "code": "id", "name": "ge_ren_shen_fen"}
+  },
+  "teacher_education_record": {
+    "学历": {"table": "dict_education_level_dictionary", "code": "id", "name": "education"},
+    "学历类型": {"table": "dict_education_type_dictionary", "code": "id", "name": "education_type"}
+  },
+  "teacher_work_experience": {
+    "任职状态": {"table": "dict_dictionary", "code": "id", "name": "employment_status"}
+  },
+  "teacher_salary": {
+    "岗位工资": {"table": "dict_salary_dictionary", "code": "id", "name": "post_1"},
+    "绩效工资": {"table": "dict_salary_dictionary", "code": "id", "name": "month_performance_salary"}
+  },
+  "teacher_subsidy": {
+    "补贴类型": {"table": "dict_subsidy_dictionary", "code": "id", "name": "subsidy_1"}
+  }
+}

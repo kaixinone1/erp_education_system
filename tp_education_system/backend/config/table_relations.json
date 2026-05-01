@@ -1,0 +1,26 @@
+{
+  "master_table": "teacher_basic_info",
+  "relation_key": "id_card",
+  "sub_tables": {
+    "teacher_personal_identity": {
+      "alias": "个人身份信息",
+      "relation_field": "id_card"
+    },
+    "teacher_education_record": {
+      "alias": "学历信息",
+      "relation_field": "id_card"
+    },
+    "teacher_work_experience": {
+      "alias": "工作经历",
+      "relation_field": "id_card"
+    },
+    "teacher_salary": {
+      "alias": "工资信息",
+      "relation_field": "id_card"
+    },
+    "teacher_subsidy": {
+      "alias": "补贴信息",
+      "relation_field": "id_card"
+    }
+  }
+}
