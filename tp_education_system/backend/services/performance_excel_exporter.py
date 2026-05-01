@@ -122,8 +122,16 @@ class PerformancePayExcelExporter:
     def _update_data(self, ws, data: Dict):
         """更新数据到工作表"""
         # ===== 第1行：标题 =====
+        # 先取消B1:C1合并，才能修改B1的值
+        merged_cells_to_remove = []
+        for merge in list(ws.merged_cells.ranges):
+            if merge.min_row == 1 and merge.min_col <= 3 and merge.max_col >= 2:
+                merged_cells_to_remove.append(merge)
+
+        for merge in merged_cells_to_remove:
+            ws.merged_cells.remove(merge)
+
         ws['B1'] = None  # 清除B1中的原始日期
-        ws['C1'] = None  # 清除C1（因为B1:C1是合并单元格）
         ws['D1'] = f"{data.get('年月', '')} 义务教育学校教职工绩效工资审批表"
 
         # ===== 第2行：填报信息 =====
