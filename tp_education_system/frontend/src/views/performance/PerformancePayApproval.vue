@@ -569,6 +569,7 @@ const handleExport = async (format: string) => {
       年月: currentYearMonth.value,
       填报单位: '太平中心学校',
       填报时间: getCurrentDate(),
+      // 汇总数据
       绩效人数合计: dynamicData.totals.performance_count || 0,
       绩效工资合计: dynamicData.totals.performance_total || 0,
       在职人数: dynamicData.subsidies.count || 0,
@@ -581,7 +582,12 @@ const handleExport = async (format: string) => {
       退休干部: dynamicData.retirees.cadre_count || 0,
       退休职工: dynamicData.retirees.worker_count || 0,
       离休干部人数: dynamicData.retirees.retired_count || 0,
-      备注: dynamicData.notes || ''
+      备注: dynamicData.notes || '',
+      // 详细分类数据
+      administrative: dynamicData.administrative || {},
+      professional: dynamicData.professional || {},
+      worker: dynamicData.worker || {},
+      legacy: dynamicData.legacy || []
     }
     
     const response = await fetch('/api/performance-pay-export/excel', {
