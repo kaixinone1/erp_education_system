@@ -4,7 +4,6 @@
 """
 import os
 import shutil
-from datetime import datetime
 from openpyxl import load_workbook
 from typing import Dict, List, Any
 
@@ -122,16 +121,11 @@ class PerformancePayExcelExporter:
 
     def _update_data(self, ws, data: Dict):
         """更新数据到工作表"""
-        today = datetime.now()
-        today_str = f"{today.year}-{today.month:02d}-{today.day:02d}"
-
         # ===== 第1行：标题 =====
-        ws['B1'] = today_str  # 日期
         ws['D1'] = f"{data.get('年月', '')} 义务教育学校教职工绩效工资审批表"
 
         # ===== 第2行：填报信息 =====
         ws['B2'] = data.get('填报单位', '')
-        ws['G2'] = today_str
 
         # ===== 获取数据 =====
         totals = data.get('totals', {})
