@@ -236,27 +236,3 @@ def export_performance_pay(data: Dict, year_month: str) -> str:
     """导出绩效工资审批表的便捷函数"""
     exporter = PerformancePayExcelExporter()
     return exporter.export_with_template(data, year_month)
-
-
-if __name__ == "__main__":
-    # 测试导出 - 使用扁平结构
-    test_data = {
-        '年月': '2026年5月',
-        '填报单位': '太平镇中心学校',
-        '绩效人数合计': 357,
-        '绩效工资合计': 462311,
-        '在职人数': 356,
-        '乡镇补贴标准': 350,
-        '乡镇补贴合计': 124600,
-        '遗留问题人数': 2,
-        '遗留问题金额': 675.24,
-        '无补贴人数': 1,
-        '无补贴名单': '柯坤',
-        '退休干部': 447,
-        '退休职工': 2,
-        '离休干部人数': 1,
-        '备注': '退休教师死亡2人：赵明安、候兴志'
-    }
-
-    path = export_performance_pay(test_data, '2026年5月')
-    print(f"Excel导出成功: {path}")
