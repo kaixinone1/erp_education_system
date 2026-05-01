@@ -13,11 +13,12 @@
               <el-icon><Check /></el-icon>
               保存
             </el-button>
-            <el-dropdown split-button type="warning">
+            <el-dropdown @command="handleExport" split-button type="warning">
               <el-icon><Document /></el-icon>
               导出
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item command="excel">导出 Excel</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -28,9 +29,8 @@
       <div v-if="loadingTemplate" class="loading">加载中...</div>
       <div v-else-if="templateData.rows.length > 0">
         <div class="a4-container" id="printArea">
-          <div class="table-wrapper" v-html="tableHtml"></div>
+          <div class="table-wrapper" v-html="tableHtml" style="max-height: calc(100vh - 280px); overflow-y: auto;"></div>
         </div>
-        <div class="scroll-hint">提示：表格内容较长，请向下滚动查看</div>
       </div>
       <div v-else class="empty">暂无数据</div>
     </el-card>
@@ -345,7 +345,7 @@ const tableHtml = computed(() => {
             
             cellStyle = `padding: 0; vertical-align: top; text-align: center; font-size: 11px; border: 1px solid #000;`
             cellContent = `<div style="height: 100%; min-height: 300px; display: flex; flex-direction: column; position: relative; padding: 8px;">
-              <div style="flex: 1;">
+              <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                 <div>根据相关文件及有关规定，经审核，同意你单位：</div>
                 <div style="text-align: right; padding-right: 48px;">基础性绩效工资${perfCount}人，${perfTotal}元；</div>
                 <div style="text-align: right; padding-right: 48px;">生活补贴${subCount}人，${subTotal}元；</div>
@@ -509,6 +509,53 @@ const handleSave = async () => {
     ElMessage.error(error.message || '保存失败')
   } finally {
     saving.value = false
+  }
+}
+
+const exporting = ref(false)
+
+const handleExport = async (command: string) => {
+  if (command !== 'excel') {
+    ElMessage.info('暂不支持此格式')
+    return
+  }
+
+  if (!hasLoadedData.value) {
+    ElMessage.warning('请先从数据库获取数据')
+    return
+  }
+
+  exporting.value = true
+  try {
+    const response = await fetch('/api/performance-pay-approval/export-v2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...dynamicData,
+        年月: currentYearMonth.value,
+        填报单位: '太平镇中心学校'
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error('导出失败')
+    }
+
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `绩效工资审批表_${currentYearMonth.value}.xlsx`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+    ElMessage.success('导出成功')
+  } catch (error: any) {
+    console.error('导出失败:', error)
+    ElMessage.error(error.message || '导出失败')
+  } finally {
+    exporting.value = false
   }
 }
 
