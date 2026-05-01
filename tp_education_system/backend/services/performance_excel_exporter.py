@@ -1,15 +1,15 @@
 """
 绩效工资审批表Excel导出服务
-直接基于原始模板复制，只修改数据，100%保留格式
+支持前端发送的扁平数据结构，直接复制原始模板，只修改数据
 """
 import os
 import shutil
 from datetime import datetime
 from openpyxl import load_workbook
-from typing import Dict, List
+from typing import Dict, List, Any
 
 class PerformancePayExcelExporter:
-    """绩效工资审批表Excel导出器 - 原始模板精确复制版"""
+    """绩效工资审批表Excel导出器"""
 
     def __init__(self):
         # 原始模板路径
@@ -35,12 +35,86 @@ class PerformancePayExcelExporter:
         wb = load_workbook(filepath)
         ws = wb.active
 
-        # 3. 修改数据
-        self._update_data(ws, data)
+        # 3. 转换数据格式（支持扁平结构和嵌套结构）
+        normalized_data = self._normalize_data(data)
 
-        # 4. 保存
+        # 4. 修改数据
+        self._update_data(ws, normalized_data)
+
+        # 5. 保存
         wb.save(filepath)
         return filepath
+
+    def _normalize_data(self, data: Dict) -> Dict:
+        """
+        将前端发送的扁平结构转换为后端需要的嵌套结构
+        前端发送:
+        {
+            '年月': '2026年5月',
+            '填报单位': '太平中心学校',
+            '绩效人数合计': 50,
+            '绩效工资合计': 65000,
+            '在职人数': 45,
+            '乡镇补贴标准': 350,
+            '乡镇补贴合计': 15750,
+            ...
+        }
+
+        后端需要:
+        {
+            '年月': '2026年5月',
+            '填报单位': '太平中心学校',
+            'totals': {'performance_count': 50, 'performance_total': 65000},
+            'subsidies': {'count': 45, 'standard': 350, 'total': 15750},
+            'retirees': {'cadre_count': ..., 'worker_count': ..., 'retired_count': ...},
+            ...
+        }
+        """
+        normalized = {
+            '年月': data.get('年月', data.get('year_month', '')),
+            '填报单位': data.get('填报单位', '太平镇中心学校'),
+        }
+
+        # 处理 totals
+        normalized['totals'] = {
+            'performance_count': data.get('绩效人数合计', data.get('performance_count', 0)),
+            'performance_total': data.get('绩效工资合计', data.get('performance_total', 0)),
+            'legacy_count': data.get('遗留问题人数', data.get('legacy_count', 0)),
+            'legacy_total': data.get('遗留问题金额', data.get('legacy_total', 0)),
+        }
+
+        # 处理 subsidies
+        normalized['subsidies'] = {
+            'count': data.get('在职人数', data.get('subsidies_count', data.get('乡镇补贴人数', 0))),
+            'standard': data.get('乡镇补贴标准', data.get('subsidies_standard', 350)),
+            'total': data.get('乡镇补贴合计', data.get('subsidies_total', 0)),
+        }
+
+        # 处理 retirees
+        normalized['retirees'] = {
+            'cadre_count': data.get('退休干部', data.get('retirees_cadre_count', 0)),
+            'worker_count': data.get('退休职工', data.get('retirees_worker_count', 0)),
+            'retired_count': data.get('离休干部人数', data.get('retirees_retired_count', 0)),
+        }
+
+        # 处理 notes
+        normalized['notes'] = data.get('备注', data.get('notes', ''))
+
+        # 处理无补贴名单
+        normalized['no_subsidy_names'] = data.get('无补贴名单', data.get('no_subsidy_names', ''))
+        normalized['no_subsidy_count'] = data.get('无补贴人数', data.get('no_subsidy_count', 0))
+
+        # 保留原始的嵌套结构（如果存在）
+        if 'administrative' in data:
+            normalized['administrative'] = data['administrative']
+        if 'professional' in data:
+            normalized['professional'] = data['professional']
+        if 'worker' in data:
+            normalized['worker'] = data['worker']
+        if 'legacy' in data:
+            normalized['legacy'] = data['legacy']
+
+        return normalized
 
     def _update_data(self, ws, data: Dict):
         """更新数据到工作表"""
@@ -55,8 +129,20 @@ class PerformancePayExcelExporter:
         ws['B2'] = data.get('填报单位', '太平镇中心学校')
         ws['G2'] = today_str
 
-        # ===== 行政管理人员数据（第6-10行）=====
+        # ===== 获取数据 =====
+        totals = data.get('totals', {})
+        subsidies = data.get('subsidies', {})
+        retirees = data.get('retirees', {})
+        legacy = data.get('legacy', [])
+        no_subsidy_names = data.get('no_subsidy_names', '')
+        no_subsidy_count = data.get('no_subsidy_count', 0)
+
+        # ===== 如果有嵌套的详细数据，使用详细数据 ======
         admin_data = data.get('administrative', {})
+        pro_data = data.get('professional', {})
+        worker_data = data.get('worker', {})
+
+        # ===== 行政管理人员数据（第6-10行）=====
         admin_items = ['副处级', '正科级', '副科级', '科员级', '办事员级']
         for i, item in enumerate(admin_items):
             row = 6 + i
@@ -66,7 +152,6 @@ class PerformancePayExcelExporter:
             ws[f'D{row}'] = item_data.get('subtotal', '')
 
         # ===== 专业技术人员数据（第12-16行）=====
-        pro_data = data.get('professional', {})
         pro_items = ['正高级', '高级教师', '一级教师', '二级教师', '三级教师']
         for i, item in enumerate(pro_items):
             row = 12 + i
@@ -76,7 +161,6 @@ class PerformancePayExcelExporter:
             ws[f'D{row}'] = item_data.get('subtotal', '')
 
         # ===== 工人数据（第18-23行）=====
-        worker_data = data.get('worker', {})
         worker_items = ['高级技师', '技师', '高级工', '中级工', '初级工', '普工']
         for i, item in enumerate(worker_items):
             row = 18 + i
@@ -86,29 +170,30 @@ class PerformancePayExcelExporter:
             ws[f'D{row}'] = item_data.get('subtotal', '')
 
         # ===== 人事部门意见内容（第20-23行）=====
-        totals = data.get('totals', {})
-        subsidies = data.get('subsidies', {})
+        performance_count = totals.get('performance_count', 0)
+        performance_total = totals.get('performance_total', 0)
+        subsidies_count = subsidies.get('count', 0)
+        subsidies_total = subsidies.get('total', 0)
 
-        ws['H21'] = totals.get('performance_count', '')
-        ws['J21'] = totals.get('performance_total', '')
+        ws['H21'] = performance_count
+        ws['J21'] = performance_total
 
-        ws['H22'] = subsidies.get('count', '')
-        ws['J22'] = subsidies.get('total', '')
+        ws['H22'] = subsidies_count
+        ws['J22'] = subsidies_total
 
-        total_all = totals.get('performance_total', 0) + subsidies.get('total', 0)
+        total_all = performance_total + subsidies_total
         ws['J23'] = total_all if total_all else ''
 
         # ===== 绩效工资合计（第24行）=====
-        ws['B24'] = totals.get('performance_count', '')
-        ws['D24'] = totals.get('performance_total', '')
+        ws['B24'] = performance_count
+        ws['D24'] = performance_total
 
         # ===== 乡镇补贴合计（第25行）=====
-        ws['B25'] = subsidies.get('count', '')
+        ws['B25'] = subsidies_count
         ws['C25'] = subsidies.get('standard', 350)
-        ws['D25'] = subsidies.get('total', '')
+        ws['D25'] = subsidies_total
 
         # ===== 岗位设置遗留问题（第26-28行）=====
-        legacy = data.get('legacy', [])
         for i in range(3):
             row = 26 + i
             if i < len(legacy):
@@ -129,7 +214,6 @@ class PerformancePayExcelExporter:
             ws['D28'] = total_amount
 
         # ===== 退休人员（第29-31行）=====
-        retirees = data.get('retirees', {})
         ws['B29'] = retirees.get('cadre_count', '')
         ws['B30'] = retirees.get('worker_count', '')
         ws['B31'] = retirees.get('retired_count', '')
@@ -147,51 +231,23 @@ def export_performance_pay(data: Dict, year_month: str) -> str:
 
 
 if __name__ == "__main__":
-    # 测试导出
+    # 测试导出 - 使用扁平结构
     test_data = {
         '年月': '2026年5月',
         '填报单位': '太平镇中心学校',
-        'administrative': {
-            '副处级': {'count': 3, 'standard': 3500, 'subtotal': 10500},
-            '正科级': {'count': 5, 'standard': 2800, 'subtotal': 14000},
-            '副科级': {'count': 8, 'standard': 2200, 'subtotal': 17600},
-            '科员级': {'count': 5, 'standard': 1185, 'subtotal': 5925},
-            '办事员级': {'count': 2, 'standard': 1106, 'subtotal': 2212},
-        },
-        'professional': {
-            '正高级': {'count': 2, 'standard': 1862, 'subtotal': 3724},
-            '高级教师': {'count': 44, 'standard': 1523, 'subtotal': 67012},
-            '一级教师': {'count': 136, 'standard': 1309, 'subtotal': 178024},
-            '二级教师': {'count': 150, 'standard': 1241, 'subtotal': 186150},
-            '三级教师': {'count': 19, 'standard': 1128, 'subtotal': 21432},
-        },
-        'worker': {
-            '高级技师': {'count': 1, 'standard': 1331, 'subtotal': 1331},
-            '技师': {'count': 2, 'standard': 1331, 'subtotal': 2662},
-            '高级工': {'count': 3, 'standard': 1219, 'subtotal': 3657},
-            '中级工': {'count': 5, 'standard': 1185, 'subtotal': 5925},
-            '初级工': {'count': 1, 'standard': 1106, 'subtotal': 1106},
-            '普工': {'count': 0, 'standard': 1106, 'subtotal': 0},
-        },
-        'totals': {
-            'performance_count': 357,
-            'performance_total': 462311,
-        },
-        'subsidies': {
-            'count': 356,
-            'standard': 350,
-            'total': 124600,
-        },
-        'legacy': [
-            {'name': '李发金', 'amount': 321.3},
-            {'name': '张照凯', 'amount': 353.94},
-        ],
-        'retirees': {
-            'cadre_count': 447,
-            'worker_count': 2,
-            'retired_count': 1,
-        },
-        'notes': '退休教师死亡2人：赵明安、候兴志'
+        '绩效人数合计': 357,
+        '绩效工资合计': 462311,
+        '在职人数': 356,
+        '乡镇补贴标准': 350,
+        '乡镇补贴合计': 124600,
+        '遗留问题人数': 2,
+        '遗留问题金额': 675.24,
+        '无补贴人数': 1,
+        '无补贴名单': '柯坤',
+        '退休干部': 447,
+        '退休职工': 2,
+        '离休干部人数': 1,
+        '备注': '退休教师死亡2人：赵明安、候兴志'
     }
 
     path = export_performance_pay(test_data, '2026年5月')

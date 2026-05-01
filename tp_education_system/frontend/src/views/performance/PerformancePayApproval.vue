@@ -630,10 +630,18 @@ onMounted(() => {
   padding: 20px;
   background: #f5f5f5;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .page-card {
   min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 240mm;
 }
 
 .card-header {
