@@ -302,6 +302,7 @@ def export_from_html(html: str, cells: Dict[str, str], year_month: str) -> str:
             self.current_cell = ""
             self.in_cell = False
             self.in_table = False
+            self.skip_depth = 0
 
         def handle_starttag(self, tag, attrs):
             if tag == 'tr':
@@ -310,6 +311,11 @@ def export_from_html(html: str, cells: Dict[str, str], year_month: str) -> str:
             elif tag == 'td':
                 self.in_cell = True
                 self.current_cell = ""
+            elif tag == 'div':
+                for name, value in attrs:
+                    if name == 'style' and value and 'position: absolute' in value:
+                        self.skip_depth += 1
+                        break
 
         def handle_endtag(self, tag):
             if tag == 'td':
@@ -319,9 +325,12 @@ def export_from_html(html: str, cells: Dict[str, str], year_month: str) -> str:
             elif tag == 'tr':
                 if self.current_row:
                     self.rows.append(self.current_row)
+            elif tag == 'div':
+                if self.skip_depth > 0:
+                    self.skip_depth -= 1
 
         def handle_data(self, data):
-            if self.in_cell:
+            if self.in_cell and self.skip_depth == 0:
                 self.current_cell += data
 
     parser = TableParser()
