@@ -693,11 +693,11 @@ const handleExport = async (format: string) => {
       },
       body: JSON.stringify({
         html: tableHtml.value,
-        dates: {
-          填报日期: getCurrentDate(),
-          呈报单位日期: getCurrentDate(),
-          教育局日期: getNextDate(),
-          人事部门日期: getNextDate()
+        cells: {
+          'G2': getCurrentDate(),
+          'F10': getNextDate(),
+          'F19': getNextDate(),
+          'F31': getNextDate()
         },
         year_month: currentYearMonth.value
       })
