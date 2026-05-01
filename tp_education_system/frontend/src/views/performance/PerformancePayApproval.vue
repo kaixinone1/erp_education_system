@@ -686,15 +686,13 @@ const handleExport = async (format: string) => {
   
   exporting.value = true
   try {
-    const cellData = getCellData()
-    
     const response = await fetch('/api/performance-pay-export/excel', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        cells: cellData,
+        html: tableHtml.value,
         year_month: currentYearMonth.value
       })
     })

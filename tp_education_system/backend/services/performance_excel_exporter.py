@@ -270,3 +270,70 @@ def export_performance_pay_simple(cells: Dict[str, str], year_month: str) -> str
     # 5. 保存
     wb.save(filepath)
     return filepath
+
+
+def export_from_html(html: str, year_month: str) -> str:
+    """
+    从HTML字符串导出Excel
+    直接解析HTML，将内容写入Excel单元格
+    """
+    import re
+    from html.parser import HTMLParser
+
+    template_path = r"D:\erp_thirteen\数据库信息\模板\义务教育学校教职工绩效工资审批表.xlsx"
+    output_dir = os.path.join(os.path.dirname(__file__), 'exports')
+    os.makedirs(output_dir, exist_ok=True)
+
+    filename = f"绩效工资审批表_{year_month}.xlsx"
+    filepath = os.path.join(output_dir, filename)
+    shutil.copy2(template_path, filepath)
+
+    wb = load_workbook(filepath)
+    ws = wb.active
+
+    ws.page_setup.centerHorizontally = True
+    ws.page_setup.centerVertically = False
+
+    class TableParser(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.rows = []
+            self.current_row = []
+            self.current_cell = ""
+            self.in_cell = False
+            self.in_table = False
+
+        def handle_starttag(self, tag, attrs):
+            if tag == 'tr':
+                self.current_row = []
+                self.in_table = True
+            elif tag == 'td':
+                self.in_cell = True
+                self.current_cell = ""
+
+        def handle_endtag(self, tag):
+            if tag == 'td':
+                self.current_cell = self.current_cell.strip()
+                self.current_row.append(self.current_cell)
+                self.in_cell = False
+            elif tag == 'tr':
+                if self.current_row:
+                    self.rows.append(self.current_row)
+
+        def handle_data(self, data):
+            if self.in_cell:
+                self.current_cell += data
+
+    parser = TableParser()
+    parser.feed(html)
+
+    for row_idx, row in enumerate(parser.rows):
+        for col_idx, cell_value in enumerate(row):
+            cell_id = f"{chr(65 + col_idx)}{row_idx + 1}"
+            try:
+                ws[cell_id] = cell_value if cell_value else None
+            except Exception as e:
+                print(f"写入单元格 {cell_id} 失败: {e}")
+
+    wb.save(filepath)
+    return filepath
