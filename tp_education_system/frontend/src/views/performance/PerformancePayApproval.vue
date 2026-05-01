@@ -693,6 +693,7 @@ const handleExport = async (format: string) => {
       },
       body: JSON.stringify({
         html: tableHtml.value,
+        date: getCurrentDate(),
         year_month: currentYearMonth.value
       })
     })

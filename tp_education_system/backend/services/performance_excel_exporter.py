@@ -272,7 +272,7 @@ def export_performance_pay_simple(cells: Dict[str, str], year_month: str) -> str
     return filepath
 
 
-def export_from_html(html: str, year_month: str) -> str:
+def export_from_html(html: str, date: str, year_month: str) -> str:
     """
     从HTML字符串导出Excel
     直接解析HTML，将内容写入Excel单元格
@@ -334,6 +334,8 @@ def export_from_html(html: str, year_month: str) -> str:
                 ws[cell_id] = cell_value if cell_value else None
             except Exception as e:
                 print(f"写入单元格 {cell_id} 失败: {e}")
+
+    ws['G2'] = date
 
     wb.save(filepath)
     return filepath
