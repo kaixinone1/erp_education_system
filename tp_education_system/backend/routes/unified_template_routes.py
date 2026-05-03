@@ -7,7 +7,7 @@ import os
 import tempfile
 from typing import Dict, Any
 
-from ..core.unified_template_manager import UnifiedTemplateManager
+from core.unified_template_manager import UnifiedTemplateManager
 
 router = APIRouter(prefix="/api/template", tags=["模板管理"])
 
