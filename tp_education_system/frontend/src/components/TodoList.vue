@@ -117,7 +117,7 @@ const rawTodoList = ref<Todo[]>([])
 
 // 计算属性：待办数量
 const pendingCount = computed(() => {
-  return rawTodoList.value.filter(t => t.status !== 'completed').length
+  return rawTodoList.value.filter(t => t.status !== '已完成').length
 })
 
 // 计算属性：显示的待办列表
@@ -127,19 +127,19 @@ const displayTodos = computed(() => {
   // 根据标签页筛选
   if (props.showTabs) {
     if (activeTab.value === 'pending') {
-      // 我的待办：显示所有未完成的（包括pending和in_progress）
-      filtered = rawTodoList.value.filter(todo => todo.status !== 'completed')
+      // 我的待办：显示所有未完成的（包括待处理和进行中）
+      filtered = rawTodoList.value.filter(todo => todo.status !== '已完成')
     } else if (activeTab.value === 'completed') {
-      filtered = rawTodoList.value.filter(todo => todo.status === 'completed')
+      filtered = rawTodoList.value.filter(todo => todo.status === '已完成')
     }
   } else if (!props.showCompleted) {
     // 不显示已完成时，只显示未完成的
-    filtered = rawTodoList.value.filter(todo => todo.status !== 'completed')
+    filtered = rawTodoList.value.filter(todo => todo.status !== '已完成')
   }
   
   // 映射显示格式
   return filtered.map(todo => {
-    const isCompleted = todo.status === 'completed'
+    const isCompleted = todo.status === '已完成'
     const templateName = todo.business_type_display || todo.template_name || '待办任务'
     const teacherName = todo.teacher_name || '未知'
     const baseTitle = todo.title || `${teacherName} - ${templateName}`

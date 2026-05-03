@@ -138,12 +138,18 @@ async def update_task_status(data: Dict[str, Any]):
         # 计算已完成数
         completed_count = sum(1 for task in task_items if task.get("完成状态", False))
         
-        # 更新状态
-        new_status = "completed" if completed_count >= total_tasks else "pending"
+        # 更新状态（统一使用中文状态）
+        if completed_count >= total_tasks:
+            new_status = "已完成"
+            completed_at = "CURRENT_TIMESTAMP"
+        else:
+            new_status = "进行中" if completed_count > 0 else "待处理"
+            completed_at = "NULL"
         
-        cursor.execute("""
+        cursor.execute(f"""
             UPDATE todo_work 
-            SET 任务项列表 = %s, 已完成数 = %s, 状态 = %s, updated_at = CURRENT_TIMESTAMP
+            SET 任务项列表 = %s, 已完成数 = %s, 状态 = %s, 
+                completed_at = {completed_at}, updated_at = CURRENT_TIMESTAMP
             WHERE id = %s
         """, (json.dumps(task_items), completed_count, new_status, todo_id))
         
@@ -203,7 +209,7 @@ async def create_todo_from_checklist(data: Dict[str, Any]):
                 "完成状态": False
             }]
         
-        # 创建待办工作
+        # 创建待办工作（统一使用中文状态）
         total_tasks = len(task_items)
         
         cursor.execute("""
@@ -219,7 +225,7 @@ async def create_todo_from_checklist(data: Dict[str, Any]):
             json.dumps(task_items),
             total_tasks,
             0,
-            "pending"
+            "待处理"
         ))
         
         todo_id = cursor.fetchone()[0]
