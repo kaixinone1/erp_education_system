@@ -27,6 +27,7 @@ from routes.performance_pay_history_routes import router as performance_pay_hist
 from routes.performance_pay_template import router as performance_pay_template_router
 from routes.template_import_test import router as template_import_test_router
 from routes.aggregate_query_routes import router as aggregate_query_router
+from routes.unified_template_routes import router as unified_template_router
 import json
 import os
 
@@ -181,6 +182,10 @@ print("[OK] 模板导入测试路由已注册")
 # 注册聚合查询路由
 app.include_router(aggregate_query_router)
 print("[OK] 聚合查询路由已注册")
+
+# 注册统一模板管理路由
+app.include_router(unified_template_router)
+print("[OK] 统一模板管理路由已注册")
 
 # 注册通用中间表框架路由（旧框架，保留兼容）
 from utils.intermediate_table_framework import register_intermediate_table, create_intermediate_table_routes
