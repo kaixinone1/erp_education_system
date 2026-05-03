@@ -433,7 +433,8 @@ async def get_todo_list(
                     except:
                         task_items = []
                 total = len(task_items) if task_items else 0
-                completed = sum(1 for t in task_items if t.get('completed')) if task_items else 0
+                # 同时检查 completed 和 完成状态 字段
+                completed = sum(1 for t in task_items if t.get('completed') or t.get('完成状态')) if task_items else 0
                 if total > 0 and completed == total:
                     # 自动更新为已完成
                     cursor.execute("""
