@@ -1,0 +1,24 @@
+{
+  "config_name": "测试工资表修复",
+  "display_name": "测试工资表修复",
+  "chinese_title": "测试工资表修复",
+  "table_name": "test_wage_fix",
+  "table_type": "master",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "单位名称",
+      "targetField": "unit_name"
+    },
+    {
+      "sourceField": "姓名",
+      "targetField": "name"
+    },
+    {
+      "sourceField": "身份证号",
+      "targetField": "id_card"
+    }
+  ],
+  "created_at": "2026-05-03T12:29:05.565280",
+  "updated_at": "2026-05-03T12:29:05.565280"
+}

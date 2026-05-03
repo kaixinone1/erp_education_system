@@ -23,58 +23,132 @@
         </el-button>
       </div>
 
-      <!-- 第二行：表选择和字段工作区 -->
+      <!-- 第二行：表选择、工作区和过滤条件 -->
       <el-row :gutter="20" class="workspace-row">
-        <!-- 左侧：表选择 + 字段选择 -->
+        <!-- 左侧：表选择 -->
         <el-col :span="6">
-          <el-card shadow="hover" class="table-field-panel">
-            <!-- 表选择 -->
-            <div class="table-selector">
-              <span class="label">选择表名：</span>
-              <el-select v-model="selectedTable" placeholder="请选择表" @change="handleTableChange">
-                <el-option v-for="table in tableList" :key="table.name" :label="table.label" :value="table.name" />
-              </el-select>
-            </div>
+          <el-card shadow="hover" class="table-panel">
+            <template #header>
+              <span>选择表名</span>
+            </template>
+            <el-select v-model="selectedTable" placeholder="请选择表" @change="handleTableChange" style="width: 100%">
+              <el-option v-for="table in tableList" :key="table.name" :label="table.label" :value="table.name" />
+            </el-select>
+          </el-card>
+        </el-col>
 
-            <!-- 字段选择 -->
-            <div v-if="tableFields.length > 0" class="field-selector">
-              <div class="field-header">
-                <span class="label">选择字段：</span>
-                <el-button type="primary" size="small" @click="addSelectedFields" :disabled="selectedFields.length === 0">
+        <!-- 中间：字段选择（一体化树形结构） -->
+        <el-col :span="8">
+          <el-card shadow="hover" class="field-panel">
+            <template #header>
+              <div class="panel-header">
+                <span>选择字段</span>
+                <el-button type="primary" size="small" @click="addSelectedFields" :disabled="selectedFieldNames.length === 0">
                   添加到工作区
                 </el-button>
               </div>
-              <el-checkbox-group v-model="selectedFields" class="field-list">
-                <el-checkbox v-for="field in tableFields" :key="field.name" :value="field.name" class="field-item">
-                  {{ field.label }}
-                </el-checkbox>
-              </el-checkbox-group>
+            </template>
+
+            <div v-if="fieldTree.length > 0" class="field-tree">
+              <div v-for="field in fieldTree" :key="field.name" class="field-node">
+                <!-- 有字典的字段：显示为可展开的父级 -->
+                <div v-if="field.hasDict && field.options.length > 0" class="field-parent">
+                  <div class="field-row" @click="toggleExpand(field.name)">
+                    <el-checkbox
+                      :model-value="isFieldSelected(field.name)"
+                      @change="(val: boolean) => toggleFieldSelect(field.name, val)"
+                      @click.stop
+                    />
+                    <span class="field-label">{{ field.label }}</span>
+                    <el-icon v-if="field.expanded" class="expand-icon"><ArrowDown /></el-icon>
+                    <el-icon v-else class="expand-icon"><ArrowRight /></el-icon>
+                  </div>
+                  <!-- 子选项：字典值 -->
+                  <div v-if="field.expanded" class="field-children">
+                    <div
+                      v-for="opt in field.options"
+                      :key="opt.value"
+                      class="child-row"
+                      :class="{ 'child-selected': isValueSelected(field.name, opt.value) }"
+                      @click="toggleValueSelect(field, opt)"
+                    >
+                      <el-checkbox
+                        :model-value="isValueSelected(field.name, opt.value)"
+                        @change="(val: boolean) => toggleValueSelect(field, opt, val)"
+                        @click.stop
+                      />
+                      <span class="child-label">{{ opt.label }}</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 无字典的字段：直接显示 -->
+                <div v-else class="field-simple">
+                  <el-checkbox
+                    :model-value="isFieldSelected(field.name)"
+                    @change="(val: boolean) => toggleFieldSelect(field.name, val)"
+                  />
+                  <span class="field-label">{{ field.label }}</span>
+                </div>
+              </div>
             </div>
+            <el-empty v-else-if="selectedTable" description="加载字段中..." :image-size="60" />
+            <el-empty v-else description="请先选择表" :image-size="60" />
           </el-card>
         </el-col>
 
         <!-- 右侧：工作区 -->
-        <el-col :span="18">
+        <el-col :span="10">
           <el-card shadow="hover" class="workspace-panel">
             <template #header>
               <div class="panel-header">
-                <span>工作区（已选字段）</span>
+                <span>工作区</span>
                 <el-button type="danger" size="small" @click="clearFields" :disabled="queryFields.length === 0">清空</el-button>
               </div>
             </template>
 
+            <div v-if="activeFilters.length > 0" class="active-filters">
+              <div class="filter-title">已选过滤条件：</div>
+              <el-tag
+                v-for="(f, index) in activeFilters"
+                :key="index"
+                closable
+                @close="removeFilter(index)"
+                type="warning"
+                class="filter-tag"
+              >
+                {{ f.fieldLabel }}: {{ f.valueLabel }}
+              </el-tag>
+            </div>
+
             <div class="workspace-list">
-              <div v-for="(field, index) in queryFields" :key="index" class="workspace-item">
+              <div
+                v-for="(field, index) in queryFields"
+                :key="index"
+                class="workspace-item"
+                draggable="true"
+                @dragstart="onDragStart(index, $event)"
+                @dragover.prevent="onDragOver(index)"
+                @drop="onDrop(index)"
+                @dragend="onDragEnd"
+              >
                 <span class="field-order">{{ index + 1 }}</span>
                 <span class="field-label">{{ field.label }}</span>
                 <span class="field-table">({{ field.tableLabel }})</span>
-                <el-button link type="danger" size="small" @click="removeField(index)">
-                  <el-icon><Delete /></el-icon>
-                </el-button>
+                <div class="field-actions">
+                  <el-button link type="primary" size="small" @click="moveFieldUp(index)" :disabled="index === 0">
+                    <el-icon><ArrowUpBold /></el-icon>
+                  </el-button>
+                  <el-button link type="primary" size="small" @click="moveFieldDown(index)" :disabled="index === queryFields.length - 1">
+                    <el-icon><ArrowDownBold /></el-icon>
+                  </el-button>
+                  <el-button link type="danger" size="small" @click="removeField(index)">
+                    <el-icon><Delete /></el-icon>
+                  </el-button>
+                </div>
               </div>
             </div>
 
-            <el-empty v-if="queryFields.length === 0" description="请从左侧选择表和字段" :image-size="60" />
+            <el-empty v-if="queryFields.length === 0 && activeFilters.length === 0" description="请从左侧选择字段" :image-size="60" />
           </el-card>
         </el-col>
       </el-row>
@@ -113,22 +187,40 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Search, Download, Delete, PriceTag } from '@element-plus/icons-vue'
+import { Search, Download, Delete, PriceTag, ArrowDown, ArrowRight, Top, Bottom, ArrowUp, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue'
+import * as XLSX from 'xlsx'
+
+interface FieldNode {
+  name: string
+  label: string
+  hasDict: boolean
+  expanded: boolean
+  options: { value: any, label: string }[]
+}
+
+interface ActiveFilter {
+  field: string
+  fieldLabel: string
+  table: string
+  tableLabel: string
+  values: any[]
+  valueLabel: string
+}
 
 const tableList = ref<{name: string, label: string}[]>([])
 const selectedTable = ref('')
-const tableFields = ref<{name: string, label: string, type: string}[]>([])
-const selectedFields = ref<string[]>([])
+const fieldTree = ref<FieldNode[]>([])
+const selectedFieldNames = ref<string[]>([])
 const queryFields = ref<{name: string, label: string, table: string, tableLabel: string}[]>([])
 const tagList = ref<{id: number, name: string}[]>([])
 const selectedTags = ref<string[]>([])
 const showTagDialog = ref(false)
+const activeFilters = ref<ActiveFilter[]>([])
 const querying = ref(false)
 const exporting = ref(false)
 const queryResult = ref<any[]>([])
 
 const resultColumns = computed(() => {
-  // 使用用户选择的字段顺序
   return queryFields.value.map(f => f.label)
 })
 
@@ -162,12 +254,12 @@ const loadTags = async () => {
 }
 
 const handleTableChange = async () => {
-  selectedFields.value = []
+  selectedFieldNames.value = []
   if (!selectedTable.value) {
-    tableFields.value = []
+    fieldTree.value = []
     return
   }
-  
+
   try {
     const response = await fetch('/api/aggregate-query/fields', {
       method: 'POST',
@@ -176,17 +268,118 @@ const handleTableChange = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      tableFields.value = result.fields
+      const tableInfo = tableList.value.find(t => t.name === selectedTable.value)
+      fieldTree.value = result.fields.map((f: any) => ({
+        name: f.name,
+        label: f.label,
+        hasDict: f.has_dict || f.hasDict || false,
+        expanded: false,
+        options: []
+      }))
+
+      for (const field of fieldTree.value) {
+        if (field.hasDict) {
+          await loadDictOptions(field)
+        }
+      }
     }
   } catch (error) {
     console.error('加载字段列表失败:', error)
   }
 }
 
+const loadDictOptions = async (field: FieldNode) => {
+  try {
+    const response = await fetch('/api/aggregate-query/dict-values', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        table_name: selectedTable.value,
+        field_name: field.name
+      })
+    })
+    const result = await response.json()
+    if (result.status === 'success') {
+      field.options = result.values.map((v: any) => ({
+        value: v.value,
+        label: v.label
+      }))
+    }
+  } catch (error) {
+    console.error('加载字典选项失败:', error)
+  }
+}
+
+const toggleExpand = (fieldName: string) => {
+  const field = fieldTree.value.find(f => f.name === fieldName)
+  if (field) {
+    field.expanded = !field.expanded
+  }
+}
+
+const isFieldSelected = (fieldName: string) => {
+  return selectedFieldNames.value.includes(fieldName)
+}
+
+const toggleFieldSelect = (fieldName: string, selected: boolean) => {
+  if (selected) {
+    if (!selectedFieldNames.value.includes(fieldName)) {
+      selectedFieldNames.value.push(fieldName)
+    }
+  } else {
+    selectedFieldNames.value = selectedFieldNames.value.filter(n => n !== fieldName)
+  }
+}
+
+const isValueSelected = (fieldName: string, value: any) => {
+  const filter = activeFilters.value.find(f => f.field === fieldName)
+  return filter && filter.values.includes(value)
+}
+
+const toggleValueSelect = (field: FieldNode, opt: { value: any, label: string }, selected?: boolean) => {
+  const tableInfo = tableList.value.find(t => t.name === selectedTable.value)
+  let filter = activeFilters.value.find(f => f.field === field.name)
+
+  if (!filter) {
+    filter = {
+      field: field.name,
+      fieldLabel: field.label,
+      table: selectedTable.value,
+      tableLabel: tableInfo?.label || selectedTable.value,
+      values: [],
+      valueLabel: ''
+    }
+    activeFilters.value.push(filter)
+  }
+
+  if (selected === undefined || selected) {
+    if (!filter.values.includes(opt.value)) {
+      filter.values.push(opt.value)
+      filter.valueLabel = field.options
+        .filter(o => filter!.values.includes(o.value))
+        .map(o => o.label)
+        .join(', ')
+    }
+  } else {
+    filter.values = filter.values.filter(v => v !== opt.value)
+    filter.valueLabel = field.options
+      .filter(o => filter!.values.includes(o.value))
+      .map(o => o.label)
+      .join(', ')
+    if (filter.values.length === 0) {
+      activeFilters.value = activeFilters.value.filter(f => f.field !== field.name)
+    }
+  }
+}
+
+const removeFilter = (index: number) => {
+  activeFilters.value.splice(index, 1)
+}
+
 const addSelectedFields = () => {
   const tableInfo = tableList.value.find(t => t.name === selectedTable.value)
-  for (const fieldName of selectedFields.value) {
-    const fieldInfo = tableFields.value.find(f => f.name === fieldName)
+  for (const fieldName of selectedFieldNames.value) {
+    const fieldInfo = fieldTree.value.find(f => f.name === fieldName)
     if (fieldInfo && !queryFields.value.find(f => f.name === fieldName && f.table === selectedTable.value)) {
       queryFields.value.push({
         name: fieldName,
@@ -196,11 +389,53 @@ const addSelectedFields = () => {
       })
     }
   }
-  selectedFields.value = []
+  selectedFieldNames.value = []
 }
 
 const removeField = (index: number) => {
   queryFields.value.splice(index, 1)
+}
+
+const moveFieldUp = (index: number) => {
+  if (index > 0) {
+    const temp = queryFields.value[index]
+    queryFields.value[index] = queryFields.value[index - 1]
+    queryFields.value[index - 1] = temp
+  }
+}
+
+const moveFieldDown = (index: number) => {
+  if (index < queryFields.value.length - 1) {
+    const temp = queryFields.value[index]
+    queryFields.value[index] = queryFields.value[index + 1]
+    queryFields.value[index + 1] = temp
+  }
+}
+
+// 拖拽排序
+const dragIndex = ref<number | null>(null)
+
+const onDragStart = (index: number, event: DragEvent) => {
+  dragIndex.value = index
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move'
+  }
+}
+
+const onDragOver = (index: number) => {
+}
+
+const onDrop = (targetIndex: number) => {
+  if (dragIndex.value !== null && dragIndex.value !== targetIndex) {
+    const temp = queryFields.value[dragIndex.value]
+    queryFields.value[dragIndex.value] = queryFields.value[targetIndex]
+    queryFields.value[targetIndex] = temp
+    dragIndex.value = null
+  }
+}
+
+const onDragEnd = () => {
+  dragIndex.value = null
 }
 
 const clearFields = () => {
@@ -217,7 +452,7 @@ const executeQuery = async () => {
     ElMessage.warning('请先选择字段')
     return
   }
-  
+
   querying.value = true
   try {
     const tableFieldsMap: Record<string, {name: string, label: string}[]> = {}
@@ -227,74 +462,71 @@ const executeQuery = async () => {
       }
       tableFieldsMap[field.table].push({ name: field.name, label: field.label })
     }
-    
+
     const tables = Object.entries(tableFieldsMap).map(([table_name, fields]) => ({
       table_name,
       fields
     }))
-    
+
     const response = await fetch('/api/aggregate-query/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         tables,
-        tags: selectedTags.value.length > 0 ? selectedTags.value : undefined
+        tags: selectedTags.value.length > 0 ? selectedTags.value : undefined,
+        filters: activeFilters.value.length > 0 ? activeFilters.value.map(f => ({
+          field: f.field,
+          table: f.table,
+          values: f.values
+        })) : undefined
       })
     })
-    
+
     const result = await response.json()
     if (result.status === 'success') {
       queryResult.value = result.data
       ElMessage.success(`查询成功，共 ${result.data.length} 条数据`)
     } else {
-      ElMessage.error(result.detail || '查询失败')
+      ElMessage.error(result.message || '查询失败')
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('查询失败:', error)
-    ElMessage.error(error.message || '查询失败')
+    ElMessage.error('查询失败')
   } finally {
     querying.value = false
   }
 }
 
-const exportExcel = async () => {
+const exportExcel = () => {
   if (queryResult.value.length === 0) {
     ElMessage.warning('没有数据可导出')
     return
   }
-  
-  exporting.value = true
+
   try {
-    const filename = `聚合查询_${new Date().toISOString().slice(0, 10)}`
-    
-    const response = await fetch('/api/aggregate-query/export', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: queryResult.value,
-        filename
-      })
+    const data = queryResult.value.map((row: any) => {
+      const newRow: any = {}
+      for (const col of resultColumns.value) {
+        newRow[col] = row[col]
+      }
+      return newRow
     })
-    
-    if (response.ok) {
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = filename + '.xlsx'
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-      ElMessage.success('导出成功')
-    } else {
-      ElMessage.error('导出失败')
-    }
-  } catch (error: any) {
+
+    const worksheet = XLSX.utils.json_to_sheet(data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, '查询结果')
+
+    const colWidths = resultColumns.value.map(col => ({
+      wch: Math.max(col.length, 15)
+    }))
+    worksheet['!cols'] = colWidths
+
+    const fileName = `聚合查询结果_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`
+    XLSX.writeFile(workbook, fileName)
+    ElMessage.success('导出成功')
+  } catch (error) {
     console.error('导出失败:', error)
-    ElMessage.error(error.message || '导出失败')
-  } finally {
-    exporting.value = false
+    ElMessage.error('导出失败')
   }
 }
 </script>
@@ -305,7 +537,8 @@ const exportExcel = async () => {
 }
 
 .page-card {
-  min-height: calc(100vh - 40px);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .card-header {
@@ -316,124 +549,180 @@ const exportExcel = async () => {
 
 .card-header h2 {
   margin: 0;
-  font-size: 20px;
 }
 
 .action-row {
   display: flex;
-  gap: 15px;
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 15px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .workspace-row {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.table-field-panel, .workspace-panel {
-  min-height: 300px;
+.table-panel,
+.field-panel,
+.workspace-panel {
+  height: 100%;
+  min-height: 400px;
 }
 
-.table-selector {
-  margin-bottom: 15px;
-}
-
-.table-selector .el-select {
-  width: 25% !important;
-  min-width: 150px;
-}
-
-.table-selector .label, .field-header .label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.field-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.field-list {
-  display: flex;
-  flex-direction: column;
-  max-height: 200px;
+.field-panel {
   overflow-y: auto;
-  border: 1px solid #eee;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.field-item {
-  margin: 3px 0;
+  max-height: 500px;
 }
 
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.field-tree {
+  padding: 10px 0;
+}
+
+.field-node {
+  margin-bottom: 5px;
+}
+
+.field-parent {
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  cursor: pointer;
+  background: #f5f7fa;
+}
+
+.field-row:hover {
+  background: #ecf5ff;
+}
+
+.field-label {
+  flex: 1;
+  margin-left: 8px;
+}
+
+.expand-icon {
+  margin-left: 5px;
+  color: #909399;
+}
+
+.field-children {
+  padding: 5px 10px 5px 35px;
+  background: #fff;
+}
+
+.child-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.child-row:hover {
+  background: #ecf5ff;
+}
+
+.child-row.child-selected {
+  background: #fffbe6;
+}
+
+.child-label {
+  margin-left: 8px;
+  color: #606266;
+}
+
+.field-simple {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.active-filters {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-title {
   font-weight: bold;
+  margin-bottom: 10px;
+  color: #606266;
+}
+
+.filter-tag {
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 .workspace-list {
-  max-height: 220px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .workspace-item {
   display: flex;
   align-items: center;
-  padding: 8px 10px;
-  margin: 5px 0;
-  background: #f5f7fa;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f5f5f5;
   border-radius: 4px;
+  cursor: move;
 }
 
 .workspace-item:hover {
-  background: #ecf5ff;
+  background: #e8f4ff;
+}
+
+.field-actions {
+  display: flex;
+  gap: 2px;
 }
 
 .field-order {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   width: 24px;
   height: 24px;
   background: #409eff;
   color: white;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
-  margin-right: 10px;
 }
 
-.workspace-item .field-label {
-  flex: 1;
-}
-
-.workspace-item .field-table {
+.field-table {
   color: #999;
   font-size: 12px;
-  margin-right: 10px;
+}
+
+.result-panel {
+  margin-top: 20px;
 }
 
 .result-tip {
   text-align: center;
   padding: 10px;
   color: #999;
-  font-size: 12px;
 }
 
 .tag-list {
   display: flex;
   flex-direction: column;
-  max-height: 300px;
-  overflow-y: auto;
 }
 
 .tag-item {
-  margin: 5px 0;
+  margin-bottom: 10px;
 }
 </style>

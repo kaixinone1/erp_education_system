@@ -1,23 +1,43 @@
-from bs4 import BeautifulSoup
+from docx import Document
+doc = Document(r'D:\erp_thirteen\数据库信息\模板\职工退休呈报表.docx')
 
-with open('templates/义务教育学校教职工绩效工资审批表html.html', 'r', encoding='utf-8') as f:
-    html = f.read()
+print('='*80)
+print('模板分析报告')
+print('='*80)
 
-soup = BeautifulSoup(html, 'html.parser')
-table = soup.find('table')
+# 提取所有占位符
+placeholders = set()
 
-# 分析表格结构
-rows = table.find_all('tr')
-print('总行数:', len(rows))
+def extract_placeholders(text):
+    import re
+    matches = re.findall(r'\{\{(\w+)\}\}', text)
+    return matches
 
-# 提取每个单元格的rowspan和colspan
-print('\n表格结构分析:')
-for i, row in enumerate(rows):
-    cells = row.find_all(['td', 'th'])
-    row_info = []
-    for j, cell in enumerate(cells):
-        text = cell.get_text(strip=True)[:15]
-        rowspan = cell.get('rowspan', '1')
-        colspan = cell.get('colspan', '1')
-        row_info.append(f'{text}[r{rowspan}c{colspan}]')
-    print(f'{i}: {" | ".join(row_info)}')
+print('\n一、段落中的占位符：')
+for i, p in enumerate(doc.paragraphs):
+    text = p.text.strip()
+    if text:
+        phs = extract_placeholders(text)
+        if phs:
+            print(f'  段落{i}: {text[:60]}...')
+            for ph in phs:
+                print(f'    → 占位符: {{{{ {ph} }}}}')
+                placeholders.add(ph)
+
+print('\n二、表格中的占位符：')
+for t_idx, table in enumerate(doc.tables):
+    print(f'\n  表格{t_idx} ({len(table.rows)}行 x {len(table.columns)}列):')
+    for r_idx, row in enumerate(table.rows):
+        for c_idx, cell in enumerate(row.cells):
+            text = cell.text.strip()
+            phs = extract_placeholders(text)
+            if phs:
+                for ph in phs:
+                    print(f'    行{r_idx}列{c_idx}: {{{{{ph}}}}}')
+                    placeholders.add(ph)
+
+print('\n' + '='*80)
+print('三、占位符清单（共{}个）:'.format(len(placeholders)))
+print('='*80)
+for ph in sorted(placeholders):
+    print(f'  - {ph}')

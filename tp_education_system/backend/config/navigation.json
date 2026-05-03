@@ -175,6 +175,18 @@
               "api_endpoint": "/api/data/dict_personal_identity_dictionary",
               "table_name": "dict_personal_identity_dictionary",
               "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_teacher_dictionary",
+              "title": "教师资格字典",
+              "name": "教师资格字典",
+              "icon": "Document",
+              "path": "/data/dict_teacher_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_teacher_dictionary",
+              "table_name": "dict_teacher_dictionary",
+              "table_type": "dictionary"
             }
           ]
         },
@@ -465,6 +477,42 @@
               "api_endpoint": "/api/data/personal_statistics",
               "table_name": "personal_statistics",
               "table_type": "master"
+            },
+            {
+              "id": "table-teacher_certificate_info",
+              "title": "教师资格证信息",
+              "name": "教师资格证信息",
+              "icon": "Document",
+              "path": "/data/teacher_certificate_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_certificate_info",
+              "table_name": "teacher_certificate_info",
+              "table_type": "child"
+            },
+            {
+              "id": "table-retirement_info",
+              "title": "退休补充信息",
+              "name": "退休补充信息",
+              "icon": "Document",
+              "path": "/data/retirement_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/retirement_info",
+              "table_name": "retirement_info",
+              "table_type": "child"
+            },
+            {
+              "id": "table-salary_data",
+              "title": "最新工资包数据",
+              "name": "最新工资包数据",
+              "icon": "Document",
+              "path": "/data/salary_data",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/salary_data",
+              "table_name": "salary_data",
+              "table_type": "child"
             }
           ]
         }
@@ -541,6 +589,40 @@
           "path": "/report/template-mgt",
           "type": "component",
           "component": "ReportTemplateManagement"
+        }
+      ]
+    },
+    {
+      "id": "data_center",
+      "title": "数据中心",
+      "name": "数据中心",
+      "icon": "Folder",
+      "path": "/data_center",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-test_wage",
+          "title": "测试工资表",
+          "name": "测试工资表",
+          "icon": "Document",
+          "path": "/data/test_wage",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/test_wage",
+          "table_name": "test_wage",
+          "table_type": "master"
+        },
+        {
+          "id": "table-test_wage_fix",
+          "title": "测试工资表修复",
+          "name": "测试工资表修复",
+          "icon": "Document",
+          "path": "/data/test_wage_fix",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/test_wage_fix",
+          "table_name": "test_wage_fix",
+          "table_type": "master"
         }
       ]
     }

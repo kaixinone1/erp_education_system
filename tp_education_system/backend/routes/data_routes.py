@@ -155,20 +155,26 @@ def get_dict_mappings_for_table(table_name: str, columns: List[str]) -> List[Dic
             if check_dict_table_exists(relation_table):
                 # 获取关联字段和显示字段
                 relation_display_field = field_config.get("relation_display_field", "name")
-
-                # 只处理name字段，使用id_card去关联主表获取姓名
-                # id_card字段本身不需要关联（它只是关联键）
-                if target_field == "name":
+                
+                # 动态查找表中的身份证字段（id_card, id_card_1, id_card_2等）
+                id_card_field = None
+                for col in columns:
+                    if col.startswith('id_card'):
+                        id_card_field = col
+                        break
+                
+                # 如果找到身份证字段且当前是name字段，创建关联
+                if id_card_field and target_field == "name":
                     mapping = {
-                        'field': 'id_card',  # 使用id_card字段去关联
+                        'field': id_card_field,
                         'table': relation_table,
-                        'code_field': 'id_card',  # 关联主表的id_card字段
-                        'name_field': 'name',  # 显示主表的name字段
-                        'alias': 'name_display',  # 别名
+                        'code_field': 'id_card',
+                        'name_field': 'name',
+                        'alias': 'name_display',
                         'is_master_relation': True
                     }
                     mappings.append(mapping)
-                    print(f"主表关联(姓名): {table_name}.id_card -> {relation_table}.id_card (显示: name)")
+                    print(f"主表关联(姓名): {table_name}.{id_card_field} -> {relation_table}.id_card (显示: name)")
 
     # 3. 兼容旧的硬编码配置（作为后备）
     for field_name in columns:

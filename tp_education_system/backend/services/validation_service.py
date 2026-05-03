@@ -116,34 +116,35 @@ class Level1Validator:
     """
 
     @staticmethod
-    def validate(data: Dict[str, Any], field_config: Dict[str, Any], 
-                 table_name: str = "") -> ValidationResult:
+    def validate(data: Dict[str, Any], field_config: Dict[str, Any],
+                 table_name: str = "",
+                 field_configs_cache: Optional[Dict] = None) -> ValidationResult:
         """
         验证单个字段
-        
+
         Args:
             data: 数据行
             field_config: 字段配置（从前端传入或从配置文件读取）
             table_name: 表名（用于从配置文件读取额外规则）
+            field_configs_cache: 预加载的字段配置缓存
         """
         result = ValidationResult()
-        
+
         # 获取字段名
         source_field = field_config.get('sourceField') or field_config.get('chinese_name', '')
         target_field = field_config.get('targetField') or field_config.get('name', '')
-        
+
         # 获取数据类型
         data_type = field_config.get('dataType') or field_config.get('data_type', 'VARCHAR')
-        
+
         # 获取值
         value = data.get(source_field)
-        
-        # 从配置文件读取额外规则
-        if table_name:
-            config_field = config_loader.get_field_config(table_name, target_field)
-            if config_field:
-                # 合并配置
-                field_config = {**config_field, **field_config}
+
+        # 从预加载的缓存读取配置（避免循环中重复查找）
+        if field_configs_cache and target_field in field_configs_cache:
+            config_field = field_configs_cache[target_field]
+            # 合并配置
+            field_config = {**config_field, **field_config}
         
         # 空值检查 - 从配置读取 required
         required = field_config.get('required', False) or field_config.get('not_null', False)
@@ -423,7 +424,7 @@ class Level3Validator:
 class Level4Validator:
     """
     Level 4 验证器：跨表外键完整性验证
-    
+
     验证规则来源：
     - 从 field_config.relation 读取外键配置
     - 查询数据库验证外键存在性
@@ -435,12 +436,57 @@ class Level4Validator:
         :param db_connection: 数据库连接
         """
         self.db_connection = db_connection
-    
+        self._foreign_key_cache = {}  # 外键缓存：{(ref_table, ref_field): set(values)}
+
+    def preload_foreign_keys(self, data_list: List[Dict], field_configs: List[Dict]):
+        """
+        预加载所有外键数据到内存，避免逐行查询数据库
+
+        Args:
+            data_list: 数据列表
+            field_configs: 字段配置列表
+        """
+        if not self.db_connection:
+            return
+
+        # 收集所有需要的外键
+        foreign_keys_needed = {}  # {(ref_table, ref_field): set(values)}
+        for data in data_list:
+            for config in field_configs:
+                source_field = config.get('sourceField') or config.get('chinese_name', '')
+                relation = config.get('relation', {})
+                if relation and relation.get('type') == 'foreign_key':
+                    ref_table = relation.get('ref_table')
+                    ref_field = relation.get('ref_field')
+                    value = data.get(source_field)
+                    if value and str(value).strip():
+                        key = (ref_table, ref_field)
+                        if key not in foreign_keys_needed:
+                            foreign_keys_needed[key] = set()
+                        foreign_keys_needed[key].add(str(value).strip())
+
+        # 批量查询所有外键值
+        cursor = self.db_connection.cursor()
+        for (ref_table, ref_field), values in foreign_keys_needed.items():
+            try:
+                # 一次性查询所有需要的值
+                placeholders = ','.join(['%s'] * len(values))
+                cursor.execute(
+                    f"SELECT {ref_field} FROM {ref_table} WHERE {ref_field} IN ({placeholders})",
+                    tuple(values)
+                )
+                existing_values = set(str(row[0]).strip() for row in cursor.fetchall())
+                self._foreign_key_cache[(ref_table, ref_field)] = existing_values
+            except Exception as e:
+                print(f"预加载外键失败 {ref_table}.{ref_field}: {e}")
+                self._foreign_key_cache[(ref_table, ref_field)] = set()
+        cursor.close()
+
     def validate(self, data: Dict[str, Any], field_config: Dict[str, Any],
                  table_name: str = "", table_type: str = "master") -> ValidationResult:
         """
         验证外键完整性
-        
+
         Args:
             data: 数据行
             field_config: 字段配置
@@ -448,109 +494,133 @@ class Level4Validator:
             table_type: 表类型（master/child/dictionary）
         """
         result = ValidationResult()
-        
+
         # 只对子表进行外键验证
         if table_type != "child":
             return result
-        
+
         source_field = field_config.get('sourceField') or field_config.get('chinese_name', '')
         target_field = field_config.get('targetField') or field_config.get('name', '')
         value = data.get(source_field)
-        
+
         if value is None or str(value).strip() == '':
             return result
-        
+
         str_value = str(value).strip()
-        
+
         # 从 relation 配置读取外键规则
         relation = field_config.get('relation', {})
         if relation and relation.get('type') == 'foreign_key':
             ref_table = relation.get('ref_table')
             ref_field = relation.get('ref_field')
-            
-            if ref_table and ref_field and self.db_connection:
-                # 查询数据库验证外键存在性
+
+            if ref_table and ref_field:
+                # 使用缓存验证外键
                 if not self._check_foreign_key_exists(ref_table, ref_field, str_value):
-                    result.add_error(target_field, 
+                    result.add_error(target_field,
                         f"{source_field} '{str_value}' 在父表 {ref_table} 中不存在", 4)
-        
+
         return result
-    
+
     def _check_foreign_key_exists(self, ref_table: str, ref_field: str, value: str) -> bool:
-        """检查外键值是否存在于父表"""
-        if not self.db_connection:
-            return True  # 没有数据库连接，默认通过
-        
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute(
-                f"SELECT 1 FROM {ref_table} WHERE {ref_field} = %s LIMIT 1",
-                (value,)
-            )
-            exists = cursor.fetchone() is not None
-            cursor.close()
-            return exists
-        except Exception as e:
-            print(f"外键验证失败: {e}")
-            return True  # 验证失败，默认通过
+        """检查外键值是否存在于父表（使用缓存）"""
+        key = (ref_table, ref_field)
+
+        # 如果缓存中有数据，使用缓存
+        if key in self._foreign_key_cache:
+            return value in self._foreign_key_cache[key]
+
+        # 如果没有缓存且有数据库连接，先查询一次
+        if self.db_connection:
+            try:
+                cursor = self.db_connection.cursor()
+                cursor.execute(
+                    f"SELECT 1 FROM {ref_table} WHERE {ref_field} = %s LIMIT 1",
+                    (value,)
+                )
+                exists = cursor.fetchone() is not None
+                cursor.close()
+                return exists
+            except Exception as e:
+                print(f"外键验证失败: {e}")
+                return True  # 验证失败，默认通过
+
+        return True  # 没有数据库连接，默认通过
 
 
 class ValidationService:
     """
     验证服务 - 整合所有验证器
     """
-    
+
     def __init__(self, db_connection=None):
         self.level1 = Level1Validator()
         self.level2 = Level2Validator()
         self.level3 = Level3Validator()
         self.level4 = Level4Validator(db_connection)
-    
+
     def validate_row(self, data: Dict[str, Any], field_configs: List[Dict],
                      table_name: str = "", table_type: str = "master",
-                     row_index: int = 0) -> ValidationResult:
+                     row_index: int = 0,
+                     field_configs_cache: Optional[Dict] = None) -> ValidationResult:
         """
         验证单行数据
-        
+
         Args:
             data: 数据行
             field_configs: 字段配置列表
             table_name: 表名
             table_type: 表类型
             row_index: 行索引
+            field_configs_cache: 预加载的字段配置缓存
         """
         result = ValidationResult()
-        
+
         for field_config in field_configs:
-            # Level 1: 数据格式验证
-            result.merge(self.level1.validate(data, field_config, table_name))
-            
+            # Level 1: 数据格式验证（传入预加载的配置缓存）
+            result.merge(self.level1.validate(data, field_config, table_name, field_configs_cache))
+
             # Level 2: 业务逻辑验证
             result.merge(self.level2.validate(data, field_config, table_name, row_index))
-            
+
             # Level 3: 关联数据验证
             result.merge(self.level3.validate(data, field_config, table_name))
-            
+
             # Level 4: 外键完整性验证
             result.merge(self.level4.validate(data, field_config, table_name, table_type))
-        
+
         return result
-    
+
     def validate_all(self, data_list: List[Dict], field_configs: List[Dict],
                      table_name: str = "", table_type: str = "master") -> List[ValidationResult]:
         """
         验证所有数据
-        
+
         Args:
             data_list: 数据列表
             field_configs: 字段配置列表
             table_name: 表名
             table_type: 表类型
         """
+        # 预加载字段配置一次，避免循环中重复查找
+        field_configs_cache = None
+        if table_name:
+            field_configs_cache = {}
+            for fc in field_configs:
+                target_field = fc.get('targetField') or fc.get('name', '')
+                if target_field:
+                    config = config_loader.get_field_config(table_name, target_field)
+                    if config:
+                        field_configs_cache[target_field] = config
+
+        # 预加载外键数据到内存，避免逐行查询数据库
+        self.level4.preload_foreign_keys(data_list, field_configs)
+
         results = []
         for i, data in enumerate(data_list):
-            result = self.validate_row(data, field_configs, table_name, table_type, i)
+            result = self.validate_row(data, field_configs, table_name, table_type, i, field_configs_cache)
             results.append(result)
+
         return results
     
     def validate_data(self, data: List[Dict], field_configs: List[Dict],

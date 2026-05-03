@@ -534,6 +534,112 @@
           "STRING"
         ]
       ]
+    },
+    "教师资格字典": {
+      "english_name": "dict_teacher_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-05-02T10:17:06.752301",
+      "field_signature": [
+        [
+          "unnamed:_1",
+          "STRING"
+        ],
+        [
+          "类别",
+          "STRING"
+        ]
+      ]
+    },
+    "教师资格证信息": {
+      "english_name": "teacher_certificate_info",
+      "table_type": "child",
+      "created_at": "2026-05-02T10:37:35.840957",
+      "field_signature": [
+        [
+          "发证日期",
+          "STRING"
+        ],
+        [
+          "发证机关",
+          "STRING"
+        ],
+        [
+          "备注",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "学段学科",
+          "STRING"
+        ],
+        [
+          "学科",
+          "STRING"
+        ],
+        [
+          "证书编号",
+          "STRING"
+        ],
+        [
+          "证书资格种类",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "退休补充信息": {
+      "english_name": "retirement_info",
+      "table_type": "child",
+      "created_at": "2026-05-03T10:32:17.125551",
+      "field_signature": [
+        [
+          "供养直系亲属关系、姓名、出生日期",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "是否独生子女",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "测试工资表": {
+      "english_name": "test_wage",
+      "table_type": "master",
+      "created_at": "2026-05-03T12:13:05.502310",
+      "field_signature": []
+    },
+    "测试工资表修复": {
+      "english_name": "test_wage_fix",
+      "table_type": "master",
+      "created_at": "2026-05-03T12:29:05.562041",
+      "field_signature": [
+        [
+          "id_card",
+          "STRING"
+        ],
+        [
+          "name",
+          "STRING"
+        ],
+        [
+          "unit_name",
+          "STRING"
+        ]
+      ]
     }
   },
   "reverse_mappings": {
@@ -564,6 +670,11 @@
     "dict_subsidy_dictionary": "乡镇补贴标准字典",
     "id_card": "身份证属性",
     "information": "岗位聘任信息",
-    "personal_statistics": "岗位设置遗留绩效统计表"
+    "personal_statistics": "岗位设置遗留绩效统计表",
+    "teacher_certificate_info": "教师资格证信息",
+    "dict_teacher_dictionary": "教师资格字典",
+    "retirement_info": "退休补充信息",
+    "test_wage": "测试工资表",
+    "test_wage_fix": "测试工资表修复"
   }
 }

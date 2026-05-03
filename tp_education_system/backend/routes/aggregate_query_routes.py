@@ -110,8 +110,9 @@ class AggregateQueryRequest(BaseModel):
     tables: List[Dict[str, Any]]
     group_by: Optional[str] = None
     tags: Optional[List[str]] = None
+    filters: Optional[List[Dict[str, Any]]] = None
     page: Optional[int] = 1
-    page_size: Optional[int] = 100
+    page_size: Optional[int] = 0
 
 class ExportRequest(BaseModel):
     data: List[Dict[str, Any]]
@@ -136,7 +137,6 @@ def get_tables():
             AND t.table_type = 'BASE TABLE'
             AND t.table_name NOT LIKE 'pg_%'
             AND t.table_name NOT LIKE 'sql_%'
-            AND t.table_name NOT LIKE 'dict_%'
             ORDER BY t.table_name
         """)
 
@@ -156,6 +156,55 @@ def get_tables():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/dict-values")
+def get_dict_values(req: dict):
+    """获取字典字段的可选值列表"""
+    try:
+        table_name = req.get("table_name")
+        field_name = req.get("field_name")
+
+        if not table_name or not field_name:
+            return {"status": "success", "values": []}
+
+        # 加载 merged_schema_mappings.json 获取字段的字典关联配置
+        schema_file = os.path.join(os.path.dirname(__file__), '..', 'config', 'merged_schema_mappings.json')
+        try:
+            with open(schema_file, 'r', encoding='utf-8') as f:
+                schema_data = json.load(f)
+                table_fields = schema_data.get('tables', {}).get(table_name, {}).get('fields', [])
+                for field in table_fields:
+                    target = field.get('targetField') or field.get('english_name')
+                    if target == field_name:
+                        relation_table = field.get('relation_table')
+                        if relation_table:
+                            # 连接数据库获取字典值
+                            conn = get_db_connection()
+                            cursor = conn.cursor()
+                            # 获取字典表的第一个字段作为code，第二个作为name
+                            cursor.execute(f"""
+                                SELECT column_name FROM information_schema.columns
+                                WHERE table_name = %s AND table_schema = 'public'
+                                AND column_name NOT IN ('created_at', 'updated_at')
+                                ORDER BY ordinal_position LIMIT 2
+                            """, (relation_table,))
+                            cols = cursor.fetchall()
+                            if len(cols) >= 2:
+                                code_col = cols[0][0]
+                                name_col = cols[1][0]
+                                cursor.execute(f'SELECT {code_col}, {name_col} FROM {relation_table}')
+                                values = [{"value": row[0], "label": row[1]} for row in cursor.fetchall()]
+                                cursor.close()
+                                conn.close()
+                                return {"status": "success", "values": values}
+                            cursor.close()
+                            conn.close()
+        except Exception as e:
+            print(f"加载字典配置失败: {e}")
+
+        return {"status": "success", "values": []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/relations")
 def get_table_relations():
     try:
@@ -171,25 +220,42 @@ def get_table_fields(req: TableFieldsRequest):
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT c.column_name, c.data_type, c.ordinal_position,
-                   col_description(c.table_name::regclass, c.ordinal_position) as column_comment
+            SELECT c.column_name, c.data_type, c.ordinal_position
             FROM information_schema.columns c
             WHERE c.table_name = %s
             AND c.table_schema = 'public'
             ORDER BY c.ordinal_position
         """, (req.table_name,))
 
-        fields = []
-        dict_mappings = load_dict_mappings()
-        table_dict = dict_mappings.get(req.table_name, {})
+        # 加载 merged_schema_mappings.json 获取中文字段名映射
+        schema_file = os.path.join(os.path.dirname(__file__), '..', 'config', 'merged_schema_mappings.json')
+        print(f"[DEBUG] schema_file: {schema_file}, exists: {os.path.exists(schema_file)}")
+        chinese_labels = {}
+        table_fields_config = []
+        try:
+            with open(schema_file, 'r', encoding='utf-8') as f:
+                schema_data = json.load(f)
+                table_fields = schema_data.get('tables', {}).get(req.table_name, {}).get('fields', [])
+                table_fields_config = table_fields
+                print(f"[DEBUG] table_fields count: {len(table_fields)}")
+                for field in table_fields:
+                    english_name = field.get('english_name') or field.get('targetField', '')
+                    chinese_name = field.get('sourceField', '')
+                    if english_name and chinese_name:
+                        chinese_labels[english_name] = chinese_name
+                print(f"[DEBUG] chinese_labels: {chinese_labels}")
+        except Exception as e:
+            print(f"加载 merged_schema_mappings.json 失败: {e}")
 
+        fields = []
         for row in cursor.fetchall():
             column_name = row[0]
-            column_comment = row[3]
-            chinese_name = column_comment if column_comment else column_name
-
-            # 检查是否有字典翻译
-            has_dict = column_name in table_dict
+            chinese_name = chinese_labels.get(column_name, column_name)
+            has_dict = any(
+                field.get('relation_table', '').startswith('dict_')
+                for field in table_fields_config
+                if (field.get('english_name') or field.get('targetField', '')) == column_name
+            )
 
             fields.append({
                 "name": column_name,
@@ -213,7 +279,7 @@ def aggregate_query(req: AggregateQueryRequest):
         cursor = conn.cursor()
 
         page = req.page or 1
-        page_size = req.page_size or 100
+        page_size = req.page_size or 1000
         offset = (page - 1) * page_size
 
         if len(req.tables) == 1:
@@ -245,6 +311,22 @@ def aggregate_query(req: AggregateQueryRequest):
                 where_clauses.append(tag_filter)
                 params.extend(req.tags)
 
+            # 处理字段过滤条件
+            if req.filters:
+                for f in req.filters:
+                    field_name = f.get("field")
+                    operator = f.get("operator", "=")
+                    field_value = f.get("value")
+                    field_values = f.get("values")
+                    if field_name:
+                        if field_values and len(field_values) > 0:
+                            placeholders = ','.join(['%s'] * len(field_values))
+                            where_clauses.append(f'"{field_name}" IN ({placeholders})')
+                            params.extend(field_values)
+                        elif field_value:
+                            where_clauses.append(f'"{field_name}" {operator} %s')
+                            params.append(field_value)
+
             where_sql = ""
             if where_clauses:
                 where_sql = " WHERE " + " AND ".join(where_clauses)
@@ -254,9 +336,13 @@ def aggregate_query(req: AggregateQueryRequest):
             cursor.execute(count_query, params)
             total = cursor.fetchone()[0]
 
-            # 分页查询
-            query = f'SELECT {select_fields} FROM "{table_name}"{where_sql} LIMIT %s OFFSET %s'
-            cursor.execute(query, params + [page_size, offset])
+            # 分页查询（page_size=0表示不限制）
+            if page_size > 0:
+                query = f'SELECT {select_fields} FROM "{table_name}"{where_sql} LIMIT %s OFFSET %s'
+                cursor.execute(query, params + [page_size, offset])
+            else:
+                query = f'SELECT {select_fields} FROM "{table_name}"{where_sql}'
+                cursor.execute(query, params)
             rows = cursor.fetchall()
 
             results = []
@@ -314,6 +400,32 @@ def aggregate_query(req: AggregateQueryRequest):
                 where_clauses.append(tag_filter)
                 params.extend(req.tags)
 
+            # 处理多表查询的字段过滤条件
+            if req.filters:
+                for f in req.filters:
+                    field_name = f.get("field")
+                    field_table = f.get("table")
+                    field_values = f.get("values")
+                    if field_name and field_values and len(field_values) > 0:
+                        # 找到该表对应的别名
+                        table_alias = None
+                        if field_table == first_table_name:
+                            table_alias = first_table_name
+                        else:
+                            for idx, table_info in enumerate(req.tables[1:], 1):
+                                if table_info.get("table_name") == field_table:
+                                    table_alias = f"t{idx}"
+                                    break
+                        if table_alias:
+                            placeholders = ','.join(['%s'] * len(field_values))
+                            # 将值转换为字符串，因为字段可能是VARCHAR类型
+                            str_values = [str(v) for v in field_values]
+                            if table_alias == first_table_name:
+                                where_clauses.append(f'"{table_alias}"."{field_name}" IN ({placeholders})')
+                            else:
+                                where_clauses.append(f'{table_alias}."{field_name}" IN ({placeholders})')
+                            params.extend(str_values)
+
             where_sql = ""
             if where_clauses:
                 where_sql = " WHERE " + " AND ".join(where_clauses)
@@ -323,15 +435,24 @@ def aggregate_query(req: AggregateQueryRequest):
             cursor.execute(count_query, params)
             total = cursor.fetchone()[0]
 
-            # 分页查询
-            query = f"""
-                SELECT {', '.join(select_parts)}
-                FROM "{first_table_name}"
-                {(' ').join(join_parts)}
-                {where_sql}
-                LIMIT %s OFFSET %s
-            """
-            cursor.execute(query, params + [page_size, offset])
+            # 分页查询（page_size=0表示不限制）
+            if page_size > 0:
+                query = f"""
+                    SELECT {', '.join(select_parts)}
+                    FROM "{first_table_name}"
+                    {(' ').join(join_parts)}
+                    {where_sql}
+                    LIMIT %s OFFSET %s
+                """
+                cursor.execute(query, params + [page_size, offset])
+            else:
+                query = f"""
+                    SELECT {', '.join(select_parts)}
+                    FROM "{first_table_name}"
+                    {(' ').join(join_parts)}
+                    {where_sql}
+                """
+                cursor.execute(query, params)
             rows = cursor.fetchall()
 
             all_field_labels = []
@@ -350,12 +471,35 @@ def aggregate_query(req: AggregateQueryRequest):
                     result_row[label] = value
                 results.append(result_row)
 
-            # 字典翻译
-            for result_row in results:
-                for label, value in result_row.items():
-                    if value is not None:
-                        # 查找是否有字典映射
-                        result_row[label] = value
+            # 多表查询字典翻译
+            schema_file = os.path.join(os.path.dirname(__file__), '..', 'config', 'merged_schema_mappings.json')
+            try:
+                with open(schema_file, 'r', encoding='utf-8') as f:
+                    schema_data = json.load(f)
+
+                for result_row in results:
+                    for label, value in result_row.items():
+                        if value is not None:
+                            # 查找该字段的字典配置
+                            for table_info in req.tables:
+                                table_name = table_info.get("table_name")
+                                table_fields = table_info.get("fields", [])
+                                for field in table_fields:
+                                    if field.get("label") == label:
+                                        table_fields_config = schema_data.get('tables', {}).get(table_name, {}).get('fields', [])
+                                        for field_config in table_fields_config:
+                                            if field_config.get('english_name') == field.get('name') or field_config.get('targetField') == field.get('name'):
+                                                if field_config.get('relation_type') == 'to_dict' and field_config.get('relation_table'):
+                                                    dict_table = field_config['relation_table']
+                                                    dict_display_field = field_config.get('relation_display_field', 'category')
+                                                    cursor2 = conn.cursor()
+                                                    cursor2.execute(f'SELECT id, {dict_display_field} FROM {dict_table} WHERE id = %s', (value,))
+                                                    dict_row = cursor2.fetchone()
+                                                    if dict_row:
+                                                        result_row[label] = dict_row[1]
+                                                    cursor2.close()
+            except Exception as e:
+                print(f"多表查询字典翻译失败: {e}")
 
         cursor.close()
         conn.close()
