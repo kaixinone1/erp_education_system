@@ -396,18 +396,28 @@ async def validate_data(
     validation_level: int = Body(3),
     reference_data: Optional[Dict[str, List[str]]] = Body(None)
 ):
-    """验证数据"""
+    """验证数据（自动分批处理大数据量）"""
     try:
         # 创建验证服务
         validation_service = ValidationService()
         
-        # 执行验证
-        result = validation_service.validate_data(
-            data=data,
-            field_configs=field_configs,
-            validation_level=validation_level,
-            reference_data=reference_data
-        )
+        # 如果数据量大于1000行，使用分批验证
+        if len(data) > 1000:
+            result = validation_service.validate_data_batch(
+                data=data,
+                field_configs=field_configs,
+                validation_level=validation_level,
+                reference_data=reference_data,
+                batch_size=1000
+            )
+        else:
+            # 数据量小于1000行，使用普通验证
+            result = validation_service.validate_data(
+                data=data,
+                field_configs=field_configs,
+                validation_level=validation_level,
+                reference_data=reference_data
+            )
         
         return result
         

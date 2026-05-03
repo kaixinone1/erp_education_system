@@ -699,3 +699,95 @@ class ValidationService:
             "errors": [],
             "warnings": []
         }
+    
+    def validate_data_batch(self, data: List[Dict], field_configs: List[Dict],
+                           validation_level: int = 3, reference_data: Optional[Dict] = None,
+                           batch_size: int = 1000) -> Dict[str, Any]:
+        """
+        分批验证数据（支持大数据量）
+        
+        Args:
+            data: 数据列表
+            field_configs: 字段配置列表
+            validation_level: 验证级别（1-4）
+            reference_data: 参考数据
+            batch_size: 每批数据量（默认1000）
+        
+        Returns:
+            验证结果（包含 validated_data 和 summary）
+        """
+        # 更新参考数据
+        if reference_data:
+            self.level3.reference_data = reference_data
+        
+        # 预加载外键数据到内存，避免逐行查询数据库
+        self.level4.preload_foreign_keys(data, field_configs)
+        
+        # 分批验证
+        validated_data = []
+        total_errors = 0
+        total_warnings = 0
+        invalid_rows = 0
+        total_batches = (len(data) + batch_size - 1) // batch_size
+        
+        for batch_idx in range(total_batches):
+            start_idx = batch_idx * batch_size
+            end_idx = min(start_idx + batch_size, len(data))
+            batch_data = data[start_idx:end_idx]
+            
+            # 验证当前批次
+            batch_results = []
+            for i, row in enumerate(batch_data):
+                result = self.validate_row(row, field_configs, "", "master", start_idx + i)
+                batch_results.append(result)
+            
+            # 处理当前批次的验证结果
+            for i, (row, result) in enumerate(zip(batch_data, batch_results)):
+                validated_row = {
+                    'row_index': start_idx + i,
+                    'data': dict(row),
+                    'is_valid': result.is_valid,
+                    'errors': [],
+                    'warnings': []
+                }
+                
+                if result.errors:
+                    for error in result.errors:
+                        validated_row['errors'].append({
+                            'field': error.field,
+                            'message': error.message,
+                            'level': error.level
+                        })
+                    total_errors += len(result.errors)
+                    invalid_rows += 1
+                
+                if result.warnings:
+                    for warning in result.warnings:
+                        validated_row['warnings'].append({
+                            'field': warning.field,
+                            'message': warning.message,
+                            'level': warning.level
+                        })
+                    total_warnings += len(result.warnings)
+                
+                validated_data.append(validated_row)
+        
+        # 构建汇总信息
+        summary = {
+            "total_rows": len(data),
+            "valid_rows": len(data) - invalid_rows,
+            "invalid_rows": invalid_rows,
+            "total_errors": total_errors,
+            "total_warnings": total_warnings,
+            "validation_level": validation_level,
+            "batch_size": batch_size,
+            "total_batches": total_batches
+        }
+        
+        return {
+            "is_valid": invalid_rows == 0,
+            "validated_data": validated_data,
+            "summary": summary,
+            "errors": [],
+            "warnings": []
+        }

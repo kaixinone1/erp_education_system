@@ -75,7 +75,7 @@
         <!-- 数据表格 -->
         <div class="table-section">
           <el-table
-            :data="filteredData"
+            :data="paginatedData"
             style="width: 100%"
             border
             max-height="500px"
@@ -87,6 +87,7 @@
               label="行号"
               width="60"
               fixed
+              :index="indexMethod"
             />
 
             <!-- 状态列 -->
@@ -169,6 +170,19 @@
               </template>
             </el-table-column>
           </el-table>
+          
+          <!-- 分页组件 -->
+          <div class="pagination-section" style="margin-top: 20px; display: flex; justify-content: center;">
+            <el-pagination
+              v-model:current-page="currentPage"
+              v-model:page-size="pageSize"
+              :page-sizes="[20, 50, 100, 200]"
+              :total="filteredData.length"
+              layout="total, sizes, prev, pager, next, jumper"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
         </div>
 
 
@@ -311,6 +325,33 @@ const canProceed = computed(() => {
   // 允许有警告，但不允许有错误
   return validationReport.value.summary.invalid_rows === 0
 })
+
+// 分页相关
+const currentPage = ref(1)
+const pageSize = ref(50)
+
+// 分页后的数据
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredData.value.slice(start, end)
+})
+
+// 分页索引方法
+const indexMethod = (index: number) => {
+  return (currentPage.value - 1) * pageSize.value + index + 1
+}
+
+// 分页大小改变
+const handleSizeChange = (val: number) => {
+  pageSize.value = val
+  currentPage.value = 1
+}
+
+// 当前页改变
+const handleCurrentChange = (val: number) => {
+  currentPage.value = val
+}
 
 // 初始化数据
 const initData = () => {
