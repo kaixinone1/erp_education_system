@@ -6,7 +6,6 @@ from routes.data_routes import router as data_router
 from routes.table_structure_routes import router as table_structure_router
 from routes.field_config_routes import router as field_config_router
 from routes.admin_routes import router as admin_router
-from routes.todo_work_routes import router as todo_work_router
 from routes.status_change_routes import router as status_change_router
 from routes.template_routes import router as template_router
 from routes.retirement_report_routes import router as retirement_report_router
@@ -143,7 +142,6 @@ app.include_router(data_router)
 app.include_router(table_structure_router)
 app.include_router(field_config_router)
 app.include_router(admin_router)
-app.include_router(todo_work_router)
 app.include_router(status_change_router)
 app.include_router(template_router)
 app.include_router(retirement_report_router)
