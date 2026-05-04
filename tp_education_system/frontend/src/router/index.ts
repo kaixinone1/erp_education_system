@@ -354,6 +354,34 @@ const router = createRouter({
         icon: "Document"
       }
     },
+    // 模板管理中心
+    {
+      path: "/report/template-center/design",
+      name: "templateDesign",
+      component: () => import("../views/template/TemplateDesign.vue"),
+      meta: {
+        title: "模板设计",
+        icon: "Edit"
+      }
+    },
+    {
+      path: "/report/template-center/library",
+      name: "templateLibrary",
+      component: () => import("../views/template/TemplateLibrary.vue"),
+      meta: {
+        title: "模板库",
+        icon: "Files"
+      }
+    },
+    {
+      path: "/report/template-center/call-management",
+      name: "templateCallManagement",
+      component: () => import("../views/template/TemplateCallManagement.vue"),
+      meta: {
+        title: "模板调用管理",
+        icon: "Connection"
+      }
+    },
     {
       path: "/report/retirement/estimate",
       name: "retirementEstimate",
