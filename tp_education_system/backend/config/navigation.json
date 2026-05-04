@@ -575,6 +575,39 @@
       "type": "module",
       "children": [
         {
+          "id": "template-center",
+          "title": "模板管理中心",
+          "icon": "Folder",
+          "path": "/report/template-center",
+          "type": "module",
+          "children": [
+            {
+              "id": "template-design",
+              "title": "模板设计",
+              "icon": "Edit",
+              "path": "/report/template-center/design",
+              "type": "component",
+              "component": "TemplateDesign"
+            },
+            {
+              "id": "template-library",
+              "title": "模板库",
+              "icon": "Files",
+              "path": "/report/template-center/library",
+              "type": "component",
+              "component": "TemplateLibrary"
+            },
+            {
+              "id": "template-call-management",
+              "title": "模板调用管理",
+              "icon": "Connection",
+              "path": "/report/template-center/call-management",
+              "type": "component",
+              "component": "TemplateCallManagement"
+            }
+          ]
+        },
+        {
           "id": "report-retirement-estimate",
           "title": "退休测算",
           "icon": "Calculator",
