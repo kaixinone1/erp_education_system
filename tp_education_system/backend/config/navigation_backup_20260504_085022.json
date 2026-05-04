@@ -591,6 +591,40 @@
           "component": "ReportTemplateManagement"
         }
       ]
+    },
+    {
+      "id": "data_center",
+      "title": "数据中心",
+      "name": "数据中心",
+      "icon": "Folder",
+      "path": "/data_center",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-test_wage",
+          "title": "测试工资表",
+          "name": "测试工资表",
+          "icon": "Document",
+          "path": "/data/test_wage",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/test_wage",
+          "table_name": "test_wage",
+          "table_type": "master"
+        },
+        {
+          "id": "table-test_wage_fix",
+          "title": "测试工资表修复",
+          "name": "测试工资表修复",
+          "icon": "Document",
+          "path": "/data/test_wage_fix",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/test_wage_fix",
+          "table_name": "test_wage_fix",
+          "table_type": "master"
+        }
+      ]
     }
   ]
 }
