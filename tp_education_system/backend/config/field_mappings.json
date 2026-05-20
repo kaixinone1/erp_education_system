@@ -177,38 +177,6 @@
       "updated_at": "2026-02-07T21:14:54.000740"
     },
     {
-      "id": "config_b43e9bc1",
-      "config_name": "学历类型字典字段配置",
-      "table_name": "dict_education_dictionary",
-      "table_type": "dictionary",
-      "parent_table": "",
-      "source_file_pattern": "*学历类型字典字段配置*",
-      "field_mappings": [
-        {
-          "sourceField": "学历类型",
-          "targetField": "学历类型",
-          "dataType": "VARCHAR",
-          "length": 255,
-          "precision": "",
-          "scale": "",
-          "required": true,
-          "unique": true,
-          "indexed": false,
-          "defaultValue": "",
-          "description": "",
-          "confidence": "low",
-          "relation_type": "none",
-          "relation_table": "",
-          "relation_display_field": "name",
-          "value_mapping": {}
-        }
-      ],
-      "version": 1,
-      "is_latest": true,
-      "created_at": "2026-02-07T23:46:34.425496",
-      "updated_at": "2026-02-07T23:46:34.425496"
-    },
-    {
       "id": "config_3fde21cd",
       "config_name": "学历层次字典字段配置",
       "table_name": "dict_education_level_dictionary",
@@ -1466,8 +1434,8 @@
     {
       "id": "config_5eacb635",
       "config_name": "岗位聘任信息",
-      "table_name": "information",
-      "table_type": "master",
+      "table_name": "post_appointment_info",
+      "table_type": "child",
       "parent_table": "",
       "source_file_pattern": "*岗位聘任信息*",
       "field_mappings": [
@@ -1486,7 +1454,7 @@
           "confidence": "low",
           "relation_type": "to_master",
           "relation_table": "teacher_basic_info",
-          "relation_display_field": "name",
+          "relation_display_field": "id_card",
           "value_mapping": {}
         },
         {
@@ -1497,14 +1465,14 @@
           "precision": "",
           "scale": "",
           "required": false,
-          "unique": true,
+          "unique": false,
           "indexed": false,
           "defaultValue": "",
           "description": "",
           "confidence": "low",
           "relation_type": "to_master",
           "relation_table": "teacher_basic_info",
-          "relation_display_field": "id_card",
+          "relation_display_field": "name",
           "value_mapping": {}
         },
         {
@@ -1538,9 +1506,9 @@
           "defaultValue": "",
           "description": "",
           "confidence": "low",
-          "relation_type": "none",
-          "relation_table": "",
-          "relation_display_field": "name",
+          "relation_type": "to_dict",
+          "relation_table": "dict_dictionary_personal",
+          "relation_display_field": "post",
           "value_mapping": {}
         },
         {
@@ -1556,9 +1524,9 @@
           "defaultValue": "",
           "description": "",
           "confidence": "low",
-          "relation_type": "none",
-          "relation_table": "",
-          "relation_display_field": "name",
+          "relation_type": "to_dict",
+          "relation_table": "dict_grade_dictionary",
+          "relation_display_field": "post_level",
           "value_mapping": {}
         },
         {
@@ -1706,10 +1674,10 @@
           "value_mapping": {}
         }
       ],
-      "version": 1,
+      "version": 2,
       "is_latest": true,
       "created_at": "2026-04-24T15:30:22.790578",
-      "updated_at": "2026-04-24T15:30:22.790578"
+      "updated_at": "2026-05-08T08:05:18.548389"
     },
     {
       "id": "config_8822700c",
@@ -1861,7 +1829,7 @@
         },
         {
           "sourceField": "证书资格种类",
-          "targetField": "证书资格种类",
+          "targetField": "certificate_type",
           "dataType": "VARCHAR",
           "length": 255,
           "precision": "",
@@ -1879,7 +1847,7 @@
         },
         {
           "sourceField": "学段学科",
-          "targetField": "学段学科",
+          "targetField": "education_stage_subject",
           "dataType": "VARCHAR",
           "length": 255,
           "precision": "",
@@ -1897,7 +1865,7 @@
         },
         {
           "sourceField": "学科",
-          "targetField": "学科",
+          "targetField": "subject",
           "dataType": "VARCHAR",
           "length": 255,
           "precision": "",
@@ -1915,7 +1883,7 @@
         },
         {
           "sourceField": "发证机关",
-          "targetField": "发证机关",
+          "targetField": "issuing_authority",
           "dataType": "VARCHAR",
           "length": 255,
           "precision": "",
@@ -2142,6 +2110,156 @@
       "is_latest": true,
       "created_at": "2026-05-03T12:29:05.565280",
       "updated_at": "2026-05-03T12:29:05.565280"
+    },
+    {
+      "id": "config_bc0223b7",
+      "config_name": "学校信息表",
+      "table_name": "school_information_table",
+      "table_type": "master",
+      "parent_table": "",
+      "source_file_pattern": "*学校信息表*",
+      "field_mappings": [
+        {
+          "sourceField": "学校名称",
+          "targetField": "school",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {}
+        },
+        {
+          "sourceField": "统一社会信用代码",
+          "targetField": "credit_code",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {}
+        },
+        {
+          "sourceField": "法人姓名",
+          "targetField": "legal_person",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {}
+        },
+        {
+          "sourceField": "学校地址",
+          "targetField": "school_address",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {}
+        }
+      ],
+      "version": 2,
+      "is_latest": true,
+      "created_at": "2026-05-05T19:48:23.598290",
+      "updated_at": "2026-05-05T19:48:37.429019"
+    },
+    {
+      "id": "config_f387da2b",
+      "config_name": "岗位名称字典",
+      "table_name": "dict_dictionary_personal",
+      "table_type": "dictionary",
+      "parent_table": "",
+      "source_file_pattern": "*岗位名称字典*",
+      "field_mappings": [
+        {
+          "sourceField": "岗位名称",
+          "targetField": "岗位名称",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {}
+        }
+      ],
+      "version": 2,
+      "is_latest": true,
+      "created_at": "2026-05-07T11:15:06.897438",
+      "updated_at": "2026-05-07T11:15:18.897333"
+    },
+    {
+      "id": "config_a5a78cc1",
+      "config_name": "岗位等级字典",
+      "table_name": "dict_grade_dictionary",
+      "table_type": "dictionary",
+      "parent_table": "",
+      "source_file_pattern": "*岗位等级字典*",
+      "field_mappings": [
+        {
+          "sourceField": "岗位等级",
+          "targetField": "岗位等级",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {}
+        }
+      ],
+      "version": 2,
+      "is_latest": true,
+      "created_at": "2026-05-07T11:17:21.791718",
+      "updated_at": "2026-05-07T11:17:35.097518"
     }
   ],
   "global_mappings": {
@@ -2240,6 +2358,12 @@
     "职务岗位": "职务岗位",
     "职岗工资": "职岗工资",
     "级别薪级": "级别薪级",
-    "级薪工资": "级薪工资"
+    "级薪工资": "级薪工资",
+    "学校名称": "学校名称",
+    "统一社会信用代码": "统一社会信用代码",
+    "法人姓名": "法人姓名",
+    "学校地址": "学校地址",
+    "岗位名称": "岗位名称",
+    "岗位等级": "岗位等级"
   }
 }

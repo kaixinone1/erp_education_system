@@ -1,0 +1,109 @@
+{
+  "template_info": {
+    "name": "退休呈报表",
+    "file": "退休呈报表.xlsx",
+    "type": "退休类",
+    "description": "教师退休呈报表模板"
+  },
+  "data_sources": {
+    "primary": "teacher_basic_info",
+    "related": [
+      {
+        "table": "retirement_info",
+        "join_field": "id_card",
+        "join_type": "LEFT"
+      },
+      {
+        "table": "post_appointment_info",
+        "join_field": "id_card",
+        "join_type": "LEFT"
+      }
+    ],
+    "filters": [
+      {
+        "field": "employment_status",
+        "operator": "=",
+        "value": "退休"
+      }
+    ]
+  },
+  "field_mappings": [
+    {
+      "template_field": "姓名",
+      "source_field": "name",
+      "target_field": "姓名",
+      "transform": null
+    },
+    {
+      "template_field": "身份证号",
+      "source_field": "id_card",
+      "target_field": "身份证号",
+      "transform": null
+    },
+    {
+      "template_field": "性别",
+      "source_field": "gender",
+      "target_field": "性别",
+      "transform": "convert_gender"
+    },
+    {
+      "template_field": "出生日期",
+      "source_field": "birth_date",
+      "target_field": "出生日期",
+      "transform": "format_date_cn"
+    },
+    {
+      "template_field": "年龄",
+      "source_field": "birth_date",
+      "target_field": "年龄",
+      "transform": "calculate_age"
+    },
+    {
+      "template_field": "所在单位",
+      "source_field": "unit",
+      "target_field": "所在单位",
+      "transform": null
+    },
+    {
+      "template_field": "岗位名称",
+      "source_field": "post",
+      "target_field": "岗位名称",
+      "transform": null
+    },
+    {
+      "template_field": "岗位级别",
+      "source_field": "post_level",
+      "target_field": "岗位级别",
+      "transform": null
+    },
+    {
+      "template_field": "退休日期",
+      "source_field": "retirement_date",
+      "target_field": "退休日期",
+      "transform": "format_date_cn"
+    },
+    {
+      "template_field": "退休类型",
+      "source_field": "retirement_type",
+      "target_field": "退休类型",
+      "transform": null
+    },
+    {
+      "template_field": "养老金金额",
+      "source_field": "pension_amount",
+      "target_field": "养老金金额",
+      "transform": "format_money"
+    }
+  ],
+  "calculations": [
+    {
+      "name": "退休人数",
+      "type": "count"
+    },
+    {
+      "name": "平均年龄",
+      "type": "mean",
+      "field": "age"
+    }
+  ]
+}

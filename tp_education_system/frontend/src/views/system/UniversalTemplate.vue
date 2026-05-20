@@ -77,6 +77,7 @@
             ref="upload"
             :auto-upload="false"
             :limit="1"
+            :file-list="uploadFileList"
             :on-change="handleFileChange"
             accept=".doc,.docx,.xls,.xlsx"
           >
@@ -534,6 +535,8 @@ const uploadForm = ref({
   file: null as any
 })
 
+const uploadFileList = ref<any[]>([])
+
 const mappingForm = ref({
   placeholder_name: '',
   table_name: '',
@@ -660,10 +663,18 @@ const loadMappings = async () => {
   }
 }
 
-const handleFileChange = (file: any) => {
-  uploadForm.value.file = file.raw
-  if (!uploadForm.value.template_name) {
-    uploadForm.value.template_name = file.name.replace(/\.(docx|xlsx)$/i, '')
+const handleFileChange = (file: any, fileList: any) => {
+  uploadFileList.value = fileList
+  
+  if (file && file.raw) {
+    uploadForm.value.file = file.raw
+    
+    setTimeout(() => {
+      if (!uploadForm.value.template_name && file.name) {
+        const fileName = file.name.replace(/\.(docx|xlsx|doc|xls)$/i, '')
+        uploadForm.value.template_name = fileName
+      }
+    }, 0)
   }
 }
 
@@ -689,6 +700,7 @@ const handleUpload = async () => {
       ElMessage.success(res.message)
       showUploadDialog.value = false
       uploadForm.value = { template_name: '', file: null }
+      uploadFileList.value = []
       loadTemplates()
     }
   } catch (e: any) {
@@ -1111,3 +1123,4 @@ onMounted(() => {
   margin-bottom: 2px;
 }
 </style>
+

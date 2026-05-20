@@ -253,15 +253,23 @@ async def process_status_change(data: Dict[str, Any]):
                 if id_card_row:
                     id_card = id_card_row[0]
                 
-                # 获取原岗位信息（使用身份证号查询）
+                # 获取原岗位信息（从岗位聘任信息表查询，并通过字典转换）
                 original_post = None
                 if id_card:
+                    # 先读取字典映射
+                    remark_cursor.execute("SELECT id, post FROM dict_dictionary_personal")
+                    dict_mapping = {}
+                    for dict_row in remark_cursor.fetchall():
+                        dict_mapping[dict_row[0]] = dict_row[1]
+                    
+                    # 从岗位聘任信息表查询post_1字段
                     remark_cursor.execute("""
-                        SELECT post_2 FROM information WHERE id_card = %s
+                        SELECT post_1 FROM post_appointment_info WHERE id_card = %s
                     """, (id_card,))
                     post_row = remark_cursor.fetchone()
-                    if post_row:
-                        original_post = post_row[0]
+                    if post_row and post_row[0]:
+                        post_id = int(post_row[0])
+                        original_post = dict_mapping.get(post_id, f'未知岗位{post_id}')
 
                 # 获取当前年月
                 from datetime import datetime

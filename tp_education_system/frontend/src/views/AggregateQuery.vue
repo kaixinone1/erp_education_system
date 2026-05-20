@@ -172,8 +172,8 @@
     <!-- 标签筛选弹窗 -->
     <el-dialog v-model="showTagDialog" title="标签筛选（多选）" width="500px">
       <el-checkbox-group v-model="selectedTags" class="tag-list">
-        <el-checkbox v-for="tag in tagList" :key="tag.id" :value="tag.name" class="tag-item">
-          {{ tag.name }}
+        <el-checkbox v-for="tag in tagList" :key="tag.标签ID" :value="tag.标签名称" class="tag-item">
+          {{ tag.标签名称 }}
         </el-checkbox>
       </el-checkbox-group>
       <template #footer>
@@ -245,8 +245,8 @@ const loadTags = async () => {
   try {
     const response = await fetch('/api/aggregate-query/tags')
     const result = await response.json()
-    if (result.status === 'success') {
-      tagList.value = result.tags
+    if (result.状态 === '成功') {
+      tagList.value = result.标签列表
     }
   } catch (error) {
     console.error('加载标签列表失败:', error)

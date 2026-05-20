@@ -1,6 +1,6 @@
 <template>
   <div class="pushed-checklist-container">
-    <h2 class="page-title">推送清单</h2>
+    <h2 class="page-title">待办工作项</h2>
 
     <el-card class="checklist-card" shadow="hover">
       <template #header>
@@ -18,7 +18,7 @@
       </div>
 
       <div v-else-if="pendingTodos.length === 0" class="empty-wrapper">
-        <el-empty description="暂无推送清单" :image-size="80" />
+        <el-empty description="暂无待办工作项" :image-size="80" />
       </div>
 
       <el-table v-else :data="pendingTodos" style="width: 100%" border>
@@ -121,8 +121,8 @@ const loadTodoList = async () => {
       }))
     }
   } catch (error) {
-    console.error('加载推送清单失败:', error)
-    ElMessage.error('加载推送清单失败')
+    console.error('加载待办工作项失败:', error)
+    ElMessage.error('加载待办工作项失败')
   } finally {
     loading.value = false
   }
@@ -175,3 +175,4 @@ onMounted(() => {
   padding: 40px 0;
 }
 </style>
+

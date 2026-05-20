@@ -1,0 +1,1242 @@
+{
+  "page_setup": {
+    "margins": {
+      "top": 72,
+      "right": 54,
+      "bottom": 72,
+      "left": 54
+    },
+    "paper_width": 595,
+    "paper_height": 842,
+    "orientation": "portrait"
+  },
+  "col_widths": [
+    "106",
+    "58",
+    "100",
+    "71",
+    "46",
+    "422"
+  ],
+  "rows": [
+    {
+      "height": 27.0,
+      "cells": [
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:16.0pt;font-weight:bold",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "2026-05-28 00:00:00",
+          "rowspan": 1,
+          "colspan": 2,
+          "class": "data",
+          "style": "font-size:16.0pt;font-weight:bold;text-align:right",
+          "no_border": false,
+          "align": "right"
+        },
+        {
+          "text": "义务教育学校教职工绩效工资审批表",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:16.0pt;font-weight:bold;text-align:left",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:16.0pt;font-weight:bold;text-align:left",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:16.0pt;font-weight:bold;text-align:left",
+          "no_border": false,
+          "align": "left"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "填报单位：",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:center",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "太平镇中心学校",
+          "rowspan": 1,
+          "colspan": 3,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:left",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "填报时间:                                    单位：人/元",
+          "rowspan": 1,
+          "colspan": 2,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:left",
+          "no_border": false,
+          "align": "left"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "项目",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:12.0pt;font-weight:bold;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "人数",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:10.0pt;font-weight:bold;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "标准",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:10.0pt;font-weight:bold;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "小计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:10.0pt;font-weight:bold;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "呈报单位意见",
+          "rowspan": 7,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 7,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "行政管理人员",
+          "rowspan": 1,
+          "colspan": 4,
+          "class": "header",
+          "style": "font-size:10.0pt;font-weight:bold;text-align:left;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "left"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "1、副处级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "2、正科级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "3、副科级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "4、科员级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "5、办事员级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "专业技术人员",
+          "rowspan": 1,
+          "colspan": 4,
+          "class": "header",
+          "style": "font-size:10.0pt;font-weight:bold;text-align:left;border-top:2px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "教育局意见",
+          "rowspan": 9,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 9,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "1、正高级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:12.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:10.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "2、高级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "3、一级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "4、二级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "5、三级教师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "工人",
+          "rowspan": 1,
+          "colspan": 4,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-top:2px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "left"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "1、高级技师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "0",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "2、技师",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "3、高级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "人事部门意见",
+          "rowspan": 12,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 12,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-bottom:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "4、中级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "5、初级工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "6、普工",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "绩效工资合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "乡镇补贴合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-top:2px solid #000000;border-left:2px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 37.0,
+      "cells": [
+        {
+          "text": "岗位设置\n遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-top:2px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:2px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 37.0,
+      "cells": [
+        {
+          "text": "岗位设置\n遗留问题",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 36.0,
+      "cells": [
+        {
+          "text": "岗位设置遗留问题合计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "退休干部",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;border-bottom:1px solid #000000;border-left:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "退休工人",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "离休干部",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:left;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "left"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;border-top:1px solid #000000;border-bottom:2px solid #000000;border-left:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 130.0,
+      "cells": [
+        {
+          "text": "\n备注：\n",
+          "rowspan": 1,
+          "colspan": 6,
+          "class": "data",
+          "style": "font-size:12.0pt;text-align:left;border-top:2px solid #000000;border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000",
+          "no_border": false,
+          "align": "left"
+        }
+      ]
+    }
+  ],
+  "total_rows": 31,
+  "total_cols": 6
+}

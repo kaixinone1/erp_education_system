@@ -117,7 +117,7 @@ const rawTodoList = ref<Todo[]>([])
 
 // 计算属性：待办数量
 const pendingCount = computed(() => {
-  return rawTodoList.value.filter(t => t.status !== '已完成').length
+  return rawTodoList.value.filter(t => t.status !== 'completed').length
 })
 
 // 计算属性：显示的待办列表
@@ -128,22 +128,34 @@ const displayTodos = computed(() => {
   if (props.showTabs) {
     if (activeTab.value === 'pending') {
       // 我的待办：显示所有未完成的（包括待处理和进行中）
-      filtered = rawTodoList.value.filter(todo => todo.status !== '已完成')
+      filtered = rawTodoList.value.filter(todo => todo.status !== 'completed')
     } else if (activeTab.value === 'completed') {
-      filtered = rawTodoList.value.filter(todo => todo.status === '已完成')
+      filtered = rawTodoList.value.filter(todo => todo.status === 'completed')
     }
   } else if (!props.showCompleted) {
     // 不显示已完成时，只显示未完成的
-    filtered = rawTodoList.value.filter(todo => todo.status !== '已完成')
+    filtered = rawTodoList.value.filter(todo => todo.status !== 'completed')
   }
   
   // 映射显示格式
   return filtered.map(todo => {
-    const isCompleted = todo.status === '已完成'
     const templateName = todo.business_type_display || todo.template_name || '待办任务'
     const teacherName = todo.teacher_name || '未知'
-    const baseTitle = todo.title || `${teacherName} - ${templateName}`
     const progress = todo.total_tasks > 0 ? Math.round((todo.completed_tasks / todo.total_tasks) * 100) : 0
+    const isCompleted = progress === 100 || todo.status === 'completed'
+    
+    let displayTitle = ''
+    if (todo.business_type === 'retirement_reminder' || todo.title?.includes('退休')) {
+      displayTitle = `${teacherName}教师到龄退休提醒`
+    } else {
+      displayTitle = todo.title || `${teacherName} - ${templateName}`
+    }
+    
+    if (isCompleted) {
+      displayTitle = `✓ ${displayTitle}（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，100%）`
+    } else {
+      displayTitle = `${displayTitle}（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，${progress}%）`
+    }
     
     return {
       id: todo.id,
@@ -151,9 +163,7 @@ const displayTodos = computed(() => {
       teacher_name: teacherName,
       template_code: todo.template_code,
       business_type: todo.business_type,
-      displayTitle: isCompleted 
-        ? `✓ ${baseTitle}（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，100%）`
-        : `${baseTitle}（共${todo.total_tasks}项，已完成${todo.completed_tasks}项，${progress}%）`,
+      displayTitle: displayTitle,
       type: isCompleted ? `${templateName} - 已完成` : templateName,
       time: formatDate(isCompleted ? (todo.completed_at || todo.updated_at) : todo.created_at),
       status: todo.status,
@@ -249,3 +259,4 @@ onMounted(() => {
   background-color: #e4e7ed !important;
 }
 </style>
+

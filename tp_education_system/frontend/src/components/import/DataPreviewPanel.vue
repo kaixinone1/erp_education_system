@@ -395,7 +395,7 @@ const handleValidate = async () => {
     console.log('字段配置:', props.fieldConfigs)
     console.log('验证级别:', validationLevel.value)
     
-    const response = await fetch('http://127.0.0.1:8000/api/import/validate', {
+    const response = await fetch('/api/import/validate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -614,7 +614,7 @@ const handleSaveEdit = async () => {
     }
 
     // 调用后端验证API
-    const response = await fetch('http://127.0.0.1:8000/api/import/validate', {
+    const response = await fetch('/api/import/validate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -1035,3 +1035,4 @@ onMounted(() => {
   font-size: 12px;
 }
 </style>
+

@@ -18,7 +18,7 @@
         },
         {
           "id": "system-table-mgt",
-          "title": "表管理",
+          "title": "数据表管理",
           "icon": "Document",
           "path": "/system/table-mgt",
           "type": "component",
@@ -43,8 +43,8 @@
         },
         {
           "id": "system-universal-template",
-          "title": "通用模板",
-          "icon": "Document",
+          "title": "通用模板系统",
+          "icon": "Files",
           "path": "/system/universal-template",
           "type": "component",
           "component": "UniversalTemplate"
@@ -66,54 +66,6 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/dict_education_type_dictionary",
               "table_name": "dict_education_type_dictionary",
-              "table_type": "dictionary"
-            },
-            {
-              "id": "table-dict_marital_status_dictionary",
-              "title": "婚姻状况字典",
-              "name": "婚姻状况字典",
-              "icon": "Document",
-              "path": "/data/dict_marital_status_dictionary",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/dict_marital_status_dictionary",
-              "table_name": "dict_marital_status_dictionary",
-              "table_type": "dictionary"
-            },
-            {
-              "id": "table-dict_nation_dictionary",
-              "title": "民族字典",
-              "name": "民族字典",
-              "icon": "Document",
-              "path": "/data/dict_nation_dictionary",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/dict_nation_dictionary",
-              "table_name": "dict_nation_dictionary",
-              "table_type": "dictionary"
-            },
-            {
-              "id": "table-dict_politics_status_dictionary",
-              "title": "政治面貌字典",
-              "name": "政治面貌字典",
-              "icon": "Document",
-              "path": "/data/dict_politics_status_dictionary",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/dict_politics_status_dictionary",
-              "table_name": "dict_politics_status_dictionary",
-              "table_type": "dictionary"
-            },
-            {
-              "id": "table-dict_teacher_status_dictionary",
-              "title": "教师状态字典",
-              "name": "教师状态字典",
-              "icon": "Document",
-              "path": "/data/dict_teacher_status_dictionary",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/dict_teacher_status_dictionary",
-              "table_name": "dict_teacher_status_dictionary",
               "table_type": "dictionary"
             },
             {
@@ -187,6 +139,54 @@
               "api_endpoint": "/api/data/dict_teacher_dictionary",
               "table_name": "dict_teacher_dictionary",
               "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_dictionary",
+              "title": "任职状态字典",
+              "name": "任职状态字典",
+              "icon": "Document",
+              "path": "/data/dict_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_dictionary",
+              "table_name": "dict_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_education_level_dictionary",
+              "title": "学历层次字典",
+              "name": "学历层次字典",
+              "icon": "Document",
+              "path": "/data/dict_education_level_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_education_level_dictionary",
+              "table_name": "dict_education_level_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_dictionary_personal",
+              "title": "岗位名称字典",
+              "name": "岗位名称字典",
+              "icon": "Document",
+              "path": "/data/dict_dictionary_personal",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_dictionary_personal",
+              "table_name": "dict_dictionary_personal",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_grade_dictionary",
+              "title": "岗位等级字典",
+              "name": "岗位等级字典",
+              "icon": "Document",
+              "path": "/data/dict_grade_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_grade_dictionary",
+              "table_name": "dict_grade_dictionary",
+              "table_type": "dictionary"
             }
           ]
         },
@@ -199,7 +199,7 @@
           "children": [
             {
               "id": "checklist-pushed",
-              "title": "推送清单",
+              "title": "待办工作项",
               "icon": "Bell",
               "path": "/system/checklist/pushed",
               "type": "component",
@@ -455,18 +455,6 @@
               "table_type": "dictionary"
             },
             {
-              "id": "table-information",
-              "title": "岗位聘任信息",
-              "name": "岗位聘任信息",
-              "icon": "Document",
-              "path": "/data/information",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/information",
-              "table_name": "information",
-              "table_type": "master"
-            },
-            {
               "id": "table-personal_statistics",
               "title": "岗位设置遗留绩效统计表",
               "name": "岗位设置遗留绩效统计表",
@@ -512,6 +500,30 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/salary_data",
               "table_name": "salary_data",
+              "table_type": "child"
+            },
+            {
+              "id": "table-data",
+              "title": "学校信息表",
+              "name": "学校信息表",
+              "icon": "Document",
+              "path": "/data/school_information_table",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/school_information_table",
+              "table_name": "school_information_table",
+              "table_type": "master"
+            },
+            {
+              "id": "table-post_appointment_info",
+              "title": "岗位聘任信息",
+              "name": "岗位聘任信息",
+              "icon": "Document",
+              "path": "/data/post_appointment_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/post_appointment_info",
+              "table_name": "post_appointment_info",
               "table_type": "child"
             }
           ]
@@ -575,53 +587,12 @@
       "type": "module",
       "children": [
         {
-          "id": "template-center",
-          "title": "模板管理中心",
-          "icon": "Folder",
-          "path": "/report/template-center",
-          "type": "module",
-          "children": [
-            {
-              "id": "template-design",
-              "title": "模板设计",
-              "icon": "Edit",
-              "path": "/report/template-center/design",
-              "type": "component",
-              "component": "TemplateDesign"
-            },
-            {
-              "id": "template-library",
-              "title": "模板库",
-              "icon": "Files",
-              "path": "/report/template-center/library",
-              "type": "component",
-              "component": "TemplateLibrary"
-            },
-            {
-              "id": "template-call-management",
-              "title": "模板调用管理",
-              "icon": "Connection",
-              "path": "/report/template-center/call-management",
-              "type": "component",
-              "component": "TemplateCallManagement"
-            }
-          ]
-        },
-        {
           "id": "report-retirement-estimate",
           "title": "退休测算",
           "icon": "Calculator",
           "path": "/report/retirement/estimate",
           "type": "component",
           "component": "RetirementEstimate"
-        },
-        {
-          "id": "report-template-mgt",
-          "title": "报表模板管理",
-          "icon": "Document",
-          "path": "/report/template-mgt",
-          "type": "component",
-          "component": "ReportTemplateManagement"
         }
       ]
     }

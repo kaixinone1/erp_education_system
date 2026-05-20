@@ -216,3 +216,4 @@ const handleDelete = (row: any) => {
   justify-content: flex-end;
 }
 </style>
+

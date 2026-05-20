@@ -229,6 +229,13 @@ class FieldConfigManager:
 
         # 更新 merged_schema_mappings.json
         self._update_merged_schema_config(new_config)
+        
+        # 同步更新 table_name_mappings.json
+        if table_name and config_name:
+            self._update_table_name_mappings(config_name, table_name, config_data.get('table_type', 'master'))
+        
+        # 更新字段关联关系缓存表
+        self._update_field_relations_cache(new_config)
 
         return {
             'success': True,
@@ -336,22 +343,33 @@ class FieldConfigManager:
         """保存单个配置文件（向后兼容）"""
         try:
             config_name = config.get('config_name', '')
+            table_name = config.get('table_name', '')
+            
             if not config_name:
                 return False
 
-            # 构建文件路径
-            safe_name = "".join(c for c in config_name if c.isalnum() or c in ('_', '-', ' ', '.'))
-            safe_name = safe_name.strip()
-            if not safe_name.endswith('.json'):
-                safe_name += '.json'
+            # 优先使用英文表名作为文件名,如果没有则使用中文表名
+            if table_name:
+                # 使用英文表名作为文件名
+                safe_name = table_name.lower()
+                # 清理非法字符,只保留字母、数字和下划线
+                safe_name = "".join(c for c in safe_name if c.isalnum() or c == '_')
+                if not safe_name.endswith('.json'):
+                    safe_name += '.json'
+            else:
+                # 如果没有英文表名,使用中文表名
+                safe_name = "".join(c for c in config_name if c.isalnum() or c in ('_', '-', ' ', '.'))
+                safe_name = safe_name.strip()
+                if not safe_name.endswith('.json'):
+                    safe_name += '.json'
 
             file_path = os.path.join(self.field_configs_dir, safe_name)
 
             # 构建兼容格式的配置数据
             config_data = {
                 'config_name': config.get('config_name', ''),
-                'display_name': config.get('config_name', ''),  # 同配置名称
-                'chinese_title': config.get('config_name', ''),  # 同配置名称
+                'display_name': config.get('config_name', ''),
+                'chinese_title': config.get('config_name', ''),
                 'table_name': config.get('table_name', ''),
                 'table_type': config.get('table_type', 'master'),
                 'parent_table': config.get('parent_table', ''),
@@ -362,11 +380,144 @@ class FieldConfigManager:
 
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(config_data, f, ensure_ascii=False, indent=2)
-
+            
+            print(f"配置文件已保存: {safe_name} (中文表名: {config_name}, 英文表名: {table_name})")
             return True
         except Exception as e:
             print(f"保存单个配置文件失败: {e}")
             return False
+
+    def _update_table_name_mappings(self, chinese_name: str, english_name: str, table_type: str = "master"):
+        """
+        同步更新 table_name_mappings.json
+        确保导入时能正确识别表名映射
+        
+        Args:
+            chinese_name: 中文表名
+            english_name: 英文表名
+            table_type: 表类型
+        """
+        try:
+            table_name_mappings_file = os.path.join(self.config_dir, 'table_name_mappings.json')
+            
+            # 加载现有映射
+            if os.path.exists(table_name_mappings_file):
+                with open(table_name_mappings_file, 'r', encoding='utf-8') as f:
+                    mappings_data = json.load(f)
+            else:
+                mappings_data = {"mappings": {}, "reverse_mappings": {}}
+            
+            # 更新映射
+            mappings_data["mappings"][chinese_name] = {
+                "english_name": english_name,
+                "table_type": table_type,
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            mappings_data["reverse_mappings"][english_name] = chinese_name
+            
+            # 保存
+            with open(table_name_mappings_file, 'w', encoding='utf-8') as f:
+                json.dump(mappings_data, f, ensure_ascii=False, indent=2)
+            
+            print(f"已更新表名映射: {chinese_name} -> {english_name}")
+            
+        except Exception as e:
+            print(f"更新表名映射失败: {e}")
+    
+    def _update_field_relations_cache(self, config: Dict[str, Any]):
+        """
+        更新字段关联关系缓存表
+        在保存字段配置时自动更新缓存表，提升查询性能
+        
+        Args:
+            config: 字段配置数据
+        """
+        try:
+            import psycopg2
+            
+            table_name = config.get('table_name')
+            config_name = config.get('config_name')
+            field_mappings = config.get('field_mappings', [])
+            
+            if not table_name or not field_mappings:
+                return
+            
+            DATABASE_CONFIG = {
+                "host": "localhost",
+                "port": "5432",
+                "database": "taiping_education",
+                "user": "taiping_user",
+                "password": "taiping_password"
+            }
+            
+            conn = psycopg2.connect(**DATABASE_CONFIG)
+            cursor = conn.cursor()
+            
+            cursor.execute("DELETE FROM table_field_relations WHERE table_name = %s", (table_name,))
+            
+            print(f"[缓存更新] 表: {config_name} ({table_name}), 字段数: {len(field_mappings)}")
+            
+            for field in field_mappings:
+                field_name = field.get('targetField')
+                field_name_cn = field.get('sourceField')
+                data_type = field.get('dataType', 'VARCHAR')
+                relation_type = field.get('relation_type', 'none')
+                relation_table = field.get('relation_table', '')
+                relation_field = field.get('relation_display_field', '')
+                
+                if not field_name:
+                    continue
+                
+                dict_values = []
+                dict_count = 0
+                
+                if relation_type == 'to_dict' and relation_table and relation_field:
+                    try:
+                        query = f'SELECT DISTINCT "{relation_field}" FROM "{relation_table}" WHERE "{relation_field}" IS NOT NULL ORDER BY "{relation_field}"'
+                        cursor.execute(query)
+                        
+                        for row in cursor.fetchall():
+                            value = row[0]
+                            if value:
+                                dict_values.append({
+                                    "值": value,
+                                    "标签": value
+                                })
+                        
+                        dict_count = len(dict_values)
+                        print(f"  ✓ 字段 {field_name_cn}: 关联字典 {relation_table}, 字典值数量: {dict_count}")
+                    except Exception as e:
+                        print(f"  [警告] 获取字典值失败 {relation_table}.{relation_field}: {e}")
+                
+                cursor.execute("""
+                    INSERT INTO table_field_relations 
+                    (table_name, 表名, field_name, 字段名, 数据类型, 关联类型, 关联表, 关联字段, 关联显示字段, 字典值列表, 字典值数量)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    table_name,
+                    config_name,
+                    field_name,
+                    field_name_cn,
+                    data_type,
+                    relation_type,
+                    relation_table,
+                    relation_field,
+                    relation_field,
+                    json.dumps(dict_values, ensure_ascii=False) if dict_values else None,
+                    dict_count
+                ))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"[缓存更新] 完成: {config_name}")
+            
+        except Exception as e:
+            print(f"[缓存更新] 失败: {e}")
+            import traceback
+            traceback.print_exc()
 
     def delete_config(self, config_id: str) -> Dict[str, Any]:
         """删除配置"""

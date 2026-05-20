@@ -1,0 +1,783 @@
+{
+  "sheet_name": "绩效审批表",
+  "max_row": 4,
+  "max_col": 6,
+  "row_heights": {
+    "0": 27.0,
+    "1": 25.0,
+    "2": 25.0,
+    "3": 25.0
+  },
+  "col_widths": {
+    "0": 12.0,
+    "1": 14.28571428571429,
+    "2": 14.28571428571429,
+    "3": 14.28571428571429,
+    "4": 10.71428571428571,
+    "5": 21.42857142857143
+  },
+  "page_setup": {
+    "margins": {
+      "top": 1.0,
+      "right": 0.75,
+      "bottom": 1.0,
+      "left": 0.75,
+      "header": 0.5,
+      "footer": 0.5
+    }
+  },
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "value": "2026年5月 义务教育学校教职工绩效工资审批表",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 6,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "title",
+      "no_border": true,
+      "style": "font-family:'宋体',SimSun,serif;font-size:16.0pt;font-weight:bold;text-align:center;vertical-align:middle;border:none"
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "value": "填报单位：太平镇中心学校  填报时间：2026年4月28日  单位：人、元",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 6,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "info",
+      "no_border": true,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:left;vertical-align:middle;border:none"
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "value": "项目",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": true,
+        "color": "#00D9E1F2",
+        "pattern": "solid"
+      },
+      "class": "header",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle;background-color:#00D9E1F2"
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "value": "人数",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": true,
+        "color": "#00D9E1F2",
+        "pattern": "solid"
+      },
+      "class": "header",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle;background-color:#00D9E1F2"
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "value": "标准",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": true,
+        "color": "#00D9E1F2",
+        "pattern": "solid"
+      },
+      "class": "header",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle;background-color:#00D9E1F2"
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "value": "小计",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": true,
+        "color": "#00D9E1F2",
+        "pattern": "solid"
+      },
+      "class": "header",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle;background-color:#00D9E1F2"
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "value": "呈报单位意见",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": true,
+        "color": "#00D9E1F2",
+        "pattern": "solid"
+      },
+      "class": "header",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle;background-color:#00D9E1F2"
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "value": "审批意见",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": true,
+        "color": "#00D9E1F2",
+        "pattern": "solid"
+      },
+      "class": "header",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle;background-color:#00D9E1F2"
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "value": "副处级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "Calibri",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'Calibri',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "Calibri",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'Calibri',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "Calibri",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'Calibri',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "Calibri",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'Calibri',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "Calibri",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'Calibri',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "Calibri",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": "#000000"
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'Calibri',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    }
+  ]
+}

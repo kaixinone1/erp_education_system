@@ -288,7 +288,7 @@ const getNodeIcon = (data: NavigationNode): any => {
 // 从后端API获取导航数据
 const loadNavigationData = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/navigation-admin/tree')
+    const response = await fetch('/api/navigation-admin/tree')
     if (response.ok) {
       const data = await response.json()
       if (data.modules && data.modules.length > 0) {
@@ -619,7 +619,7 @@ const handleSave = async () => {
     }
     
     // 发送PUT请求到后端API
-    const response = await fetch('http://127.0.0.1:8000/api/navigation-admin/tree', {
+    const response = await fetch('/api/navigation-admin/tree', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -821,3 +821,4 @@ const validateNode = (node: any): { valid: boolean; message: string } => {
   color: #999;
 }
 </style>
+

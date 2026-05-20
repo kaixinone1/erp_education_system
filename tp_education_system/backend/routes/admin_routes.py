@@ -274,3 +274,57 @@ async def get_all_tables():
     except Exception as e:
         print(f"获取表列表失败: {e}")
         raise HTTPException(status_code=500, detail=f"获取表列表失败: {str(e)}")
+
+
+@router.get("/list-deletable-tables")
+async def list_deletable_tables():
+    """获取可删除的表列表（用于数据清理工具）"""
+    try:
+        tables = []
+        
+        # 1. 从数据库获取所有实际存在的表
+        conn = psycopg2.connect(**DATABASE_CONFIG)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_type = 'BASE TABLE'
+        """)
+        db_tables = {row[0] for row in cursor.fetchall()}
+        cursor.close()
+        conn.close()
+        
+        # 2. 从 table_name_mappings.json 读取映射
+        table_mappings = read_json_file(TABLE_NAME_MAPPINGS_FILE)
+        mappings = table_mappings.get("mappings", {})
+        
+        for chinese_name, info in mappings.items():
+            english_name = info.get("english_name")
+            if english_name:
+                tables.append({
+                    "chinese_name": chinese_name,
+                    "english_name": english_name,
+                    "table_type": info.get("table_type", "master"),
+                    "exists_in_db": english_name in db_tables
+                })
+        
+        # 3. 从 merged_schema_mappings.json 读取（可能有没有映射的残留表）
+        schema_config = read_json_file(MERGED_SCHEMA_FILE)
+        schema_tables = schema_config.get("tables", {})
+        
+        for english_name, config in schema_tables.items():
+            # 检查是否已经在列表中
+            if not any(t["english_name"] == english_name for t in tables):
+                tables.append({
+                    "chinese_name": config.get("chinese_name", english_name),
+                    "english_name": english_name,
+                    "table_type": config.get("type", "master"),
+                    "exists_in_db": english_name in db_tables,
+                    "is_orphan": True
+                })
+        
+        return {"tables": tables}
+    except Exception as e:
+        print(f"获取可删除表列表失败: {e}")
+        raise HTTPException(status_code=500, detail=f"获取可删除表列表失败: {str(e)}")

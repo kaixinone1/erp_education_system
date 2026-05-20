@@ -43,26 +43,167 @@ class UnifiedTemplateManager:
         with open(self.config_path, 'w', encoding='utf-8') as f:
             json.dump(self.config, f, ensure_ascii=False, indent=2)
     
+    def _detect_header_row(self, df: pd.DataFrame, max_rows: int = 20) -> int:
+        """
+        智能检测标题行位置
+        
+        检测逻辑：
+        1. 标题行通常包含文本而非数字
+        2. 标题行的文本较短（通常是字段名）
+        3. 标题行下方是数据行（包含各种类型的数据）
+        """
+        for row_idx in range(min(max_rows, len(df))):
+            row = df.iloc[row_idx]
+            
+            text_count = 0
+            numeric_count = 0
+            empty_count = 0
+            short_text_count = 0
+            
+            for val in row:
+                if pd.isna(val) or str(val).strip() == '':
+                    empty_count += 1
+                elif isinstance(val, (int, float)) and not pd.isna(val):
+                    numeric_count += 1
+                else:
+                    text_val = str(val).strip()
+                    text_count += 1
+                    if len(text_val) <= 20:
+                        short_text_count += 1
+            
+            total_cells = len(row)
+            non_empty = total_cells - empty_count
+            
+            if non_empty == 0:
+                continue
+            
+            text_ratio = text_count / non_empty if non_empty > 0 else 0
+            short_ratio = short_text_count / non_empty if non_empty > 0 else 0
+            
+            if row_idx < len(df) - 1:
+                next_row = df.iloc[row_idx + 1]
+                next_has_data = any(not pd.isna(v) and str(v).strip() != '' for v in next_row)
+            else:
+                next_has_data = False
+            
+            if text_ratio > 0.7 and short_ratio > 0.5 and next_has_data:
+                return row_idx
+        
+        return 0
+    
+    def _detect_data_type(self, series: pd.Series) -> Dict:
+        """
+        智能检测列数据类型
+        """
+        non_null = series.dropna()
+        
+        if len(non_null) == 0:
+            return {"data_type": "VARCHAR", "length": 255, "input_type": "text"}
+        
+        sample_values = non_null.head(20).tolist()
+        
+        date_count = 0
+        numeric_count = 0
+        text_count = 0
+        max_length = 0
+        
+        for val in sample_values:
+            str_val = str(val).strip()
+            
+            try:
+                pd.to_datetime(val)
+                date_count += 1
+                continue
+            except:
+                pass
+            
+            if isinstance(val, (int, float)) and not pd.isna(val):
+                numeric_count += 1
+            else:
+                text_count += 1
+                max_length = max(max_length, len(str_val))
+        
+        total = len(sample_values)
+        
+        if date_count / total > 0.7:
+            return {"data_type": "DATE", "length": None, "input_type": "date"}
+        elif numeric_count / total > 0.7:
+            sample_num = [v for v in sample_values if isinstance(v, (int, float))]
+            has_decimal = any(isinstance(v, float) and v != int(v) for v in sample_num)
+            if has_decimal:
+                return {"data_type": "DECIMAL", "length": "10,2", "input_type": "number"}
+            else:
+                return {"data_type": "INTEGER", "length": None, "input_type": "number"}
+        else:
+            return {"data_type": "VARCHAR", "length": max(max_length * 2, 50), "input_type": "text"}
+    
+    def _analyze_template_structure(self, file_path: str) -> Dict:
+        """
+        智能分析Excel模板结构
+        """
+        df = pd.read_excel(file_path, header=None)
+        
+        header_row = self._detect_header_row(df)
+        
+        df_with_header = pd.read_excel(file_path, header=header_row)
+        
+        preview_rows = min(10, len(df))
+        preview_data = []
+        for i in range(preview_rows):
+            row_data = []
+            for j, val in enumerate(df.iloc[i]):
+                row_data.append(str(val) if not pd.isna(val) else "")
+            preview_data.append(row_data)
+        
+        structure = {
+            "total_rows": int(len(df)),
+            "total_columns": int(len(df.columns)),
+            "header_row": int(header_row + 1),
+            "data_start_row": int(header_row + 2),
+            "data_end_row": int(len(df)),
+            "sheet_name": "Sheet1",
+            "preview_data": preview_data,
+            "columns": []
+        }
+        
+        for col_name in df_with_header.columns:
+            col_data = df_with_header[col_name]
+            type_info = self._detect_data_type(col_data)
+            
+            non_null = col_data.dropna()
+            sample_values = non_null.head(5).tolist() if len(non_null) > 0 else []
+            
+            structure["columns"].append({
+                "chinese_name": str(col_name),
+                "data_type": type_info["data_type"],
+                "length": type_info["length"],
+                "input_type": type_info["input_type"],
+                "sample_values": [str(v) for v in sample_values],
+                "null_count": int(col_data.isna().sum()),
+                "total_count": int(len(col_data))
+            })
+        
+        return structure
+    
     def parse_excel_template(self, file_path: str, template_name: str = None) -> Dict:
         """
-        解析Excel模板文件
+        智能解析Excel模板文件
         
-        Args:
-            file_path: Excel文件路径
-            template_name: 模板名称（可选）
-        
-        Returns:
-            模板配置字典
+        自动识别：
+        1. 标题行位置
+        2. 数据类型
+        3. 数据区域
         """
         if template_name is None:
             template_name = os.path.splitext(os.path.basename(file_path))[0]
         
-        df = pd.read_excel(file_path, nrows=0)
+        structure = self._analyze_template_structure(file_path)
+        
         fields = []
         english_names_used = set()
         
-        for idx, col_name in enumerate(df.columns):
-            chinese_name = str(col_name)
+        for idx, col_info in enumerate(structure["columns"]):
+            chinese_name = col_info["chinese_name"]
             english_name = self._generate_unique_english_name(
                 chinese_name, 
                 english_names_used
@@ -73,10 +214,12 @@ class UnifiedTemplateManager:
                 "chinese_name": chinese_name,
                 "english_name": english_name,
                 "column_index": idx,
-                "data_type": "VARCHAR",
-                "length": 255,
-                "required": False,
-                "display_order": idx
+                "data_type": col_info["data_type"],
+                "length": col_info["length"],
+                "input_type": col_info["input_type"],
+                "required": col_info["null_count"] == 0,
+                "display_order": idx,
+                "sample_values": col_info["sample_values"]
             }
             fields.append(field_config)
         
@@ -88,10 +231,15 @@ class UnifiedTemplateManager:
             "created_at": datetime.now().isoformat(),
             "source_file": os.path.basename(file_path),
             
+            "structure": structure,
+            "fields": fields,
+            
             "import_config": {
                 "file_type": "xlsx",
-                "sheet_name": "Sheet1",
-                "start_row": 2,
+                "sheet_name": structure["sheet_name"],
+                "header_row": structure["header_row"],
+                "start_row": structure["data_start_row"],
+                "end_row": structure["data_end_row"],
                 "fields": fields
             },
             
@@ -103,7 +251,7 @@ class UnifiedTemplateManager:
                         "chinese_name": field["chinese_name"],
                         "english_name": field["english_name"],
                         "display_name": field["chinese_name"],
-                        "input_type": "text",
+                        "input_type": field["input_type"],
                         "placeholder": f"请输入{field['chinese_name']}",
                         "required": field["required"]
                     }
@@ -114,8 +262,8 @@ class UnifiedTemplateManager:
             "export_config": {
                 "file_type": "xlsx",
                 "template_file": file_path,
-                "sheet_name": "Sheet1",
-                "start_row": 2,
+                "sheet_name": structure["sheet_name"],
+                "start_row": structure["data_start_row"],
                 "fields": [
                     {
                         "chinese_name": field["chinese_name"],
@@ -178,6 +326,8 @@ class UnifiedTemplateManager:
             "version": "1.0",
             "created_at": datetime.now().isoformat(),
             "source_file": os.path.basename(file_path),
+            
+            "fields": fields,
             
             "import_config": {
                 "file_type": "docx",
@@ -295,10 +445,10 @@ class UnifiedTemplateManager:
         Returns:
             英文名称
         """
-        from .field_name_manager import FieldNameManager
+        from core.field_name_manager import FieldNameManager
         
         field_name_manager = FieldNameManager()
-        english_name = field_name_manager.get_or_create_mapping(chinese_name)
+        english_name = field_name_manager.get_english_name(chinese_name)
         
         return english_name
     

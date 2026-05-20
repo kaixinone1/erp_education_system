@@ -1,0 +1,27 @@
+[
+  {
+    "chinese": "证书资格种类",
+    "english": "field_5",
+    "reason": "无意义序号字段名"
+  },
+  {
+    "chinese": "学段学科",
+    "english": "field_6",
+    "reason": "无意义序号字段名"
+  },
+  {
+    "chinese": "学科",
+    "english": "field_7",
+    "reason": "无意义序号字段名"
+  },
+  {
+    "chinese": "发证机关",
+    "english": "field_8",
+    "reason": "无意义序号字段名"
+  },
+  {
+    "chinese": "级别薪级",
+    "english": "field_21",
+    "reason": "无意义序号字段名"
+  }
+]

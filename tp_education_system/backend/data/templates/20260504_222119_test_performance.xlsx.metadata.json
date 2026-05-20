@@ -1,0 +1,171 @@
+{
+  "page_setup": {
+    "margins": {
+      "top": 72,
+      "right": 54,
+      "bottom": 72,
+      "left": 54
+    },
+    "paper_width": 595,
+    "paper_height": 842,
+    "orientation": "portrait"
+  },
+  "col_widths": [
+    "84",
+    "100",
+    "100",
+    "100",
+    "74",
+    "150"
+  ],
+  "rows": [
+    {
+      "height": 27.0,
+      "cells": [
+        {
+          "text": "2026年5月 义务教育学校教职工绩效工资审批表",
+          "rowspan": 1,
+          "colspan": 6,
+          "class": "title",
+          "style": "font-size:16.0pt;font-weight:bold;text-align:center",
+          "no_border": true,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "填报单位：太平镇中心学校  填报时间：2026年4月28日  单位：人、元",
+          "rowspan": 1,
+          "colspan": 6,
+          "class": "info",
+          "style": "font-size:11.0pt;text-align:left",
+          "no_border": true,
+          "align": "left"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "项目",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "人数",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "标准",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "小计",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "呈报单位意见",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "审批意见",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "header",
+          "style": "font-size:11.0pt;font-weight:bold;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "height": 25.0,
+      "cells": [
+        {
+          "text": "副处级",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        },
+        {
+          "text": "",
+          "rowspan": 1,
+          "colspan": 1,
+          "class": "data",
+          "style": "font-size:11.0pt;text-align:center;border-top:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;border-right:1px solid #000000",
+          "no_border": false,
+          "align": "center"
+        }
+      ]
+    }
+  ],
+  "total_rows": 4,
+  "total_cols": 6
+}

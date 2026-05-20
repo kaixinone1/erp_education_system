@@ -110,6 +110,30 @@ class YearMonthRequest(BaseModel):
     month: int
 
 
+@router.get("/template-metadata")
+def get_template_metadata():
+    """获取模板元数据"""
+    try:
+        template_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'performance_pay_template.json')
+        
+        if not os.path.exists(template_path):
+            raise HTTPException(status_code=404, detail="模板文件不存在")
+        
+        with open(template_path, 'r', encoding='utf-8') as f:
+            template_data = json.load(f)
+        
+        return {
+            "status": "success",
+            "data": {
+                "rows": template_data.get("rows", []),
+                "total_rows": len(template_data.get("rows", []))
+            }
+        }
+    except Exception as e:
+        print(f"加载模板失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/current")
 def get_current_month_data(year: int = datetime.now().year, month: int = datetime.now().month):
     """获取指定月份的数据"""
@@ -167,16 +191,28 @@ def save_data(data: PerformancePayData):
             teacher_snapshot = {}
             conn2 = get_db_connection()
             cursor2 = conn2.cursor()
+            
+            # 读取字典映射
+            cursor2.execute("SELECT id, post FROM dict_dictionary_personal")
+            dict_mapping = {}
+            for dict_row in cursor2.fetchall():
+                dict_mapping[dict_row[0]] = dict_row[1]
+            
             cursor2.execute("""
-                SELECT t.id_card, t.name, t.employment_status, i.post_2
+                SELECT t.id_card, t.name, t.employment_status, p.post_1
                 FROM teacher_basic_info t
-                LEFT JOIN information i ON t.id_card = i.id_card
+                LEFT JOIN post_appointment_info p ON t.id_card = p.id_card
             """)
             for row in cursor2.fetchall():
+                post_name = None
+                if row[3]:
+                    post_id = int(row[3])
+                    post_name = dict_mapping.get(post_id, f'未知岗位{post_id}')
+                
                 teacher_snapshot[row[0]] = {
                     'name': row[1],
                     'status': row[2],
-                    'post': row[3]
+                    'post': post_name
                 }
             cursor2.close()
             conn2.close()
@@ -268,22 +304,34 @@ def load_from_database(req: YearMonthRequest):
         except Exception as e:
             print(f"获取绩效标签人员失败: {e}")
         
-        # 从information表读取岗位名称，筛选有绩效工资标签的人员
+        # 从岗位聘任信息表读取岗位信息，通过字典表转换
         position_counts = {}
         try:
+            # 先读取字典映射
+            cursor.execute("SELECT id, post FROM dict_dictionary_personal")
+            dict_mapping = {}
+            for row in cursor.fetchall():
+                dict_mapping[row[0]] = row[1]
+            
+            # 从岗位聘任信息表读取post_1字段
             cursor.execute("""
-                SELECT post_2, COUNT(*) as cnt
-                FROM information
-                WHERE id_card IN (
+                SELECT p.post_1, COUNT(*) as cnt
+                FROM post_appointment_info p
+                WHERE p.id_card IN (
                     SELECT id_card FROM teacher_basic_info 
                     WHERE id IN ({})
                 )
-                AND post_2 IS NOT NULL AND post_2 != ''
-                GROUP BY post_2
+                AND p.post_1 IS NOT NULL
+                GROUP BY p.post_1
             """.format(','.join([str(x) for x in performance_tag_employee_ids]) if performance_tag_employee_ids else '0'))
+            
+            # 通过字典映射转换
             for row in cursor.fetchall():
-                if row[0]:
-                    position_counts[row[0]] = row[1]
+                post_id = int(row[0]) if row[0] else None
+                count = row[1]
+                if post_id:
+                    post_name = dict_mapping.get(post_id, f'未知岗位{post_id}')
+                    position_counts[post_name] = position_counts.get(post_name, 0) + count
         except Exception as e:
             print(f"读取岗位信息失败: {e}")
         
@@ -587,7 +635,7 @@ def load_from_database(req: YearMonthRequest):
                         level = original_post if original_post else '教师'
                         key = f'辞职_{level}'
                         group_label = f'{level}辞职'
-                    elif new_status in ['死亡']:
+                    elif new_status in ['去世', '死亡']:
                         if original_status == '退休':
                             key = '去世_退休'
                             group_label = '退休教师死亡'

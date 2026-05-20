@@ -7,12 +7,9 @@ from routes.table_structure_routes import router as table_structure_router
 from routes.field_config_routes import router as field_config_router
 from routes.admin_routes import router as admin_router
 from routes.status_change_routes import router as status_change_router
-from routes.template_routes import router as template_router
 from routes.retirement_report_routes import router as retirement_report_router
-from routes.template_fill_routes import router as template_fill_router
 from routes.report_designer_routes import router as report_designer_router
 from routes.retirement_data_routes import router as retirement_data_router
-from routes.template_field_mapping_routes import router as template_field_mapping_router
 from routes.checklist_template_routes import router as checklist_template_router
 from routes.intermediate_table_routes import router as intermediate_table_router
 from routes.filter_condition_routes import router as filter_condition_router
@@ -24,9 +21,8 @@ from routes.menu_routes_new import router as menu_router
 from routes.performance_pay_routes import router as performance_pay_router
 from routes.performance_pay_history_routes import router as performance_pay_history_router
 from routes.performance_pay_template import router as performance_pay_template_router
-from routes.template_import_test import router as template_import_test_router
 from routes.aggregate_query_routes import router as aggregate_query_router
-from routes.unified_template_routes import router as unified_template_router
+from routes.unit_hierarchy_routes import router as unit_hierarchy_router
 import json
 import os
 
@@ -143,12 +139,9 @@ app.include_router(table_structure_router)
 app.include_router(field_config_router)
 app.include_router(admin_router)
 app.include_router(status_change_router)
-app.include_router(template_router)
 app.include_router(retirement_report_router)
-app.include_router(template_fill_router)
 app.include_router(report_designer_router)
 app.include_router(retirement_data_router)
-app.include_router(template_field_mapping_router)
 app.include_router(checklist_template_router)
 app.include_router(intermediate_table_router)
 app.include_router(filter_condition_router)
@@ -173,17 +166,13 @@ app.include_router(performance_pay_history_router)
 app.include_router(performance_pay_template_router, prefix="/api/performance-pay-approval", tags=["绩效审批表模板"])
 print("[OK] 绩效工资审批路由已注册")
 
-# 注册模板导入测试路由
-app.include_router(template_import_test_router)
-print("[OK] 模板导入测试路由已注册")
-
 # 注册聚合查询路由
 app.include_router(aggregate_query_router)
 print("[OK] 聚合查询路由已注册")
 
-# 注册统一模板管理路由
-app.include_router(unified_template_router)
-print("[OK] 统一模板管理路由已注册")
+# 注册单位层级路由
+app.include_router(unit_hierarchy_router)
+print("[OK] 单位层级路由已注册")
 
 # 注册通用中间表框架路由（旧框架，保留兼容）
 from utils.intermediate_table_framework import register_intermediate_table, create_intermediate_table_routes

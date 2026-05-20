@@ -21,3 +21,4 @@ const tableName = computed(() => {
   height: 100%;
 }
 </style>
+

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模板预览测试</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      font-family: 'Microsoft YaHei', SimHei, sans-serif;
+      padding: 20px;
+    }
+    .template-preview {
+      overflow: auto;
+      max-height: 800px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    .template-table {
+      border-collapse: collapse;
+      min-width: 100%;
+    }
+    .template-cell {
+      border: 1px solid #000;
+      padding: 2px;
+      min-height: 20px;
+      position: relative;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #409eff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .btn:hover {
+      background: #66b1ff;
+    }
+    .info {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>模板预览测试</h1>
+  <button class="btn" onclick="loadPreview()">加载预览</button>
+  <div class="info" id="info"></div>
+  <div class="template-preview" id="preview-container"></div>
+
+  <script>
+    async function loadPreview() {
+      try {
+        const response = await axios.get('http://localhost:8001/api/universal-template/preview/tpl_bb2f5c61')
+        const metadata = response.data.数据.metadata
+        
+        document.getElementById('info').innerHTML = `
+          <strong>元数据信息：</strong><br>
+          文件名: ${metadata.filename}<br>
+          单元格数量: ${metadata.cells.length}<br>
+          样式数量: ${Object.keys(metadata.styles).length}<br>
+          合并单元格数量: ${metadata.merged_cells.length}<br>
+          最大行: ${metadata.dimensions.max_row}, 最大列: ${metadata.dimensions.max_column}
+        `
+        
+        renderTemplate(metadata)
+      } catch (error) {
+        console.error('加载失败:', error)
+        document.getElementById('info').innerHTML = `<strong>错误：</strong>${error.message}`
+      }
+    }
+
+    function renderTemplate(metadata) {
+      const { cells, styles, dimensions, merged_cells } = metadata
+      
+      const maxRow = dimensions.max_row || 20
+      const maxCol = dimensions.max_column || 10
+      
+      const mergedMap = new Map()
+      merged_cells.forEach(mc => {
+        for (let r = mc.r; r < mc.r + mc.rs; r++) {
+          for (let c = mc.c; c < mc.c + mc.cs; c++) {
+            if (r === mc.r && c === mc.c) {
+              mergedMap.set(`${r}-${c}`, { rs: mc.rs, cs: mc.cs, isMaster: true })
+            } else {
+              mergedMap.set(`${r}-${c}`, { isMaster: false })
+            }
+          }
+        }
+      })
+      
+      const cellData = new Map()
+      cells.forEach(cell => {
+        cellData.set(`${cell.r}-${cell.c}`, cell.v)
+      })
+      
+      const styleMap = new Map()
+      Object.keys(styles).forEach(key => {
+        const match = key.match(/^([A-Z]+)(\d+)$/)
+        if (match) {
+          const col = match[1].charCodeAt(0) - 'A'.charCodeAt(0)
+          const row = parseInt(match[2]) - 1
+          styleMap.set(`${row}-${col}`, styles[key])
+        }
+      })
+      
+      let html = '<table class="template-table">'
+      
+      for (let r = 0; r < maxRow; r++) {
+        const rowHeight = dimensions.rows?.[r + 1] || 20
+        html += `<tr style="height: ${rowHeight}px;">`
+        
+        for (let c = 0; c < maxCol; c++) {
+          const key = `${r}-${c}`
+          const mergedInfo = mergedMap.get(key)
+          const cellValue = cellData.get(key)
+          const style = styleMap.get(key)
+          const colWidth = dimensions.columns?.[String.fromCharCode('A'.charCodeAt(0) + c)] || 80
+          
+          if (mergedInfo && !mergedInfo.isMaster) continue
+          
+          let cellStyle = `width: ${colWidth}px;`
+          
+          if (style) {
+            if (style.font) {
+              if (style.font.name) cellStyle += ` font-family: ${style.font.name};`
+              if (style.font.size) cellStyle += ` font-size: ${style.font.size}pt;`
+              if (style.font.bold) cellStyle += ` font-weight: bold;`
+              if (style.font.italic) cellStyle += ` font-style: italic;`
+              if (style.font.color) cellStyle += ` color: #${style.font.color};`
+              if (style.font.strike) cellStyle += ` text-decoration: line-through;`
+            }
+            
+            if (style.fill) {
+              if (style.fill.fgColor) cellStyle += ` background-color: #${style.fill.fgColor};`
+            }
+            
+            if (style.alignment) {
+              if (style.alignment.horizontal) cellStyle += ` text-align: ${style.alignment.horizontal};`
+              if (style.alignment.vertical) cellStyle += ` vertical-align: ${style.alignment.vertical};`
+              if (style.alignment.wrapText) cellStyle += ` white-space: pre-wrap; word-wrap: break-word;`
+            }
+            
+            if (style.border) {
+              if (style.border.top) cellStyle += ` border-top: ${getBorderStyle(style.border.top)};`
+              if (style.border.bottom) cellStyle += ` border-bottom: ${getBorderStyle(style.border.bottom)};`
+              if (style.border.left) cellStyle += ` border-left: ${getBorderStyle(style.border.left)};`
+              if (style.border.right) cellStyle += ` border-right: ${getBorderStyle(style.border.right)};`
+            }
+          }
+          
+          const rowspan = mergedInfo?.rs || 1
+          const colspan = mergedInfo?.cs || 1
+          const value = cellValue?.m || cellValue?.v || ''

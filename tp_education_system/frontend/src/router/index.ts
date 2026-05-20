@@ -58,10 +58,10 @@ const router = createRouter({
         {
           path: "universal-template",
           name: "universalTemplate",
-          component: () => import("../views/system/UniversalTemplate.vue"),
+          component: () => import("../views/template/UniversalTemplateSystem.vue"),
           meta: {
-            title: "通用模板管理",
-            icon: "Document"
+            title: "通用模板系统",
+            icon: "Files"
           }
         },
         {
@@ -322,7 +322,7 @@ const router = createRouter({
       name: "checklistPushed",
       component: () => import("../views/checklist/PushedChecklistView.vue"),
       meta: {
-        title: "推送清单",
+        title: "待办工作项",
         icon: "Bell"
       }
     },
@@ -345,43 +345,6 @@ const router = createRouter({
       }
     },
     // 报表管理子模块路由
-    {
-      path: "/report/template-mgt",
-      name: "templateManagement",
-      component: () => import("../views/template-manager/index.vue"),
-      meta: {
-        title: "模板管理",
-        icon: "Document"
-      }
-    },
-    // 模板管理中心
-    {
-      path: "/report/template-center/design",
-      name: "templateDesign",
-      component: () => import("../views/template/TemplateDesign.vue"),
-      meta: {
-        title: "模板设计",
-        icon: "Edit"
-      }
-    },
-    {
-      path: "/report/template-center/library",
-      name: "templateLibrary",
-      component: () => import("../views/template/TemplateLibrary.vue"),
-      meta: {
-        title: "模板库",
-        icon: "Files"
-      }
-    },
-    {
-      path: "/report/template-center/call-management",
-      name: "templateCallManagement",
-      component: () => import("../views/template/TemplateCallManagement.vue"),
-      meta: {
-        title: "模板调用管理",
-        icon: "Connection"
-      }
-    },
     {
       path: "/report/retirement/estimate",
       name: "retirementEstimate",
@@ -409,117 +372,6 @@ const router = createRouter({
       meta: {
         title: "数据清理工具",
         icon: "Delete"
-      }
-    },
-    // 模板标记界面
-    {
-      path: "/template-marker/:id",
-      name: "templateMarker",
-      component: () => import("../components/TemplateMarker/index.vue"),
-      meta: {
-        title: "模板字段标记",
-        icon: "Edit"
-      }
-    },
-    // 字段映射配置界面
-    {
-      path: "/template-field-mapping/:id",
-      name: "templateFieldMapping",
-      component: () => import("../views/template-manager/FieldMapping.vue"),
-      meta: {
-        title: "字段映射配置",
-        icon: "Connection"
-      }
-    },
-    // 可编辑预览界面
-    {
-      path: "/template-preview/:id",
-      name: "templateEditablePreview",
-      component: () => import("../views/template-manager/EditablePreview.vue"),
-      meta: {
-        title: "模板预览编辑",
-        icon: "View"
-      }
-    },
-    // 中间表设计器
-    {
-      path: "/intermediate-table-designer/:tableName?",
-      name: "intermediateTableDesigner",
-      component: () => import("../views/template-manager/IntermediateTableDesigner.vue"),
-      meta: {
-        title: "中间表设计器",
-        icon: "Grid"
-      }
-    },
-    // Excel模板编辑器
-    {
-      path: "/excel-template-editor/:id",
-      name: "excelTemplateEditor",
-      component: () => import("../components/ExcelTemplateEditor/index.vue"),
-      meta: {
-        title: "Excel模板编辑",
-        icon: "Grid"
-      }
-    },
-    // PDF模板编辑器
-    {
-      path: "/pdf-template-editor/:id",
-      name: "pdfTemplateEditor",
-      component: () => import("../components/PDFTemplateEditor/index.vue"),
-      meta: {
-        title: "PDF模板编辑",
-        icon: "Document"
-      }
-    },
-    // A3模板编辑器（四区域）
-    {
-      path: "/a3-template-editor/:id",
-      name: "a3TemplateEditor",
-      component: () => import("../components/PDFTemplateEditor/A3RegionEditor.vue"),
-      meta: {
-        title: "A3模板编辑",
-        icon: "Document"
-      }
-    },
-    // HTML模板编辑器
-    {
-      path: "/html-template-editor/:id",
-      name: "htmlTemplateEditor",
-      component: () => import("../views/html-template-editor/index.vue"),
-      meta: {
-        title: "HTML模板编辑",
-        icon: "Document"
-      }
-    },
-    // 模板填报页面
-    {
-      path: "/template-fill/:id",
-      name: "templateFill",
-      component: () => import("../views/template-fill/index.vue"),
-      meta: {
-        title: "模板填报",
-        icon: "Edit"
-      }
-    },
-
-    // 测试导入模板功能
-    {
-      path: "/template-import-test",
-      name: "templateImportTest",
-      component: () => import("../views/template-import-test/index.vue"),
-      meta: {
-        title: "测试导入模板功能",
-        icon: "Upload"
-      }
-    },
-    // 文件上传测试
-    {
-      path: "/test-upload",
-      name: "testUpload",
-      component: () => import("../components/TestFileUpload.vue"),
-      meta: {
-        title: "文件上传测试",
-        icon: "Upload"
       }
     }
   ]

@@ -160,7 +160,7 @@ const loadTodoList = async () => {
   loading.value = true
   try {
     console.log('开始加载待办列表...')
-    const response = await fetch('/api/todo-work/list')
+    const response = await fetch('/api/todo-system/todo-list')
     console.log('待办列表API响应:', response.status)
     if (response.ok) {
       const result = await response.json()

@@ -523,12 +523,12 @@ def get_tags():
             WHERE biao_qian IS NOT NULL
             ORDER BY biao_qian
         """)
-        tags = [{"id": row[0], "name": row[1]} for row in cursor.fetchall()]
+        tags = [{"标签ID": row[0], "标签名称": row[1]} for row in cursor.fetchall()]
 
         cursor.close()
         conn.close()
 
-        return {"status": "success", "tags": tags}
+        return {"状态": "成功", "标签列表": tags}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

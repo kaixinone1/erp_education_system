@@ -280,3 +280,4 @@ export default {
   isNameConflict,
   generateUniqueName
 }
+

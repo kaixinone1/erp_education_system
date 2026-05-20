@@ -2,13 +2,13 @@
   "config_name": "岗位聘任信息",
   "display_name": "岗位聘任信息",
   "chinese_title": "岗位聘任信息",
-  "table_name": "information",
+  "table_name": "post_appointment_info",
   "table_type": "master",
   "parent_table": "",
   "field_configs": [
     {
       "sourceField": "身份证号码",
-      "targetField": "身份证号码",
+      "targetField": "id_card",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -26,7 +26,7 @@
     },
     {
       "sourceField": "姓名",
-      "targetField": "姓名",
+      "targetField": "name",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -44,7 +44,7 @@
     },
     {
       "sourceField": "原聘职务",
-      "targetField": "原聘职务",
+      "targetField": "job_title",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -62,7 +62,7 @@
     },
     {
       "sourceField": "现受聘岗位名称",
-      "targetField": "现受聘岗位名称",
+      "targetField": "post_1",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -73,14 +73,14 @@
       "defaultValue": "",
       "description": "",
       "confidence": "low",
-      "relation_type": "none",
-      "relation_table": "",
-      "relation_display_field": "name",
+      "relation_type": "to_dict",
+      "relation_table": "dict_dictionary_personal",
+      "relation_display_field": "post",
       "value_mapping": {}
     },
     {
       "sourceField": "现受聘岗位等级",
-      "targetField": "现受聘岗位等级",
+      "targetField": "post_level_1",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -91,16 +91,16 @@
       "defaultValue": "",
       "description": "",
       "confidence": "low",
-      "relation_type": "none",
-      "relation_table": "",
-      "relation_display_field": "name",
+      "relation_type": "to_dict",
+      "relation_table": "dict_grade_dictionary",
+      "relation_display_field": "post_level",
       "value_mapping": {}
     },
     {
       "sourceField": "现岗位聘用时间",
-      "targetField": "现岗位聘用时间",
-      "dataType": "VARCHAR",
-      "length": 255,
+      "targetField": "post_time",
+      "dataType": "DATE",
+      "length": "",
       "precision": "",
       "scale": "",
       "required": false,
@@ -116,7 +116,7 @@
     },
     {
       "sourceField": "学段",
-      "targetField": "学段",
+      "targetField": "xue_duan",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -134,7 +134,7 @@
     },
     {
       "sourceField": "是否已评未聘",
-      "targetField": "是否已评未聘",
+      "targetField": "shi_fou_yi_ping_wei_pin",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -152,7 +152,7 @@
     },
     {
       "sourceField": "已评职称",
-      "targetField": "已评职称",
+      "targetField": "professional_title",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -170,9 +170,9 @@
     },
     {
       "sourceField": "取得高一级职称时间",
-      "targetField": "取得高一级职称时间",
-      "dataType": "VARCHAR",
-      "length": 255,
+      "targetField": "professional_title_time",
+      "dataType": "DATE",
+      "length": "",
       "precision": "",
       "scale": "",
       "required": false,
@@ -188,7 +188,7 @@
     },
     {
       "sourceField": "批准文号",
-      "targetField": "批准文号",
+      "targetField": "pi_zhun_wen_hao",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -206,7 +206,7 @@
     },
     {
       "sourceField": "是否占岗",
-      "targetField": "是否占岗",
+      "targetField": "is_occupying_post",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -224,9 +224,9 @@
     },
     {
       "sourceField": "备注",
-      "targetField": "备注",
-      "dataType": "VARCHAR",
-      "length": 255,
+      "targetField": "remark",
+      "dataType": "TEXT",
+      "length": "",
       "precision": "",
       "scale": "",
       "required": false,
@@ -242,5 +242,5 @@
     }
   ],
   "created_at": "2026-04-24T15:30:22.790578",
-  "updated_at": "2026-04-24T15:30:22.790578"
+  "updated_at": "2026-05-07T12:00:00.000000"
 }

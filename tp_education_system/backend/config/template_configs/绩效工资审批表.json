@@ -1,0 +1,90 @@
+{
+  "template_info": {
+    "name": "绩效工资审批表",
+    "file": "绩效工资审批表.xlsx",
+    "type": "绩效工资",
+    "description": "绩效工资审批表模板"
+  },
+  "data_sources": {
+    "primary": "performance_pay_approval",
+    "related": [],
+    "filters": []
+  },
+  "field_mappings": [
+    {
+      "template_field": "年月",
+      "source_field": "year_month",
+      "target_field": "年月",
+      "transform": null
+    },
+    {
+      "template_field": "姓名",
+      "source_field": "name",
+      "target_field": "姓名",
+      "transform": null
+    },
+    {
+      "template_field": "身份证号",
+      "source_field": "id_card",
+      "target_field": "身份证号",
+      "transform": null
+    },
+    {
+      "template_field": "所在单位",
+      "source_field": "unit",
+      "target_field": "所在单位",
+      "transform": null
+    },
+    {
+      "template_field": "岗位名称",
+      "source_field": "post",
+      "target_field": "岗位名称",
+      "transform": null
+    },
+    {
+      "template_field": "绩效工资",
+      "source_field": "performance_amount",
+      "target_field": "绩效工资",
+      "transform": "format_money"
+    },
+    {
+      "template_field": "补贴金额",
+      "source_field": "subsidy_amount",
+      "target_field": "补贴金额",
+      "transform": "format_money"
+    },
+    {
+      "template_field": "总金额",
+      "source_field": "total_amount",
+      "target_field": "总金额",
+      "transform": "format_money"
+    },
+    {
+      "template_field": "审批状态",
+      "source_field": "status",
+      "target_field": "审批状态",
+      "transform": null
+    }
+  ],
+  "calculations": [
+    {
+      "name": "审批人数",
+      "type": "count"
+    },
+    {
+      "name": "绩效工资总额",
+      "type": "sum",
+      "field": "performance_amount"
+    },
+    {
+      "name": "补贴总额",
+      "type": "sum",
+      "field": "subsidy_amount"
+    },
+    {
+      "name": "总金额",
+      "type": "sum",
+      "field": "total_amount"
+    }
+  ]
+}

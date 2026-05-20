@@ -122,64 +122,49 @@
                     :value="option.value"
                   />
                 </el-select>
-                <!-- 现受聘岗位名称列(post_2) - 显示为下拉菜单 -->
+                <!-- 现受聘岗位名称列(post_1) - 显示为下拉菜单（动态加载字典） -->
                 <el-select
-                  v-else-if="field.name === 'post_2' && (tableName === 'information' || tableName.value === 'information')"
+                  v-else-if="field.name === 'post_1' && tableName === 'post_appointment_info'"
                   :model-value="row[field.name]"
                   size="small"
                   style="width: 100%"
-                  @change="(val) => handlePostChange(row, 'post_2', val)"
+                  :disabled="isUpdating"
+                  @change="(val) => handlePostChange(row, 'post_1', val)"
                 >
-                  <el-option label="高级教师" value="高级教师" />
-                  <el-option label="一级教师" value="一级教师" />
-                  <el-option label="二级教师" value="二级教师" />
-                  <el-option label="三级教师" value="三级教师" />
+                  <el-option
+                    v-for="option in postNameOptions"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
                 </el-select>
-                <!-- 现受聘岗位等级列(post_level) - 显示为下拉菜单 -->
+                <!-- 现受聘岗位等级列(post_level_1) - 显示为下拉菜单（动态加载字典） -->
                 <el-select
-                  v-else-if="field.name === 'post_level' && (tableName === 'information' || tableName.value === 'information')"
+                  v-else-if="field.name === 'post_level_1' && tableName === 'post_appointment_info'"
                   :model-value="row[field.name]"
                   size="small"
                   style="width: 100%"
-                  @change="(val) => handlePostChange(row, 'post_level', val)"
+                  :disabled="isUpdating"
+                  @change="(val) => handlePostChange(row, 'post_level_1', val)"
                 >
-                  <el-option-group label="专技岗位">
-                    <el-option label="一级专技" value="一级专技" />
-                    <el-option label="二级专技" value="二级专技" />
-                    <el-option label="三级专技" value="三级专技" />
-                    <el-option label="四级专技" value="四级专技" />
-                    <el-option label="五级专技" value="五级专技" />
-                    <el-option label="六级专技" value="六级专技" />
-                    <el-option label="七级专技" value="七级专技" />
-                    <el-option label="八级专技" value="八级专技" />
-                    <el-option label="九级专技" value="九级专技" />
-                    <el-option label="十级专技" value="十级专技" />
-                    <el-option label="11级专技" value="11级专技" />
-                    <el-option label="12级专技" value="12级专技" />
-                    <el-option label="13级专技" value="13级专技" />
-                  </el-option-group>
-                  <el-option-group label="工勤岗位">
-                    <el-option label="高级技师" value="高级技师" />
-                    <el-option label="技师" value="技师" />
-                    <el-option label="高级工" value="高级工" />
-                    <el-option label="中级工" value="中级工" />
-                    <el-option label="初级工" value="初级工" />
-                    <el-option label="普工" value="普工" />
-                  </el-option-group>
-                  <el-option-group label="管理岗位">
-                    <el-option label="九级管理" value="九级管理" />
-                  </el-option-group>
+                  <el-option
+                    v-for="option in postLevelOptions"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
                 </el-select>
                 <!-- 现岗位聘用时间列(post_time) - 显示为日期选择器 -->
                 <el-date-picker
-                  v-else-if="field.name === 'post_time' && (tableName === 'information' || tableName.value === 'information')"
-                  :model-value="row[field.name]"
+                  v-else-if="field.name === 'post_time' && tableName === 'post_appointment_info'"
+                  :model-value="getPostTimeValue(row)"
                   size="small"
                   type="month"
                   value-format="YYYY.MM"
                   placeholder="选择月份"
                   style="width: 100%"
-                  @change="(val) => handlePostChange(row, 'post_time', val)"
+                  :disabled="isUpdating"
+                  @update:model-value="(val) => handlePostTimeChange(row, val)"
                 />
                 <!-- 通用字典关联显示 - 如果存在 {字段名}_name 则显示中文名称 -->
                 <span v-else-if="row[getDictAlias(field.name)]">
@@ -257,53 +242,37 @@
           :label="field.label || field.source_name || field.name"
           :prop="field.name"
         >
-          <!-- 现受聘岗位名称 - 下拉菜单 -->
+          <!-- 现受聘岗位名称 - 下拉菜单（动态加载字典） -->
           <el-select
-            v-if="field.name === 'post_2' && (tableName === 'information' || tableName.value === 'information')"
+            v-if="field.name === 'post_1' && tableName === 'post_appointment_info'"
             v-model="formData[field.name]"
             placeholder="选择现受聘岗位名称"
             style="width: 100%"
           >
-            <el-option label="高级教师" value="高级教师" />
-            <el-option label="一级教师" value="一级教师" />
-            <el-option label="二级教师" value="二级教师" />
-            <el-option label="三级教师" value="三级教师" />
+            <el-option
+              v-for="option in postNameOptions"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
           </el-select>
+          <!-- 现受聘岗位等级 - 下拉菜单（动态加载字典） -->
           <el-select
-            v-else-if="field.name === 'post_level' && (tableName === 'information' || tableName.value === 'information')"
+            v-else-if="field.name === 'post_level_1' && tableName === 'post_appointment_info'"
             v-model="formData[field.name]"
             placeholder="选择现受聘岗位等级"
             style="width: 100%"
           >
-            <el-option-group label="专技岗位">
-              <el-option label="一级专技" value="一级专技" />
-              <el-option label="二级专技" value="二级专技" />
-              <el-option label="三级专技" value="三级专技" />
-              <el-option label="四级专技" value="四级专技" />
-              <el-option label="五级专技" value="五级专技" />
-              <el-option label="六级专技" value="六级专技" />
-              <el-option label="七级专技" value="七级专技" />
-              <el-option label="八级专技" value="八级专技" />
-              <el-option label="九级专技" value="九级专技" />
-              <el-option label="十级专技" value="十级专技" />
-              <el-option label="11级专技" value="11级专技" />
-              <el-option label="12级专技" value="12级专技" />
-              <el-option label="13级专技" value="13级专技" />
-            </el-option-group>
-            <el-option-group label="工勤岗位">
-              <el-option label="高级技师" value="高级技师" />
-              <el-option label="技师" value="技师" />
-              <el-option label="高级工" value="高级工" />
-              <el-option label="中级工" value="中级工" />
-              <el-option label="初级工" value="初级工" />
-              <el-option label="普工" value="普工" />
-            </el-option-group>
-            <el-option-group label="管理岗位">
-              <el-option label="九级管理" value="九级管理" />
-            </el-option-group>
+            <el-option
+              v-for="option in postLevelOptions"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
           </el-select>
+          <!-- 现岗位聘用时间 - 日期选择器 -->
           <el-date-picker
-            v-else-if="field.name === 'post_time' && (tableName === 'information' || tableName.value === 'information')"
+            v-else-if="field.name === 'post_time' && tableName === 'post_appointment_info'"
             v-model="formData[field.name]"
             type="month"
             value-format="YYYY.MM"
@@ -424,7 +393,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Refresh, Search, Setting } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -546,8 +515,17 @@ const tableTitle = computed(() => {
 // 加载状态
 const loading = ref(false)
 
+// 防止重复触发的标志位
+const isUpdating = ref(false)
+
 // 任职状态选项（从字典动态加载）
 const statusOptions = ref<any[]>([])
+
+// 岗位名称选项（从字典动态加载）
+const postNameOptions = ref<any[]>([])
+
+// 岗位等级选项（从字典动态加载）
+const postLevelOptions = ref<any[]>([])
 
 // 表格数据
 const tableData = ref<any[]>([])
@@ -905,6 +883,48 @@ const loadStatusOptions = async () => {
       { label: '退休', value: '退休' },
       { label: '离职', value: '离职' }
     ]
+  }
+}
+
+// 加载岗位名称字典选项
+const loadPostNameOptions = async () => {
+  try {
+    // 从岗位名称字典加载选项
+    const response = await fetch('/api/data/dict_dictionary_personal')
+    if (response.ok) {
+      const result = await response.json()
+      if (result.data) {
+        postNameOptions.value = result.data.map((item: any) => ({
+          label: item.post,
+          value: String(item.id)  // 转换为字符串，确保类型一致
+        }))
+        console.log('加载岗位名称选项:', postNameOptions.value)
+      }
+    }
+  } catch (error) {
+    console.error('加载岗位名称字典失败:', error)
+    postNameOptions.value = []
+  }
+}
+
+// 加载岗位等级字典选项
+const loadPostLevelOptions = async () => {
+  try {
+    // 从岗位等级字典加载选项
+    const response = await fetch('/api/data/dict_grade_dictionary')
+    if (response.ok) {
+      const result = await response.json()
+      if (result.data) {
+        postLevelOptions.value = result.data.map((item: any) => ({
+          label: item.post_level,
+          value: String(item.id)  // 转换为字符串，确保类型一致
+        }))
+        console.log('加载岗位等级选项:', postLevelOptions.value)
+      }
+    }
+  } catch (error) {
+    console.error('加载岗位等级字典失败:', error)
+    postLevelOptions.value = []
   }
 }
 
@@ -1307,23 +1327,149 @@ const updateTeacherStatus = async (teacherId: number, teacherName: string, oldSt
   }
 }
 
+// 获取日期选择器应该显示的值
+const getPostTimeValue = (row: any) => {
+  // 返回当前行的实际值，不做任何修改
+  return row['post_time']
+}
+
+// 处理日期选择器的值变化（受控组件方式）
+const handlePostTimeChange = async (row: any, newValue: string) => {
+  // 如果正在更新，直接返回，防止重复触发
+  if (isUpdating.value) {
+    return
+  }
+
+  const oldValue = row['post_time']
+  
+  // 如果值没有变化，不处理
+  if (newValue === oldValue) {
+    return
+  }
+
+  const teacherName = row['name'] || row['姓名']
+  const recordId = row.id
+
+  console.log('日期变更:', { teacherName, oldValue, newValue })
+
+  // 立即设置更新标志位，防止重复触发
+  isUpdating.value = true
+
+  // 获取字段的中文标签
+  const fieldLabel = '现岗位聘用时间'
+
+  // 获取值的显示文本
+  const oldValueDisplay = oldValue || '空'
+  const newValueDisplay = newValue || '空'
+
+  try {
+    // 弹出确认对话框
+    await ElMessageBox.confirm(
+      `确定要将 ${teacherName} 的"${fieldLabel}"从 "${oldValueDisplay}" 变更为 "${newValueDisplay}" 吗？`,
+      '确认修改',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+
+    // 用户确认，保存到后端
+    const response = await fetch(`/api/data/post_appointment_info/${recordId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ post_time: newValue })
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      ElMessage.success('修改成功')
+      // 更新本地数据
+      row['post_time'] = newValue
+      // 重新加载数据
+      await loadData()
+      // 等待 DOM 更新完成
+      await nextTick()
+    } else {
+      const errorData = await response.json()
+      throw new Error(errorData.detail || '更新失败')
+    }
+  } catch (error: any) {
+    if (error !== 'cancel') {
+      console.error('日期变更失败:', error)
+      ElMessage.error(`修改失败: ${error.message || '未知错误'}`)
+      await loadData()
+      await nextTick()
+    }
+    // 如果用户取消，不做任何操作，日期选择器会自动恢复显示原值
+  } finally {
+    // 重置更新标志位，增加延迟时间确保所有操作完成
+    setTimeout(() => {
+      isUpdating.value = false
+    }, 1000)
+  }
+}
+
 // 处理岗位变更
 const handlePostChange = async (row: any, fieldName: string, newValue: string) => {
+  // 如果正在更新，直接返回，防止重复触发
+  if (isUpdating.value) {
+    return
+  }
+
+  // 立即设置更新标志位，防止日期选择器重复打开
+  isUpdating.value = true
+
   const oldValue = row[fieldName]
   const teacherName = row['name'] || row['姓名']
   const recordId = row.id
 
   console.log('岗位变更:', { teacherName, fieldName, oldValue, newValue })
 
-  if (newValue === oldValue) {
-    return
+  // 对于日期字段，处理null值
+  if (fieldName === 'post_time') {
+    if (!newValue && !oldValue) {
+      isUpdating.value = false
+      return
+    }
+    if (newValue === oldValue) {
+      isUpdating.value = false
+      return
+    }
+  } else {
+    // 对于其他字段，如果值没有变化，不处理
+    if (newValue === oldValue) {
+      isUpdating.value = false
+      return
+    }
+  }
+
+  // 获取字段的中文标签
+  const field = tableSchema.value?.fields?.find((f: any) => f.name === fieldName)
+  const fieldLabel = field?.label || fieldName
+
+  // 获取值的显示文本
+  let oldValueDisplay = oldValue || '空'
+  let newValueDisplay = newValue || '空'
+
+  // 如果是字典字段，获取对应的文本值
+  if (fieldName === 'post_1') {
+    const oldOption = postNameOptions.value.find((opt: any) => opt.value === oldValue)
+    const newOption = postNameOptions.value.find((opt: any) => opt.value === newValue)
+    oldValueDisplay = oldOption?.label || oldValue || '空'
+    newValueDisplay = newOption?.label || newValue || '空'
+  } else if (fieldName === 'post_level_1') {
+    const oldOption = postLevelOptions.value.find((opt: any) => opt.value === oldValue)
+    const newOption = postLevelOptions.value.find((opt: any) => opt.value === newValue)
+    oldValueDisplay = oldOption?.label || oldValue || '空'
+    newValueDisplay = newOption?.label || newValue || '空'
   }
 
   setTimeout(async () => {
     try {
       await ElMessageBox.confirm(
-        `确定要将 ${teacherName} 的"${fieldName}"从 "${oldValue}" 变更为 "${newValue}" 吗？`,
-        '确认岗位变更',
+        `确定要将 ${teacherName} 的"${fieldLabel}"从 "${oldValueDisplay}" 变更为 "${newValueDisplay}" 吗？`,
+        '确认修改',
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -1331,7 +1477,7 @@ const handlePostChange = async (row: any, fieldName: string, newValue: string) =
         }
       )
 
-      const response = await fetch(`/api/data/information/${recordId}`, {
+      const response = await fetch(`/api/data/post_appointment_info/${recordId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [fieldName]: newValue })
@@ -1339,8 +1485,10 @@ const handlePostChange = async (row: any, fieldName: string, newValue: string) =
 
       if (response.ok) {
         const result = await response.json()
-        ElMessage.success('岗位更新成功')
-        loadData()
+        ElMessage.success('修改成功')
+        await loadData()
+        // 等待 DOM 更新完成
+        await nextTick()
       } else {
         const errorData = await response.json()
         throw new Error(errorData.detail || '更新失败')
@@ -1348,9 +1496,16 @@ const handlePostChange = async (row: any, fieldName: string, newValue: string) =
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('岗位变更失败:', error)
-        ElMessage.error(`岗位变更失败: ${error.message || '未知错误'}`)
-        loadData()
+        ElMessage.error(`修改失败: ${error.message || '未知错误'}`)
+        await loadData()
+        // 等待 DOM 更新完成
+        await nextTick()
       }
+    } finally {
+      // 重置更新标志位，增加延迟时间确保所有操作完成
+      setTimeout(() => {
+        isUpdating.value = false
+      }, 1000)
     }
   }, 100)
 }
@@ -1407,6 +1562,8 @@ onMounted(async () => {
   await loadTableSchema()  // 等待表结构加载完成
   loadNodeTitle()  // 加载节点中文名
   await loadStatusOptions()  // 加载任职状态字典
+  await loadPostNameOptions()  // 加载岗位名称字典
+  await loadPostLevelOptions()  // 加载岗位等级字典
   await loadData()  // 然后加载数据
   
   // 检查是否有预填充参数（从清单跳转过来）
@@ -1546,3 +1703,4 @@ const highlightTeacherRow = (teacherId?: string, teacherName?: string) => {
   margin-top: 5px;
 }
 </style>
+

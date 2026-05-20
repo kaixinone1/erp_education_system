@@ -1,0 +1,72 @@
+{
+  "template_id": "test_template",
+  "template_name": "职工退休呈报表",
+  "page_setup": {
+    "paper_size": "A4",
+    "orientation": "portrait",
+    "margins": {
+      "top": 72,
+      "right": 54,
+      "bottom": 72,
+      "left": 54
+    }
+  },
+  "column_widths": [
+    60,
+    100,
+    100
+  ],
+  "rows": [
+    {
+      "row_number": 1,
+      "height": 27.0,
+      "cells": [
+        {
+          "column_number": 1,
+          "text": "职工退休呈报表",
+          "style": {
+            "font": {
+              "bold": true,
+              "size": 16
+            }
+          }
+        },
+        {
+          "column_number": 2,
+          "text": ""
+        },
+        {
+          "column_number": 3,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "row_number": 2,
+      "height": 20.0,
+      "cells": [
+        {
+          "column_number": 1,
+          "text": "姓名："
+        },
+        {
+          "column_number": 2,
+          "text": ""
+        },
+        {
+          "column_number": 3,
+          "text": ""
+        }
+      ]
+    }
+  ],
+  "merged_cells": [
+    {
+      "start_row": 1,
+      "start_col": 1,
+      "end_row": 1,
+      "end_col": 3
+    }
+  ],
+  "field_mappings": {}
+}

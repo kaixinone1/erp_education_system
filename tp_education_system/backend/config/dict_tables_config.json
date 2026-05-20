@@ -1,0 +1,81 @@
+{
+  "dict_tables": [
+    {
+      "table_name": "dict_dictionary",
+      "chinese_name": "任职状态字典",
+      "description": "教师任职状态字典表",
+      "value_field": "employment_status",
+      "label_field": "employment_status"
+    },
+    {
+      "table_name": "dict_dictionary_personal",
+      "chinese_name": "岗位名称字典",
+      "description": "教师岗位名称字典表",
+      "value_field": "post",
+      "label_field": "post"
+    },
+    {
+      "table_name": "dict_education_level_dictionary",
+      "chinese_name": "学历字典",
+      "description": "学历层次字典表",
+      "value_field": "education",
+      "label_field": "education"
+    },
+    {
+      "table_name": "dict_education_type_dictionary",
+      "chinese_name": "学历类型字典",
+      "description": "学历类型字典表",
+      "value_field": "education_type",
+      "label_field": "education_type"
+    },
+    {
+      "table_name": "dict_grade_dictionary",
+      "chinese_name": "岗位级别字典",
+      "description": "岗位级别字典表",
+      "value_field": "post_level",
+      "label_field": "post_level"
+    },
+    {
+      "table_name": "dict_personal_identity_dictionary",
+      "chinese_name": "个人身份字典",
+      "description": "个人身份字典表",
+      "value_field": "ge_ren_shen_fen",
+      "label_field": "ge_ren_shen_fen"
+    },
+    {
+      "table_name": "dict_salary_dictionary",
+      "chinese_name": "工资标准字典",
+      "description": "工资标准字典表",
+      "value_field": "post_1",
+      "label_field": "post_1"
+    },
+    {
+      "table_name": "dict_subsidy_dictionary",
+      "chinese_name": "补贴标准字典",
+      "description": "补贴标准字典表",
+      "value_field": "subsidy_1",
+      "label_field": "subsidy_1"
+    },
+    {
+      "table_name": "dict_teacher_dictionary",
+      "chinese_name": "教师资格字典",
+      "description": "教师资格类型字典表",
+      "value_field": "category",
+      "label_field": "category"
+    },
+    {
+      "table_name": "dict_unit_dictionary",
+      "chinese_name": "单位字典",
+      "description": "学校单位字典表",
+      "value_field": "unit",
+      "label_field": "unit"
+    },
+    {
+      "table_name": "personal_dict_dictionary",
+      "chinese_name": "个人标签字典",
+      "description": "教师个人标签字典表",
+      "value_field": "biao_qian",
+      "label_field": "biao_qian"
+    }
+  ]
+}

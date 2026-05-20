@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from services.validation_service import ValidationService
 from services.import_service import ImportService
 from services.universal_import_service_v3 import UniversalImportServiceV3
+from services.mapping_optimizer import mapping_optimizer
 
 # 导入元数据引擎
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
@@ -825,3 +826,106 @@ async def export_error_data(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"导出错误数据失败: {str(e)}")
+
+
+# ==================== 映射优化相关API ====================
+
+@router.post("/optimize-table-name")
+async def optimize_table_name(
+    chinese_name: str = Body(...)
+):
+    """
+    优化表名映射
+    使用映射优化器生成高质量的英文表名
+    """
+    try:
+        english_name, is_optimized = mapping_optimizer.optimize_table_name(chinese_name)
+        
+        return {
+            "chinese_name": chinese_name,
+            "english_name": english_name,
+            "is_optimized": is_optimized,
+            "suggestions": mapping_optimizer.get_translation_suggestions(chinese_name)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"表名优化失败: {str(e)}")
+
+
+@router.post("/optimize-field-names")
+async def optimize_field_names(
+    field_configs: List[Dict[str, Any]] = Body(...)
+):
+    """
+    批量优化字段名映射
+    返回优化后的字段配置和需要人工处理的字段列表
+    """
+    try:
+        processed_configs, pending_fields = mapping_optimizer.process_field_configs(field_configs)
+        
+        return {
+            "processed_configs": processed_configs,
+            "pending_fields": pending_fields,
+            "total_processed": len(processed_configs),
+            "pending_count": len(pending_fields)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"字段名优化失败: {str(e)}")
+
+
+@router.post("/validate-mapping-quality")
+async def validate_mapping_quality(
+    chinese_name: str = Body(...),
+    english_name: str = Body(...)
+):
+    """
+    验证映射质量
+    检查英文字段名是否有意义、符合命名规范
+    """
+    try:
+        is_valid, message = mapping_optimizer.validate_mapping_quality(chinese_name, english_name)
+        
+        return {
+            "chinese_name": chinese_name,
+            "english_name": english_name,
+            "is_valid": is_valid,
+            "message": message
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"映射质量验证失败: {str(e)}")
+
+
+@router.get("/pending-fields-report")
+async def get_pending_fields_report():
+    """
+    获取需要人工处理的字段报告
+    返回现有映射中无意义的表名和字段名映射
+    """
+    try:
+        report = mapping_optimizer.get_pending_fields_report()
+        
+        return {
+            "total_pending": report["total_pending"],
+            "pending_fields": report["pending_fields"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"获取待处理字段报告失败: {str(e)}")
+
+
+@router.post("/get-translation-suggestions")
+async def get_translation_suggestions(
+    chinese_name: str = Body(...)
+):
+    """
+    获取翻译建议
+    为中文字段名提供多个翻译选项供用户选择
+    """
+    try:
+        suggestions = mapping_optimizer.get_translation_suggestions(chinese_name)
+        
+        return {
+            "chinese_name": chinese_name,
+            "suggestions": suggestions,
+            "total_suggestions": len(suggestions)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"获取翻译建议失败: {str(e)}")

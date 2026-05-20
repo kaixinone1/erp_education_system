@@ -218,7 +218,7 @@ const canProceed = computed(() => {
 // 加载导航数据
 const loadNavigationData = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/navigation-admin/tree')
+    const response = await fetch('/api/navigation-admin/tree')
     if (response.ok) {
       const data = await response.json()
       navigationModules.value = data.modules || []
@@ -256,7 +256,7 @@ const parseFile = async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
     
-    const response = await fetch('http://127.0.0.1:8000/api/import/parse-file?preview_only=false', {
+    const response = await fetch('/api/import/parse-file?preview_only=false', {
       method: 'POST',
       body: formData
     })
@@ -312,7 +312,7 @@ const extractChineseTitle = (fileName: string): string => {
 // 获取英文表名
 const fetchEnglishTableName = async (chineseTitle: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/import/translate-table-name', {
+    const response = await fetch('/api/import/translate-table-name', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -445,3 +445,4 @@ onMounted(() => {
   border-top: 1px solid #ebeef5;
 }
 </style>
+

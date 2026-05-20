@@ -80,7 +80,7 @@
     },
     {
       "sourceField": "证书资格种类",
-      "targetField": "证书资格种类",
+      "targetField": "certificate_type",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -98,7 +98,7 @@
     },
     {
       "sourceField": "学段学科",
-      "targetField": "学段学科",
+      "targetField": "education_stage_subject",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -116,7 +116,7 @@
     },
     {
       "sourceField": "学科",
-      "targetField": "学科",
+      "targetField": "subject",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -134,7 +134,7 @@
     },
     {
       "sourceField": "发证机关",
-      "targetField": "发证机关",
+      "targetField": "issuing_authority",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

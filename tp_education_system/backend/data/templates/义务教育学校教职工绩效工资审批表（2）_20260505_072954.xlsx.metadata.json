@@ -1,0 +1,5074 @@
+{
+  "sheet_info": {
+    "sheet_name": "Sheet1",
+    "total_rows": 31,
+    "total_cols": 6
+  },
+  "page_setup": {
+    "paper_size": 9,
+    "orientation": "portrait",
+    "margins": {
+      "top": 1.0,
+      "right": 0.75,
+      "bottom": 1.0,
+      "left": 0.75
+    }
+  },
+  "dimensions": {
+    "row_heights": {
+      "0": 27.0,
+      "1": 25.0,
+      "2": 25.0,
+      "3": 25.0,
+      "4": 25.0,
+      "5": 25.0,
+      "6": 25.0,
+      "7": 25.0,
+      "8": 25.0,
+      "9": 25.0,
+      "10": 25.0,
+      "11": 25.0,
+      "12": 25.0,
+      "13": 25.0,
+      "14": 25.0,
+      "15": 25.0,
+      "16": 25.0,
+      "17": 25.0,
+      "18": 25.0,
+      "19": 25.0,
+      "20": 25.0,
+      "21": 25.0,
+      "22": 25.0,
+      "23": 25.0,
+      "24": 37.0,
+      "25": 37.0,
+      "26": 36.0,
+      "27": 25.0,
+      "28": 25.0,
+      "29": 25.0,
+      "30": 130.0
+    },
+    "col_widths": {
+      "0": 106.1454545454548,
+      "1": 58.67272727272726,
+      "2": 100.10000000000001,
+      "3": 71.9090909090911,
+      "4": 46.77272727272726,
+      "5": 422.9272727272726
+    }
+  },
+  "merge_info": [
+    {
+      "row": 18,
+      "col": 5,
+      "type": "vertical",
+      "rowspan": 12,
+      "colspan": 1
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 2
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 4
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "type": "vertical",
+      "rowspan": 7,
+      "colspan": 1
+    },
+    {
+      "row": 30,
+      "col": 0,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 6
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "type": "vertical",
+      "rowspan": 7,
+      "colspan": 1
+    },
+    {
+      "row": 18,
+      "col": 4,
+      "type": "vertical",
+      "rowspan": 12,
+      "colspan": 1
+    },
+    {
+      "row": 15,
+      "col": 0,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 4
+    },
+    {
+      "row": 9,
+      "col": 0,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 4
+    },
+    {
+      "row": 9,
+      "col": 4,
+      "type": "vertical",
+      "rowspan": 9,
+      "colspan": 1
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 3
+    },
+    {
+      "row": 9,
+      "col": 5,
+      "type": "vertical",
+      "rowspan": 9,
+      "colspan": 1
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "type": "horizontal",
+      "rowspan": 1,
+      "colspan": 2
+    }
+  ],
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "value": "2026-05-28 00:00:00",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 2,
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "right",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "value": "义务教育学校教职工绩效工资审批表",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "value": "填报单位：",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "value": "太平镇中心学校",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 3,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "value": "填报时间:                                    单位：人/元",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 2,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": null,
+        "left": null,
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "value": "项目",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "value": "人数",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "value": "标准",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "value": "小计",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "value": "呈报单位意见",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 7,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 255
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "value": "",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 7,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": null,
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "value": "行政管理人员",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 4,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "value": "1、副处级",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "value": "2、正科级",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 5,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 6,
+      "col": 0,
+      "value": "3、副科级",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 6,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 6,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 6,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 7,
+      "col": 0,
+      "value": "4、科员级",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 7,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 7,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 7,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 8,
+      "col": 0,
+      "value": "5、办事员级",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 8,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 8,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 8,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 9,
+      "col": 0,
+      "value": "专业技术人员",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 4,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 9,
+      "col": 4,
+      "value": "教育局意见",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 9,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 255
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 9,
+      "col": 5,
+      "value": "",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 9,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": null,
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 10,
+      "col": 0,
+      "value": "1、正高级",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 10,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 10,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 10,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 11,
+      "col": 0,
+      "value": "2、高级教师",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 11,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 11,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 11,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 12,
+      "col": 0,
+      "value": "3、一级教师",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 12,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 12,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 12,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 13,
+      "col": 0,
+      "value": "4、二级教师",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 13,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 13,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 13,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 14,
+      "col": 0,
+      "value": "5、三级教师",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 14,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 14,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 14,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 15,
+      "col": 0,
+      "value": "工人",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 4,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 16,
+      "col": 0,
+      "value": "1、高级技师",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 16,
+      "col": 1,
+      "value": "0",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 16,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 16,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 17,
+      "col": 0,
+      "value": "2、技师",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 17,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 17,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 17,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 18,
+      "col": 0,
+      "value": "3、高级工",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 18,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 18,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 18,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 18,
+      "col": 4,
+      "value": "人事部门意见",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 12,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 255
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 18,
+      "col": 5,
+      "value": "",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 12,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": null,
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 19,
+      "col": 0,
+      "value": "4、中级工",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 19,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 19,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 19,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 20,
+      "col": 0,
+      "value": "5、初级工",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 20,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 20,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 20,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 21,
+      "col": 0,
+      "value": "6、普工",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 21,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 21,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 21,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 22,
+      "col": 0,
+      "value": "绩效工资合计",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 22,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 22,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 22,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 23,
+      "col": 0,
+      "value": "乡镇补贴合计",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": null,
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 23,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": null,
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 23,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": null,
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 23,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": null,
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 24,
+      "col": 0,
+      "value": "岗位设置\n遗留问题",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 24,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 24,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 24,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 25,
+      "col": 0,
+      "value": "岗位设置\n遗留问题",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 25,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 25,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 25,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 26,
+      "col": 0,
+      "value": "岗位设置遗留问题合计",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 26,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 26,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 26,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 27,
+      "col": 0,
+      "value": "退休干部",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 27,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 27,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 27,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": null,
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 28,
+      "col": 0,
+      "value": "退休工人",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 28,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 28,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 28,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "thin",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 29,
+      "col": 0,
+      "value": "离休干部",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 29,
+      "col": 1,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 29,
+      "col": 2,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": {
+          "style": "thin",
+          "color": null
+        }
+      },
+      "fill": null
+    },
+    {
+      "row": 29,
+      "col": 3,
+      "value": "",
+      "is_merged": false,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 1,
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "thin",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "thin",
+          "color": null
+        },
+        "right": null
+      },
+      "fill": null
+    },
+    {
+      "row": 30,
+      "col": 0,
+      "value": "\n备注：\n",
+      "is_merged": true,
+      "is_master": true,
+      "rowspan": 1,
+      "colspan": 6,
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": false,
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "top",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "style": "medium",
+          "color": null
+        },
+        "bottom": {
+          "style": "medium",
+          "color": null
+        },
+        "left": {
+          "style": "medium",
+          "color": null
+        },
+        "right": {
+          "style": "medium",
+          "color": null
+        }
+      },
+      "fill": null
+    }
+  ],
+  "extract_time": "2026-05-05T07:29:54.325689"
+}

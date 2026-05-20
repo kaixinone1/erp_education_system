@@ -1,0 +1,6331 @@
+{
+  "sheet_name": "Sheet1",
+  "max_row": 31,
+  "max_col": 6,
+  "row_heights": {
+    "0": 27.0,
+    "1": 25.0,
+    "2": 25.0,
+    "3": 25.0,
+    "4": 25.0,
+    "5": 25.0,
+    "6": 25.0,
+    "7": 25.0,
+    "8": 25.0,
+    "9": 25.0,
+    "10": 25.0,
+    "11": 25.0,
+    "12": 25.0,
+    "13": 25.0,
+    "14": 25.0,
+    "15": 25.0,
+    "16": 25.0,
+    "17": 25.0,
+    "18": 25.0,
+    "19": 25.0,
+    "20": 25.0,
+    "21": 25.0,
+    "22": 25.0,
+    "23": 25.0,
+    "24": 37.0,
+    "25": 37.0,
+    "26": 36.0,
+    "27": 25.0,
+    "28": 25.0,
+    "29": 25.0,
+    "30": 130.0
+  },
+  "col_widths": {
+    "0": 15.1636363636364,
+    "1": 8.38181818181818,
+    "2": 14.3,
+    "3": 10.2727272727273,
+    "4": 6.68181818181818,
+    "5": 60.4181818181818
+  },
+  "page_setup": {
+    "margins": {
+      "top": 1.0,
+      "right": 0.75,
+      "bottom": 1.0,
+      "left": 0.75,
+      "header": 0.5,
+      "footer": 0.5
+    },
+    "paper_size": 9,
+    "orientation": "portrait",
+    "fit_to_page": false,
+    "fit_to_width": 1,
+    "fit_to_height": 1
+  },
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:16.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "value": "2026-05-28 00:00:00",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 2,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "right",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:16.0pt;font-weight:bold;text-align:right;vertical-align:middle"
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "value": "义务教育学校教职工绩效工资审批表",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:16.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:16.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 16.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:16.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "value": "填报单位：",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "value": "太平镇中心学校",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 3,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "value": "填报时间:                                    单位：人/元",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 2,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "value": "项目",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "value": "人数",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "value": "标准",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "value": "小计",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "value": "呈报单位意见",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 7,
+        "colspan": 1,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 255
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "value": "",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 7,
+        "colspan": 1,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "value": "行政管理人员",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 4,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "value": "1、副处级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "value": "2、正科级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 5,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 6,
+      "col": 0,
+      "value": "3、副科级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 6,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 6,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 6,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 7,
+      "col": 0,
+      "value": "4、科员级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 7,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 7,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 7,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 8,
+      "col": 0,
+      "value": "5、办事员级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 8,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 8,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 8,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 9,
+      "col": 0,
+      "value": "专业技术人员",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 4,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 9,
+      "col": 4,
+      "value": "教育局意见",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 9,
+        "colspan": 1,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 255
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 9,
+      "col": 5,
+      "value": "",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 9,
+        "colspan": 1,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 10,
+      "col": 0,
+      "value": "1、正高级",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 10,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 10,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 10,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 10.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:10.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 11,
+      "col": 0,
+      "value": "2、高级教师",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 11,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 11,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 11,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 12,
+      "col": 0,
+      "value": "3、一级教师",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 12,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 12,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 12,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 13,
+      "col": 0,
+      "value": "4、二级教师",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 13,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 13,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 13,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 14,
+      "col": 0,
+      "value": "5、三级教师",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 14,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 14,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 14,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 15,
+      "col": 0,
+      "value": "工人",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 4,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 16,
+      "col": 0,
+      "value": "1、高级技师",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 16,
+      "col": 1,
+      "value": "0",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 16,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 16,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 17,
+      "col": 0,
+      "value": "2、技师",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 17,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 17,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 17,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 18,
+      "col": 0,
+      "value": "3、高级工",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 18,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 18,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 18,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 18,
+      "col": 4,
+      "value": "人事部门意见",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 12,
+        "colspan": 1,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 255
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 18,
+      "col": 5,
+      "value": "",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 12,
+        "colspan": 1,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": false
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 19,
+      "col": 0,
+      "value": "4、中级工",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 19,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 19,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 19,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 20,
+      "col": 0,
+      "value": "5、初级工",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 20,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 20,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 20,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 21,
+      "col": 0,
+      "value": "6、普工",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 21,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 21,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": "#FF000000"
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;color:#FF000000;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 21,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 22,
+      "col": 0,
+      "value": "绩效工资合计",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 22,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 22,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 22,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 23,
+      "col": 0,
+      "value": "乡镇补贴合计",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 23,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 23,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 23,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": false
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 24,
+      "col": 0,
+      "value": "岗位设置\n遗留问题",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 24,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 24,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 24,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 25,
+      "col": 0,
+      "value": "岗位设置\n遗留问题",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 25,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 25,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 25,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 26,
+      "col": 0,
+      "value": "岗位设置遗留问题合计",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 26,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 26,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 26,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 27,
+      "col": 0,
+      "value": "退休干部",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 27,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 27,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 27,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": false
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 28,
+      "col": 0,
+      "value": "退休工人",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 28,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 28,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 28,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 29,
+      "col": 0,
+      "value": "离休干部",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:left;vertical-align:middle"
+    },
+    {
+      "row": 29,
+      "col": 1,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 29,
+      "col": 2,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "center",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 29,
+      "col": 3,
+      "value": "",
+      "merge": {
+        "is_merged": false,
+        "rowspan": 1,
+        "colspan": 1,
+        "is_master": false
+      },
+      "font": {
+        "name": "宋体",
+        "size": 11.0,
+        "bold": true,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "general",
+        "vertical": "center",
+        "wrap_text": false,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "细线",
+          "color": null
+        },
+        "right": {
+          "has_border": false
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:11.0pt;font-weight:bold;text-align:center;vertical-align:middle"
+    },
+    {
+      "row": 30,
+      "col": 0,
+      "value": "\n备注：\n",
+      "merge": {
+        "is_merged": true,
+        "rowspan": 1,
+        "colspan": 6,
+        "is_master": true
+      },
+      "font": {
+        "name": "宋体",
+        "size": 12.0,
+        "bold": false,
+        "italic": false,
+        "underline": "none",
+        "strike": false,
+        "color": null
+      },
+      "alignment": {
+        "horizontal": "left",
+        "vertical": "top",
+        "wrap_text": true,
+        "text_rotation": 0
+      },
+      "border": {
+        "top": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "bottom": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "left": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        },
+        "right": {
+          "has_border": true,
+          "style": "中等",
+          "color": null
+        }
+      },
+      "fill": {
+        "has_fill": false
+      },
+      "class": "data",
+      "no_border": false,
+      "style": "font-family:'宋体',SimSun,serif;font-size:12.0pt;text-align:left;vertical-align:top"
+    }
+  ]
+}

@@ -6,6 +6,8 @@ import os
 import re
 from typing import Dict, List, Optional, Any
 from datetime import datetime
+from core.translation_service import translation_service
+from core.pinyin_service import pinyin_service
 
 # 核心实体词典 - 定义数据主体
 CORE_ENTITY_DICT = {
@@ -20,6 +22,8 @@ CORE_ENTITY_DICT = {
     "学历": "education",
     "职称": "title",
     "职务": "position",
+    "岗位": "post",
+    "聘任": "appointment",
     "资格证": "certificate",
     "单位": "unit",
     "身份证": "id_card",
@@ -160,10 +164,12 @@ class MetadataEngine:
         self.config_dir = config_dir
         self.field_mappings_file = os.path.join(config_dir, 'field_mappings.json')
         self.table_schemas_file = os.path.join(config_dir, 'table_schemas.json')
+        self.table_name_mappings_file = os.path.join(config_dir, 'table_name_mappings.json')
         
         # 加载配置
         self.field_mappings = self._load_field_mappings()
         self.table_schemas = self._load_table_schemas()
+        self.table_name_mappings = self._load_table_name_mappings()
     
     def _get_existing_tables_from_db(self) -> List[str]:
         """从数据库查询真实存在的表列表"""
@@ -224,6 +230,13 @@ class MetadataEngine:
         data = self._load_json(self.table_schemas_file)
         if not data:
             data = {"tables": {}}
+        return data
+    
+    def _load_table_name_mappings(self) -> dict:
+        """加载表名映射配置"""
+        data = self._load_json(self.table_name_mappings_file)
+        if not data:
+            data = {"mappings": {}, "reverse_mappings": {}}
         return data
     
     def save_configs(self):
@@ -336,6 +349,28 @@ class MetadataEngine:
         for match in matches:
             translated_parts.append(match['translation'])
 
+        # 如果词典匹配不完整，使用翻译服务或拼音转换
+        if not translated_parts or len(matched_positions) < len(cleaned_name):
+            # 1. 优先使用百度翻译API（如果已配置）
+            if translation_service.is_available():
+                print(f"词典匹配不完整，使用翻译服务翻译: {chinese_name}")
+                translation = translation_service.translate(chinese_name)
+                if translation:
+                    # 将翻译结果拆分为单词列表
+                    translated_parts = translation.split('_')
+                    print(f"翻译服务结果: {chinese_name} -> {translation}")
+                    return translated_parts
+            
+            # 2. 使用拼音转换作为后备方案
+            if pinyin_service.is_available():
+                print(f"使用拼音转换: {chinese_name}")
+                pinyin_result = pinyin_service.convert_to_pinyin(chinese_name)
+                if pinyin_result:
+                    # 将拼音结果拆分为单词列表
+                    translated_parts = pinyin_result.split('_')
+                    print(f"拼音转换结果: {chinese_name} -> {pinyin_result}")
+                    return translated_parts
+        
         # 如果没有匹配到任何内容，使用默认值
         if not translated_parts:
             translated_parts = ["data"]

@@ -14,7 +14,7 @@ export async function initTableNameManager() {
   
   try {
     // 从后端加载已有的表名映射
-    const response = await fetch('http://127.0.0.1:8000/api/import/translate-table-name', {
+    const response = await fetch('/api/import/translate-table-name', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chinese_name: '测试', module_name: '' })
@@ -43,7 +43,7 @@ export async function translateTableName(chineseName, moduleName = '') {
   }
   
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/import/translate-table-name', {
+    const response = await fetch('/api/import/translate-table-name', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -78,7 +78,7 @@ export async function translateTableName(chineseName, moduleName = '') {
  */
 export async function translateFieldNames(chineseFields, moduleName = '') {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/import/translate-field-names', {
+    const response = await fetch('/api/import/translate-field-names', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -154,3 +154,4 @@ export default {
   clearCache,
   getAllMappings
 }
+

@@ -1,0 +1,280 @@
+{
+  "template_meta": {
+    "template_id": "performance_pay_approval",
+    "template_name": "绩效工资审批表",
+    "version": "1.0",
+    "description": "义务教育学校教职工绩效工资审批表",
+    "category": "工资管理"
+  },
+  
+  "workflow": {
+    "steps": [
+      {
+        "step_id": "tag_filter",
+        "step_name": "标签筛选",
+        "step_type": "tag_filter",
+        "required": true,
+        "order": 1,
+        "config": {
+          "default_tags": ["绩效工资"],
+          "allow_custom": true,
+          "logic": "AND",
+          "tips": [
+            "标签筛选将限定统计范围",
+            "选择'全部人员'：统计所有教师，不进行标签筛选",
+            "选择具体标签：只统计有这些标签的教师",
+            "OR逻辑：满足任一标签即可",
+            "AND逻辑：必须同时满足所有标签"
+          ]
+        }
+      },
+      {
+        "step_id": "data_preview",
+        "step_name": "数据预览",
+        "step_type": "data_preview",
+        "required": true,
+        "order": 2,
+        "config": {
+          "preview_fields": ["post_1"],
+          "tips": [
+            "请确认岗位分布是否正确",
+            "岗位人数来源于岗位聘任信息表",
+            "如果人数不正确，请返回修改标签筛选"
+          ]
+        }
+      },
+      {
+        "step_id": "calculation",
+        "step_name": "统计计算",
+        "step_type": "calculation",
+        "required": true,
+        "order": 3,
+        "config": {
+          "tips": [
+            "系统已自动完成统计计算",
+            "人数：从岗位聘任信息表统计",
+            "标准：从绩效标准字典表查询",
+            "小计：人数 × 标准",
+            "合计：各岗位小计之和"
+          ]
+        }
+      },
+      {
+        "step_id": "confirmation",
+        "step_name": "结果确认",
+        "step_type": "confirmation",
+        "required": true,
+        "order": 4,
+        "config": {
+          "export_formats": ["json", "excel", "pdf"],
+          "backup_enabled": true,
+          "tips": [
+            "请确认统计结果",
+            "绩效人数合计：所有岗位人数之和",
+            "绩效工资合计：所有岗位小计之和",
+            "备注信息：从变化记录表自动生成",
+            "保存后将自动备份JSON、Excel、PDF"
+          ]
+        }
+      }
+    ]
+  },
+  
+  "data_sources": [
+    {
+      "source_id": "teacher_basic",
+      "source_name": "教师基础信息",
+      "source_type": "table",
+      "table_name": "teacher_basic_info",
+      "key_field": "id",
+      "fields": [
+        {"field_id": "id", "field_name": "ID", "field_type": "integer"},
+        {"field_id": "id_card", "field_name": "身份证号", "field_type": "string"},
+        {"field_id": "name", "field_name": "姓名", "field_type": "string"}
+      ]
+    },
+    {
+      "source_id": "post_info",
+      "source_name": "岗位聘任信息",
+      "source_type": "table",
+      "table_name": "post_appointment_info",
+      "key_field": "id_card",
+      "relation": {
+        "type": "left_join",
+        "with": "teacher_basic",
+        "on": "id_card"
+      },
+      "fields": [
+        {
+          "field_id": "post_1",
+          "field_name": "现受聘岗位名称",
+          "field_type": "string",
+          "has_dict": true,
+          "dict_table": "dict_dictionary_personal"
+        },
+        {
+          "field_id": "post_level_1",
+          "field_name": "现受聘岗位等级",
+          "field_type": "string",
+          "has_dict": true,
+          "dict_table": "dict_grade_dictionary"
+        }
+      ]
+    },
+    {
+      "source_id": "salary_dict",
+      "source_name": "绩效标准字典",
+      "source_type": "table",
+      "table_name": "dict_salary_dictionary",
+      "fields": [
+        {"field_id": "post_1", "field_name": "岗位名称", "field_type": "string"},
+        {"field_id": "month_performance_salary", "field_name": "月绩效工资标准", "field_type": "number"}
+      ]
+    },
+    {
+      "source_id": "tag_relations",
+      "source_name": "标签关系管理",
+      "source_type": "table",
+      "table_name": "employee_tag_relations",
+      "fields": [
+        {"field_id": "employee_id", "field_name": "教师ID", "field_type": "integer"},
+        {"field_id": "tag_id", "field_name": "标签ID", "field_type": "integer"}
+      ]
+    },
+    {
+      "source_id": "tag_dict",
+      "source_name": "标签字典",
+      "source_type": "table",
+      "table_name": "personal_dict_dictionary",
+      "fields": [
+        {"field_id": "id", "field_name": "标签ID", "field_type": "integer"},
+        {"field_id": "biao_qian", "field_name": "标签名称", "field_type": "string"}
+      ]
+    }
+  ],
+  
+  "field_mappings": [
+    {
+      "mapping_id": "fuchuji_count",
+      "target_field": "副处级人数",
+      "section": "行政管理人员",
+      "source_type": "statistic",
+      "source_config": {
+        "table": "post_appointment_info",
+        "field": "post_1",
+        "filter": {
+          "value": "副处级",
+          "tag_filter": true
+        },
+        "statistic_type": "count"
+      },
+      "display": {
+        "label": "副处级人数",
+        "unit": "人",
+        "width": 80
+      }
+    },
+    {
+      "mapping_id": "fuchuji_standard",
+      "target_field": "副处级标准",
+      "section": "行政管理人员",
+      "source_type": "query",
+      "source_config": {
+        "table": "dict_salary_dictionary",
+        "field": "month_performance_salary",
+        "filter": {
+          "post_1": "副处级"
+        }
+      },
+      "display": {
+        "label": "副处级标准",
+        "unit": "元",
+        "width": 100
+      }
+    },
+    {
+      "mapping_id": "fuchuji_subtotal",
+      "target_field": "副处级小计",
+      "section": "行政管理人员",
+      "source_type": "calculation",
+      "calculation": {
+        "formula": "fuchuji_count * fuchuji_standard",
+        "dependencies": ["fuchuji_count", "fuchuji_standard"]
+      },
+      "display": {
+        "label": "副处级小计",
+        "unit": "元",
+        "width": 120
+      }
+    },
+    {
+      "mapping_id": "total_count",
+      "target_field": "绩效人数合计",
+      "section": "人事部门意见",
+      "source_type": "aggregation",
+      "aggregation": {
+        "formula": "SUM",
+        "fields": [
+          "fuchuji_count", "zhengkeji_count", "fukeji_count",
+          "keyuanji_count", "banshiyuanji_count",
+          "zhenggaoji_count", "gaoji_count", "yiji_count",
+          "erji_count", "sanji_count",
+          "gaoji_jishi_count", "jishi_count", "gaojigong_count",
+          "zhongjigong_count", "chujigong_count", "pugong_count"
+        ]
+      },
+      "display": {
+        "label": "绩效人数合计",
+        "unit": "人",
+        "width": 100
+      }
+    },
+    {
+      "mapping_id": "total_amount",
+      "target_field": "绩效工资合计",
+      "section": "人事部门意见",
+      "source_type": "aggregation",
+      "aggregation": {
+        "formula": "SUM",
+        "fields": [
+          "fuchuji_subtotal", "zhengkeji_subtotal", "fukeji_subtotal",
+          "keyuanji_subtotal", "banshiyuanji_subtotal",
+          "zhenggaoji_subtotal", "gaoji_subtotal", "yiji_subtotal",
+          "erji_subtotal", "sanji_subtotal",
+          "gaoji_jishi_subtotal", "jishi_subtotal", "gaojigong_subtotal",
+          "zhongjigong_subtotal", "chujigong_subtotal", "pugong_subtotal"
+        ]
+      },
+      "display": {
+        "label": "绩效工资合计",
+        "unit": "元",
+        "width": 120
+      }
+    },
+    {
+      "mapping_id": "remarks",
+      "target_field": "备注",
+      "section": "人事部门意见",
+      "source_type": "complex_aggregation",
+      "complex_aggregation": {
+        "table": "performance_pay_remarks",
+        "group_by": "change_category",
+        "sub_group_by": "original_post",
+        "format": "{seq}.{label}{count}人：{names}",
+        "order": ["status_change", "position_change", "new_add"]
+      },
+      "display": {
+        "label": "备注",
+        "type": "textarea",
+        "rows": 10
+      }
+    }
+  ],
+  
+  "export": {
+    "formats": ["json", "excel", "pdf"],
+    "template_file": "performance_pay_approval_template.xlsx",
+    "backup_enabled": true,
+    "backup_path": "backups/performance_pay_approval"
+  }
+}

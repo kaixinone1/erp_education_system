@@ -472,3 +472,4 @@ watch(() => props.tableName, () => {
   overflow-x: auto;
 }
 </style>
+

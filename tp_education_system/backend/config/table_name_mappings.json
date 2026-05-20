@@ -146,17 +146,6 @@
         ]
       ]
     },
-    "学历字典": {
-      "english_name": "dict_education_dictionary",
-      "table_type": "dictionary",
-      "created_at": "2026-02-07T23:46:47.222029",
-      "field_signature": [
-        [
-          "学历类型",
-          "STRING"
-        ]
-      ]
-    },
     "学历类型字典": {
       "english_name": "dict_education_type_dictionary",
       "table_type": "dictionary",
@@ -457,65 +446,6 @@
         ]
       ]
     },
-    "岗位聘任信息": {
-      "english_name": "information",
-      "table_type": "master",
-      "created_at": "2026-04-24T15:30:22.786889",
-      "field_signature": [
-        [
-          "原聘职务",
-          "STRING"
-        ],
-        [
-          "取得高一级职称时间",
-          "STRING"
-        ],
-        [
-          "备注",
-          "STRING"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "学段",
-          "STRING"
-        ],
-        [
-          "已评职称",
-          "STRING"
-        ],
-        [
-          "批准文号",
-          "STRING"
-        ],
-        [
-          "是否占岗",
-          "STRING"
-        ],
-        [
-          "是否已评未聘",
-          "STRING"
-        ],
-        [
-          "现受聘岗位名称",
-          "STRING"
-        ],
-        [
-          "现受聘岗位等级",
-          "STRING"
-        ],
-        [
-          "现岗位聘用时间",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ]
-      ]
-    },
     "岗位设置遗留绩效统计表": {
       "english_name": "personal_statistics",
       "table_type": "master",
@@ -640,11 +570,60 @@
           "STRING"
         ]
       ]
+    },
+    "学校信息表": {
+      "english_name": "school_information_table",
+      "table_type": "master",
+      "created_at": "2026-05-05T19:48:37.421885",
+      "field_signature": [
+        [
+          "学校名称",
+          "STRING"
+        ],
+        [
+          "学校地址",
+          "STRING"
+        ],
+        [
+          "法人姓名",
+          "STRING"
+        ],
+        [
+          "统一社会信用代码",
+          "STRING"
+        ]
+      ]
+    },
+    "岗位名称字典": {
+      "english_name": "dict_dictionary_personal",
+      "table_type": "dictionary",
+      "created_at": "2026-05-07T11:15:18.890772",
+      "field_signature": [
+        [
+          "岗位名称",
+          "STRING"
+        ]
+      ]
+    },
+    "岗位等级字典": {
+      "english_name": "dict_grade_dictionary",
+      "table_type": "dictionary",
+      "created_at": "2026-05-07T11:17:35.094526",
+      "field_signature": [
+        [
+          "岗位等级",
+          "STRING"
+        ]
+      ]
+    },
+    "岗位聘任信息": {
+      "english_name": "post_appointment_info",
+      "table_type": "child",
+      "updated_at": "2026-05-08T08:05:18.906849"
     }
   },
   "reverse_mappings": {
     "teacher_basic_info": "教师基础信息",
-    "dict_education_dictionary": "学历字典",
     "dict_education_level_dictionary": "学历层次字典",
     "dict_education_type_dictionary": "学历类型字典",
     "teacher_education_record": "教师学历记录",
@@ -669,12 +648,15 @@
     "dict_salary_dictionary": "绩效工资标准字典",
     "dict_subsidy_dictionary": "乡镇补贴标准字典",
     "id_card": "身份证属性",
-    "information": "岗位聘任信息",
     "personal_statistics": "岗位设置遗留绩效统计表",
     "teacher_certificate_info": "教师资格证信息",
     "dict_teacher_dictionary": "教师资格字典",
     "retirement_info": "退休补充信息",
     "test_wage": "测试工资表",
-    "test_wage_fix": "测试工资表修复"
+    "test_wage_fix": "测试工资表修复",
+    "school_information_table": "学校信息表",
+    "dict_dictionary_personal": "岗位名称字典",
+    "dict_grade_dictionary": "岗位等级字典",
+    "post_appointment_info": "岗位聘任信息"
   }
 }

@@ -250,7 +250,7 @@ async def get_table_schema(table_name: str):
                     
                     # 转换为前端期望的格式
                     converted_field = {
-                        "name": field.get("targetField") or field.get("english_name", ""),
+                        "name": field.get("targetField") or field.get("english_name") or field.get("name", ""),
                         "label": field.get("sourceField") or field.get("chinese_name", ""),
                         "source_name": field.get("sourceField") or field.get("chinese_name", ""),
                         "type": field.get("dataType") or field.get("data_type", "VARCHAR"),
@@ -698,7 +698,7 @@ async def create_record(table_name: str, data: Dict[str, Any]):
         raise HTTPException(status_code=500, detail=f"创建失败: {str(e)}")
 
 
-async def handle_post_change_remarks(record_id: int, new_post: str):
+async def handle_post_change_remarks(record_id: int, new_post_id: int):
     """处理岗位变更，写入备注信息表"""
     conn = None
     cursor = None
@@ -708,21 +708,35 @@ async def handle_post_change_remarks(record_id: int, new_post: str):
         conn = get_db_connection()
         cursor = conn.cursor()
         
+        # 读取字典映射
+        cursor.execute("SELECT id, post FROM dict_dictionary_personal")
+        dict_mapping = {}
+        for dict_row in cursor.fetchall():
+            dict_mapping[dict_row[0]] = dict_row[1]
+        
         # 获取原岗位和教师信息
         cursor.execute("""
-            SELECT i.post_2, i.教师ID, t.name
-            FROM information i
-            LEFT JOIN teacher_basic_info t ON i.教师ID = t.id
-            WHERE i.id = %s
+            SELECT p.post_1, p.id_card, p.name
+            FROM post_appointment_info p
+            WHERE p.id = %s
         """, (record_id,))
         row = cursor.fetchone()
         
         if not row:
             return
         
-        original_post = row[0]
-        teacher_id = row[1]
+        original_post_id = row[0]
+        id_card = row[1]
         teacher_name = row[2]
+        
+        # 获取教师ID
+        cursor.execute("SELECT id FROM teacher_basic_info WHERE id_card = %s", (id_card,))
+        teacher_row = cursor.fetchone()
+        teacher_id = teacher_row[0] if teacher_row else None
+        
+        # 转换岗位名称
+        original_post = dict_mapping.get(int(original_post_id), f'未知岗位{original_post_id}') if original_post_id else None
+        new_post = dict_mapping.get(int(new_post_id), f'未知岗位{new_post_id}') if new_post_id else None
         
         # 如果岗位没有变化，不写入
         if original_post == new_post or not new_post:
@@ -812,15 +826,23 @@ async def handle_status_change_remarks(record_id: int, new_status: str):
         if old_status == new_status or not new_status:
             return
         
-        # 获取原岗位信息（使用身份证号查询）
+        # 获取原岗位信息（从岗位聘任信息表查询，并通过字典转换）
         original_post = None
         if id_card:
+            # 读取字典映射
+            cursor.execute("SELECT id, post FROM dict_dictionary_personal")
+            dict_mapping = {}
+            for dict_row in cursor.fetchall():
+                dict_mapping[dict_row[0]] = dict_row[1]
+            
+            # 从岗位聘任信息表查询post_1字段
             cursor.execute("""
-                SELECT post_2 FROM information WHERE id_card = %s
+                SELECT post_1 FROM post_appointment_info WHERE id_card = %s
             """, (id_card,))
             post_row = cursor.fetchone()
-            if post_row:
-                original_post = post_row[0]
+            if post_row and post_row[0]:
+                post_id = int(post_row[0])
+                original_post = dict_mapping.get(post_id, f'未知岗位{post_id}')
         
         current_month = datetime.now().strftime('%Y-%m')
         
@@ -980,12 +1002,22 @@ async def handle_new_teacher_remarks(data: dict, new_id: int):
         
         # 从岗位聘任信息表获取岗位信息
         post_2 = None
-        cursor.execute("""
-            SELECT post_2 FROM information WHERE teacher_id = %s
-        """, (teacher_id,))
-        post_row = cursor.fetchone()
-        if post_row:
-            post_2 = post_row[0]
+        # 先获取身份证号码
+        cursor.execute("SELECT id_card FROM teacher_basic_info WHERE id = %s", (teacher_id,))
+        id_card_row = cursor.fetchone()
+        if id_card_row:
+            id_card = id_card_row[0]
+            # 读取字典映射
+            cursor.execute("SELECT id, post FROM dict_dictionary_personal")
+            dict_mapping = {}
+            for dict_row in cursor.fetchall():
+                dict_mapping[dict_row[0]] = dict_row[1]
+            # 从岗位聘任信息表查询post_1字段
+            cursor.execute("SELECT post_1 FROM post_appointment_info WHERE id_card = %s", (id_card,))
+            post_row = cursor.fetchone()
+            if post_row and post_row[0]:
+                post_id = int(post_row[0])
+                post_2 = dict_mapping.get(post_id, f'未知岗位{post_id}')
         
         current_month = datetime.now().strftime('%Y-%m')
         change_category = 'new_add'
@@ -1053,9 +1085,9 @@ async def update_record(table_name: str, record_id: int, data: Dict[str, Any]):
         # 转换中文字段名为英文字段名
         data = convert_chinese_to_english_fields(table_name, data)
         
-        # 如果是岗位聘任信息表(information)，检查岗位变更并写入备注表
-        if table_name == 'information' and 'post_2' in data:
-            await handle_post_change_remarks(record_id, data.get('post_2'))
+        # 如果是岗位聘任信息表(post_appointment_info)，检查岗位变更并写入备注表
+        if table_name == 'post_appointment_info' and 'post_1' in data:
+            await handle_post_change_remarks(record_id, data.get('post_1'))
         
         # 如果是教师基础信息表(teacher_basic_info)，检查状态变更并写入备注表
         if table_name == 'teacher_basic_info' and 'employment_status' in data:

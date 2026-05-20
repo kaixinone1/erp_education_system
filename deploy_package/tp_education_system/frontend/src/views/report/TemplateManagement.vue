@@ -1,16 +1,19 @@
 <template>
+  <!-- 模板管理页面 - 支持数据填报功能 -->
   <div class="template-management">
     <h2 class="page-title">模板管理</h2>
 
-    <!-- 操作栏 -->
     <div class="operation-bar">
       <el-button type="primary" @click="showUploadDialog">
         <el-icon><Upload /></el-icon>
         上传模板
       </el-button>
+      <el-button type="success" @click="showDataFillDialog" :disabled="templates.length === 0">
+        <el-icon><Document /></el-icon>
+        数据填报
+      </el-button>
     </div>
 
-    <!-- 模板列表 -->
     <el-card class="template-list-card">
       <el-table :data="templates" v-loading="loading" border>
         <el-table-column prop="name" label="模板名称" min-width="200" />
@@ -27,7 +30,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="created_at" label="创建时间" width="180" />
-        <el-table-column label="操作" width="300" fixed="right">
+        <el-table-column label="操作" width="400" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="editTemplate(row)">
               编辑
@@ -35,7 +38,10 @@
             <el-button type="info" size="small" @click="previewTemplate(row)">
               预览
             </el-button>
-            <el-button type="success" size="small" @click="downloadTemplate(row)">
+            <el-button type="success" size="small" @click="startDataFill(row)">
+              填报
+            </el-button>
+            <el-button type="warning" size="small" @click="downloadTemplate(row)">
               下载
             </el-button>
             <el-button type="danger" size="small" @click="deleteTemplate(row)">
@@ -46,7 +52,6 @@
       </el-table>
     </el-card>
 
-    <!-- 上传模板对话框 -->
     <el-dialog v-model="uploadDialogVisible" title="上传模板" width="600px">
       <el-form :model="uploadForm" label-width="100px">
         <el-form-item label="模板名称" required>
@@ -66,14 +71,14 @@
             :auto-upload="false"
             :on-change="handleFileChange"
             :limit="1"
-            accept=".doc,.docx,.pdf"
+            accept=".doc,.docx,.pdf,.xlsx,.xls"
           >
             <el-button type="primary">选择文件</el-button>
             <template #tip>
               <div class="el-upload__tip">
-                支持 .doc, .docx, .pdf 格式<br>
+                支持 .doc, .docx, .pdf, .xlsx, .xls 格式<br>
                 Word文件中使用 {{占位符}} 标记需要填充的位置<br>
-                PDF文件将使用智能字段提取功能
+                Excel文件支持完整样式复制
               </div>
             </template>
           </el-upload>
@@ -90,101 +95,211 @@
       </template>
     </el-dialog>
 
-    <!-- 预览对话框 -->
-    <el-dialog v-model="previewDialogVisible" title="模板预览" width="800px">
-      <div v-if="selectedTemplate" class="preview-content">
-        <h3>{{ selectedTemplate.name }}</h3>
-        <p><strong>类型：</strong>{{ selectedTemplate.type }}</p>
-        <p><strong>描述：</strong>{{ selectedTemplate.description || '无' }}</p>
-        <div class="placeholders-section">
-          <h4>占位符列表：</h4>
-          <el-table :data="placeholderConfigs" border size="small">
-            <el-table-column prop="placeholder" label="占位符" width="150" />
-            <el-table-column prop="field" label="对应字段">
-              <template #default="{ row }">
-                <el-select v-model="row.field" placeholder="选择字段" size="small">
-                  <el-option label="教师姓名" value="teacher_name" />
-                  <el-option label="身份证号" value="id_card" />
-                  <el-option label="出生日期" value="birth_date" />
-                  <el-option label="性别" value="gender" />
-                  <el-option label="职务" value="position" />
-                  <el-option label="职称" value="title" />
-                  <el-option label="参加工作时间" value="work_start_date" />
-                  <el-option label="退休日期" value="retirement_date" />
-                </el-select>
+    <el-dialog v-model="dataFillDialogVisible" title="数据填报配置" width="90%" top="5vh">
+      <div class="data-fill-container">
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-card shadow="hover" class="config-card">
+              <template #header>
+                <div class="card-header">
+                  <span>第一步：标签筛选（限定统计口径）</span>
+                </div>
               </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="test-section">
-          <h4>测试填充：</h4>
-          <el-button type="primary" @click="openTeacherSelect" :loading="testing">
-            选择教师测试
-          </el-button>
-        </div>
+              <div class="tag-filter-section">
+                <el-button type="primary" @click="showTagDialog = true">
+                  <el-icon><PriceTag /></el-icon>
+                  标签筛选 {{ selectedTags.length > 0 ? `(${selectedTags.length})` : '' }}
+                </el-button>
+                <div v-if="selectedTags.length > 0" class="selected-tags">
+                  <el-tag 
+                    v-for="tag in selectedTags" 
+                    :key="tag" 
+                    closable 
+                    @close="removeTag(tag)"
+                    style="margin-right: 8px; margin-bottom: 8px;"
+                  >
+                    {{ tag }}
+                  </el-tag>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" style="margin-top: 20px;">
+          <el-col :span="24">
+            <el-card shadow="hover" class="config-card">
+              <template #header>
+                <div class="card-header">
+                  <span>第二步：字段映射配置</span>
+                </div>
+              </template>
+              <el-table :data="fieldMappings" border size="small" max-height="400">
+                <el-table-column prop="placeholder" label="占位符" width="180" fixed />
+                
+                <el-table-column prop="source_table" label="数据源表" width="200">
+                  <template #default="{ row }">
+                    <el-select 
+                      v-model="row.source_table" 
+                      placeholder="选择表"
+                      @change="handleTableChangeForMapping(row)"
+                      size="small"
+                      style="width: 100%"
+                    >
+                      <el-option 
+                        v-for="table in tableList" 
+                        :key="table.name" 
+                        :label="table.label" 
+                        :value="table.name"
+                      />
+                    </el-select>
+                  </template>
+                </el-table-column>
+                
+                <el-table-column prop="source_field" label="源字段" width="180">
+                  <template #default="{ row }">
+                    <el-select 
+                      v-model="row.source_field" 
+                      placeholder="选择字段"
+                      @change="handleFieldChangeForMapping(row)"
+                      size="small"
+                      style="width: 100%"
+                      :disabled="!row.source_table"
+                    >
+                      <el-option 
+                        v-for="field in row.availableFields" 
+                        :key="field.name" 
+                        :label="field.label" 
+                        :value="field.name"
+                      />
+                    </el-select>
+                  </template>
+                </el-table-column>
+                
+                <el-table-column prop="dict_filter" label="字典筛选" width="250">
+                  <template #default="{ row }">
+                    <div v-if="row.hasDictionary" class="dict-filter-cell">
+                      <el-select 
+                        v-model="row.dict_values" 
+                        placeholder="选择字典值"
+                        multiple
+                        collapse-tags
+                        collapse-tags-tooltip
+                        size="small"
+                        style="width: 100%"
+                      >
+                        <el-option 
+                          v-for="dict in row.dictionaryValues" 
+                          :key="dict.value" 
+                          :label="dict.label" 
+                          :value="dict.value"
+                        />
+                      </el-select>
+                    </div>
+                    <span v-else style="color: #999;">-</span>
+                  </template>
+                </el-table-column>
+                
+                <el-table-column prop="aggregate_type" label="统计方式" width="130">
+                  <template #default="{ row }">
+                    <el-select v-model="row.aggregate_type" placeholder="选择" size="small" style="width: 100%">
+                      <el-option label="直接取值" value="direct" />
+                      <el-option label="计数" value="count" />
+                      <el-option label="求和" value="sum" />
+                      <el-option label="平均值" value="avg" />
+                      <el-option label="最大值" value="max" />
+                      <el-option label="最小值" value="min" />
+                    </el-select>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" style="margin-top: 20px;">
+          <el-col :span="24">
+            <el-card shadow="hover" class="config-card">
+              <template #header>
+                <div class="card-header">
+                  <span>第三步：操作</span>
+                </div>
+              </template>
+              <div class="action-buttons">
+                <el-button type="primary" size="large" @click="previewData" :loading="previewing">
+                  <el-icon><View /></el-icon>
+                  预览数据
+                </el-button>
+                <el-button type="success" size="large" @click="fillTemplate" :loading="filling">
+                  <el-icon><Document /></el-icon>
+                  填充模板
+                </el-button>
+                <el-button type="warning" size="large" @click="exportToExcel" :loading="exporting" :disabled="previewData.length === 0">
+                  <el-icon><Download /></el-icon>
+                  导出Excel
+                </el-button>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" style="margin-top: 20px;" v-if="previewResult.length > 0">
+          <el-col :span="24">
+            <el-card shadow="hover" class="result-card">
+              <template #header>
+                <div class="card-header">
+                  <span>数据预览 ({{ previewResult.length }} 条)</span>
+                </div>
+              </template>
+              <el-table :data="previewResult.slice(0, 50)" border size="small" max-height="300">
+                <el-table-column 
+                  v-for="col in previewColumns" 
+                  :key="col" 
+                  :prop="col" 
+                  :label="col" 
+                  min-width="120"
+                />
+              </el-table>
+              <div v-if="previewResult.length > 50" style="margin-top: 10px; color: #999; text-align: center;">
+                还有 {{ previewResult.length - 50 }} 条数据，请导出查看全部
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
       </div>
     </el-dialog>
 
-    <!-- 教师选择对话框 -->
-    <el-dialog v-model="teacherSelectVisible" title="选择教师" width="600px">
-      <el-input
-        v-model="teacherSearchKeyword"
-        placeholder="输入教师姓名搜索（如：王军峰）"
-        clearable
-        @keyup.enter="searchTeachers"
-        style="margin-bottom: 15px"
-      >
-        <template #append>
-          <el-button @click="searchTeachers">
-            <el-icon><Search /></el-icon>
-          </el-button>
-        </template>
-      </el-input>
-      
-      <el-table :data="teacherList" v-loading="teacherLoading" border height="300">
-        <el-table-column prop="name" label="姓名" width="100" />
-        <el-table-column prop="id_card_display" label="身份证号" />
-        <el-table-column prop="gender" label="性别" width="80" />
-        <el-table-column prop="age" label="年龄" width="80" />
-        <el-table-column label="操作" width="100" fixed="right">
-          <template #default="{ row }">
-            <el-button type="primary" size="small" @click="selectTeacher(row)">
-              选择
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      
+    <el-dialog v-model="showTagDialog" title="标签筛选（多选）" width="500px">
+      <el-checkbox-group v-model="selectedTags" class="tag-list">
+        <el-checkbox 
+          v-for="tag in tagList" 
+          :key="tag.id" 
+          :value="tag.name" 
+          class="tag-item"
+          style="margin-right: 15px; margin-bottom: 10px;"
+        >
+          {{ tag.name }}
+        </el-checkbox>
+      </el-checkbox-group>
       <template #footer>
-        <el-button @click="teacherSelectVisible = false">取消</el-button>
+        <el-button @click="showTagDialog = false">取消</el-button>
+        <el-button type="primary" @click="confirmTags">确认</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import { Upload, Search } from '@element-plus/icons-vue'
+import { ref, reactive, onMounted, computed } from 'vue'
+import { Upload, Search, Document, PriceTag, View, Download } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-// 状态
 const loading = ref(false)
 const uploading = ref(false)
-const testing = ref(false)
 const templates = ref<any[]>([])
 const uploadDialogVisible = ref(false)
-const previewDialogVisible = ref(false)
-const selectedTemplate = ref<any>(null)
-const placeholderConfigs = ref<any[]>([])
 const uploadRef = ref<any>(null)
 
-// 教师选择相关
-const teacherSelectVisible = ref(false)
-const teacherSearchKeyword = ref('')
-const teacherList = ref<any[]>([])
-const teacherLoading = ref(false)
-
-// 上传表单
 const uploadForm = reactive({
   name: '',
   type: '',
@@ -192,7 +307,25 @@ const uploadForm = reactive({
   file: null as File | null
 })
 
-// 加载模板列表
+const dataFillDialogVisible = ref(false)
+const selectedTemplateForFill = ref<any>(null)
+const tableList = ref<{name: string, label: string}[]>([])
+const fieldMappings = ref<any[]>([])
+
+const tagList = ref<{id: number, name: string}[]>([])
+const selectedTags = ref<string[]>([])
+const showTagDialog = ref(false)
+
+const previewing = ref(false)
+const filling = ref(false)
+const exporting = ref(false)
+const previewResult = ref<any[]>([])
+
+const previewColumns = computed(() => {
+  if (previewResult.value.length === 0) return []
+  return Object.keys(previewResult.value[0])
+})
+
 const loadTemplates = async () => {
   loading.value = true
   try {
@@ -200,12 +333,11 @@ const loadTemplates = async () => {
     if (response.ok) {
       const result = await response.json()
       if (result.status === 'success') {
-        // 转换后端数据格式
         templates.value = result.templates.map((t: any) => ({
           id: t.template_id,
           name: t.template_name,
           type: 'document',
-          placeholders: [],
+          placeholders: t.fields || [],
           description: t.description,
           created_at: t.created_at,
           file_path: t.file_path
@@ -220,7 +352,34 @@ const loadTemplates = async () => {
   }
 }
 
-// 显示上传对话框
+const loadTables = async () => {
+  try {
+    const response = await fetch('/api/template-data-fill/tables')
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success') {
+        tableList.value = result.tables
+      }
+    }
+  } catch (error) {
+    console.error('加载表列表失败:', error)
+  }
+}
+
+const loadTags = async () => {
+  try {
+    const response = await fetch('/api/aggregate-query/tags')
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success') {
+        tagList.value = result.tags
+      }
+    }
+  } catch (error) {
+    console.error('加载标签列表失败:', error)
+  }
+}
+
 const showUploadDialog = () => {
   uploadForm.name = ''
   uploadForm.type = ''
@@ -229,12 +388,10 @@ const showUploadDialog = () => {
   uploadDialogVisible.value = true
 }
 
-// 处理文件选择
 const handleFileChange = (file: any) => {
   uploadForm.file = file.raw
 }
 
-// 提交上传
 const submitUpload = async () => {
   if (!uploadForm.name || !uploadForm.type || !uploadForm.file) {
     ElMessage.warning('请填写完整信息')
@@ -275,30 +432,223 @@ const submitUpload = async () => {
   }
 }
 
-// 编辑模板
+const showDataFillDialog = () => {
+  if (templates.value.length === 0) {
+    ElMessage.warning('请先上传模板')
+    return
+  }
+  selectedTemplateForFill.value = templates.value[0]
+  initFieldMappings()
+  dataFillDialogVisible.value = true
+}
+
+const startDataFill = (template: any) => {
+  selectedTemplateForFill.value = template
+  initFieldMappings()
+  dataFillDialogVisible.value = true
+}
+
+const initFieldMappings = () => {
+  if (!selectedTemplateForFill.value) return
+  
+  fieldMappings.value = selectedTemplateForFill.value.placeholders.map((ph: string) => ({
+    placeholder: ph,
+    source_table: '',
+    source_field: '',
+    availableFields: [],
+    hasDictionary: false,
+    dictionaryValues: [],
+    dict_values: [],
+    aggregate_type: 'direct'
+  }))
+}
+
+const handleTableChangeForMapping = async (row: any) => {
+  row.source_field = ''
+  row.availableFields = []
+  row.hasDictionary = false
+  row.dictionaryValues = []
+  row.dict_values = []
+  
+  if (!row.source_table) return
+  
+  try {
+    const response = await fetch(`/api/template-data-fill/table-fields/${row.source_table}`)
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success') {
+        row.availableFields = result.fields
+      }
+    }
+  } catch (error) {
+    console.error('加载字段列表失败:', error)
+  }
+}
+
+const handleFieldChangeForMapping = async (row: any) => {
+  row.hasDictionary = false
+  row.dictionaryValues = []
+  row.dict_values = []
+  
+  if (!row.source_table || !row.source_field) return
+  
+  try {
+    const response = await fetch(
+      `/api/template-data-fill/field-dictionary/${row.source_table}/${row.source_field}`
+    )
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success' && result.has_dictionary) {
+        row.hasDictionary = true
+        row.dictionaryValues = result.values
+      }
+    }
+  } catch (error) {
+    console.error('检查字段字典失败:', error)
+  }
+}
+
+const removeTag = (tag: string) => {
+  selectedTags.value = selectedTags.value.filter(t => t !== tag)
+}
+
+const confirmTags = () => {
+  showTagDialog.value = false
+}
+
+const previewData = async () => {
+  if (fieldMappings.value.length === 0) {
+    ElMessage.warning('请先配置字段映射')
+    return
+  }
+  
+  const hasValidMapping = fieldMappings.value.some(m => m.source_table && m.source_field)
+  if (!hasValidMapping) {
+    ElMessage.warning('请至少配置一个有效的字段映射')
+    return
+  }
+  
+  previewing.value = true
+  try {
+    const response = await fetch('/api/template-data-fill/preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        template_id: selectedTemplateForFill.value.id,
+        tags: selectedTags.value.length > 0 ? selectedTags.value : undefined,
+        field_mappings: fieldMappings.value
+      })
+    })
+    
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success') {
+        previewResult.value = result.data
+        ElMessage.success(`预览成功，共 ${result.data.length} 条数据`)
+      } else {
+        ElMessage.error(result.message || '预览失败')
+      }
+    } else {
+      ElMessage.error('预览失败')
+    }
+  } catch (error) {
+    console.error('预览数据失败:', error)
+    ElMessage.error('预览数据失败')
+  } finally {
+    previewing.value = false
+  }
+}
+
+const fillTemplate = async () => {
+  if (previewResult.value.length === 0) {
+    ElMessage.warning('请先预览数据')
+    return
+  }
+  
+  filling.value = true
+  try {
+    const response = await fetch('/api/template-data-fill/fill', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        template_id: selectedTemplateForFill.value.id,
+        tags: selectedTags.value.length > 0 ? selectedTags.value : undefined,
+        field_mappings: fieldMappings.value,
+        data: previewResult.value
+      })
+    })
+    
+    if (response.ok) {
+      const result = await response.json()
+      if (result.status === 'success') {
+        ElMessage.success('模板填充成功')
+        if (result.download_url) {
+          window.open(result.download_url, '_blank')
+        }
+      } else {
+        ElMessage.error(result.message || '填充失败')
+      }
+    } else {
+      ElMessage.error('填充失败')
+    }
+  } catch (error) {
+    console.error('填充模板失败:', error)
+    ElMessage.error('填充模板失败')
+  } finally {
+    filling.value = false
+  }
+}
+
+const exportToExcel = async () => {
+  if (previewResult.value.length === 0) {
+    ElMessage.warning('没有可导出的数据')
+    return
+  }
+  
+  exporting.value = true
+  try {
+    const response = await fetch('/api/template-data-fill/export', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: previewResult.value,
+        filename: `${selectedTemplateForFill.value.name}_数据.xlsx`
+      })
+    })
+    
+    if (response.ok) {
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${selectedTemplateForFill.value.name}_数据.xlsx`
+      a.click()
+      window.URL.revokeObjectURL(url)
+      ElMessage.success('导出成功')
+    } else {
+      ElMessage.error('导出失败')
+    }
+  } catch (error) {
+    console.error('导出失败:', error)
+    ElMessage.error('导出失败')
+  } finally {
+    exporting.value = false
+  }
+}
+
 const editTemplate = (template: any) => {
-  // 根据文件类型跳转到不同的编辑器
   const filePath = template.file_path || ''
   if (filePath.toLowerCase().endsWith('.pdf')) {
-    // PDF文件跳转到A3编辑器
     window.open(`/a3-template-editor/${template.id}`, '_blank')
   } else {
-    // Word文件跳转到普通编辑器
     window.open(`/pdf-template-editor/${template.id}`, '_blank')
   }
 }
 
-// 预览模板
 const previewTemplate = (template: any) => {
-  selectedTemplate.value = template
-  placeholderConfigs.value = template.placeholders.map((ph: string) => ({
-    placeholder: ph,
-    field: ''
-  }))
-  previewDialogVisible.value = true
+  ElMessage.info('预览功能开发中')
 }
 
-// 下载模板
 const downloadTemplate = async (template: any) => {
   try {
     window.open(`/api/templates/${template.id}/download`)
@@ -308,7 +658,6 @@ const downloadTemplate = async (template: any) => {
   }
 }
 
-// 删除模板
 const deleteTemplate = async (template: any) => {
   try {
     await ElMessageBox.confirm('确定要删除这个模板吗？', '提示', {
@@ -333,116 +682,10 @@ const deleteTemplate = async (template: any) => {
   }
 }
 
-// 打开教师选择对话框
-const openTeacherSelect = () => {
-  teacherSelectVisible.value = true
-  teacherSearchKeyword.value = ''
-  teacherList.value = []
-}
-
-// 搜索教师
-const searchTeachers = async () => {
-  if (!teacherSearchKeyword.value.trim()) {
-    ElMessage.warning('请输入教师姓名')
-    return
-  }
-
-  teacherLoading.value = true
-  try {
-    const response = await fetch(`/api/retirement/search-by-name?name=${encodeURIComponent(teacherSearchKeyword.value)}`)
-    if (response.ok) {
-      const result = await response.json()
-      teacherList.value = result.data || []
-      if (teacherList.value.length === 0) {
-        ElMessage.warning(`未找到名为"${teacherSearchKeyword.value}"的教师，请检查姓名是否正确`)
-      } else {
-        ElMessage.success(`找到 ${teacherList.value.length} 位教师`)
-      }
-    } else {
-      ElMessage.error('搜索失败')
-    }
-  } catch (error) {
-    console.error('搜索教师失败:', error)
-    ElMessage.error('搜索失败')
-  } finally {
-    teacherLoading.value = false
-  }
-}
-
-// 选择教师进行测试
-const selectTeacher = async (teacher: any) => {
-  if (!selectedTemplate.value) return
-
-  testing.value = true
-  teacherSelectVisible.value = false
-
-  try {
-    // 调用模板填充API
-    const response = await fetch(`/api/template-fill/data?template_id=${selectedTemplate.value.id}&teacher_id=${teacher.id}`)
-    
-    if (response.ok) {
-      const result = await response.json()
-      
-      // 显示填充结果
-      ElMessageBox.alert(
-        `<div style="max-height: 400px; overflow-y: auto;">
-          <h4>模板：${result.template_name}</h4>
-          <h4>教师：${teacher.teacher_name}</h4>
-          <el-table :data="Object.entries(result.data).map(([key, value]) => ({key, value}))" border>
-            <el-table-column prop="key" label="占位符" width="150" />
-            <el-table-column prop="value" label="填充值" />
-          </el-table>
-        </div>`,
-        '填充结果预览',
-        {
-          dangerouslyUseHTMLString: true,
-          confirmButtonText: '下载填充后的文档',
-          cancelButtonText: '关闭',
-          showCancelButton: true
-        }
-      ).then(() => {
-        // 下载填充后的文档
-        downloadFilledTemplate(selectedTemplate.value.id, result.data)
-      }).catch(() => {})
-    } else {
-      ElMessage.error('获取填充数据失败')
-    }
-  } catch (error) {
-    console.error('测试填充失败:', error)
-    ElMessage.error('测试填充失败')
-  } finally {
-    testing.value = false
-  }
-}
-
-// 下载填充后的模板
-const downloadFilledTemplate = async (templateId: string, fillData: any) => {
-  try {
-    const response = await fetch(`/api/templates/${templateId}/fill`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(fillData)
-    })
-
-    if (response.ok) {
-      const result = await response.json()
-      if (result.data && result.data.file_path) {
-        // 下载文件
-        window.open(`/api/templates/${templateId}/download`, '_blank')
-        ElMessage.success('文档生成成功')
-      }
-    } else {
-      ElMessage.error('生成文档失败')
-    }
-  } catch (error) {
-    console.error('下载填充文档失败:', error)
-    ElMessage.error('下载失败')
-  }
-}
-
-// 页面加载
-onMounted(() => {
-  loadTemplates()
+onMounted(async () => {
+  await loadTemplates()
+  await loadTables()
+  await loadTags()
 })
 </script>
 
@@ -470,21 +713,55 @@ onMounted(() => {
   margin-bottom: 5px;
 }
 
-.preview-content {
-  padding: 20px;
+.data-fill-container {
+  padding: 10px;
 }
 
-.preview-content h3 {
-  margin-top: 0;
+.config-card {
+  margin-bottom: 0;
 }
 
-.placeholders-section {
-  margin-top: 20px;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 16px;
 }
 
-.test-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
+.tag-filter-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dict-filter-cell {
+  width: 100%;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.result-card {
+  margin-bottom: 0;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag-item {
+  margin-right: 15px;
+  margin-bottom: 10px;
 }
 </style>

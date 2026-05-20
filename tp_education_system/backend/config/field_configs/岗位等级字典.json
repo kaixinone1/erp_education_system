@@ -1,0 +1,30 @@
+{
+  "config_name": "岗位等级字典",
+  "display_name": "岗位等级字典",
+  "chinese_title": "岗位等级字典",
+  "table_name": "dict_grade_dictionary",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "岗位等级",
+      "targetField": "岗位等级",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-05-07T11:17:21.791718",
+  "updated_at": "2026-05-07T11:17:35.097518"
+}

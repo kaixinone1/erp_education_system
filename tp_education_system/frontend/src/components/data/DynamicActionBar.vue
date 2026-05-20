@@ -88,7 +88,7 @@ const handleAction = (action: any) => {
 const loadActionConfig = async () => {
   try {
     // 从后端或配置文件加载
-    const response = await fetch(`http://127.0.0.1:8000/api/data/ui-components/${props.tableName}`)
+    const response = await fetch(`/api/data/ui-components/${props.tableName}`)
     
     if (response.ok) {
       const config = await response.json()
@@ -176,3 +176,4 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 </style>
+
