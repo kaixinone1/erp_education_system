@@ -23,598 +23,117 @@
     "退休呈报数据": {
       "english_name": "retirement_report_data",
       "table_type": "master",
-      "created_at": "2026-02-10T10:00:00",
-      "field_signature": [
-        [
-          "教师ID",
-          "INTEGER"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "性别",
-          "STRING"
-        ],
-        [
-          "身份证号",
-          "STRING"
-        ],
-        [
-          "出生日期",
-          "DATE"
-        ],
-        [
-          "民族",
-          "STRING"
-        ],
-        [
-          "文化程度",
-          "STRING"
-        ],
-        [
-          "参加工作时间",
-          "DATE"
-        ],
-        [
-          "工作年限",
-          "INTEGER"
-        ],
-        [
-          "籍贯",
-          "STRING"
-        ],
-        [
-          "现住址",
-          "STRING"
-        ],
-        [
-          "职务",
-          "STRING"
-        ],
-        [
-          "技术职称",
-          "STRING"
-        ],
-        [
-          "岗位",
-          "STRING"
-        ],
-        [
-          "退休原因",
-          "STRING"
-        ],
-        [
-          "退休后居住地址",
-          "STRING"
-        ],
-        [
-          "退休时间",
-          "DATE"
-        ],
-        [
-          "单位意见",
-          "TEXT"
-        ],
-        [
-          "状态",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-02-10T10:00:00"
     },
     "教师基础信息": {
       "english_name": "teacher_basic_info",
       "table_type": "master",
-      "created_at": "2026-02-07T23:37:34.411985",
-      "field_signature": [
-        [
-          "任职状态",
-          "STRING"
-        ],
-        [
-          "参加工作日期",
-          "DATE"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "档案出生日期",
-          "DATE"
-        ],
-        [
-          "民族",
-          "STRING"
-        ],
-        [
-          "籍贯",
-          "STRING"
-        ],
-        [
-          "联系电话",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ],
-        [
-          "进入本单位日期",
-          "DATE"
-        ]
-      ]
+      "created_at": "2026-02-07T23:37:34.411985"
     },
     "学历类型字典": {
       "english_name": "dict_education_type_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-02-08T00:42:56.455812",
-      "field_signature": [
-        [
-          "学历类型",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-02-08T00:42:56.455812"
     },
     "学历层次字典": {
       "english_name": "dict_education_level_dictionary",
       "table_type": "master",
-      "created_at": "2026-02-08T00:44:35.960336",
-      "field_signature": [
-        [
-          "学历",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-02-08T00:44:35.960336"
     },
     "教师学历记录": {
       "english_name": "teacher_education_record",
       "table_type": "master",
-      "created_at": "2026-02-08T01:05:14.305732",
-      "field_signature": [
-        [
-          "专业",
-          "STRING"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "学位",
-          "STRING"
-        ],
-        [
-          "学历",
-          "STRING"
-        ],
-        [
-          "学历类型",
-          "STRING"
-        ],
-        [
-          "毕业日期",
-          "DATE"
-        ],
-        [
-          "毕业院校",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-02-08T01:05:14.305732"
     },
     "任职状态字典": {
       "english_name": "dict_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-02-08T11:11:50.756787",
-      "field_signature": [
-        [
-          "任职状态",
-          "STRING"
-        ],
-        [
-          "排序序号",
-          "STRING"
-        ],
-        [
-          "是否有效",
-          "STRING"
-        ],
-        [
-          "状态编码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-02-08T11:11:50.756787"
     },
     "个人身份字典": {
       "english_name": "dict_personal_identity_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-03-04T11:09:23.361228",
-      "field_signature": [
-        [
-          "个人身份",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-04T11:09:23.361228"
     },
     "教师个人身份": {
       "english_name": "teacher_personal_identity",
       "table_type": "master",
-      "created_at": "2026-03-04T11:14:04.183992",
-      "field_signature": [
-        [
-          "个人身份",
-          "STRING"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-04T11:14:04.183992"
     },
     "单位名称字典": {
       "english_name": "dict_unit_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-03-04T15:31:32.683045",
-      "field_signature": [
-        [
-          "单位",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-04T15:31:32.683045"
     },
     "教师所在单位": {
       "english_name": "teacher_unit",
       "table_type": "master",
-      "created_at": "2026-03-04T16:25:25.815272",
-      "field_signature": [
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "所在单位",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-04T16:25:25.815272"
     },
     "标签字典": {
       "english_name": "personal_dict_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-03-05T08:37:53.545943",
-      "field_signature": [
-        [
-          "标签",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-05T08:37:53.545943"
     },
     "绩效工资标准字典": {
       "english_name": "dict_salary_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-03-31T10:57:00.000000",
-      "field_signature": [
-        [
-          "岗位",
-          "STRING"
-        ],
-        [
-          "月绩效工资",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-31T10:57:00.000000"
     },
     "乡镇补贴标准字典": {
       "english_name": "dict_subsidy_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-04-01T10:49:00.000000",
-      "field_signature": [
-        [
-          "补贴金额",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-04-01T10:49:00.000000"
     },
     "身份证属性": {
       "english_name": "id_card",
       "table_type": "child",
-      "created_at": "2026-03-05T10:00:00.615054",
-      "field_signature": [
-        [
-          "乡村定向",
-          "STRING"
-        ],
-        [
-          "乡镇补贴",
-          "STRING"
-        ],
-        [
-          "人事年报",
-          "STRING"
-        ],
-        [
-          "借调",
-          "STRING"
-        ],
-        [
-          "党籍",
-          "STRING"
-        ],
-        [
-          "共产党员",
-          "STRING"
-        ],
-        [
-          "共青团员",
-          "STRING"
-        ],
-        [
-          "团籍",
-          "STRING"
-        ],
-        [
-          "在职",
-          "STRING"
-        ],
-        [
-          "基础工资",
-          "STRING"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "岗位聘用",
-          "STRING"
-        ],
-        [
-          "工资年报",
-          "STRING"
-        ],
-        [
-          "年度考核",
-          "STRING"
-        ],
-        [
-          "延迟退休",
-          "STRING"
-        ],
-        [
-          "新机制",
-          "STRING"
-        ],
-        [
-          "死亡",
-          "STRING"
-        ],
-        [
-          "病休",
-          "STRING"
-        ],
-        [
-          "病假",
-          "STRING"
-        ],
-        [
-          "离休",
-          "STRING"
-        ],
-        [
-          "组织关系挂靠",
-          "STRING"
-        ],
-        [
-          "绩效工资",
-          "STRING"
-        ],
-        [
-          "群众",
-          "STRING"
-        ],
-        [
-          "调出",
-          "STRING"
-        ],
-        [
-          "调离",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ],
-        [
-          "辞职",
-          "STRING"
-        ],
-        [
-          "退休",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-03-05T10:00:00.615054"
     },
     "岗位设置遗留绩效统计表": {
       "english_name": "personal_statistics",
       "table_type": "master",
-      "created_at": "2026-04-27T16:53:29.616144",
-      "field_signature": [
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ],
-        [
-          "金额",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-04-27T16:53:29.616144"
     },
     "教师资格字典": {
       "english_name": "dict_teacher_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-05-02T10:17:06.752301",
-      "field_signature": [
-        [
-          "unnamed:_1",
-          "STRING"
-        ],
-        [
-          "类别",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-02T10:17:06.752301"
     },
     "教师资格证信息": {
       "english_name": "teacher_certificate_info",
       "table_type": "child",
-      "created_at": "2026-05-02T10:37:35.840957",
-      "field_signature": [
-        [
-          "发证日期",
-          "STRING"
-        ],
-        [
-          "发证机关",
-          "STRING"
-        ],
-        [
-          "备注",
-          "STRING"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "学段学科",
-          "STRING"
-        ],
-        [
-          "学科",
-          "STRING"
-        ],
-        [
-          "证书编号",
-          "STRING"
-        ],
-        [
-          "证书资格种类",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-02T10:37:35.840957"
     },
     "退休补充信息": {
       "english_name": "retirement_info",
       "table_type": "child",
-      "created_at": "2026-05-03T10:32:17.125551",
-      "field_signature": [
-        [
-          "供养直系亲属关系、姓名、出生日期",
-          "STRING"
-        ],
-        [
-          "姓名",
-          "STRING"
-        ],
-        [
-          "是否独生子女",
-          "STRING"
-        ],
-        [
-          "身份证号码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-03T10:32:17.125551"
     },
     "测试工资表": {
       "english_name": "test_wage",
       "table_type": "master",
-      "created_at": "2026-05-03T12:13:05.502310",
-      "field_signature": []
+      "created_at": "2026-05-03T12:13:05.502310"
     },
     "测试工资表修复": {
       "english_name": "test_wage_fix",
       "table_type": "master",
-      "created_at": "2026-05-03T12:29:05.562041",
-      "field_signature": [
-        [
-          "id_card",
-          "STRING"
-        ],
-        [
-          "name",
-          "STRING"
-        ],
-        [
-          "unit_name",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-03T12:29:05.562041"
     },
     "学校信息表": {
       "english_name": "school_information_table",
       "table_type": "master",
-      "created_at": "2026-05-05T19:48:37.421885",
-      "field_signature": [
-        [
-          "学校名称",
-          "STRING"
-        ],
-        [
-          "学校地址",
-          "STRING"
-        ],
-        [
-          "法人姓名",
-          "STRING"
-        ],
-        [
-          "统一社会信用代码",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-05T19:48:37.421885"
     },
     "岗位名称字典": {
       "english_name": "dict_dictionary_personal",
       "table_type": "dictionary",
-      "created_at": "2026-05-07T11:15:18.890772",
-      "field_signature": [
-        [
-          "岗位名称",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-07T11:15:18.890772"
     },
     "岗位等级字典": {
       "english_name": "dict_grade_dictionary",
       "table_type": "dictionary",
-      "created_at": "2026-05-07T11:17:35.094526",
-      "field_signature": [
-        [
-          "岗位等级",
-          "STRING"
-        ]
-      ]
+      "created_at": "2026-05-07T11:17:35.094526"
     },
     "岗位聘任信息": {
       "english_name": "post_appointment_info",
@@ -624,39 +143,118 @@
   },
   "reverse_mappings": {
     "teacher_basic_info": "教师基础信息",
+    "teacher_education_record": "教师学历记录",
+    "teacher_personal_identity": "教师个人身份",
+    "teacher_unit": "教师所在单位",
+    "teacher_certificate_info": "教师资格证信息",
+    "teacher_certificate_info_backup": "教师资格证信息备份",
+    "teacher_title_info": "教师职称信息",
+    "teacher_training_records": "教师培训记录",
+    "post_appointment_info": "岗位聘任信息",
+    "retirement_info": "退休补充信息",
+    "retirement_report_data": "退休呈报数据",
+    "retirement_report_form": "退休呈报表",
+    "retirement_cert_records": "退休证签发记录",
+    "retirement_certificate_data": "退休证数据",
+    "retirement_approval_stats": "退休审批统计",
+    "retirement_estimate": "退休估算",
+    "retirement_reminder_stats": "退休提醒统计",
+    "delayed_retirement_records": "延迟退休记录",
+    "death_registration_stats": "死亡登记统计",
+    "performance_pay_approval": "绩效工资审批",
+    "performance_pay_approval_detail": "绩效工资审批明细",
+    "performance_pay_remarks": "绩效工资备注",
+    "performance_pay_standards": "绩效工资标准",
+    "salary_data": "工资数据",
+    "personal_statistics": "岗位设置遗留绩效统计表",
+    "town_subsidy_standards": "乡镇补贴标准",
+    "dict_dictionary": "任职状态字典",
+    "dict_dictionary_personal": "岗位名称字典",
     "dict_education_level_dictionary": "学历层次字典",
     "dict_education_type_dictionary": "学历类型字典",
-    "teacher_education_record": "教师学历记录",
-    "dict_dictionary": "任职状态字典",
+    "dict_grade_dictionary": "岗位等级字典",
+    "dict_personal_identity_dictionary": "个人身份字典",
+    "dict_salary_dictionary": "绩效工资标准字典",
+    "dict_subsidy_dictionary": "乡镇补贴标准字典",
+    "dict_teacher_dictionary": "教师资格字典",
+    "dict_unit_dictionary": "单位名称字典",
+    "personal_dict_dictionary": "标签字典",
+    "id_card": "身份证属性",
+    "info": "教师信息汇总",
+    "person_tags": "个人标签",
+    "employee_tag_relations": "标签关系管理",
+    "unit_hierarchy": "单位层级",
+    "school_information_table": "学校信息表",
     "business_checklist": "业务清单配置",
+    "business_checklist_instances": "业务清单实例",
+    "business_checklist_items": "业务清单项目",
+    "business_checklist_item_records": "业务清单项目记录",
+    "business_checklist_templates": "业务清单模板",
+    "checklist_templates": "检查清单模板",
+    "checklist_template_items": "检查清单模板项目",
+    "checklist_instances": "检查清单实例",
+    "checklist_item_records": "检查清单项目记录",
+    "checklist_trigger_conditions": "检查清单触发条件",
+    "checklist_trigger_type_defs": "检查清单触发类型定义",
+    "checklist_trigger_types": "检查清单触发类型",
+    "todo_items": "待办项目",
+    "todo_templates": "待办模板",
+    "todo_history": "待办历史",
+    "unified_todos": "统一待办",
     "todo_work_items": "待办工作项",
-    "retirement_cert_records": "退休证签发记录",
-    "performance_pay_approval": "绩效工资审批",
-    "retirement_report_data": "退休呈报数据",
+    "custom_todo_stats": "自定义待办统计",
+    "user_custom_todos": "用户自定义待办",
+    "pending_triggers": "待处理触发器",
+    "trigger_conditions": "触发条件",
+    "trigger_logs": "触发日志",
     "document_templates": "文档模板",
     "filter_condition_templates": "过滤条件模板",
     "intermediate_tables": "中间表定义",
     "navigation_modules": "导航模块",
+    "navigation_backups": "导航备份",
+    "system_messages": "系统消息",
+    "template_configs": "模板配置",
     "template_field_mapping": "模板字段映射",
+    "template_field_mappings": "模板字段映射表",
+    "template_field_values": "模板字段值",
     "template_page_settings": "模板页面设置",
     "template_usage_records": "模板使用记录",
-    "dict_personal_identity_dictionary": "个人身份字典",
-    "teacher_personal_identity": "教师个人身份",
-    "dict_unit_dictionary": "单位名称字典",
-    "teacher_unit": "教师所在单位",
-    "personal_dict_dictionary": "标签字典",
-    "dict_salary_dictionary": "绩效工资标准字典",
-    "dict_subsidy_dictionary": "乡镇补贴标准字典",
-    "id_card": "身份证属性",
-    "personal_statistics": "岗位设置遗留绩效统计表",
-    "teacher_certificate_info": "教师资格证信息",
-    "dict_teacher_dictionary": "教师资格字典",
-    "retirement_info": "退休补充信息",
+    "template_usage_logs": "模板使用日志",
+    "template_regions": "模板区域配置",
+    "template_tags": "模板标签",
+    "template_placeholders": "模板占位符",
+    "template_fill_records": "模板填报记录",
+    "template_data_records": "模板数据记录",
+    "template_auto_fill_rules": "模板自动填报规则",
+    "universal_templates": "通用模板",
+    "universal_field_mapping": "通用字段映射",
+    "templates": "模板",
+    "report_templates": "报表模板",
+    "report_template_fields": "报表模板字段",
+    "report_calculate_fields": "报表计算字段",
+    "report_field_sources": "报表字段来源",
+    "report_tag_filters": "报表标签筛选",
+    "report_generation_logs": "报表生成日志",
+    "report_data_remarks": "报表数据备注",
+    "data_filling_field_mappings": "数据填报字段映射",
+    "table_field_relations": "表字段关系",
+    "fill_records": "填报记录",
+    "auto_fill_history": "自动填报历史",
+    "query_configs": "查询配置",
     "test_wage": "测试工资表",
     "test_wage_fix": "测试工资表修复",
-    "school_information_table": "学校信息表",
-    "dict_dictionary_personal": "岗位名称字典",
-    "dict_grade_dictionary": "岗位等级字典",
-    "post_appointment_info": "岗位聘任信息"
+    "personnel_change_records": "人事变动记录",
+    "position_legacy_issues": "岗位遗留问题",
+    "title_info": "职称信息",
+    "statistics": "统计数据",
+    "saved_exports": "已保存导出",
+    "octogenarian_elderly_subsidy_info": "高龄老人补贴信息",
+    "octogenarian_subsidy_stats": "高龄补贴统计",
+    "教师死亡待办处理记录": "教师死亡待办处理记录",
+    "教师死亡待办工作": "教师死亡待办工作",
+    "死亡登记信息": "死亡登记信息",
+    "高龄提醒处理记录": "高龄提醒处理记录",
+    "高龄提醒记录": "高龄提醒记录",
+    "高龄老人补贴信息": "高龄老人补贴信息"
   }
 }

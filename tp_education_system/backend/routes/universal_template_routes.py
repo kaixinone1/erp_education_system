@@ -867,37 +867,11 @@ async def get_available_tables():
         if os.path.exists(MAPPINGS_FILE):
             with open(MAPPINGS_FILE, 'r', encoding='utf-8') as f:
                 mappings_data = json.load(f)
-            for chinese_name, info in mappings_data.get('mappings', {}).items():
-                eng = info.get('english_name', '')
-                if eng:
-                    chinese_map[eng] = chinese_name
-        
-        hardcoded_chinese = {
-            'teacher_basic_info': '教师基础信息表',
-            'teacher_personal_identity': '教师个人身份表',
-            'post_appointment_info': '岗位聘任信息表',
-            'employee_tag_relations': '标签关系管理表',
-            'unit_hierarchy': '单位层级表',
-            'dict_salary_dictionary': '绩效工资标准字典',
-            'dict_dictionary_personal': '岗位名称字典',
-            'performance_pay_remarks': '绩效工资备注表',
-            'personal_statistics': '个人统计表',
-            'town_subsidy_standards': '乡镇补贴标准表',
-            'template_configs': '模板配置表',
-            'template_field_mappings': '模板字段映射表',
-            'checklist_templates': '清单模板表',
-            'checklist_assignments': '清单分配表',
-            'checklist_records': '清单记录表',
-            'system_navigation': '系统导航表',
-            'business_checklist': '业务清单配置表',
-            'todo_work_items': '待办工作项表',
-            'retirement_cert_records': '退休证签发记录表',
-            'retirement_report_data': '退休呈报数据表',
-        }
+            chinese_map = mappings_data.get('reverse_mappings', {})
         
         tables = []
         for eng_name in db_tables:
-            chinese_name = chinese_map.get(eng_name) or hardcoded_chinese.get(eng_name, None)
+            chinese_name = chinese_map.get(eng_name, None)
             tables.append({
                 '英文表名': eng_name,
                 '中文表名': chinese_name,
@@ -909,11 +883,53 @@ async def get_available_tables():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def _load_dict_relations_from_configs(table_name):
+    """从 field_configs 目录加载 to_dict 关联关系，返回 {中文字段名: {字典表, 字典值字段}}"""
+    import os as _os
+    try:
+        configs_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), 'config', 'field_configs')
+        if not _os.path.exists(configs_dir):
+            return {}
+        result = {}
+        for filename in _os.listdir(configs_dir):
+            if not filename.endswith('.json'):
+                continue
+            filepath = _os.path.join(configs_dir, filename)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                if data.get('table_name') != table_name:
+                    continue
+                for fc in data.get('field_configs', []):
+                    if fc.get('relation_type') == 'to_dict':
+                        result[fc['sourceField']] = {
+                            '字典表': fc.get('relation_table', ''),
+                            '字典值字段': fc.get('relation_display_field', '')
+                        }
+            except Exception:
+                pass
+        return result
+    except Exception:
+        return {}
+
+def _query_dict_values(dict_table, value_field):
+    """查询字典表的所有可选值"""
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return []
+        cur = conn.cursor()
+        cur.execute(f"SELECT DISTINCT \"{value_field}\" FROM \"{dict_table}\" WHERE \"{value_field}\" IS NOT NULL AND \"{value_field}\" != '' ORDER BY \"{value_field}\"")
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return [row[0] for row in rows]
+    except Exception:
+        return []
+
 @router.get("/table-columns/{table_name}")
 async def get_table_columns(table_name: str):
-    """
-    获取指定表的所有列信息（用于字段映射下拉选择）
-    """
+    """获取指定表的所有列信息（用于字段映射下拉选择）"""
     try:
         import psycopg2
         
@@ -931,7 +947,7 @@ async def get_table_columns(table_name: str):
         """, (table_name,))
         columns = [{'字段名': row[0], '数据类型': row[1]} for row in cur.fetchall()]
         
-        cur.execute("SELECT field_name, 关联类型, 关联表, 关联显示字段, 字段名 as 中文字段名 FROM table_field_relations WHERE table_name = %s", (table_name,))
+        cur.execute("SELECT field_name, 关联类型, 关联表, 关联显示字段, 字段名 FROM table_field_relations WHERE table_name = %s", (table_name,))
         field_relations = {}
         for row in cur.fetchall():
             field_relations[row[0]] = {
@@ -944,17 +960,61 @@ async def get_table_columns(table_name: str):
         cur.close()
         conn.close()
         
+        dict_relations = _load_dict_relations_from_configs(table_name)
+        
         for col in columns:
             col_name = col['字段名']
             rel = field_relations.get(col_name, {})
-            col['中文字段名'] = rel.get('中文字段名', col_name)
-            if rel.get('关联类型') == 'to_dict':
+            chinese_name = rel.get('中文字段名', col_name)
+            col['中文字段名'] = chinese_name
+            col['显示名称'] = chinese_name
+            
+            dict_info = dict_relations.get(chinese_name, None)
+            if dict_info:
+                col['关联字典'] = dict_info
+                col['字典可选值'] = _query_dict_values(dict_info['字典表'], dict_info['字典值字段'])
+            elif rel.get('关联类型') == 'to_dict':
                 col['关联字典'] = {'字典表': rel['字典表'], '字典值字段': rel['字典值字段']}
-                col['显示名称'] = f"{col['中文字段名']}（字典：{rel['字典表']}）"
-            else:
-                col['显示名称'] = col['中文字段名']
+                col['字典可选值'] = _query_dict_values(rel['字典表'], rel['字典值字段'])
         
         return {'成功': True, '数据': columns}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/dict-values/{table_name}")
+async def get_dict_values(table_name: str):
+    """
+    获取字典表的所有可选值列表
+    """
+    try:
+        DICT_CONFIGS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config', 'dict_tables_config.json')
+        value_field = None
+        label_field = None
+        
+        if os.path.exists(DICT_CONFIGS_FILE):
+            with open(DICT_CONFIGS_FILE, 'r', encoding='utf-8') as f:
+                dict_configs = json.load(f)
+            for dt in dict_configs.get('dict_tables', []):
+                if dt['table_name'] == table_name:
+                    value_field = dt.get('value_field', '')
+                    label_field = dt.get('label_field', '')
+                    break
+        
+        if not value_field:
+            cursor = get_db_cursor()
+            cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = %s ORDER BY ordinal_position LIMIT 1", (table_name,))
+            first_col = cursor.fetchone()
+            cursor.close()
+            value_field = first_col[0] if first_col else 'id'
+            label_field = value_field
+        
+        cursor = get_db_cursor()
+        cursor.execute(f"SELECT DISTINCT \"{label_field}\" FROM \"{table_name}\" WHERE \"{label_field}\" IS NOT NULL AND \"{label_field}\" != '' ORDER BY \"{label_field}\"")
+        rows = cursor.fetchall()
+        cursor.close()
+        
+        values = [{'值': row[0], '显示名称': str(row[0])} for row in rows]
+        return {'成功': True, '数据': values, '字典表': table_name, '值字段': value_field}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

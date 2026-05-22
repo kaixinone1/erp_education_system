@@ -40,12 +40,25 @@ uploads/exports/*.html
 uploads/exports/*.xlsx
 uploads/exports/*.doc
 
+# Exports (生成的文件，不纳入版本管理)
+tp_education_system/backend/exports/templates/*.xlsx
+tp_education_system/backend/exports/templates/*.pdf
+tp_education_system/backend/exports/templates/已保存/
+
+# LibreOffice profile
+tp_education_system/backend/exports/templates/.libreoffice_profile/
+
+# 上传的模板文件（不纳入版本管理）
+tp_education_system/backend/uploads/templates/*.xlsx
+
 # Test
 test_*.py
 check_*.py
 debug_*.py
 fix_*.py
 verify_*.py
+_tmp_*.py
+_test_*.py
 
 # Backup files
 *.zip

@@ -195,6 +195,13 @@ INSERT INTO table VALUES ('硬编码值');
 - Element Plus 组件必须使用中文语言包
 - 日期选择器、分页等组件显示中文
 
+### 6. 下拉菜单/选择框中的表名和字段名
+- **所有面向用户的下拉菜单、选择框、表格列名中，表名和字段名必须显示中文**
+- 系统配置文件 `config/table_name_mappings.json` 的 `reverse_mappings` 是所有表名中文翻译的**唯一来源**
+- 系统配置文件 `config/field_mappings.json` 和 `config/field_configs/` 目录是字段名中文翻译的来源
+- **禁止在代码中硬编码表名和字段名的中文翻译**
+- 前端下拉菜单中不得出现英文表名或字段名（如 `teacher_basic_info`、`gender` 等）
+
 ---
 **制定日期：2026-02-12**
 **严格遵守，绝不违反**

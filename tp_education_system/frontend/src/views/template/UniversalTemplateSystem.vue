@@ -142,7 +142,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="数据源字段">
-                <el-select v-model="fieldMappingForm.数据源字段" placeholder="请先选择数据源表" filterable :disabled="!fieldMappingForm.数据源表">
+                <el-select v-model="fieldMappingForm.数据源字段" placeholder="请先选择数据源表" filterable :disabled="!fieldMappingForm.数据源表" @change="onFieldChange">
                   <el-option 
                     v-for="field in availableFields" 
                     :key="field.字段名" 
@@ -150,6 +150,25 @@
                     :value="field.字段名" 
                   />
                 </el-select>
+              </el-form-item>
+              <el-form-item v-if="currentFieldDictValues.length > 0" label="可选值筛选">
+                <el-select 
+                  v-model="fieldMappingForm.字典值选择" 
+                  multiple 
+                  filterable 
+                  collapse-tags
+                  collapse-tags-tooltip
+                  placeholder="请选择要统计的值（可多选，留空=全选）" 
+                  style="width: 100%"
+                >
+                  <el-option 
+                    v-for="val in currentFieldDictValues" 
+                    :key="val" 
+                    :label="val" 
+                    :value="val" 
+                  />
+                </el-select>
+                <div style="color:#909399;font-size:12px;margin-top:4px;">共 {{ currentFieldDictValues.length }} 个可选值，可多选筛选</div>
               </el-form-item>
               <el-button type="primary" @click="saveFieldMapping">保存映射</el-button>
             </el-form>
@@ -452,12 +471,12 @@ const fieldMappingForm = ref({
   行号: 1,
   列号: 1,
   数据源表: '',
-  数据源字段: ''
+  数据源字段: '',
+   字典值选择: []
 })
 
 const fieldMappingsList = ref([])
-const availableTables = ref([])
-const availableFields = ref([])
+const currentFieldDictValues = ref([])
 
 const fillForm = ref({
   模板ID: '',
@@ -874,6 +893,8 @@ async function onTableChange(tableName) {
   if (!tableName) {
     availableFields.value = []
     fieldMappingForm.value.数据源字段 = ''
+    fieldMappingForm.value.字典值选择 = []
+    currentFieldDictValues.value = []
     return
   }
   try {
@@ -887,11 +908,23 @@ async function onTableChange(tableName) {
   }
 }
 
+function onFieldChange(fieldName) {
+  fieldMappingForm.value.字典值选择 = []
+  currentFieldDictValues.value = []
+  if (!fieldName) return
+  const field = availableFields.value.find(f => f.字段名 === fieldName)
+  if (field && field.字典可选值 && field.字典可选值.length > 0) {
+    currentFieldDictValues.value = field.字典可选值
+  }
+}
+
 async function showFieldMappingDialog(row) {
   currentTemplateId.value = row.模板ID
   fieldMappingForm.value.模板ID = row.模板ID
   fieldMappingForm.value.数据源表 = ''
   fieldMappingForm.value.数据源字段 = ''
+  fieldMappingForm.value.字典值选择 = []
+  currentFieldDictValues.value = []
   availableFields.value = []
   fieldMappingDialogVisible.value = true
 
