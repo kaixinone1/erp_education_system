@@ -902,6 +902,22 @@ async function onTableChange(tableName) {
     if (response.data.成功) {
       availableFields.value = response.data.数据
     }
+    if (tableName.startsWith('dict_')) {
+      try {
+        const dictResponse = await axios.get(`${API_BASE}/dict-values/${encodeURIComponent(tableName)}`)
+        if (dictResponse.data.成功) {
+          const dictValues = dictResponse.data.数据.map(v => v.值 || v)
+          const skipFields = ['id', 'created_at', 'updated_at']
+          for (const field of availableFields.value) {
+            if (!skipFields.includes(field.字段名) && (!field.字典可选值 || field.字典可选值.length === 0)) {
+              field.字典可选值 = dictValues
+            }
+          }
+        }
+      } catch (dictErr) {
+        console.warn('加载字典值失败:', dictErr)
+      }
+    }
   } catch (error) {
     console.error('加载表字段失败:', error)
     ElMessage.error('加载表字段失败: ' + error.message)

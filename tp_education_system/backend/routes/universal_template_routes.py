@@ -884,13 +884,13 @@ async def get_available_tables():
 
 
 def _load_dict_relations_from_configs(table_name):
-    """从 field_configs 目录加载 to_dict 关联关系，返回 {中文字段名: {字典表, 字典值字段}}"""
+    """从 field_configs 目录加载 to_dict 关联关系，返回 [{中文字段名, targetField, 字典表, 字典值字段}]"""
     import os as _os
     try:
         configs_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), 'config', 'field_configs')
         if not _os.path.exists(configs_dir):
-            return {}
-        result = {}
+            return []
+        result = []
         for filename in _os.listdir(configs_dir):
             if not filename.endswith('.json'):
                 continue
@@ -902,15 +902,17 @@ def _load_dict_relations_from_configs(table_name):
                     continue
                 for fc in data.get('field_configs', []):
                     if fc.get('relation_type') == 'to_dict':
-                        result[fc['sourceField']] = {
+                        result.append({
+                            '中文字段名': fc['sourceField'],
+                            'targetField': fc.get('targetField', fc['sourceField']),
                             '字典表': fc.get('relation_table', ''),
                             '字典值字段': fc.get('relation_display_field', '')
-                        }
+                        })
             except Exception:
                 pass
         return result
     except Exception:
-        return {}
+        return []
 
 def _query_dict_values(dict_table, value_field):
     """查询字典表的所有可选值"""
@@ -960,19 +962,37 @@ async def get_table_columns(table_name: str):
         cur.close()
         conn.close()
         
-        dict_relations = _load_dict_relations_from_configs(table_name)
+        dict_relations_list = _load_dict_relations_from_configs(table_name)
         
         for col in columns:
             col_name = col['字段名']
             rel = field_relations.get(col_name, {})
             chinese_name = rel.get('中文字段名', col_name)
+            
+            rel2 = field_relations.get(chinese_name, {})
+            if rel2 and rel2.get('中文字段名'):
+                chinese_name = rel2.get('中文字段名', chinese_name)
+            
             col['中文字段名'] = chinese_name
             col['显示名称'] = chinese_name
             
-            dict_info = dict_relations.get(chinese_name, None)
-            if dict_info:
-                col['关联字典'] = dict_info
-                col['字典可选值'] = _query_dict_values(dict_info['字典表'], dict_info['字典值字段'])
+            matched_dict = None
+            for dr in dict_relations_list:
+                dr_chinese = dr['中文字段名']
+                dr_target = dr['targetField']
+                if chinese_name == dr_chinese or col_name == dr_chinese or chinese_name == dr_target or col_name == dr_target:
+                    matched_dict = {'字典表': dr['字典表'], '字典值字段': dr['字典值字段']}
+                    break
+            if not matched_dict:
+                for dr in dict_relations_list:
+                    dr_value_field = dr['字典值字段']
+                    if dr_value_field and (dr_value_field in col_name or col_name in dr_value_field):
+                        matched_dict = {'字典表': dr['字典表'], '字典值字段': dr['字典值字段']}
+                        break
+            
+            if matched_dict:
+                col['关联字典'] = matched_dict
+                col['字典可选值'] = _query_dict_values(matched_dict['字典表'], matched_dict['字典值字段'])
             elif rel.get('关联类型') == 'to_dict':
                 col['关联字典'] = {'字典表': rel['字典表'], '字典值字段': rel['字典值字段']}
                 col['字典可选值'] = _query_dict_values(rel['字典表'], rel['字典值字段'])
@@ -1001,17 +1021,21 @@ async def get_dict_values(table_name: str):
                     break
         
         if not value_field:
-            cursor = get_db_cursor()
-            cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = %s ORDER BY ordinal_position LIMIT 1", (table_name,))
-            first_col = cursor.fetchone()
-            cursor.close()
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = %s ORDER BY ordinal_position LIMIT 1", (table_name,))
+            first_col = cur.fetchone()
+            cur.close()
+            conn.close()
             value_field = first_col[0] if first_col else 'id'
             label_field = value_field
         
-        cursor = get_db_cursor()
-        cursor.execute(f"SELECT DISTINCT \"{label_field}\" FROM \"{table_name}\" WHERE \"{label_field}\" IS NOT NULL AND \"{label_field}\" != '' ORDER BY \"{label_field}\"")
-        rows = cursor.fetchall()
-        cursor.close()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(f"SELECT DISTINCT \"{label_field}\" FROM \"{table_name}\" WHERE \"{label_field}\" IS NOT NULL AND \"{label_field}\" != '' ORDER BY \"{label_field}\"")
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
         
         values = [{'值': row[0], '显示名称': str(row[0])} for row in rows]
         return {'成功': True, '数据': values, '字典表': table_name, '值字段': value_field}
