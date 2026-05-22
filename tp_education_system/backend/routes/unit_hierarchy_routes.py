@@ -47,6 +47,50 @@ async def get_unit_tree():
         session.close()
 
 
+@router.get("/levels")
+async def get_level_options():
+    """
+    获取五级单位层级选项（用于导入模板时的统计范围设置）
+    
+    返回五级每级可选的单位列表，前端用于级联下拉菜单
+    """
+    session = SessionLocal()
+    try:
+        result = session.execute(text("""
+            SELECT id, unit_level, unit_name, parent_id, full_path
+            FROM unit_hierarchy
+            ORDER BY unit_level, id
+        """))
+        
+        levels = {
+            "省": [],
+            "地区": [],
+            "县": [],
+            "镇": [],
+            "学校": []
+        }
+        
+        for row in result:
+            unit = {
+                "id": row.id,
+                "name": row.unit_name,
+                "parent_id": row.parent_id,
+                "full_path": row.full_path
+            }
+            level = row.unit_level
+            if level in levels:
+                levels[level].append(unit)
+        
+        return {
+            "success": True,
+            "levels": levels
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()
+
+
 @router.get("/children/{parent_id}")
 async def get_unit_children(parent_id: int):
     """

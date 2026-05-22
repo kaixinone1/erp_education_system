@@ -34,11 +34,11 @@ class UniversalTemplateEngine:
         
         参数:
             excel_path: Excel文件路径
-            template_name: 模板名称（如：职工退休呈报表）
+            template_name: 模板名称
             template_type: 模板类型（如：呈报表、审批表、公文）
         
         返回:
-            JSON配置字典（包含完整元数据）
+            JSON配置字典
         """
         wb = load_workbook(excel_path, read_only=False, keep_links=False)
         ws = wb.active
@@ -833,17 +833,28 @@ class UniversalTemplateEngine:
     def _query_field_value(self, cursor, table, column, query_params):
         """从数据库查询单个字段值"""
         try:
+            身份证号 = None
             if '职工ID' in query_params:
-                sql = f"SELECT {column} FROM {table} WHERE id_card = %s LIMIT 1"
-                cursor.execute(sql, (query_params['职工ID'],))
+                emp_id = query_params['职工ID']
+                if str(emp_id).isdigit():
+                    cursor.execute(
+                        "SELECT id_card FROM teacher_basic_info WHERE id = %s LIMIT 1",
+                        (int(emp_id),)
+                    )
+                    id_row = cursor.fetchone()
+                    if id_row:
+                        身份证号 = id_row[0]
+                else:
+                    身份证号 = emp_id
             elif '身份证号' in query_params:
+                身份证号 = query_params['身份证号']
+
+            if 身份证号:
                 sql = f"SELECT {column} FROM {table} WHERE id_card = %s LIMIT 1"
-                cursor.execute(sql, (query_params['身份证号'],))
-            else:
-                return None
-            
-            row = cursor.fetchone()
-            return row[0] if row else None
+                cursor.execute(sql, (身份证号,))
+                row = cursor.fetchone()
+                return row[0] if row else None
+            return None
         except Exception as e:
             print(f"查询字段值失败: {e}")
             return None
@@ -1129,20 +1140,26 @@ class UniversalTemplateEngine:
         
         try:
             cursor.execute("""
-                SELECT 模板ID, 模板名称, 模板类型, 原始文件路径, 创建时间, 更新时间
+                SELECT 模板ID, 模板名称, 模板类型, 原始文件路径, 创建时间, 更新时间, 配置JSON
                 FROM template_configs
                 ORDER BY 创建时间 DESC
             """)
             
             templates = []
             for row in cursor.fetchall():
+                config_json = row[6] or {}
+                if isinstance(config_json, str):
+                    import json
+                    config_json = json.loads(config_json)
+                模板分类 = config_json.get('模板分类', '个人表')
                 templates.append({
                     "模板ID": row[0],
                     "模板名称": row[1],
                     "模板类型": row[2],
                     "原始文件": row[3],
                     "创建时间": row[4],
-                    "更新时间": row[5]
+                    "更新时间": row[5],
+                    "模板分类": 模板分类
                 })
             
             return templates
