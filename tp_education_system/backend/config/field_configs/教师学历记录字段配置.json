@@ -44,7 +44,7 @@
     },
     {
       "sourceField": "学历类型",
-      "targetField": "学历类型",
+      "targetField": "education_type",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -62,7 +62,7 @@
     },
     {
       "sourceField": "学历",
-      "targetField": "学历",
+      "targetField": "education",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

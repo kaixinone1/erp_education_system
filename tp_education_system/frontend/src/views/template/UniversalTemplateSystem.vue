@@ -131,128 +131,190 @@
               <el-form-item label="列号">
                 <el-input-number v-model="fieldMappingForm.列号" :min="1" />
               </el-form-item>
-              <el-form-item label="数据源表">
-                <el-select v-model="fieldMappingForm.数据源表" placeholder="请选择数据来源表" filterable @change="onTableChange">
-                  <el-option 
-                    v-for="table in availableTables" 
-                    :key="table.英文表名" 
-                    :label="table.显示名称" 
-                    :value="table.英文表名" 
-                  />
-                </el-select>
+              <el-form-item label="数据来源">
+                <el-radio-group v-model="fieldMappingForm.数据来源类型" @change="onSourceTypeChange">
+                  <el-radio value="数据库字段">数据库字段</el-radio>
+                  <el-radio value="公式计算">公式计算</el-radio>
+                </el-radio-group>
               </el-form-item>
-              <el-form-item label="数据源字段">
-                <el-select v-model="fieldMappingForm.数据源字段" placeholder="请先选择数据源表" filterable :disabled="!fieldMappingForm.数据源表" @change="onFieldChange">
-                  <el-option 
-                    v-for="field in availableFields" 
-                    :key="field.字段名" 
-                    :label="field.显示名称" 
-                    :value="field.字段名" 
+              <template v-if="fieldMappingForm.数据来源类型 === '数据库字段'">
+                <el-form-item label="数据源表">
+                  <el-select ref="tableSelectRef" v-model="fieldMappingForm.数据源表" placeholder="请选择数据来源表" filterable @change="onTableChange">
+                    <el-option 
+                      v-for="table in availableTables" 
+                      :key="table.英文表名" 
+                      :label="table.显示名称" 
+                      :value="table.英文表名" 
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="数据源字段">
+                  <el-select ref="fieldSelectRef" v-model="fieldMappingForm.数据源字段" placeholder="请先选择数据源表" filterable :disabled="!fieldMappingForm.数据源表" @change="onFieldChange">
+                    <el-option 
+                      v-for="field in availableFields" 
+                      :key="field.字段名" 
+                      :label="field.显示名称" 
+                      :value="field.字段名" 
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item v-if="currentFieldDictValues.length > 0" label="可选值筛选">
+                  <el-select 
+                    :key="(fieldMappingForm.数据源表 || '') + '|' + (fieldMappingForm.数据源字段 || '')"
+                    ref="dictSelectRef"
+                    v-model="fieldMappingForm.字典值选择" 
+                    multiple 
+                    filterable 
+                    collapse-tags
+                    collapse-tags-tooltip
+                    placeholder="请选择要统计的值（可多选，留空=全选）" 
+                    style="width: 100%"
+                    @change="nextTick(() => { if (dictSelectRef) dictSelectRef.query = '' })"
+                  >
+                    <el-option 
+                      v-for="val in currentFieldDictValues" 
+                      :key="typeof val === 'object' ? val.值 : val" 
+                      :label="typeof val === 'object' ? val.标签 : val" 
+                      :value="typeof val === 'object' ? val.值 : val" 
+                    />
+                  </el-select>
+                  <div style="color:#909399;font-size:12px;margin-top:4px;">共 {{ currentFieldDictValues.length }} 个可选值，可多选筛选</div>
+                </el-form-item>
+                <el-form-item label="统计方法">
+                  <el-select v-model="fieldMappingForm.统计方法" placeholder="请选择统计方法">
+                    <el-option label="计数" value="计数" />
+                    <el-option label="求和" value="求和" />
+                    <el-option label="平均值" value="平均值" />
+                    <el-option label="最大值" value="最大值" />
+                    <el-option label="最小值" value="最小值" />
+                    <el-option label="求积" value="求积" />
+                    <el-option label="取值" value="取值" />
+                  </el-select>
+                </el-form-item>
+              </template>
+              <template v-if="fieldMappingForm.数据来源类型 === '公式计算'">
+                <el-form-item label="公式表达式">
+                  <el-input 
+                    v-model="fieldMappingForm.公式表达式" 
+                    type="textarea"
+                    :rows="2"
+                    placeholder="如：{绩效工资标准} * {绩效工资系数}"
                   />
-                </el-select>
-              </el-form-item>
-              <el-form-item v-if="currentFieldDictValues.length > 0" label="可选值筛选">
-                <el-select 
-                  v-model="fieldMappingForm.字典值选择" 
-                  multiple 
-                  filterable 
-                  collapse-tags
-                  collapse-tags-tooltip
-                  placeholder="请选择要统计的值（可多选，留空=全选）" 
-                  style="width: 100%"
-                >
-                  <el-option 
-                    v-for="val in currentFieldDictValues" 
-                    :key="val" 
-                    :label="val" 
-                    :value="val" 
-                  />
-                </el-select>
-                <div style="color:#909399;font-size:12px;margin-top:4px;">共 {{ currentFieldDictValues.length }} 个可选值，可多选筛选</div>
-              </el-form-item>
+                </el-form-item>
+                <div style="color:#909399;font-size:12px;margin:0 0 12px 0;padding-left:100px;line-height:1.6;">
+                  用法说明：用 <code>{`{字段名称}`}</code> 引用此模板中已配置映射的字段名。<br/>
+                  支持：<code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code> <code>^</code> 和 <code>()</code><br/>
+                  支持函数：<code>SUM(a,b,c)</code> <code>AVG(a,b,c)</code> <code>MAX(a,b,c)</code> <code>MIN(a,b,c)</code>
+                  <code>IF(条件, 真值, 假值)</code> <code>ROUND(x, n)</code> <code>ABS(x)</code>
+                </div>
+              </template>
               <el-button type="primary" @click="saveFieldMapping">保存映射</el-button>
             </el-form>
 
             <el-divider />
 
             <h4>已配置的字段映射</h4>
-            <el-table :data="fieldMappingsList" border size="small">
-              <el-table-column prop="字段名称" label="字段名称" width="100" />
-              <el-table-column prop="行号" label="行" width="60" />
-              <el-table-column prop="列号" label="列" width="60" />
-              <el-table-column prop="数据源" label="数据源" />
-            </el-table>
+            <div style="max-height: 300px; overflow-y: auto;">
+              <el-table :data="fieldMappingsList" border size="small">
+                <el-table-column prop="字段名称" label="字段名称" width="100" />
+                <el-table-column prop="行号" label="行" width="60" />
+                <el-table-column prop="列号" label="列" width="60" />
+                <el-table-column label="数据源">
+                  <template #default="scope">
+                    {{ scope.row.数据源_中文 || scope.row.数据源 }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="统计方法" label="统计方法" width="80" />
+                <el-table-column label="操作" width="60" fixed="right">
+                  <template #default="scope">
+                    <el-button type="danger" size="small" link @click="deleteFieldMapping(scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
         </el-col>
       </el-row>
     </el-dialog>
 
-    <el-dialog v-model="fillDialogVisible" title="自动填报" width="850px" top="3vh">
-      <template v-if="currentFillTemplate.模板分类 === '单位汇总表'">
-        <el-form label-width="80px">
-          <el-form-item label="年月">
-            <el-date-picker v-model="fillForm.年月" type="month" placeholder="选择年月" format="YYYY年M月" value-format="YYYY-MM" style="width: 220px" />
-          </el-form-item>
-          <el-form-item label="统计范围">
-            <template v-if="fillScopeSummary">
-              <el-tag type="primary" size="large" style="max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ fillScopeSummary }}</el-tag>
-              <el-button size="small" style="margin-left: 10px" type="warning" plain @click="showScopeDialog">修改</el-button>
-            </template>
-            <template v-else>
-              <span style="color: #909399; line-height: 32px;">未设置（将统计全部单位）</span>
-              <el-button size="small" style="margin-left: 10px" type="primary" @click="showScopeDialog">设置</el-button>
-            </template>
-          </el-form-item>
-          <el-form-item label="填报口径">
-            <template v-if="fillCriteriaSummary">
-              <el-tag type="success" size="large" style="max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ fillCriteriaSummary }}</el-tag>
-              <el-button size="small" style="margin-left: 10px" type="warning" plain @click="showCriteriaDialog">修改</el-button>
-            </template>
-            <template v-else>
-              <span style="color: #909399; line-height: 32px;">未设置（统计全部标签）</span>
-              <el-button size="small" style="margin-left: 10px" type="primary" @click="showCriteriaDialog">设置</el-button>
-            </template>
-          </el-form-item>
-        </el-form>
+    <el-dialog v-model="fillDialogVisible" title="自动填报" width="850px" top="3vh" @close="onFillDialogClose">
+      <!-- 阶段一：参数设置表单 -->
+      <template v-if="!fillParamsConfirmed">
+        <template v-if="currentFillTemplate.模板分类 === '单位汇总表'">
+          <el-form label-width="80px">
+            <el-form-item label="年月">
+              <el-date-picker v-model="fillForm.年月" type="month" placeholder="选择年月" format="YYYY年M月" value-format="YYYY-MM" style="width: 220px" />
+            </el-form-item>
+            <el-form-item label="统计范围">
+              <template v-if="fillScopeSummary">
+                <el-tag type="primary" size="large" style="max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ fillScopeSummary }}</el-tag>
+                <el-button size="small" style="margin-left: 10px" type="warning" plain @click="showScopeDialog">修改</el-button>
+              </template>
+              <template v-else>
+                <span style="color: #909399; line-height: 32px;">未设置（将统计全部单位）</span>
+                <el-button size="small" style="margin-left: 10px" type="primary" @click="showScopeDialog">设置</el-button>
+              </template>
+            </el-form-item>
+            <el-form-item label="填报口径">
+              <template v-if="fillCriteriaSummary">
+                <el-tag type="success" size="large" style="max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ fillCriteriaSummary }}</el-tag>
+                <el-button size="small" style="margin-left: 10px" type="warning" plain @click="showCriteriaDialog">修改</el-button>
+              </template>
+              <template v-else>
+                <span style="color: #909399; line-height: 32px;">未设置（统计全部标签）</span>
+                <el-button size="small" style="margin-left: 10px" type="primary" @click="showCriteriaDialog">设置</el-button>
+              </template>
+            </el-form-item>
+          </el-form>
+        </template>
+
+        <template v-else>
+          <el-form label-width="80px">
+            <el-form-item label="职工查询">
+              <el-select
+                ref="employeeSelectRef"
+                v-model="fillForm.职工ID"
+                filterable
+                remote
+                placeholder="输入身份证号、姓名或ID搜索"
+                :remote-method="searchEmployee"
+                :loading="employeeSearchLoading"
+                style="width: 100%"
+                value-key="职工ID"
+                @change="onEmployeeSelect; nextTick(() => { if (employeeSelectRef) employeeSelectRef.query = '' })"
+              >
+                <el-option v-for="emp in employeeSearchResults" :key="emp.职工ID" :value="emp.职工ID">
+                  <span style="font-weight: bold;">{{ emp.姓名 }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px;">{{ emp.身份证号 }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="fillForm.职工ID && selectedEmployeeName" label="确认职工">
+              <el-tag type="success" size="large">{{ selectedEmployeeName }}</el-tag>
+            </el-form-item>
+            <el-form-item label="年月">
+              <el-date-picker v-model="fillForm.年月" type="month" placeholder="选择年月" format="YYYY年M月" value-format="YYYY-MM" style="width: 220px" />
+            </el-form-item>
+          </el-form>
+        </template>
       </template>
 
-      <template v-else>
-        <el-form label-width="80px">
-          <el-form-item label="职工查询">
-            <el-select
-              v-model="fillForm.职工ID"
-              filterable
-              remote
-              reserve-keyword
-              placeholder="输入身份证号、姓名或ID搜索"
-              :remote-method="searchEmployee"
-              :loading="employeeSearchLoading"
-              style="width: 100%"
-              value-key="职工ID"
-              @change="onEmployeeSelect"
-            >
-              <el-option v-for="emp in employeeSearchResults" :key="emp.职工ID" :value="emp.职工ID">
-                <span style="font-weight: bold;">{{ emp.姓名 }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px;">{{ emp.身份证号 }}</span>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="fillForm.职工ID && selectedEmployeeName" label="确认职工">
-            <el-tag type="success" size="large">{{ selectedEmployeeName }}</el-tag>
-          </el-form-item>
-          <el-form-item label="年月">
-            <el-date-picker v-model="fillForm.年月" type="month" placeholder="选择年月" format="YYYY年M月" value-format="YYYY-MM" style="width: 220px" />
-          </el-form-item>
-        </el-form>
+      <!-- 阶段二：HTML预览（空白模板 或 填充后） -->
+      <template v-if="fillParamsConfirmed">
+        <div v-if="!fillResultHtml" id="blank-template-preview" class="preview-container" ref="previewContainerRef" v-html="blankTemplateHtml"></div>
+        <div v-if="fillResultHtml" id="filled-template-preview" class="preview-container" ref="previewContainerRef" v-html="fillResultHtml"></div>
       </template>
-
-      <div v-if="fillResultHtml" id="filled-template-preview" class="preview-container" v-html="fillResultHtml"></div>
 
       <template #footer>
-        <el-button @click="fillDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="fillTemplate">开始填报</el-button>
-        <el-button type="success" @click="exportFilledTemplate" :disabled="!fillResultHtml">导出Excel</el-button>
-        <el-button type="warning" @click="saveFilledTemplate" :disabled="!fillResultHtml" :loading="saving">保存</el-button>
+        <el-button @click="fillDialogVisible = false">关闭</el-button>
+        <!-- 阶段一：确定按钮 -->
+        <el-button v-if="!fillParamsConfirmed" type="primary" @click="confirmFillParams" :loading="confirmingParams">确定</el-button>
+        <!-- 阶段二：空白模板 → 开始填报 -->
+        <el-button v-if="fillParamsConfirmed && !fillResultHtml" type="primary" @click="fillTemplate">开始填报</el-button>
+        <!-- 阶段二：已填充 → 保存 -->
+        <el-button v-if="fillResultHtml" type="warning" @click="saveFilledTemplate" :loading="saving">保存</el-button>
+        <el-button v-if="fillResultHtml && !remarkEditable" @click="startEditRemark">修改备注</el-button>
+        <el-button v-if="fillResultHtml && remarkEditable" type="primary" @click="saveRemark">保存备注</el-button>
       </template>
     </el-dialog>
 
@@ -292,6 +354,33 @@
       </el-table>
       <template #footer>
         <el-button @click="historyDialogVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="fileSelectDialogVisible" :title="fileSelectTitle" width="650px" top="5vh">
+      <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 13px; color: #606266;">筛选年月：</span>
+        <el-date-picker v-model="fileSelectYearMonth" type="month" placeholder="全部" format="YYYY年M月" value-format="YYYY-MM" style="width: 200px" clearable @change="onFileSelectYearMonthChange" />
+        <el-button size="small" @click="clearFileSelectFilter" :disabled="!fileSelectYearMonth">清除筛选</el-button>
+        <span style="font-size: 12px; color: #909399;">共 {{ fileSelectRecords.length }} 条记录</span>
+      </div>
+      <div v-if="fileSelectRecords.length === 0" style="text-align:center;padding:30px;color:#999">
+        暂无已保存的文件，请先点击「填报」按钮自动填报并保存
+      </div>
+      <el-table v-else :data="fileSelectRecords" style="width:100%" max-height="350">
+        <el-table-column prop="保存时间" label="保存时间" width="160" />
+        <el-table-column prop="年月" label="年月" width="100" />
+        <el-table-column prop="单位名称" label="单位" min-width="120" />
+        <el-table-column label="操作" width="160">
+          <template #default="scope">
+            <el-button size="small" type="primary" @click="downloadSelectedFile(scope.row)">
+              {{ fileSelectActionLabel }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <el-button @click="fileSelectDialogVisible = false">关闭</el-button>
       </template>
     </el-dialog>
 
@@ -368,6 +457,14 @@ const historyDateRange = ref([])
 const historyRecords = ref([])
 const historyTemplateId = ref('')
 
+const fileSelectDialogVisible = ref(false)
+const fileSelectTitle = ref('')
+const fileSelectActionLabel = ref('')
+const fileSelectRecords = ref([])
+const fileSelectMode = ref('excel')
+const fileSelectRow = ref(null)
+const fileSelectYearMonth = ref('')  // 独立的年月筛选器，不依赖fillForm全局状态
+
 const fillLevelKeys = [
   { label: '省', index: 0 },
   { label: '地区', index: 1 },
@@ -404,6 +501,13 @@ const employeeSearchLoading = ref(false)
 const employeeSearchResults = ref([])
 const selectedEmployeeName = ref('')
 const fillResultHtml = ref('')
+const blankTemplateHtml = ref('')
+const fillParamsConfirmed = ref(false)
+const previewContainerRef = ref(null)
+const remarkEditable = ref(false)
+const editedRemark = ref('')
+const confirmingParams = ref(false)
+const filledConfigFromFill = ref(null)  // 存储 /fill 返回的已填充配置，避免重复填充
 
 const fillScopeSummary = computed(() => {
   const s = fillScope.value
@@ -466,17 +570,26 @@ const importForm = ref({
 })
 
 const fieldMappingForm = ref({
-  模板ID: '',
-  字段名称: '',
-  行号: 1,
-  列号: 1,
-  数据源表: '',
-  数据源字段: '',
-   字典值选择: []
-})
+    模板ID: '',
+    字段名称: '',
+    行号: 1,
+    列号: 1,
+    数据来源类型: '数据库字段',
+    数据源表: '',
+    数据源字段: '',
+    字典值选择: [],
+    统计方法: '求和',
+    公式表达式: ''
+  })
 
 const fieldMappingsList = ref([])
 const currentFieldDictValues = ref([])
+const availableTables = ref([])
+const availableFields = ref([])
+const tableSelectRef = ref(null)
+const fieldSelectRef = ref(null)
+const dictSelectRef = ref(null)
+const employeeSelectRef = ref(null)
 
 const fillForm = ref({
   模板ID: '',
@@ -495,9 +608,10 @@ onMounted(() => {
 
 async function loadTemplates() {
   try {
-    const response = await axios.get(`${API_BASE}/list`)
-    if (response.data.成功) {
-      templates.value = response.data.数据
+    const resp = await fetch(`${API_BASE}/list`)
+    const data = await resp.json()
+    if (data.成功) {
+      templates.value = data.数据
     }
   } catch (error) {
     ElMessage.error('加载模板列表失败: ' + error.message)
@@ -880,9 +994,10 @@ function closePreviewDialog() {
 
 async function loadAvailableTables() {
   try {
-    const response = await axios.get(`${API_BASE}/available-tables`)
-    if (response.data.成功) {
-      availableTables.value = response.data.数据
+    const resp = await fetch(`${API_BASE}/available-tables`)
+    const data = await resp.json()
+    if (data.成功) {
+      availableTables.value = data.数据
     }
   } catch (error) {
     console.error('加载数据表列表失败:', error)
@@ -890,56 +1005,75 @@ async function loadAvailableTables() {
 }
 
 async function onTableChange(tableName) {
+  availableFields.value = []
+  fieldMappingForm.value.数据源字段 = ''
+  fieldMappingForm.value.字典值选择 = []
+  currentFieldDictValues.value = []
   if (!tableName) {
-    availableFields.value = []
-    fieldMappingForm.value.数据源字段 = ''
-    fieldMappingForm.value.字典值选择 = []
-    currentFieldDictValues.value = []
     return
   }
   try {
-    const response = await axios.get(`${API_BASE}/table-columns/${encodeURIComponent(tableName)}`)
-    if (response.data.成功) {
-      availableFields.value = response.data.数据
-    }
-    if (tableName.startsWith('dict_')) {
-      try {
-        const dictResponse = await axios.get(`${API_BASE}/dict-values/${encodeURIComponent(tableName)}`)
-        if (dictResponse.data.成功) {
-          const dictValues = dictResponse.data.数据.map(v => v.值 || v)
-          const skipFields = ['id', 'created_at', 'updated_at']
-          for (const field of availableFields.value) {
-            if (!skipFields.includes(field.字段名) && (!field.字典可选值 || field.字典可选值.length === 0)) {
-              field.字典可选值 = dictValues
-            }
-          }
-        }
-      } catch (dictErr) {
-        console.warn('加载字典值失败:', dictErr)
-      }
-    }
+    const resp = await fetch(`${API_BASE}/table-columns/${encodeURIComponent(tableName)}`)
+    const data = await resp.json()
+    availableFields.value = data.成功 ? (data.数据 || []) : []
   } catch (error) {
+    availableFields.value = []
     console.error('加载表字段失败:', error)
     ElMessage.error('加载表字段失败: ' + error.message)
   }
+  nextTick(() => { if (tableSelectRef.value) tableSelectRef.value.query = '' })
 }
 
-function onFieldChange(fieldName) {
+async function onFieldChange(fieldName) {
   fieldMappingForm.value.字典值选择 = []
   currentFieldDictValues.value = []
   if (!fieldName) return
+  const tableName = fieldMappingForm.value.数据源表
   const field = availableFields.value.find(f => f.字段名 === fieldName)
   if (field && field.字典可选值 && field.字典可选值.length > 0) {
     currentFieldDictValues.value = field.字典可选值
+    console.log(`[可选值] 使用缓存: ${tableName}.${fieldName}, 共 ${currentFieldDictValues.value.length} 个值`)
+  } else if (field && tableName) {
+    try {
+      const url = `${API_BASE}/table-distinct-values/${encodeURIComponent(tableName)}/${encodeURIComponent(fieldName)}`
+      console.log(`[可选值] 请求API: ${url}`)
+      const resp = await fetch(url)
+      const data = await resp.json()
+      console.log(`[可选值] API响应: status=${resp.status}, 成功=${data.成功}, 数量=${data.数量}`)
+      if (data.成功 && data.数据 && data.数据.length > 0) {
+        field.字典可选值 = data.数据
+        currentFieldDictValues.value = data.数据
+      } else if (data.成功 && data.数据 && data.数据.length === 0) {
+        console.log(`[可选值] ${tableName}.${fieldName} 无数据`)
+        currentFieldDictValues.value = []
+      } else {
+        console.warn(`[可选值] ${tableName}.${fieldName} 返回异常:`, data)
+      }
+    } catch (e) {
+      console.error(`[可选值] ${tableName}.${fieldName} 请求失败:`, e)
+    }
   }
+  nextTick(() => {
+    if (fieldSelectRef.value) fieldSelectRef.value.query = ''
+    if (dictSelectRef.value) dictSelectRef.value.query = ''
+  })
 }
 
 async function showFieldMappingDialog(row) {
-  currentTemplateId.value = row.模板ID
-  fieldMappingForm.value.模板ID = row.模板ID
+  if (!row || !row.模板ID) {
+    ElMessage.warning('模板数据异常，请刷新页面重试')
+    return
+  }
+
+  const templateId = row.模板ID
+  currentTemplateId.value = templateId
+  fieldMappingForm.value.模板ID = templateId
+  fieldMappingForm.value.数据来源类型 = '数据库字段'
   fieldMappingForm.value.数据源表 = ''
   fieldMappingForm.value.数据源字段 = ''
   fieldMappingForm.value.字典值选择 = []
+  fieldMappingForm.value.统计方法 = '求和'
+  fieldMappingForm.value.公式表达式 = ''
   currentFieldDictValues.value = []
   availableFields.value = []
   fieldMappingDialogVisible.value = true
@@ -947,24 +1081,32 @@ async function showFieldMappingDialog(row) {
   loadAvailableTables()
 
   try {
-    const response = await axios.get(`${API_BASE}/preview/${row.模板ID}`)
-    if (response.data.成功) {
+    const resp = await fetch(`${API_BASE}/preview/${templateId}`)
+    const data = await resp.json()
+    if (data.成功) {
       await nextTick()
       const previewDiv = document.getElementById('mapping-template-preview')
       if (previewDiv) {
-        previewDiv.innerHTML = response.data.数据.HTML
+        previewDiv.innerHTML = data.数据.HTML
       }
     }
 
-    const mappingsResponse = await axios.get(`${API_BASE}/field-mappings/${row.模板ID}`)
-    if (mappingsResponse.data.成功) {
-      const mappings = mappingsResponse.data.数据
-      fieldMappingsList.value = Object.keys(mappings).map(key => ({
-        字段名称: key,
-        行号: mappings[key].行,
-        列号: mappings[key].列,
-        数据源: mappings[key].数据源
-      }))
+    const mResp = await fetch(`${API_BASE}/field-mappings/${templateId}`)
+    const mData = await mResp.json()
+    if (mData.成功) {
+      const mappings = mData.数据
+      fieldMappingsList.value = Object.keys(mappings).map(key => {
+        const m = mappings[key]
+        const isFormula = m.转换函数 && !['计数','求和','平均值','最大值','最小值','求积','取值'].includes(m.转换函数)
+        return {
+          字段名称: key,
+          行号: m.行,
+          列号: m.列,
+          数据源: isFormula ? `公式: ${m.转换函数}` : (m.数据源 || ''),
+          数据源_中文: isFormula ? `公式: ${m.转换函数}` : (m.数据源_中文 || ''),
+          统计方法: isFormula ? '公式' : (m.转换函数 || '')
+        }
+      })
     }
   } catch (error) {
     ElMessage.error('加载失败: ' + error.message)
@@ -975,10 +1117,22 @@ function handleCellClick(event) {
   const cell = event.target.closest('td')
   if (!cell) return
 
-  const row = cell.parentElement
-  const table = row.parentElement
-  const rowIndex = Array.from(table.children).indexOf(row) + 1
-  const colIndex = Array.from(row.children).indexOf(cell) + 1
+  // 使用 data-row 和 data-col 属性获取实际Excel坐标，而非DOM位置
+  // 因为合并单元格使用了colspan/rowspan，DOM位置不等于实际坐标
+  const rowIndex = parseInt(cell.getAttribute('data-row') || '0')
+  const colIndex = parseInt(cell.getAttribute('data-col') || '0')
+
+  if (!rowIndex || !colIndex) {
+    // 降级：使用DOM位置
+    const row = cell.parentElement
+    const table = row.parentElement
+    const domRow = Array.from(table.children).indexOf(row) + 1
+    const domCol = Array.from(row.children).indexOf(cell) + 1
+    ElMessage.warning(`无法获取单元格坐标，使用DOM位置：第${domRow}行第${domCol}列`)
+    fieldMappingForm.value.行号 = domRow
+    fieldMappingForm.value.列号 = domCol
+    return
+  }
 
   fieldMappingForm.value.行号 = rowIndex
   fieldMappingForm.value.列号 = colIndex
@@ -991,19 +1145,49 @@ async function saveFieldMapping() {
     ElMessage.warning('请输入字段名称')
     return
   }
-  if (!fieldMappingForm.value.数据源表 || !fieldMappingForm.value.数据源字段) {
+
+  const duplicate = fieldMappingsList.value.find(
+    m => m.字段名称 === fieldMappingForm.value.字段名称
+  )
+  if (duplicate) {
+    try {
+      await ElMessageBox.confirm(
+        `字段名称"${fieldMappingForm.value.字段名称}"已存在（行${duplicate.行号}列${duplicate.列号}），是否覆盖？`,
+        '名称重复',
+        { confirmButtonText: '覆盖', cancelButtonText: '取消', type: 'warning' }
+      )
+    } catch {
+      return
+    }
+  }
+
+  const isDbField = fieldMappingForm.value.数据来源类型 === '数据库字段'
+
+  if (isDbField && (!fieldMappingForm.value.数据源表 || !fieldMappingForm.value.数据源字段)) {
     ElMessage.warning('请配置数据源')
     return
   }
 
+  if (!isDbField && !fieldMappingForm.value.公式表达式) {
+    ElMessage.warning('请输入公式表达式')
+    return
+  }
+
   try {
-    const response = await axios.post(`${API_BASE}/field-mapping`, {
+    const requestBody = {
       模板ID: fieldMappingForm.value.模板ID,
       字段名称: fieldMappingForm.value.字段名称,
       行号: fieldMappingForm.value.行号,
       列号: fieldMappingForm.value.列号,
-      数据源: `${fieldMappingForm.value.数据源表}.${fieldMappingForm.value.数据源字段}`
-    })
+      数据源: isDbField
+        ? `${fieldMappingForm.value.数据源表}.${fieldMappingForm.value.数据源字段}`
+        : '',
+      转换函数: isDbField
+        ? fieldMappingForm.value.统计方法
+        : fieldMappingForm.value.公式表达式,
+      字典值选择: fieldMappingForm.value.字典值选择 || []
+    }
+    const response = await axios.post(`${API_BASE}/field-mapping`, requestBody)
 
     if (response.data.成功) {
       ElMessage.success('字段映射保存成功')
@@ -1011,16 +1195,76 @@ async function saveFieldMapping() {
       const mappingsResponse = await axios.get(`${API_BASE}/field-mappings/${fieldMappingForm.value.模板ID}`)
       if (mappingsResponse.data.成功) {
         const mappings = mappingsResponse.data.数据
-        fieldMappingsList.value = Object.keys(mappings).map(key => ({
-          字段名称: key,
-          行号: mappings[key].行,
-          列号: mappings[key].列,
-          数据源: mappings[key].数据源
-        }))
+        fieldMappingsList.value = Object.keys(mappings).map(key => {
+          const m = mappings[key]
+          const isFormula = m.转换函数 && !['计数','求和','平均值','最大值','最小值','求积','取值'].includes(m.转换函数)
+          return {
+            字段名称: key,
+            行号: m.行,
+            列号: m.列,
+            数据源: isFormula ? `公式: ${m.转换函数}` : (m.数据源 || ''),
+            数据源_中文: isFormula ? `公式: ${m.转换函数}` : (m.数据源_中文 || ''),
+            统计方法: isFormula ? '公式' : (m.转换函数 || ''),
+            字典值选择: m.字典值选择 || []
+          }
+        })
       }
     }
   } catch (error) {
     ElMessage.error('保存失败: ' + error.message)
+  }
+}
+
+async function deleteFieldMapping(row) {
+  try {
+    await ElMessageBox.confirm(`确定要删除字段"${row.字段名称}"的映射吗？`, '确认删除', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    const resp = await fetch(
+      `${API_BASE}/field-mapping/${encodeURIComponent(fieldMappingForm.value.模板ID)}/${encodeURIComponent(row.字段名称)}`,
+      { method: 'DELETE' }
+    )
+    const data = await resp.json()
+    if (data.成功) {
+      ElMessage.success('已删除')
+      const mappingsResponse = await fetch(`${API_BASE}/field-mappings/${fieldMappingForm.value.模板ID}`)
+      const mappingsData = await mappingsResponse.json()
+      if (mappingsData.成功) {
+        const mappings = mappingsData.数据
+        fieldMappingsList.value = Object.keys(mappings).map(key => {
+          const m = mappings[key]
+          const isFormula = m.转换函数 && !['计数','求和','平均值','最大值','最小值','求积','取值'].includes(m.转换函数)
+          return {
+            字段名称: key,
+            行号: m.行,
+            列号: m.列,
+            数据源: isFormula ? `公式: ${m.转换函数}` : (m.数据源 || ''),
+            数据源_中文: isFormula ? `公式: ${m.转换函数}` : (m.数据源_中文 || ''),
+            统计方法: isFormula ? '公式' : (m.转换函数 || '')
+          }
+        })
+      }
+    } else {
+      ElMessage.error(data.消息 || '删除失败')
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('删除失败: ' + error.message)
+    }
+  }
+}
+
+function onSourceTypeChange(newType) {
+  if (newType === '公式计算') {
+    fieldMappingForm.value.数据源表 = ''
+    fieldMappingForm.value.数据源字段 = ''
+    fieldMappingForm.value.字典值选择 = []
+    currentFieldDictValues.value = []
+    availableFields.value = []
+  } else {
+    fieldMappingForm.value.公式表达式 = ''
   }
 }
 
@@ -1033,13 +1277,64 @@ function showFillDialog(row) {
   fillScope.value = makeFillEmptyScope()
   fillCriteriaTags.value = []
   fillResultHtml.value = ''
+  blankTemplateHtml.value = ''
+  fillParamsConfirmed.value = false
   selectedEmployeeName.value = ''
   employeeSearchResults.value = []
+  remarkEditable.value = false
+  editedRemark.value = ''
+  filledConfigFromFill.value = null
   fillDialogVisible.value = true
 
   if (row.模板分类 === '单位汇总表') {
     loadFillUnitLevels()
     loadAllTags()
+  }
+}
+
+function onFillDialogClose() {
+  // 关闭时重置状态
+  fillParamsConfirmed.value = false
+  fillResultHtml.value = ''
+  blankTemplateHtml.value = ''
+  remarkEditable.value = false
+  editedRemark.value = ''
+  filledConfigFromFill.value = null
+}
+
+// 确认填报参数，加载空白模板
+async function confirmFillParams() {
+  // 校验参数
+  if (currentFillTemplate.value.模板分类 !== '单位汇总表') {
+    if (!fillForm.value.职工ID) {
+      ElMessage.warning('请选择职工')
+      return
+    }
+  }
+  if (!fillForm.value.年月) {
+    ElMessage.warning('请选择年月')
+    return
+  }
+
+  confirmingParams.value = true
+  try {
+    // 加载空白模板HTML（不填充数据），传递年月用于解析{{年月+1}}等日期占位符
+    let url = currentFillTemplate.value.模板分类 === '单位汇总表'
+      ? `${API_BASE}/preview/${fillForm.value.模板ID}`
+      : `${API_BASE}/preview/${fillForm.value.模板ID}?teacher_id=0`
+    if (fillForm.value.年月) {
+      url += (url.includes('?') ? '&' : '?') + `年月=${encodeURIComponent(fillForm.value.年月)}`
+    }
+    const response = await axios.get(url)
+    if (response.data.成功) {
+      blankTemplateHtml.value = response.data.数据?.HTML || ''
+      fillParamsConfirmed.value = true
+      ElMessage.success('参数已确认，请点击「开始填报」填充数据')
+    }
+  } catch (error) {
+    ElMessage.error('加载模板失败: ' + (error.response?.data?.detail || error.message))
+  } finally {
+    confirmingParams.value = false
   }
 }
 
@@ -1108,23 +1403,39 @@ async function fillTemplate() {
 
     if (currentFillTemplate.value.模板分类 === '单位汇总表') {
       const scopeData = { 单位范围: {} }
+      let hasAnyScope = false
       for (const key of Object.keys(fillScope.value)) {
         const item = fillScope.value[key]
         if (item.勾选 && item.unit_id) {
           scopeData.单位范围[key] = { unit_id: item.unit_id, unit_name: item.unit_name }
+          hasAnyScope = true
         }
       }
-      requestBody.统计范围 = scopeData
-      requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+      const hasAnyTags = fillCriteriaTags.value && fillCriteriaTags.value.length > 0
+      if (hasAnyScope) {
+        requestBody.统计范围 = scopeData
+      }
+      if (hasAnyTags) {
+        requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+      }
     }
+
+    console.log('[填报] 请求体:', JSON.stringify(requestBody, null, 2))
 
     const response = await axios.post(`${API_BASE}/fill`, requestBody)
 
+    console.log('[填报] 响应成功:', response.data.成功)
+    console.log('[填报] HTML长度:', response.data.数据?.HTML?.length || 0)
+    
     if (response.data.成功) {
       fillResultHtml.value = response.data.数据?.HTML || ''
+      // 存储已填充配置，避免后续保存时重复填充
+      filledConfigFromFill.value = response.data.数据?.配置 || null
+      remarkEditable.value = false
       ElMessage.success('数据填报成功')
     }
   } catch (error) {
+    console.error('[填报] 失败:', error.message, error)
     ElMessage.error('填报失败: ' + error.message)
   }
 }
@@ -1178,82 +1489,167 @@ function getFillRequestBodyForRow(row) {
   }
   if (row.模板分类 === '单位汇总表') {
     const scopeData = { 单位范围: {} }
+    let hasAnyScope = false
     for (const key of Object.keys(fillScope.value)) {
       const item = fillScope.value[key]
       if (item.勾选 && item.unit_id) {
         scopeData.单位范围[key] = { unit_id: item.unit_id, unit_name: item.unit_name }
+        hasAnyScope = true
       }
     }
-    requestBody.统计范围 = scopeData
-    requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+    const hasAnyTags = fillCriteriaTags.value && fillCriteriaTags.value.length > 0
+    if (hasAnyScope) {
+      requestBody.统计范围 = scopeData
+    }
+    if (hasAnyTags) {
+      requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+    }
   }
   return requestBody
 }
 
 async function exportTemplate(row) {
-  try {
-    const requestBody = getFillRequestBodyForRow(row)
-    if (!requestBody) {
-      ElMessage.warning('请先点击"填报"按钮，设置查询条件后再导出')
-      return
-    }
-    const response = await axios.post(`${API_BASE}/export`, requestBody, {
-      responseType: 'blob'
-    })
-    const url = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', getExportFilename(response, `${row.模板名称}.xlsx`))
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    ElMessage.success('导出成功')
-  } catch (error) {
-    ElMessage.error('导出失败: ' + (error.response?.data?.detail || error.message))
-  }
+  await openFileSelectDialog(row, 'excel')
 }
 
 async function handlePrint(row) {
-  try {
-    const response = await axios.get(`${API_BASE}/preview/${row.模板ID}`)
-    if (response.data.成功 && response.data.数据 && response.data.数据.HTML) {
-      const printWindow = window.open('', '_blank', 'width=1000,height=800')
-      printWindow.document.write(`
-        <html>
-          <head><title>${row.模板名称}</title></head>
-          <body>${response.data.数据.HTML}</body>
-        </html>
-      `)
-      printWindow.document.close()
-      printWindow.focus()
-      printWindow.print()
-    }
-  } catch (error) {
-    ElMessage.error('打印失败: ' + error.message)
-  }
+  await openFileSelectDialog(row, 'print')
 }
 
 async function exportPdf(row) {
+  await openFileSelectDialog(row, 'pdf')
+}
+
+async function fetchSavedFiles(templateId, yearMonth) {
+  let url = `${API_BASE}/saved-files/${templateId}`
+  if (yearMonth) {
+    const [y, mStr] = yearMonth.split('-')
+    const m = parseInt(mStr)
+    const ymFormatted = `${y}年${m}月`
+    url += `?年月=${encodeURIComponent(ymFormatted)}`
+  }
+  const response = await axios.get(url)
+  return response.data.数据 || []
+}
+
+async function openFileSelectDialog(row, mode) {
+  fileSelectRow.value = row
+  fileSelectMode.value = mode
+  fileSelectYearMonth.value = ''  // 重置筛选器，默认显示全部
+  if (mode === 'print') {
+    fileSelectTitle.value = '选择要打印的文件'
+    fileSelectActionLabel.value = '打印'
+  } else if (mode === 'pdf') {
+    fileSelectTitle.value = '选择要导出的PDF文件'
+    fileSelectActionLabel.value = '导出PDF'
+  } else {
+    fileSelectTitle.value = '选择要导出的Excel文件'
+    fileSelectActionLabel.value = '导出Excel'
+  }
   try {
-    const requestBody = getFillRequestBodyForRow(row)
-    if (!requestBody) {
-      ElMessage.warning('请先点击"填报"按钮，设置查询条件后再导出')
+    fileSelectRecords.value = await fetchSavedFiles(row.模板ID, '')
+  } catch (error) {
+    fileSelectRecords.value = []
+    ElMessage.error('获取文件列表失败: ' + (error.response?.data?.detail || error.message))
+  }
+  fileSelectDialogVisible.value = true
+}
+
+async function onFileSelectYearMonthChange(value) {
+  if (!fileSelectRow.value) return
+  try {
+    fileSelectRecords.value = await fetchSavedFiles(fileSelectRow.value.模板ID, value || '')
+  } catch (error) {
+    fileSelectRecords.value = []
+    ElMessage.error('获取文件列表失败: ' + (error.response?.data?.detail || error.message))
+  }
+}
+
+function clearFileSelectFilter() {
+  fileSelectYearMonth.value = ''
+  onFileSelectYearMonthChange('')
+}
+
+function downloadSelectedFile(record) {
+  fileSelectDialogVisible.value = false
+  if (fileSelectMode.value === 'print') {
+    if (!record.有HTML) {
+      ElMessage.warning('该记录无HTML文件，请先点击「填报」生成文件')
       return
     }
-    ElMessage.info('正在生成PDF，请稍候...')
-    const response = await axios.post(`${API_BASE}/export-pdf`, requestBody, {
-      responseType: 'blob'
-    })
-    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const htmlUrl = `${API_BASE}/history-file/${record.ID}?format=HTML`
+    const overlay = document.createElement('div')
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:#fff;display:flex;flex-direction:column;'
+    const closeBar = document.createElement('div')
+    closeBar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#f5f5f5;border-bottom:1px solid #ddd;flex-shrink:0;'
+    const titleSpan = document.createElement('span')
+    titleSpan.style.cssText = 'font-size:14px;color:#333;'
+    titleSpan.textContent = '打印预览'
+    const btnGroup = document.createElement('div')
+    btnGroup.style.cssText = 'display:flex;gap:8px;'
+    const printBtn = document.createElement('button')
+    printBtn.textContent = '打印'
+    printBtn.style.cssText = 'padding:6px 16px;background:#409eff;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px;'
+    printBtn.onclick = () => {
+      try {
+        printIframe.contentWindow.focus()
+        printIframe.contentWindow.print()
+      } catch (e) {
+        ElMessage.error('打印失败: ' + e.message)
+      }
+    }
+    const closeBtn = document.createElement('button')
+    closeBtn.textContent = '关闭'
+    closeBtn.style.cssText = 'padding:6px 16px;background:#f56c6c;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px;'
+    closeBtn.onclick = () => {
+      if (overlay.parentNode) {
+        document.body.removeChild(overlay)
+      }
+    }
+    btnGroup.appendChild(printBtn)
+    btnGroup.appendChild(closeBtn)
+    closeBar.appendChild(titleSpan)
+    closeBar.appendChild(btnGroup)
+    overlay.appendChild(closeBar)
+    const printIframe = document.createElement('iframe')
+    printIframe.src = htmlUrl
+    printIframe.style.cssText = 'flex:1;width:100%;border:none;'
+    overlay.appendChild(printIframe)
+    document.body.appendChild(overlay)
+    printIframe.onload = () => {
+      setTimeout(() => {
+        try {
+          printIframe.contentWindow.focus()
+          printIframe.contentWindow.print()
+        } catch (e) {
+          ElMessage.error('打印失败: ' + e.message)
+        }
+      }, 600)
+    }
+  } else if (fileSelectMode.value === 'pdf') {
+    if (!record.有PDF) {
+      ElMessage.warning('该记录无PDF文件')
+      return
+    }
     const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', getExportFilename(response, `${row.模板名称}.pdf`))
+    link.href = `${API_BASE}/history-file/${record.ID}?format=PDF`
+    link.setAttribute('download', '')
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     ElMessage.success('PDF导出成功')
-  } catch (error) {
-    ElMessage.error('PDF导出失败: ' + (error.response?.data?.detail || error.message))
+  } else {
+    if (!record.有Excel) {
+      ElMessage.warning('该记录无Excel文件')
+      return
+    }
+    const link = document.createElement('a')
+    link.href = `${API_BASE}/history-file/${record.ID}?format=Excel`
+    link.setAttribute('download', '')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    ElMessage.success('Excel导出成功')
   }
 }
 
@@ -1280,14 +1676,21 @@ async function exportFilledTemplate() {
     }
     if (currentFillTemplate.value.模板分类 === '单位汇总表') {
       const scopeData = { 单位范围: {} }
+      let hasAnyScope2 = false
       for (const key of Object.keys(fillScope.value)) {
         const item = fillScope.value[key]
         if (item.勾选 && item.unit_id) {
           scopeData.单位范围[key] = { unit_id: item.unit_id, unit_name: item.unit_name }
+          hasAnyScope2 = true
         }
       }
-      requestBody.统计范围 = scopeData
-      requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+      const hasAnyTags2 = fillCriteriaTags.value && fillCriteriaTags.value.length > 0
+      if (hasAnyScope2) {
+        requestBody.统计范围 = scopeData
+      }
+      if (hasAnyTags2) {
+        requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+      }
     }
 
     const response = await axios.post(`${API_BASE}/export`, requestBody, {
@@ -1323,15 +1726,34 @@ async function saveFilledTemplate() {
     }
     if (currentFillTemplate.value.模板分类 === '单位汇总表') {
       const scopeData = { 单位范围: {} }
+      let hasAnyScope3 = false
       for (const key of Object.keys(fillScope.value)) {
         const item = fillScope.value[key]
         if (item.勾选 && item.unit_id) {
           scopeData.单位范围[key] = { unit_id: item.unit_id, unit_name: item.unit_name }
+          hasAnyScope3 = true
         }
       }
-      requestBody.统计范围 = scopeData
-      requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+      const hasAnyTags3 = fillCriteriaTags.value && fillCriteriaTags.value.length > 0
+      if (hasAnyScope3) {
+        requestBody.统计范围 = scopeData
+      }
+      if (hasAnyTags3) {
+        requestBody.填报口径 = { 标签ID列表: fillCriteriaTags.value }
+      }
     }
+    
+    // 发送已填充配置（避免后端重新填充，保证数据一致性）
+    if (filledConfigFromFill.value) {
+      requestBody.填报配置 = filledConfigFromFill.value
+    }
+    
+    // 读取编辑后的备注
+    const remark = getEditedRemark()
+    if (remark) {
+      requestBody.备注 = remark
+    }
+    
     const response = await axios.post(`${API_BASE}/save`, requestBody)
     if (response.data.成功) {
       ElMessage.success(`保存成功！Excel: ${response.data.数据.Excel文件}${response.data.数据.PDF文件 ? '  PDF: ' + response.data.数据.PDF文件 : ''}`)
@@ -1341,6 +1763,141 @@ async function saveFilledTemplate() {
   } finally {
     saving.value = false
   }
+}
+
+// 使备注栏直接可编辑
+function makeRemarkEditable() {
+  const container = previewContainerRef.value
+  if (!container) return
+  
+  // 查找所有包含"备注"的单元格
+  const allCells = container.querySelectorAll('td, th, span, p, div')
+  let found = false
+  allCells.forEach((cell) => {
+    const text = cell.textContent || ''
+    if (text.includes('备注')) {
+      // 只对包含"备注"文字的 td 做可编辑
+      const td = cell.closest('td') || cell
+      td.setAttribute('contenteditable', 'true')
+      td.style.backgroundColor = '#fffbe6'
+      td.style.border = '2px dashed #faad14'
+      td.style.padding = '4px'
+      td.title = '点击此处直接编辑备注内容，完成后点击下方「保存备注」按钮'
+      remarkEditable.value = true
+      found = true
+    }
+  })
+  
+  if (!found) {
+    // 如果没找到备注栏，也查找"备注："前缀
+    allCells.forEach((cell) => {
+      const text = cell.textContent || ''
+      if (text.includes('备注：') && !cell.querySelector('[contenteditable]')) {
+        const td = cell.closest('td') || cell
+        td.setAttribute('contenteditable', 'true')
+        td.style.backgroundColor = '#fffbe6'
+        td.style.border = '2px dashed #faad14'
+        td.style.padding = '4px'
+        td.title = '点击此处直接编辑备注内容，完成后点击下方「保存备注」按钮'
+        remarkEditable.value = true
+      }
+    })
+  }
+}
+
+// 锁定备注栏（不可编辑）
+function lockRemark() {
+  const container = previewContainerRef.value
+  if (!container) return
+  const editableCells = container.querySelectorAll('[contenteditable="true"]')
+  editableCells.forEach((cell) => {
+    cell.removeAttribute('contenteditable')
+    cell.style.backgroundColor = ''
+    cell.style.border = ''
+    cell.style.padding = ''
+    cell.title = ''
+  })
+  remarkEditable.value = false
+}
+
+// 点击"修改备注"按钮，激活备注栏编辑
+async function startEditRemark() {
+  await nextTick()
+  makeRemarkEditable()
+}
+
+// 保存备注（纯前端操作：更新缓存中的备注，不调后端API）
+async function saveRemark() {
+  const container = previewContainerRef.value
+  if (!container) {
+    ElMessage.error('未找到备注区域')
+    return
+  }
+  
+  // 找到 contenteditable 的备注元素
+  const editableCell = container.querySelector('[contenteditable="true"]')
+  if (!editableCell) {
+    ElMessage.error('未找到可编辑的备注栏')
+    return
+  }
+  
+  // 用 innerText 读取内容（保留换行），再用 innerHTML 兜底处理 <br>、<div>、<p>
+  let remarkContent = (editableCell.innerText || editableCell.textContent || '').trim()
+  // 如果 innerText 没换行但 innerHTML 有 <br>、<div>、<p>，用 innerHTML 转换
+  if (!remarkContent.includes('\n')) {
+    const html = editableCell.innerHTML || ''
+    if (/<br/i.test(html) || /<div/i.test(html) || /<p/i.test(html)) {
+      remarkContent = html
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<div[^>]*>/gi, '\n')
+        .replace(/<\/div>/gi, '')
+        .replace(/<p[^>]*>/gi, '\n')
+        .replace(/<\/p>/gi, '')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\n{2,}/g, '\n')
+        .trim()
+    }
+  }
+  
+  // 去掉可能存在的"备注："前缀
+  const cleanedRemark = remarkContent.replace(/^备注[：:]\s*/, '')
+  
+  // 纯前端操作：更新缓存中的备注
+  editedRemark.value = cleanedRemark
+  
+  // 同步更新已填充配置中的备注单元格
+  if (filledConfigFromFill.value && filledConfigFromFill.value.单元格数据) {
+    for (const cell of filledConfigFromFill.value.单元格数据) {
+      const 显示值 = String(cell.显示值 || '')
+      if (显示值.startsWith('备注：') || 显示值 === '备注' || 显示值.includes('备注')) {
+        // 确保"备注："单独占一行，每条信息单独占一行
+        cell.显示值 = cleanedRemark ? `备注：\n${cleanedRemark}` : cleanedRemark
+        break
+      }
+    }
+  }
+  
+  // 锁定备注栏
+  lockRemark()
+  ElMessage.success('备注已保存到缓存，请点击「保存」按钮保存完整文件')
+}
+
+// 获取编辑后的备注（从DOM或已保存的编辑记录）
+function getEditedRemark() {
+  // 优先从编辑记录中获取
+  if (editedRemark.value) {
+    return editedRemark.value
+  }
+  // 如果备注栏当前可编辑，从DOM中读取
+  const container = previewContainerRef.value
+  if (container) {
+    const editableCell = container.querySelector('[contenteditable="true"]')
+    if (editableCell) {
+      const text = (editableCell.textContent || '').trim()
+      if (text) return text
+    }
+  }
+  return ''
 }
 
 function openHistoryDialog(row) {

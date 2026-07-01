@@ -241,13 +241,97 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <!-- 导入对话框 -->
+    <el-dialog
+      v-model="importDialogVisible"
+      title="导入数据"
+      width="500px"
+      destroy-on-close
+    >
+      <div class="import-options">
+        <div class="import-option-card" @click="handleExportTemplate">
+          <el-icon :size="32"><Download /></el-icon>
+          <span class="option-title">导出模板</span>
+          <span class="option-desc">下载当前表结构的Excel模板文件</span>
+        </div>
+        <div class="import-option-card" @click="triggerImportFile">
+          <el-icon :size="32"><Upload /></el-icon>
+          <span class="option-title">导入数据</span>
+          <span class="option-desc">导入与本表模板一致的数据文件</span>
+        </div>
+      </div>
+      <input
+        ref="fileInputRef"
+        type="file"
+        accept=".xlsx,.xls"
+        style="display: none"
+        @change="handleFileSelected"
+      />
+      <div v-if="importFile" class="import-file-info">
+        <el-tag type="info" closable @close="importFile = null">{{ importFile.name }}</el-tag>
+        <el-button type="primary" size="small" :loading="importing" @click="handleImportSubmit" style="margin-left: 10px;">
+          开始导入
+        </el-button>
+      </div>
+      <div v-if="importResult" class="import-result">
+        <el-alert
+          :title="importResult.message"
+          :type="importResult.status === 'success' ? 'success' : 'error'"
+          :closable="false"
+          show-icon
+        />
+        <div v-if="importResult.status === 'success'" class="import-stats">
+          <span>成功导入：<strong>{{ importResult.inserted_count }}</strong> 条</span>
+          <span v-if="importResult.skipped_count > 0">，跳过重复：<strong>{{ importResult.skipped_count }}</strong> 条</span>
+        </div>
+        <div v-if="importResult.errors && importResult.errors.length > 0" class="import-errors">
+          <p class="error-title">数据验证错误：</p>
+          <ul>
+            <li v-for="(err, idx) in importResult.errors.slice(0, 10)" :key="idx">{{ err }}</li>
+            <li v-if="importResult.errors.length > 10">... 还有 {{ importResult.errors.length - 10 }} 条错误</li>
+          </ul>
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="closeImportDialog">关闭</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 重复检测对话框 -->
+    <el-dialog
+      v-model="duplicateDialogVisible"
+      title="重复数据检测"
+      width="600px"
+      destroy-on-close
+    >
+      <el-alert
+        :title="`发现 ${duplicateRecords.length} 条重复记录（${duplicateKey}重复），请选择处理方式：`"
+        type="warning"
+        :closable="false"
+        show-icon
+      />
+      <el-table :data="duplicateRecords" style="margin-top: 15px;" max-height="300" border>
+        <el-table-column prop="key_value" :label="duplicateKey" />
+        <el-table-column label="已有数据" width="80">
+          <template #default>
+            <el-tag type="warning">已存在</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <el-button @click="handleDuplicateCancel">取消导入</el-button>
+        <el-button type="warning" @click="handleDuplicateSkip">跳过重复</el-button>
+        <el-button type="danger" @click="handleDuplicateOverwrite">覆盖已有</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Plus, Upload } from '@element-plus/icons-vue'
+import { Search, Plus, Upload, Download } from '@element-plus/icons-vue'
 
 // 表格数据
 const loading = ref(false)
@@ -269,6 +353,19 @@ const currentId = ref<number | null>(null)
 const deathDialogVisible = ref(false)
 const deathSubmitting = ref(false)
 const deathFormRef = ref()
+
+// 导入相关
+const importDialogVisible = ref(false)
+const importFile = ref<File | null>(null)
+const importing = ref(false)
+const importResult = ref<any>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+// 重复检测
+const duplicateDialogVisible = ref(false)
+const duplicateRecords = ref<any[]>([])
+const duplicateKey = ref('')
+const duplicateStrategy = ref('')
 
 // 表单数据
 const formData = reactive({
@@ -510,8 +607,128 @@ const handleDelete = async (row: any) => {
 
 // 导入
 const handleImport = () => {
-  // 跳转到数据导入工作台
-  window.location.href = '/import/data-import'
+  importDialogVisible.value = true
+  importFile.value = null
+  importResult.value = null
+}
+
+// 关闭导入对话框
+const closeImportDialog = () => {
+  importDialogVisible.value = false
+  importFile.value = null
+  importResult.value = null
+}
+
+// 导出模板
+const handleExportTemplate = async () => {
+  try {
+    const response = await fetch('/api/auto-table/高龄老人补贴信息/export-template')
+    if (!response.ok) {
+      const err = await response.json()
+      ElMessage.error(err.detail || '导出模板失败')
+      return
+    }
+    
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    
+    const disposition = response.headers.get('Content-Disposition')
+    let filename = '高龄老人补贴信息_模板.xlsx'
+    if (disposition) {
+      const match = disposition.match(/filename\*=UTF-8''(.+)/)
+      if (match) {
+        filename = decodeURIComponent(match[1])
+      }
+    }
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+    
+    ElMessage.success('模板下载成功')
+  } catch (error) {
+    console.error('导出模板失败:', error)
+    ElMessage.error('导出模板失败')
+  }
+}
+
+// 触发文件选择
+const triggerImportFile = () => {
+  fileInputRef.value?.click()
+}
+
+// 文件选择
+const handleFileSelected = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    importFile.value = target.files[0]
+    importResult.value = null
+  }
+}
+
+// 提交导入
+const handleImportSubmit = async (strategy?: string) => {
+  if (!importFile.value) {
+    ElMessage.warning('请先选择文件')
+    return
+  }
+  
+  importing.value = true
+  importResult.value = null
+  
+  try {
+    const formData = new FormData()
+    formData.append('file', importFile.value)
+    formData.append('duplicate_strategy', strategy || 'cancel')
+    
+    const response = await fetch('/api/auto-table/高龄老人补贴信息/import-data', {
+      method: 'POST',
+      body: formData
+    })
+    
+    const result = await response.json()
+    importResult.value = result
+    
+    if (result.status === 'duplicate_found') {
+      duplicateRecords.value = result.duplicate_records || []
+      duplicateKey.value = result.unique_key || ''
+      duplicateStrategy.value = strategy || ''
+      duplicateDialogVisible.value = true
+    } else if (result.status === 'success') {
+      ElMessage.success(result.message)
+      loadData()
+    } else {
+      ElMessage.error(result.message)
+    }
+  } catch (error) {
+    console.error('导入失败:', error)
+    importResult.value = {
+      status: 'error',
+      message: '导入请求失败，请检查网络连接'
+    }
+  } finally {
+    importing.value = false
+  }
+}
+
+// 重复处理：取消
+const handleDuplicateCancel = () => {
+  duplicateDialogVisible.value = false
+}
+
+// 重复处理：跳过
+const handleDuplicateSkip = () => {
+  duplicateDialogVisible.value = false
+  handleImportSubmit('skip')
+}
+
+// 重复处理：覆盖
+const handleDuplicateOverwrite = () => {
+  duplicateDialogVisible.value = false
+  handleImportSubmit('overwrite')
 }
 
 // 重置表单
@@ -579,6 +796,85 @@ onMounted(() => {
 :deep(.death-row) {
   background-color: #f5f7fa;
   color: #909399;
+}
+
+/* 导入选项样式 */
+.import-options {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.import-option-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 32px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 180px;
+}
+
+.import-option-card:hover {
+  border-color: #409eff;
+  background-color: #ecf5ff;
+}
+
+.import-option-card .option-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #303133;
+}
+
+.import-option-card .option-desc {
+  font-size: 12px;
+  color: #909399;
+  text-align: center;
+}
+
+.import-file-info {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.import-result {
+  margin-top: 20px;
+}
+
+.import-stats {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f0f9eb;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.import-errors {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fef0f0;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.import-errors .error-title {
+  font-weight: bold;
+  color: #f56c6c;
+  margin-bottom: 5px;
+}
+
+.import-errors ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.import-errors li {
+  color: #f56c6c;
+  line-height: 1.6;
 }
 </style>
 

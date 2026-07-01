@@ -36,9 +36,9 @@ class TriggerMonitor:
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT 教师ID, 任职状态
+            SELECT id, employment_status
             FROM teacher_basic_info
-            WHERE 任职状态 IS NOT NULL
+            WHERE employment_status IS NOT NULL
         """)
 
         status_map = {}
@@ -127,8 +127,8 @@ class TriggerMonitor:
                         if not cursor.fetchone():
                             # 获取教师姓名
                             cursor.execute("""
-                                SELECT 姓名 FROM teacher_basic_info
-                                WHERE 教师ID = %s
+                                SELECT name FROM teacher_basic_info
+                                WHERE id = %s
                             """, (teacher_id,))
                             row = cursor.fetchone()
                             teacher_name = row[0] if row else "未知"
@@ -161,10 +161,16 @@ class TriggerMonitor:
         self.check_and_create_triggers()
 
 
+# 全局持久化的监听器实例（避免每次调用丢失缓存造成永远无法检测变化）
+_monitor_instance: Optional[TriggerMonitor] = None
+
+
 def run_trigger_monitor():
-    """触发监听器运行函数"""
-    monitor = TriggerMonitor()
-    monitor.run_once()
+    """触发监听器运行函数（使用全局单例避免缓存失效）"""
+    global _monitor_instance
+    if _monitor_instance is None:
+        _monitor_instance = TriggerMonitor()
+    _monitor_instance.run_once()
 
 
 if __name__ == "__main__":

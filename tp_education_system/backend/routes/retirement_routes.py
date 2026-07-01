@@ -16,12 +16,18 @@ def get_db_connection():
     )
 
 
-def calculate_retirement_old_policy(birth_date, gender):
-    """按旧政策计算退休日期"""
+def calculate_retirement_old_policy(birth_date, gender, personal_identity=None):
+    """按旧政策计算退休日期
+    - 男：60周岁
+    - 女干部：55周岁
+    - 女工人：50周岁
+    """
     if gender == '男':
         retirement_age = 60
+    elif personal_identity == '干部':
+        retirement_age = 55  # 女干部
     else:
-        retirement_age = 55
+        retirement_age = 50  # 女工人（默认）
     return birth_date + relativedelta(years=retirement_age)
 
 

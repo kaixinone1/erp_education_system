@@ -23,6 +23,9 @@ from routes.performance_pay_history_routes import router as performance_pay_hist
 from routes.performance_pay_template import router as performance_pay_template_router
 from routes.aggregate_query_routes import router as aggregate_query_router
 from routes.unit_hierarchy_routes import router as unit_hierarchy_router
+from routes.template_data_fill_routes import router as template_data_fill_router
+from routes.system_table_routes import router as system_table_router
+
 import json
 import os
 
@@ -148,6 +151,10 @@ app.include_router(filter_condition_router)
 app.include_router(migration_router)
 app.include_router(tag_relations_router)
 app.include_router(universal_template_router)
+app.include_router(template_data_fill_router)
+app.include_router(system_table_router)
+
+print("[OK] 模板数据填报路由已注册")
 app.include_router(todo_system_router)
 print("[OK] 待办系统路由已注册")
 
@@ -211,6 +218,14 @@ try:
     print("[OK] 中间表管理路由已注册")
 except Exception as e:
     print(f"注册中间表管理路由失败: {e}")
+
+# 注册仪表盘数据路由
+try:
+    from routes.dashboard_routes import router as dashboard_router
+    app.include_router(dashboard_router)
+    print("[OK] 仪表盘数据路由已注册")
+except Exception as e:
+    print(f"注册仪表盘数据路由失败: {e}")
 
 @app.post("/api/open-folder")
 async def open_folder(data: dict):

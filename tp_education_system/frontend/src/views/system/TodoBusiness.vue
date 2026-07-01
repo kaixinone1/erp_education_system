@@ -524,8 +524,14 @@ const loadStats = async () => {
 // 加载模板选项
 const loadTemplates = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/todo-system/templates`)
-    templateOptions.value = response.data.templates || []
+    const response = await fetch('/api/checklist-template/list')
+    const result = await response.json()
+    if (result.status === 'success') {
+      templateOptions.value = (result.data || []).map((t: any) => ({
+        id: t.id,
+        name: t.清单名称 || t.name
+      }))
+    }
   } catch (error) {
     console.error('加载模板失败:', error)
   }

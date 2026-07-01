@@ -82,10 +82,11 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="280" fixed="right">
+      <el-table-column label="操作" width="340" fixed="right">
         <template #default="{ row }">
           <el-button size="small" type="primary" @click="handleEdit(row)">编辑</el-button>
           <el-button size="small" type="success" @click="handleDesign(row)">设计流程</el-button>
+          <el-button size="small" type="warning" @click="handleActivate(row)">激活</el-button>
           <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -142,6 +143,7 @@
               <el-card shadow="never">
                 <template #header>
                   <div class="task-header">
+                    <span class="drag-handle" title="拖拽排序">⋮⋮</span>
                     <span>任务项 {{ index + 1 }}</span>
                     <el-button type="danger" size="small" text @click="removeTaskItem(index)">
                       删除
@@ -220,7 +222,7 @@
 
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
+        <el-button type="primary" @click="handleSubmit" :loading="submitting">保存</el-button>
       </template>
     </el-dialog>
 
@@ -310,11 +312,82 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 激活：教师姓名输入对话框 -->
+    <el-dialog
+      v-model="activateDialogVisible"
+      title="激活清单"
+      width="550px"
+      destroy-on-close
+    >
+      <div class="activate-content">
+        <el-form label-width="80px">
+          <el-form-item label="教师姓名">
+            <el-input
+              v-model="activateTeacherName"
+              placeholder="请输入教师姓名"
+              clearable
+              @input="onActivateNameChange"
+            />
+          </el-form-item>
+          <el-form-item v-if="activateTeacherName" label="所在单位">
+            <el-input
+              v-model="activateTeacherUnit"
+              placeholder="可选，输入教师所在单位"
+              clearable
+            />
+          </el-form-item>
+        </el-form>
+
+        <el-divider v-if="activateTeacherName" />
+
+        <el-form v-if="activateTeacherName" label-width="80px">
+          <el-form-item label="清单名称">
+            <el-input :model-value="activatePreviewTitle" disabled />
+          </el-form-item>
+          <el-form-item label="预览任务">
+            <div class="task-preview-list">
+              <div
+                v-for="(item, idx) in (currentActivatingTemplate?.任务项列表 || []).slice(0, 3)"
+                :key="idx"
+                class="task-preview-item"
+              >
+                <span class="task-preview-num">{{ idx + 1 }}.</span>
+                <span>{{ item.标题 }}</span>
+                <span class="task-target" v-if="item.目标">&nbsp;({{ getTargetDisplayName(item.目标) }})</span>
+              </div>
+              <div
+                v-if="(currentActivatingTemplate?.任务项列表 || []).length > 3"
+                class="more-tasks"
+              >
+                + 还有 {{ (currentActivatingTemplate?.任务项列表 || []).length - 3 }} 项...
+              </div>
+            </div>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <template #footer>
+        <el-button @click="activateDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmActivate" :loading="activating" :disabled="!activateTeacherName.trim()">
+          确认激活
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 清单处理抽屉 -->
+    <ChecklistDrawer
+      v-model="drawerVisible"
+      :todo-data="drawerTodoData"
+      :template-code="drawerTemplateCode"
+      @close="handleDrawerClose"
+      @status-changed="handleDrawerStatusChanged"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   Plus,
@@ -328,8 +401,11 @@ import {
   ArrowDown,
   Delete
 } from '@element-plus/icons-vue'
+import ChecklistDrawer from '@/components/ChecklistDrawer.vue'
+import Sortable from 'sortablejs'
 
 const API_BASE = '/api/checklist-template'
+const TODO_API_BASE = '/api/todo-system'
 
 // 筛选表单
 const filterForm = ref({
@@ -349,6 +425,42 @@ const loading = ref(false)
 const submitting = ref(false)
 const tableData = ref<any[]>([])
 const dialogVisible = ref(false)
+const taskItemsRef = ref<HTMLElement | null>(null)
+let sortableInstance: Sortable | null = null
+
+// 监听对话框打开，初始化拖拽排序
+watch(dialogVisible, async (visible) => {
+  if (visible) {
+    await nextTick()
+    initSortable()
+  } else {
+    destroySortable()
+  }
+})
+
+const initSortable = () => {
+  const el = document.querySelector('.task-items') as HTMLElement
+  if (!el || sortableInstance) return
+  
+  sortableInstance = Sortable.create(el, {
+    handle: '.drag-handle',
+    animation: 200,
+    ghostClass: 'task-item-ghost',
+    onEnd: () => {
+      // 拖拽结束后更新序号
+      form.value.任务项列表.forEach((item: any, i: number) => {
+        item.序号 = i + 1
+      })
+    }
+  })
+}
+
+const destroySortable = () => {
+  if (sortableInstance) {
+    sortableInstance.destroy()
+    sortableInstance = null
+  }
+}
 const isEdit = ref(false)
 const formRef = ref()
 const templateList = ref<any[]>([])
@@ -421,10 +533,10 @@ const loadTemplates = async () => {
     }
 
     // 加载通用模板
-    const res2 = await fetch('/api/universal-templates/list')
+    const res2 = await fetch('/api/universal-template/list')
     const result2 = await res2.json()
-    if (result2.status === 'success') {
-      universalTemplateList.value = result2.data || []
+    if (result2.成功) {
+      universalTemplateList.value = result2.数据 || []
     }
   } catch (e) {
     console.error('加载模板列表失败', e)
@@ -551,32 +663,50 @@ const removeTaskItem = (index: number) => {
 }
 
 const handleSubmit = async () => {
-  await formRef.value?.validate()
+  if (!formRef.value) return
   submitting.value = true
   try {
-    const data = { ...form.value }
-    let result
+    await formRef.value.validate()
+
+    const data: Record<string, any> = {}
+    data['清单名称'] = form.value.清单名称
+    data['触发条件'] = form.value.触发条件
+    data['任务项列表'] = form.value.任务项列表
+    data['是否有效'] = form.value.是否有效
+    data['关联模板ID'] = form.value.关联模板ID
+
+    let res
     if (isEdit.value) {
-      const res = await fetch(`${API_BASE}/${data.id}`, {
+      res = await fetch(`${API_BASE}/${form.value.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
-      result = await res.json()
-      ElMessage.success('更新成功')
     } else {
-      const res = await fetch(`${API_BASE}/`, {
+      res = await fetch(`${API_BASE}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
-      result = await res.json()
-      ElMessage.success('创建成功')
     }
-    dialogVisible.value = false
-    loadData()
+
+    if (!res.ok) {
+      const errResult = await res.json()
+      throw new Error(errResult.detail || `HTTP ${res.status}`)
+    }
+
+    const result = await res.json()
+    if (result.status === 'success') {
+      ElMessage.success(isEdit.value ? '更新成功' : '创建成功')
+      dialogVisible.value = false
+      loadData()
+    } else {
+      ElMessage.error(result.message || '操作失败')
+    }
   } catch (e: any) {
-    ElMessage.error('操作失败: ' + e.message)
+    if (e.message && e.message !== 'cancel') {
+      ElMessage.error('操作失败: ' + e.message)
+    }
   } finally {
     submitting.value = false
   }
@@ -669,6 +799,82 @@ const saveTaskFlow = async () => {
   }
 }
 
+// 激活相关
+const activateDialogVisible = ref(false)
+const activating = ref(false)
+const currentActivatingTemplate = ref<any>(null)
+const activateTeacherName = ref('')
+const activateTeacherUnit = ref('')
+
+// 抽屉相关
+const drawerVisible = ref(false)
+const drawerTodoData = ref<any>(null)
+const drawerTemplateCode = ref('')
+
+const activatePreviewTitle = computed(() => {
+  if (!activateTeacherName.value || !currentActivatingTemplate.value) return ''
+  return `${activateTeacherName.value}老师${currentActivatingTemplate.value.清单名称}工作清单`
+})
+
+const onActivateNameChange = () => {
+  // 姓名变化时，清单名称自动更新（computed已处理）
+}
+
+const handleActivate = (row: any) => {
+  currentActivatingTemplate.value = row
+  activateTeacherName.value = ''
+  activateTeacherUnit.value = ''
+  activateDialogVisible.value = true
+}
+
+const confirmActivate = async () => {
+  const teacherName = activateTeacherName.value.trim()
+  if (!teacherName) {
+    ElMessage.warning('请输入教师姓名')
+    return
+  }
+  activating.value = true
+  try {
+    const res = await fetch(`${TODO_API_BASE}/activate-from-checklist`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        template_id: currentActivatingTemplate.value?.id,
+        teacher_name: teacherName,
+        teacher_unit: activateTeacherUnit.value,
+        checklist_name: currentActivatingTemplate.value?.清单名称
+      })
+    })
+    const result = await res.json()
+    if (result.success) {
+      ElMessage.success('激活成功，已创建待办清单')
+      activateDialogVisible.value = false
+      drawerTodoData.value = result.data
+      drawerTemplateCode.value = result.data.template_code || ''
+      drawerVisible.value = true
+    } else {
+      ElMessage.error(result.message || '激活失败')
+    }
+  } catch (e: any) {
+    ElMessage.error('激活失败: ' + e.message)
+  } finally {
+    activating.value = false
+  }
+}
+
+const handleDrawerClose = () => {
+  drawerVisible.value = false
+  drawerTodoData.value = null
+}
+
+const handleDrawerStatusChanged = (data: any) => {
+  if (data.status === 'completed') {
+    ElMessage.success('清单已全部完成')
+    drawerVisible.value = false
+    drawerTodoData.value = null
+  }
+}
+
 onMounted(() => {
   loadData()
   loadTemplates()
@@ -724,6 +930,24 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: #999;
+  font-size: 16px;
+  letter-spacing: -2px;
+  user-select: none;
+  padding: 0 8px 0 0;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.task-item-ghost {
+  opacity: 0.4;
+  background: #c8ebfb;
 }
 
 .text-gray {
@@ -807,6 +1031,75 @@ onMounted(() => {
 .task-actions {
   display: flex;
   gap: 5px;
+}
+
+.activate-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.teacher-list {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.teacher-item {
+  padding: 10px 12px;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.teacher-item:hover {
+  border-color: #409eff;
+  background: #f0f7ff;
+}
+
+.teacher-item.selected {
+  border-color: #409eff;
+  background: #e6f2ff;
+}
+
+.teacher-item .teacher-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.teacher-item .teacher-extra {
+  margin-top: 4px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.teacher-item .teacher-unit {
+  font-size: 12px;
+  color: #909399;
+}
+
+.task-preview-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.task-preview-item {
+  padding: 6px 0;
+  font-size: 13px;
+  color: #606266;
+  border-bottom: 1px dashed #eee;
+}
+
+.task-preview-item:last-child {
+  border-bottom: none;
+}
+
+.task-preview-num {
+  color: #909399;
+  margin-right: 6px;
 }
 </style>
 

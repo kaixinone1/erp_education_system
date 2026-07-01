@@ -112,7 +112,7 @@ async def get_checklist_template(template_id: int):
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT id, 清单名称, 触发条件, 任务项列表, 是否有效, created_at, updated_at, 关联模板ID
+            SELECT id, 清单名称, 触发条件, 任务项列表, 是否有效, created_at, updated_at, "关联模板ID"
             FROM business_checklist
             WHERE id = %s
         """, (template_id,))
@@ -147,6 +147,7 @@ async def get_checklist_template(template_id: int):
 @router.post("/")
 async def create_checklist_template(data: dict):
     """创建清单模板"""
+    conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -158,7 +159,7 @@ async def create_checklist_template(data: dict):
         关联模板ID = data.get("关联模板ID")
 
         cursor.execute("""
-            INSERT INTO business_checklist (清单名称, 触发条件, 任务项列表, 是否有效, 关联模板ID, created_at, updated_at)
+            INSERT INTO business_checklist (清单名称, 触发条件, 任务项列表, 是否有效, "关联模板ID", created_at, updated_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING id
         """, (清单名称, json.dumps(触发条件) if 触发条件 else None,
@@ -173,7 +174,8 @@ async def create_checklist_template(data: dict):
 
         return {"status": "success", "id": new_id, "message": "清单模板创建成功"}
     except Exception as e:
-        conn.rollback()
+        if conn:
+            conn.rollback()
         print(f"创建清单模板失败: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -181,6 +183,7 @@ async def create_checklist_template(data: dict):
 @router.put("/{template_id}")
 async def update_checklist_template(template_id: int, data: dict):
     """更新清单模板"""
+    conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -198,7 +201,7 @@ async def update_checklist_template(template_id: int, data: dict):
 
         cursor.execute("""
             UPDATE business_checklist
-            SET 清单名称 = %s, 触发条件 = %s, 任务项列表 = %s, 是否有效 = %s, 关联模板ID = %s, updated_at = %s
+            SET 清单名称 = %s, 触发条件 = %s, 任务项列表 = %s, 是否有效 = %s, "关联模板ID" = %s, updated_at = %s
             WHERE id = %s
         """, (清单名称,
               json.dumps(触发条件) if 触发条件 else None,
@@ -214,7 +217,8 @@ async def update_checklist_template(template_id: int, data: dict):
     except HTTPException:
         raise
     except Exception as e:
-        conn.rollback()
+        if conn:
+            conn.rollback()
         print(f"更新清单模板失败: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -222,6 +226,7 @@ async def update_checklist_template(template_id: int, data: dict):
 @router.delete("/{template_id}")
 async def delete_checklist_template(template_id: int):
     """删除清单模板"""
+    conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -241,6 +246,7 @@ async def delete_checklist_template(template_id: int):
     except HTTPException:
         raise
     except Exception as e:
-        conn.rollback()
+        if conn:
+            conn.rollback()
         print(f"删除清单模板失败: {e}")
         raise HTTPException(status_code=500, detail=str(e))

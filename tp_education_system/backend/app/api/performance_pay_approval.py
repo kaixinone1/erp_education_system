@@ -262,6 +262,18 @@ def load_from_database():
         cursor.close()
         conn.close()
         
+        # 尝试加载已保存的备注
+        filename = f"performance_pay_{year}_{month:02d}.json"
+        filepath = os.path.join(DATA_DIR, filename)
+        if os.path.exists(filepath):
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    saved_data = json.load(f)
+                if saved_data.get('notes'):
+                    data['notes'] = saved_data['notes']
+            except Exception as e:
+                print(f"加载备注失败: {e}")
+        
         return jsonify({"status": "success", "data": data})
         
     except Exception as e:

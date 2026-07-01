@@ -49,21 +49,19 @@ def get_80th_birthday(birth_date):
         return None
     return birth_date + relativedelta(years=80)
 
-def get_retirement_date(birth_date, gender):
+def get_retirement_date(birth_date, gender, is_cadre=False):
     """
-    计算退休年龄日期（旧政策）
-    - 男：60周岁
-    - 女：55周岁
+    计算退休年龄日期（新政策）
+    - 男：60周岁 + 延迟月数
+    - 女干部：55周岁 + 延迟月数
+    - 女工人：50周岁 + 延迟月数
     """
     if not birth_date:
         return None
     
-    if gender and '女' in str(gender):
-        retirement_age = 55
-    else:
-        retirement_age = 60
-    
-    return birth_date + relativedelta(years=retirement_age)
+    # 使用新政策计算
+    _, _, new_retirement_date = calculate_retirement_new_policy(birth_date, gender, is_cadre)
+    return new_retirement_date
 
 
 def calculate_retirement_new_policy(birth_date, gender, is_cadre=False):
@@ -206,9 +204,13 @@ def scan_octogenarian_subsidy():
         template_code = 'OCTOGENARIAN_001'
         logger.info(f"  使用模板: {template_code}")
         
-        # 从模板获取任务项
-        cursor.execute("SELECT task_flow FROM todo_templates WHERE template_code = %s", (template_code,))
+        # 从清单模板获取任务项
+        cursor.execute("SELECT 任务项列表 FROM business_checklist WHERE 清单名称 LIKE %s LIMIT 1", ('%80周岁%',))
         template_row = cursor.fetchone()
+        # 如果 business_checklist 没找到，尝试按 高龄 搜索
+        if not template_row:
+            cursor.execute("SELECT 任务项列表 FROM business_checklist WHERE 清单名称 LIKE %s LIMIT 1", ('%高龄%',))
+            template_row = cursor.fetchone()
         template_task_items = template_row[0] if template_row else None
         if template_task_items and isinstance(template_task_items, str):
             template_task_items = json.loads(template_task_items)
@@ -304,7 +306,7 @@ def scan_octogenarian_subsidy():
 def scan_retirement_reminder():
     """
     扫描到龄退休提醒待办
-    提前7周（49天）推送提醒
+    提前2个月（60天）推送提醒，按渐进式延迟退休新标准计算
     """
     logger.info("[开始] 扫描到龄退休提醒待办")
     conn = get_db_connection()
@@ -312,7 +314,7 @@ def scan_retirement_reminder():
     
     try:
         today = datetime.now().date()
-        advance_days = 49  # 7周
+        advance_days = 60  # 提前2个月（60天）
         
         # 1. 查询任职状态字典，找到"退休"状态的值
         cursor.execute("""
@@ -328,6 +330,7 @@ def scan_retirement_reminder():
         excluded_statuses = ['退休', '离休', '死亡', '去世', '调离', '离职']
         
         # 2. 查询教师基础信息表，排除已退休/离休/死亡/调离/离职等状态的教师
+        # 关联字典表获取个人身份中文名称（如"干部"、"工人"）
         cursor.execute("""
             SELECT 
                 t.id,
@@ -337,10 +340,11 @@ def scan_retirement_reminder():
                 t.employment_status,
                 t.is_cadre,
                 u.unit_1 as unit_name,
-                p.ge_ren_shen_fen as personal_identity
+                dpi.ge_ren_shen_fen as identity_name
             FROM teacher_basic_info t
             LEFT JOIN teacher_unit u ON t.id_card = u.id_card
             LEFT JOIN teacher_personal_identity p ON t.id_card = p.id_card
+            LEFT JOIN dict_personal_identity_dictionary dpi ON p.ge_ren_shen_fen = dpi.id::varchar
             WHERE t.id_card IS NOT NULL
               AND t.id_card != ''
               AND (t.employment_status IS NULL OR t.employment_status NOT IN %s)
@@ -353,7 +357,7 @@ def scan_retirement_reminder():
         # 3. 筛选符合条件的教师
         eligible_teachers = []
         for teacher in teachers:
-            teacher_id, name, id_card, birth_date, work_status, is_cadre, unit_name, personal_identity = teacher
+            teacher_id, name, id_card, birth_date, work_status, is_cadre, unit_name, identity_name = teacher
             
             # 优先使用数据库中的出生日期，如果没有则从身份证号解析
             if not birth_date:
@@ -366,9 +370,14 @@ def scan_retirement_reminder():
             if not gender:
                 gender = '男'
             
+            # 判断是否干部：优先使用字典表翻译的身份名称，其次使用is_cadre字段
+            # identity_name 来自 dict_personal_identity_dictionary，值为"干部"、"工人"等
+            # is_cadre 来自 teacher_basic_info，值为"是"/"否"
+            is_cadre_flag = (identity_name == '干部') or (is_cadre == '是')
+            
             # 使用新政策计算退休日期
             original_date, delay_months, retirement_date = calculate_retirement_new_policy(
-                birth_date, gender, personal_identity == '是' or is_cadre == '是'
+                birth_date, gender, is_cadre_flag
             )
             if not retirement_date:
                 continue
@@ -377,6 +386,11 @@ def scan_retirement_reminder():
             
             # 从2026年1月1日起开始推送
             if retirement_date.year >= 2026 and 0 <= days_until_retirement <= advance_days:
+                # 计算实际退休年龄（相对于出生日期）
+                actual_age = retirement_date.year - birth_date.year
+                if (retirement_date.month, retirement_date.day) < (birth_date.month, birth_date.day):
+                    actual_age -= 1
+                
                 eligible_teachers.append({
                     'teacher_id': teacher_id,
                     'name': name,
@@ -384,7 +398,7 @@ def scan_retirement_reminder():
                     'gender': gender,
                     'retirement_date': retirement_date,
                     'days_until': days_until_retirement,
-                    'retirement_age': 55 if gender == '女' else 60
+                    'retirement_age': actual_age
                 })
         
         logger.info(f"  符合条件的人数: {len(eligible_teachers)}")
@@ -397,8 +411,8 @@ def scan_retirement_reminder():
         template_code = 'RETIREMENT_REMIND'
         logger.info(f"  使用模板: {template_code}")
         
-        # 从模板获取任务项
-        cursor.execute("SELECT task_flow FROM todo_templates WHERE template_code = %s", (template_code,))
+        # 从清单模板获取任务项
+        cursor.execute("SELECT 任务项列表 FROM business_checklist WHERE 清单名称 LIKE %s LIMIT 1", ('%退休%',))
         template_row = cursor.fetchone()
         template_task_items = template_row[0] if template_row else None
         if template_task_items and isinstance(template_task_items, str):

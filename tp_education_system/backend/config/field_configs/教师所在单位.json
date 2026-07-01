@@ -44,7 +44,7 @@
     },
     {
       "sourceField": "所在单位",
-      "targetField": "所在单位",
+      "targetField": "unit_1",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

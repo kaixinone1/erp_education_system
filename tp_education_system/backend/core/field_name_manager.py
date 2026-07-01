@@ -365,6 +365,10 @@ class FieldNameManager:
             pinyin_str = '_'.join([item[0] for item in py_list])
             result = pinyin_str.lower().replace(' ', '_')
             result = re.sub(r'_+', '_', result)
+            # 移除所有非法字符（只保留字母、数字、下划线），防止SQL语法错误
+            result = re.sub(r'[^a-z0-9_]', '_', result)
+            result = re.sub(r'_+', '_', result)
+            result = result.strip('_')
             return result
         except Exception as e:
             print(f"拼音转换失败: {e}")
@@ -538,6 +542,10 @@ class FieldNameManager:
             pinyin_str = '_'.join([item[0] for item in py_list])
             pinyin_str = pinyin_str.lower().replace(' ', '_')
             pinyin_str = re.sub(r'_+', '_', pinyin_str)
+            # 移除所有非法字符（只保留字母、数字、下划线），防止SQL语法错误
+            pinyin_str = re.sub(r'[^a-z0-9_]', '_', pinyin_str)
+            pinyin_str = re.sub(r'_+', '_', pinyin_str)
+            pinyin_str = pinyin_str.strip('_')
             
             suggestions.append({
                 "english_name": pinyin_str,

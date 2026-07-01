@@ -62,7 +62,7 @@
     },
     {
       "sourceField": "现受聘岗位名称",
-      "targetField": "现受聘岗位名称",
+      "targetField": "post_1",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -80,7 +80,7 @@
     },
     {
       "sourceField": "现受聘岗位等级",
-      "targetField": "现受聘岗位等级",
+      "targetField": "post_level_1",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

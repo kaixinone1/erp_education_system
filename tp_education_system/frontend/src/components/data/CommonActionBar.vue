@@ -29,11 +29,11 @@
     
     <div class="action-group">
       <el-button size="small" @click="handleImport">
-        <el-icon><Download /></el-icon>
+        <el-icon><Upload /></el-icon>
         导入
       </el-button>
       <el-button size="small" @click="handleExport">
-        <el-icon><Upload /></el-icon>
+        <el-icon><Download /></el-icon>
         导出
       </el-button>
     </div>

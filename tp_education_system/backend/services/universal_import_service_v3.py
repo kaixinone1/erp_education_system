@@ -103,6 +103,10 @@ class UniversalImportServiceV3:
             # 3. 批量插入数据
             inserted_count = self._batch_insert(table_name, processed_data, field_configs)
             
+            # 4. 写入 merged_schema_mappings.json（确保字段中文名能被前端识别）
+            chinese_name = chinese_table_name or table_name
+            self._update_schema_config(table_name, chinese_name, field_configs)
+            
             print(f"\n{'='*80}")
             print(f"导入完成！成功插入 {inserted_count} 条记录")
             print(f"{'='*80}")
@@ -195,6 +199,14 @@ class UniversalImportServiceV3:
         if not target:
             return None
         
+        # 清理字段名中的非法字符（只保留字母、数字、下划线），防止SQL语法错误
+        target = re.sub(r'[^a-zA-Z0-9_]', '_', target)
+        target = re.sub(r'_+', '_', target)
+        target = target.strip('_')
+        
+        if not target:
+            return None
+        
         data_type = field.get('data_type', 'VARCHAR')
         length = field.get('length', 255)
         
@@ -239,6 +251,10 @@ class UniversalImportServiceV3:
             source = field.get('source_field') or field.get('chinese_name')
             target = field.get('target_field') or field.get('english_name')
             if source and target:
+                # 清理字段名中的非法字符，防止SQL语法错误
+                target = re.sub(r'[^a-zA-Z0-9_]', '_', target)
+                target = re.sub(r'_+', '_', target)
+                target = target.strip('_')
                 field_mapping[source] = {
                     'target': target,
                     'data_type': field.get('data_type', 'VARCHAR'),
@@ -288,18 +304,121 @@ class UniversalImportServiceV3:
             return None
     
     def _convert_date(self, value: str) -> Optional[str]:
-        """转换日期格式"""
-        date_formats = self.config.get('date_formats', {}).get('input_formats', [])
+        """转换日期格式（统一转为yyyy-MM-dd，去掉时分秒）"""
+        if not value:
+            return None
+        
+        value_str = str(value).strip()
+        if not value_str:
+            return None
+        
+        # 如果已经是标准格式，直接返回
+        if re.match(r'^\d{4}-\d{2}-\d{2}$', value_str):
+            return value_str
+        
+        # 各种日期格式
+        date_formats = [
+            '%Y-%m-%d', '%Y/%m/%d', '%Y年%m月%d日',
+            '%Y-%m-%d %H:%M:%S', '%Y/%m/%d %H:%M:%S',
+            '%Y年%m月%d日 %H:%M:%S',
+            '%Y-%m-%d %H:%M:%S.%f', '%Y/%m/%d %H:%M:%S.%f',
+            '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f',
+            '%Y-%m-%d %H:%M',
+        ]
         
         for fmt in date_formats:
             try:
                 from datetime import datetime
-                dt = datetime.strptime(value, fmt)
+                dt = datetime.strptime(value_str, fmt)
                 return dt.strftime('%Y-%m-%d')
             except:
                 continue
         
-        return value  # 如果都失败，返回原值
+        # 特殊处理不补零格式
+        if re.match(r'^\d{4}-\d{1,2}-\d{1,2}$', value_str):
+            parts = value_str.split('-')
+            return f"{parts[0]}-{int(parts[1]):02d}-{int(parts[2]):02d}"
+        
+        if re.match(r'^\d{4}/\d{1,2}/\d{1,2}$', value_str):
+            parts = value_str.split('/')
+            return f"{parts[0]}-{int(parts[1]):02d}-{int(parts[2]):02d}"
+        
+        if re.match(r'^\d{4}年\d{1,2}月\d{1,2}日$', value_str):
+            match = re.match(r'^(\d{4})年(\d{1,2})月(\d{1,2})日$', value_str)
+            if match:
+                return f"{match.group(1)}-{int(match.group(2)):02d}-{int(match.group(3)):02d}"
+        
+        # 带时分秒的不补零格式
+        if re.match(r'^\d{4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})-(\d{1,2})-(\d{1,2})\s+', value_str)
+            if match:
+                return f"{match.group(1)}-{int(match.group(2)):02d}-{int(match.group(3)):02d}"
+        
+        if re.match(r'^\d{4}/\d{1,2}/\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})/(\d{1,2})/(\d{1,2})\s+', value_str)
+            if match:
+                return f"{match.group(1)}-{int(match.group(2)):02d}-{int(match.group(3)):02d}"
+        
+        return value_str  # 如果都失败，返回原值
+    
+    def _update_schema_config(self, table_name: str, chinese_title: str, field_configs: List[Dict]):
+        """更新 merged_schema_mappings.json 配置"""
+        try:
+            import json
+            config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
+            schema_file = os.path.join(config_dir, 'merged_schema_mappings.json')
+            
+            config = {}
+            if os.path.exists(schema_file):
+                with open(schema_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+            
+            if "tables" not in config:
+                config["tables"] = {}
+            
+            # 转换字段配置格式（V3格式 → merged_schema格式）
+            fields = []
+            for f in field_configs:
+                source_field = f.get('source_field') or f.get('sourceField', '')
+                target_field = f.get('target_field') or f.get('targetField', '')
+                data_type = f.get('data_type') or f.get('dataType', 'VARCHAR')
+                
+                fields.append({
+                    "sourceField": source_field,
+                    "targetField": target_field,
+                    "english_name": target_field,
+                    "chinese_name": source_field,
+                    "dataType": data_type,
+                    "length": f.get('length', 255),
+                    "precision": f.get('precision', ''),
+                    "scale": f.get('scale', ''),
+                    "required": f.get('required', False),
+                    "unique": f.get('unique', False),
+                    "indexed": False,
+                    "defaultValue": f.get('defaultValue', ''),
+                    "description": f.get('description', ''),
+                    "confidence": f.get('confidence', 'low'),
+                    "relation_type": f.get('relation_type', 'none'),
+                    "relation_table": f.get('relation_table', ''),
+                    "relation_display_field": f.get('relation_display_field', ''),
+                    "value_mapping": f.get('value_mapping', {})
+                })
+            
+            config["tables"][table_name] = {
+                "chinese_name": chinese_title,
+                "english_name": table_name,
+                "type": "master",
+                "parent_table": "",
+                "fields": fields,
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            with open(schema_file, 'w', encoding='utf-8') as f:
+                json.dump(config, f, ensure_ascii=False, indent=2)
+            
+            print(f"已更新 schema 配置: {table_name} → {chinese_title}")
+        except Exception as e:
+            print(f"更新 schema 配置失败: {e}")
     
     def _batch_insert(self, table_name: str, data: List[Dict], field_configs: List[Dict]) -> int:
         """批量插入数据"""

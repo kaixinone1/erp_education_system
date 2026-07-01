@@ -26,14 +26,14 @@ async def get_tag_relations_list(
     size: int = Query(20, ge=1, le=200),
     teacher_name: Optional[str] = None,
     id_card: Optional[str] = None,
-    tag_id: Optional[int] = None
+    tag_id: Optional[int] = None,
+    keyword: Optional[str] = None
 ):
     """获取标签关系列表"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 构建查询条件
         conditions = []
         params = []
         
@@ -48,6 +48,16 @@ async def get_tag_relations_list(
         if tag_id:
             conditions.append("r.tag_id = %s")
             params.append(tag_id)
+        
+        if keyword:
+            keyword_conditions = []
+            keyword_conditions.append("t.name LIKE %s")
+            params.append(f"%{keyword}%")
+            keyword_conditions.append("t.id_card LIKE %s")
+            params.append(f"%{keyword}%")
+            keyword_conditions.append("d.biao_qian LIKE %s")
+            params.append(f"%{keyword}%")
+            conditions.append("(" + " OR ".join(keyword_conditions) + ")")
         
         where_clause = " AND ".join(conditions) if conditions else "1=1"
         

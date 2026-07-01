@@ -341,8 +341,9 @@ def export_performance_pay_approval_pdf(data, output_dir=None):
     table_data.append(legacy_row)
     
     # 备注
+    remark_text = data.get('备注', '') or data.get('notes', '')
     remark_row = [
-        Paragraph(f"备注: {data.get('备注', '')}", normal_style),
+        Paragraph(f"备注：{remark_text}" if remark_text else "备注", normal_style),
         '', '', '', '', '', '', '', '', '', ''
     ]
     table_data.append(remark_row)

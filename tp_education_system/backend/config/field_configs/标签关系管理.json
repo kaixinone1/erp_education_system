@@ -1,0 +1,48 @@
+{
+  "config_name": "标签关系管理",
+  "display_name": "标签关系管理",
+  "chinese_title": "标签关系管理",
+  "table_name": "employee_tag_relations",
+  "table_type": "master",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "标签ID",
+      "targetField": "tag_id",
+      "dataType": "INTEGER",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "关联标签字典表",
+      "confidence": "low",
+      "relation_type": "to_dict",
+      "relation_table": "personal_dict_dictionary",
+      "relation_display_field": "biao_qian",
+      "value_mapping": {}
+    },
+    {
+      "sourceField": "职工ID",
+      "targetField": "employee_id",
+      "dataType": "INTEGER",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-05-24T00:00:00.000000",
+  "updated_at": "2026-05-24T00:00:00.000000"
+}

@@ -5,6 +5,7 @@
 import os
 import shutil
 from openpyxl import load_workbook
+from openpyxl.styles import Alignment
 from typing import Dict, List, Any
 
 class PerformancePayExcelExporter:
@@ -227,9 +228,13 @@ class PerformancePayExcelExporter:
         ws['B31'] = retirees.get('retired_count', '')
 
         # ===== 备注（第32行）=====
-        notes = data.get('notes', '')
+        notes = data.get('备注', '') or data.get('notes', '')
         if notes:
-            ws['A32'] = f"备注：\n{notes}"
+            cell = ws['A32']
+            cell.value = f"备注：\n{notes}"
+            cell.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+            line_count = notes.count('\n') + 2
+            ws.row_dimensions[32].height = max(line_count * 16, 30)
 
 
 def export_performance_pay(data: Dict, year_month: str) -> str:

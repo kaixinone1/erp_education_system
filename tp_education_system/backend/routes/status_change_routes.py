@@ -116,88 +116,10 @@ def create_trigger_event(teacher_id: int, teacher_name: str, old_status: str, ne
         conn.close()
         return (True, "创建成功", todo_id)
     
-    # 如果business_checklist没有，尝试从todo_templates获取
-    if not template_code:
-        cursor.execute("""
-            SELECT template_code FROM trigger_conditions 
-            WHERE listen_table = 'teacher_basic_info' 
-              AND listen_field = 'employment_status'
-              AND trigger_value = %s
-              AND is_enabled = true
-            LIMIT 1
-        """, (new_status,))
-        result = cursor.fetchone()
-        if result:
-            template_code = result[0]
-    
-    if not template_code:
-        print(f"[触发] 没有找到模板代码，跳过创建待办: {trigger_reason}")
-        cursor.close()
-        conn.close()
-        return
-    
-    # 获取模板详情
-    cursor.execute("""
-        SELECT template_name, task_flow, due_date_rule
-        FROM todo_templates
-        WHERE template_code = %s
-    """, (template_code,))
-    template = cursor.fetchone()
-    
-    if not template:
-        print(f"[触发] 没有找到模板: {template_code}")
-        cursor.close()
-        conn.close()
-        return
-    
-    template_name, task_flow, due_date_rule = template
-    
-    # 计算截止日期
-    due_date = None
-    if due_date_rule:
-        try:
-            from datetime import timedelta
-            days = int(due_date_rule)
-            due_date = datetime.now().date() + timedelta(days=days)
-        except:
-            pass
-    
-    # 获取业务类型
-    business_type = template_code.split('_')[0] if template_code else 'CUSTOM'
-    
-    # 将task_flow转为JSON字符串
-    task_flow_json = json.dumps(task_flow) if task_flow else '[]'
-    
-    # 创建待办事项
-    cursor.execute("""
-        INSERT INTO todo_items (
-            template_id, business_type, teacher_id, teacher_name,
-            title, description, status, priority, due_date, task_items,
-            created_by, created_at
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        RETURNING id
-    """, (
-        template_code,
-        business_type,
-        teacher_id,
-        teacher_name,
-        f"{template_name} - {teacher_name}",
-        trigger_reason,
-        'pending',
-        'normal',
-        due_date,
-        task_flow_json,
-        'system',
-        datetime.now()
-    ))
-    
-    todo_id = cursor.fetchone()[0]
-    
-    conn.commit()
-    print(f"[触发] 从todo_templates创建待办: ID={todo_id}, 教师={teacher_name}, 模板={template_code}")
-    
+    print(f"[触发] 没有找到匹配的清单模板: {trigger_reason}")
     cursor.close()
     conn.close()
+    return (False, "没有找到匹配的清单模板", None)
 
 
 @router.post("/process")
@@ -591,10 +513,10 @@ async def process_status_change(data: Dict[str, Any]):
             task_items = checklist["task_items"]
             associated_template_id = checklist["associated_template_id"]
             
-            # 检查是否已存在该待办
+            # 检查是否已存在该待办（使用 todo_items 表）
             cursor.execute("""
-                SELECT id FROM todo_work
-                WHERE 教师ID = %s AND 清单ID = %s AND 状态 = 'pending'
+                SELECT id FROM todo_items
+                WHERE teacher_id = %s AND template_id = %s AND status = 'pending'
             """, (teacher_id, checklist_id))
             
             if not cursor.fetchone():
@@ -620,22 +542,23 @@ async def process_status_change(data: Dict[str, Any]):
                         processed_task['参数']['template_type'] = template_type
                     processed_task_items.append(processed_task)
                 
-                # 创建待办工作
+                # 创建待办工作（使用 todo_items 表）
                 total_tasks = len(processed_task_items)
                 cursor.execute("""
-                    INSERT INTO todo_work 
-                    (教师ID, 清单ID, 清单名称, 教师姓名, 任务项列表, 总任务数, 已完成数, 状态)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO todo_items 
+                    (teacher_id, template_id, business_type, teacher_name, title, description, task_items, status, created_by)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                 """, (
                     teacher_id,
                     checklist_id,
-                    checklist_name,
+                    'RETIREMENT',
                     teacher_name,
+                    checklist_name,
+                    f"状态变更触发: {target_status}",
                     json.dumps(processed_task_items),
-                    total_tasks,
-                    0,
-                    "pending"
+                    "pending",
+                    "system"
                 ))
                 
                 todo_id = cursor.fetchone()[0]

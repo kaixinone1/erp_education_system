@@ -13,8 +13,8 @@
           <el-card class="stat-card" :body-style="{ padding: '0px' }">
             <div class="stat-card-content" style="background-color: #1890FF;">
               <div class="stat-info">
-                <h3 class="stat-value">1,256</h3>
-                <p class="stat-label">总人数</p>
+                <h3 class="stat-value">{{ stats.教师总数 ?? '--' }}</h3>
+                <p class="stat-label">教师总数</p>
               </div>
               <div class="stat-icon">
                 <el-icon class="icon-large"><User /></el-icon>
@@ -26,11 +26,11 @@
           <el-card class="stat-card" :body-style="{ padding: '0px' }">
             <div class="stat-card-content" style="background-color: #52C41A;">
               <div class="stat-info">
-                <h3 class="stat-value">23</h3>
-                <p class="stat-label">待办工作</p>
+                <h3 class="stat-value">{{ stats.绩效工资人数 ?? '--' }}</h3>
+                <p class="stat-label">绩效工资人员</p>
               </div>
               <div class="stat-icon">
-                <el-icon class="icon-large"><Document /></el-icon>
+                <el-icon class="icon-large"><User /></el-icon>
               </div>
             </div>
           </el-card>
@@ -39,8 +39,8 @@
           <el-card class="stat-card" :body-style="{ padding: '0px' }">
             <div class="stat-card-content" style="background-color: #FA8C16;">
               <div class="stat-info">
-                <h3 class="stat-value">8</h3>
-                <p class="stat-label">合同到期</p>
+                <h3 class="stat-value">{{ stats.退休人数 ?? '--' }}</h3>
+                <p class="stat-label">退休人员</p>
               </div>
               <div class="stat-icon">
                 <el-icon class="icon-large"><Document /></el-icon>
@@ -52,8 +52,8 @@
           <el-card class="stat-card" :body-style="{ padding: '0px' }">
             <div class="stat-card-content" style="background-color: #F5222D;">
               <div class="stat-info">
-                <h3 class="stat-value">5</h3>
-                <p class="stat-label">证件过期</p>
+                <h3 class="stat-value">{{ stats.待办工作 ?? '--' }}</h3>
+                <p class="stat-label">待办工作</p>
               </div>
               <div class="stat-icon">
                 <el-icon class="icon-large"><Document /></el-icon>
@@ -65,8 +65,8 @@
           <el-card class="stat-card" :body-style="{ padding: '0px' }">
             <div class="stat-card-content" style="background-color: #722ED1;">
               <div class="stat-info">
-                <h3 class="stat-value">18</h3>
-                <p class="stat-label">部门数量</p>
+                <h3 class="stat-value">{{ stats.单位数量 ?? '--' }}</h3>
+                <p class="stat-label">单位数量</p>
               </div>
               <div class="stat-icon">
                 <el-icon class="icon-large"><OfficeBuilding /></el-icon>
@@ -78,37 +78,11 @@
           <el-card class="stat-card" :body-style="{ padding: '0px' }">
             <div class="stat-card-content" style="background-color: #13C2C2;">
               <div class="stat-info">
-                <h3 class="stat-value">85%</h3>
-                <p class="stat-label">考核优秀率</p>
-              </div>
-              <div class="stat-icon">
-                <el-icon class="icon-large"><Star /></el-icon>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :span="6">
-          <el-card class="stat-card" :body-style="{ padding: '0px' }">
-            <div class="stat-card-content" style="background-color: #FAAD14;">
-              <div class="stat-info">
-                <h3 class="stat-value">42</h3>
-                <p class="stat-label">使用次数</p>
+                <h3 class="stat-value">{{ stats.离休人数 ?? '--' }}</h3>
+                <p class="stat-label">离休人数</p>
               </div>
               <div class="stat-icon">
                 <el-icon class="icon-large"><View /></el-icon>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-        <el-col :span="6">
-          <el-card class="stat-card" :body-style="{ padding: '0px' }">
-            <div class="stat-card-content" style="background-color: #1890FF;">
-              <div class="stat-info">
-                <h3 class="stat-value">12</h3>
-                <p class="stat-label">党建活动</p>
-              </div>
-              <div class="stat-icon">
-                <el-icon class="icon-large"><Star /></el-icon>
               </div>
             </div>
           </el-card>
@@ -245,7 +219,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { User, Document, Check, Star, OfficeBuilding, View } from '@element-plus/icons-vue'
 import VChart from 'vue-echarts'
 import ChecklistDrawer from '../../components/ChecklistDrawer.vue'
@@ -279,6 +253,24 @@ const loading = ref(false)
 const drawerVisible = ref(false)
 const selectedTodo = ref<any>(null)
 const todoListRef = ref<any>(null)
+
+// 仪表盘统计数据（从数据库动态获取）
+const stats = ref<Record<string, number>>({})
+const chartData = ref<Record<string, Array<{ name: string, value: number }>>>({})
+
+// 加载仪表盘统计数据
+const loadDashboardStats = async () => {
+  try {
+    const response = await fetch('/api/dashboard/stats')
+    if (response.ok) {
+      const result = await response.json()
+      stats.value = result.统计卡片 || {}
+      chartData.value = result.图表数据 || {}
+    }
+  } catch (error) {
+    console.error('加载仪表盘统计失败:', error)
+  }
+}
 
 // 原始待办数据
 const rawTodoList = ref<any[]>([])
@@ -474,58 +466,74 @@ const handleStatusChanged = (data: { todoId: number, completedCount: number, tot
 }
 
 // 页面加载时获取数据
+let refreshTimer: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
+  loadDashboardStats()
   loadTodoList()
+  loadTriggerEvents()
+  refreshTimer = setInterval(() => {
+    loadDashboardStats()
+    loadTodoList()
+    loadTriggerEvents()
+  }, 300000)
 })
 
-// 资讯信息列表
-const newsList = ref([
-  {
-    title: '关于做好2026年教师招聘工作的通知',
-    content: '根据上级部门要求，现将2026年教师招聘工作有关事项通知如下...',
-    time: '2026-01-30'
-  },
-  {
-    title: '2026年春季学期开学工作安排',
-    content: '2026年春季学期将于2月20日正式开学，请各学校做好开学准备工作...',
-    time: '2026-01-28'
-  },
-  {
-    title: '关于加强师德师风建设的实施意见',
-    content: '为进一步加强教师队伍建设，提高教师职业道德水平...',
-    time: '2026-01-25'
+onUnmounted(() => {
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+    refreshTimer = null
   }
-])
+})
 
-// 图表配置
-const techPositionOption = {
-  title: { text: '专技岗位分布', left: 'center' },
-  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-  grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-  xAxis: { type: 'category', data: ['初级', '中级', '高级', '正高级', '特级'] },
-  yAxis: { type: 'value', name: '人数' },
-  series: [{ data: [300, 350, 250, 100, 50], type: 'bar', itemStyle: { color: '#1890FF' } }]
+// 从触发事件加载的资讯列表
+const loadTriggerEvents = async () => {
+  try {
+    const response = await fetch('/api/todo-system/pending-triggers')
+    if (response.ok) {
+      const result = await response.json()
+      const triggers = result.data || result || []
+      newsList.value = (Array.isArray(triggers) ? triggers : []).slice(0, 10).map((t: any) => ({
+        title: t.trigger_reason || t.title || '系统通知',
+        content: t.teacher_name ? `涉及教师: ${t.teacher_name}` : (t.description || ''),
+        time: (t.created_at || t.trigger_time || '').substring(0, 10)
+      }))
+      if (newsList.value.length === 0) {
+        newsList.value = [{ title: '暂无新通知', content: '系统运行正常，暂无新的触发事件', time: new Date().toISOString().substring(0, 10) }]
+      }
+    }
+  } catch (error) {
+    console.error('加载触发事件失败:', error)
+  }
 }
 
-const rankDistributionOption = {
-  title: { text: '职级分布', left: 'center' },
+// 资讯信息列表
+const newsList = ref<Array<{ title: string, content: string, time: string }>>([])
+
+// 图表配置 - 从真实数据动态生成
+const techPositionOption = computed(() => ({
+  title: { text: '专技岗位分布', left: 'center' },
+  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+  grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+  xAxis: { type: 'category', data: chartData.value.现受聘岗位等级分布?.map((d: any) => d.name) || [], axisLabel: { rotate: 30 } },
+  yAxis: { type: 'value', name: '人数' },
+  series: [{ data: chartData.value.现受聘岗位等级分布?.map((d: any) => d.value) || [], type: 'bar', itemStyle: { color: '#1890FF' } }]
+}))
+
+const statusDistributionOption = computed(() => ({
+  title: { text: '任职状态分布', left: 'center' },
   tooltip: { trigger: 'item' },
   legend: { orient: 'vertical', left: 'left' },
   series: [{
-    name: '职级',
+    name: '任职状态',
     type: 'pie',
     radius: '60%',
-    data: [
-      { value: 400, name: '科员' },
-      { value: 300, name: '副科级' },
-      { value: 250, name: '正科级' },
-      { value: 150, name: '处级' }
-    ],
+    data: chartData.value.任职状态分布 || [],
     emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
   }]
-}
+}))
 
-const genderRatioOption = {
+const genderRatioOption = computed(() => ({
   title: { text: '性别比例', left: 'center' },
   tooltip: { trigger: 'item' },
   legend: { orient: 'vertical', left: 'left' },
@@ -533,12 +541,25 @@ const genderRatioOption = {
     name: '性别',
     type: 'pie',
     radius: '60%',
-    data: [{ value: 250, name: '男' }, { value: 225, name: '女' }],
+    data: chartData.value.性别分布 || [],
     emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
   }]
-}
+}))
 
-const educationStructureOption = {
+const rankDistributionOption = computed(() => ({
+  title: { text: '职级分布', left: 'center' },
+  tooltip: { trigger: 'item' },
+  legend: { orient: 'vertical', left: 'left' },
+  series: [{
+    name: '岗位名称',
+    type: 'pie',
+    radius: '60%',
+    data: chartData.value.现受聘岗位名称分布 || [],
+    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+  }]
+}))
+
+const educationStructureOption = computed(() => ({
   title: { text: '学历结构', left: 'center' },
   tooltip: { trigger: 'item' },
   legend: { orient: 'vertical', left: 'left' },
@@ -546,15 +567,10 @@ const educationStructureOption = {
     name: '学历',
     type: 'pie',
     radius: '60%',
-    data: [
-      { value: 50, name: '博士' },
-      { value: 180, name: '硕士' },
-      { value: 220, name: '本科' },
-      { value: 25, name: '专科及以下' }
-    ],
+    data: chartData.value.学历分布 || [],
     emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
   }]
-}
+}))
 </script>
 
 <style scoped>

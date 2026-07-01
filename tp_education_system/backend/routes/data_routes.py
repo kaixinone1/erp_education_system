@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from typing import List, Dict, Any, Optional
 import json
 import os
+import glob
 from sqlalchemy import create_engine, text
 
 router = APIRouter(prefix="/api/data", tags=["data"])
@@ -196,6 +197,40 @@ def get_dict_mappings_for_table(table_name: str, columns: List[str]) -> List[Dic
                 if 'link_field' in dict_config:
                     mapping['link_field'] = dict_config['link_field']
                 mappings.append(mapping)
+
+    # 4. 回退：从 field_configs/ 目录读取（配置驱动，无需手动同步）
+    if not mappings:
+        field_config_dir = os.path.join(CONFIG_DIR, 'field_configs')
+        if os.path.isdir(field_config_dir):
+            for cfg_file in glob.glob(os.path.join(field_config_dir, '*.json')):
+                try:
+                    cfg = read_json_file(cfg_file)
+                    if not cfg:
+                        continue
+                    cfg_table = cfg.get('table_name', '')
+                    if cfg_table != table_name:
+                        continue
+                    for fc in cfg.get('field_configs', []):
+                        tf = fc.get('targetField', '')
+                        if not tf or tf not in columns:
+                            continue
+                        rt = fc.get('relation_type', '')
+                        rel_table = fc.get('relation_table', '')
+                        if rt == 'to_dict' and rel_table and check_dict_table_exists(rel_table):
+                            code_field, name_field = get_dict_fields(rel_table)
+                            rel_display = fc.get('relation_display_field', '')
+                            if rel_display:
+                                name_field = rel_display
+                            mappings.append({
+                                'field': tf,
+                                'table': rel_table,
+                                'code_field': code_field,
+                                'name_field': name_field,
+                                'alias': f'{tf}_name'
+                            })
+                            print(f"字典关联(field_configs): {table_name}.{tf} -> {rel_table}.{code_field} (显示: {name_field})")
+                except Exception:
+                    pass
 
     return mappings
 

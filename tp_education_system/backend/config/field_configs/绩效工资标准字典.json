@@ -2,13 +2,13 @@
   "config_name": "绩效工资标准字典",
   "display_name": "绩效工资标准字典",
   "chinese_title": "绩效工资标准字典",
-  "table_name": "personal_dict_salary_dictionary",
+  "table_name": "dict_salary_dictionary",
   "table_type": "dictionary",
   "parent_table": "",
   "field_configs": [
     {
       "sourceField": "岗位",
-      "targetField": "岗位",
+      "targetField": "post_1",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -26,7 +26,7 @@
     },
     {
       "sourceField": "月绩效工资标准",
-      "targetField": "月绩效工资标准",
+      "targetField": "month_performance_salary",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

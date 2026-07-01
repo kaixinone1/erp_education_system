@@ -29,8 +29,23 @@
       <div v-if="loadingTemplate" class="loading">加载中...</div>
       <div v-else-if="templateData.rows.length > 0">
         <div class="a4-container" id="printArea">
-          <div class="table-wrapper" v-html="tableHtml" style="max-height: calc(100vh - 280px); overflow-y: auto;"></div>
+          <div class="table-wrapper" v-html="tableHtml" style="max-height: calc(100vh - 400px); overflow-y: auto;"></div>
         </div>
+        <el-card v-if="hasLoadedData" class="notes-card" style="margin-top: 16px;">
+          <template #header>
+            <div class="card-header">
+              <span>备注编辑</span>
+              <el-button type="primary" size="small" :loading="savingNotes" @click="handleSaveNotes">保存备注</el-button>
+            </div>
+          </template>
+          <el-input
+            v-model="editableNotes"
+            type="textarea"
+            :rows="6"
+            placeholder="请输入备注内容..."
+            resize="vertical"
+          />
+        </el-card>
       </div>
       <div v-else class="empty">暂无数据</div>
     </el-card>
@@ -60,6 +75,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Document, Download, Check } from '@element-plus/icons-vue'
 
 const saving = ref(false)
+const savingNotes = ref(false)
+const editableNotes = ref('')
 const loadingData = ref(false)
 const loadingTemplate = ref(false)
 const monthDialogVisible = ref(false)
@@ -99,7 +116,8 @@ const dynamicData = reactive({
   legacy: [],
   retirees: {},
   no_subsidy_names: '',
-  no_subsidy_count: 0
+  no_subsidy_count: 0,
+  notes: ''
 })
 
 const hasLoadedData = ref(false)
@@ -302,8 +320,8 @@ const tableHtml = computed(() => {
           }
           
           if (cell.isNotesRow) {
-            if (hasLoadedData.value && dynamicData.notes) {
-              const notes = dynamicData.notes
+            if (hasLoadedData.value && editableNotes.value) {
+              const notes = editableNotes.value
               const noteLines = notes.split('\n')
               let notesHtml = '<div style="white-space: pre-wrap; word-break: break-all;">'
               notesHtml += '<div>备注：</div>'
@@ -481,6 +499,7 @@ const handleLoadData = async () => {
     if (result.status === 'success') {
       const data = result.data
       Object.assign(dynamicData, data)
+      editableNotes.value = data.notes || ''
       hasLoadedData.value = true
       ElMessage.success('数据加载成功')
     }
@@ -494,10 +513,15 @@ const handleLoadData = async () => {
 const handleSave = async () => {
   saving.value = true
   try {
+    const saveData = {
+      ...JSON.parse(JSON.stringify(dynamicData)),
+      年月: currentYearMonth.value,
+      notes: editableNotes.value
+    }
     const response = await fetch('/api/performance-pay-approval/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 年月: currentYearMonth.value })
+      body: JSON.stringify(saveData)
     })
     const result = await response.json()
     if (result.status === 'success') {
@@ -509,6 +533,33 @@ const handleSave = async () => {
     ElMessage.error(error.message || '保存失败')
   } finally {
     saving.value = false
+  }
+}
+
+const handleSaveNotes = async () => {
+  savingNotes.value = true
+  try {
+    const saveData = {
+      ...JSON.parse(JSON.stringify(dynamicData)),
+      年月: currentYearMonth.value,
+      notes: editableNotes.value
+    }
+    const response = await fetch('/api/performance-pay-approval/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(saveData)
+    })
+    const result = await response.json()
+    if (result.status === 'success') {
+      dynamicData.notes = editableNotes.value
+      ElMessage.success('备注保存成功')
+    } else {
+      ElMessage.error(result.message || '保存失败')
+    }
+  } catch (error: any) {
+    ElMessage.error(error.message || '保存失败')
+  } finally {
+    savingNotes.value = false
   }
 }
 
@@ -604,6 +655,16 @@ onMounted(() => {
   text-align: center;
   padding: 50px;
   font-size: 18px;
+}
+
+.notes-card {
+  max-width: 100%;
+}
+
+.notes-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .scroll-hint {

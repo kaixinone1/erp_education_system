@@ -68,10 +68,10 @@ const loading = ref(false)
 const loadScheduledTemplates = async () => {
   loading.value = true
   try {
-    const response = await fetch('/api/universal-templates/list?activation_type=scheduled_task')
+    const response = await fetch('/api/universal-template/list?activation_type=scheduled_task')
     const result = await response.json()
-    if (result.status === 'success') {
-      scheduledTemplates.value = result.data || []
+    if (result.成功) {
+      scheduledTemplates.value = result.数据 || []
     }
   } catch (e: any) {
     ElMessage.error('加载模板列表失败')

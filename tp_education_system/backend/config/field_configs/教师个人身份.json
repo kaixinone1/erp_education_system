@@ -44,7 +44,7 @@
     },
     {
       "sourceField": "个人身份",
-      "targetField": "个人身份",
+      "targetField": "ge_ren_shen_fen",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

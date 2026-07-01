@@ -515,15 +515,18 @@ async def save_table_name_mapping(data: Dict[str, Any]):
 
 @router.get("/{table_name}/field-config")
 async def get_field_config(table_name: str):
-    """获取表的字段配置（从 merged_schema_mappings.json）"""
+    """获取表的字段配置（从 merged_schema_mappings.json）
+    支持按英文表名、中文表名、table_name字段查找"""
     try:
         config = read_json_file(SCHEMA_FILE)
         tables = config.get("tables", {})
         
-        # 查找表配置
+        # 查找表配置：按key、table_name字段、chinese_name字段匹配
         table_config = None
         for key, value in tables.items():
-            if key == table_name or value.get("table_name") == table_name:
+            if key == table_name \
+               or value.get("table_name") == table_name \
+               or value.get("chinese_name") == table_name:
                 table_config = value
                 break
         

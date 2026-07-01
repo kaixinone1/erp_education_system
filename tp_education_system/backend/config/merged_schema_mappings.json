@@ -3463,18 +3463,18 @@
       "parent_table": "",
       "fields": [
         {
-          "name": "岗位",
-          "chinese_name": "岗位",
-          "data_type": "VARCHAR",
+          "sourceField": "岗位",
+          "targetField": "岗位",
+          "dataType": "VARCHAR",
           "length": 255,
           "required": false,
           "unique": false,
           "description": ""
         },
         {
-          "name": "月绩效工资标准",
-          "chinese_name": "月绩效工资标准",
-          "data_type": "VARCHAR",
+          "sourceField": "月绩效工资标准",
+          "targetField": "月绩效工资标准",
+          "dataType": "VARCHAR",
           "length": 255,
           "required": false,
           "unique": false,
@@ -4722,13 +4722,774 @@
         }
       ],
       "updated_at": "2026-05-08T08:05:36.617706"
+    },
+    "employee_tag_relations": {
+      "chinese_name": "标签关系管理",
+      "english_name": "employee_tag_relations",
+      "table_type": "master",
+      "fields": [
+        {
+          "sourceField": "标签ID",
+          "targetField": "tag_id",
+          "dataType": "INTEGER",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "关联标签字典表",
+          "confidence": "low",
+          "relation_type": "to_dict",
+          "relation_table": "personal_dict_dictionary",
+          "relation_display_field": "biao_qian",
+          "value_mapping": {},
+          "english_name": "tag_id"
+        },
+        {
+          "sourceField": "职工ID",
+          "targetField": "employee_id",
+          "dataType": "INTEGER",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "employee_id"
+        }
+      ],
+      "updated_at": "2026-05-24T00:00:00.000000"
+    },
+    "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819": {
+      "chinese_name": "离退休费变动明细表",
+      "type": "child",
+      "parent_table": "teacher_basic_info",
+      "fields": [
+        {
+          "sourceField": "序号",
+          "targetField": "sequence",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "sequence"
+        },
+        {
+          "sourceField": "姓名",
+          "targetField": "name",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic_info",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "name"
+        },
+        {
+          "sourceField": "身份证号码",
+          "targetField": "id_card",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic_info",
+          "relation_display_field": "id_card",
+          "value_mapping": {},
+          "english_name": "id_card"
+        },
+        {
+          "sourceField": "出生年月",
+          "targetField": "birth_year_month",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "birth_year_month"
+        },
+        {
+          "sourceField": "参加工作年月",
+          "targetField": "work_start_year_month",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "work_start_year_month"
+        },
+        {
+          "sourceField": "退休年月",
+          "targetField": "retired_year_month",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "retired_year_month"
+        },
+        {
+          "sourceField": "退休前职务（待遇）",
+          "targetField": "retired_job_title",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "retired_job_title"
+        },
+        {
+          "sourceField": "基本退休费",
+          "targetField": "retirement_fee",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "retirement_fee"
+        },
+        {
+          "sourceField": "退休补贴",
+          "targetField": "retired_subsidy",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "retired_subsidy"
+        },
+        {
+          "sourceField": "调整后退休费合计",
+          "targetField": "retirement_fee_1",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "retirement_fee_1"
+        },
+        {
+          "sourceField": "备注",
+          "targetField": "remark",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "remark"
+        }
+      ],
+      "updated_at": "2026-05-25T15:21:36.424588"
+    },
+    "teacher_title_info": {
+      "chinese_name": "教师职称信息",
+      "english_name": "teacher_title_info",
+      "type": "master",
+      "parent_table": "",
+      "fields": [
+        {
+          "targetField": "id",
+          "english_name": "id",
+          "sourceField": "编号",
+          "chinese_name": "编号",
+          "dataType": "INTEGER",
+          "length": 0,
+          "required": true,
+          "unique": true,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "name",
+          "english_name": "name",
+          "sourceField": "姓名",
+          "chinese_name": "姓名",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "id_card_1",
+          "english_name": "id_card_1",
+          "sourceField": "身份证号码",
+          "chinese_name": "身份证号码",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "professional_title_1",
+          "english_name": "professional_title_1",
+          "sourceField": "专业技术职务",
+          "chinese_name": "专业技术职务",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "unit_2",
+          "english_name": "unit_2",
+          "sourceField": "所在单位",
+          "chinese_name": "所在单位",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "field_70",
+          "english_name": "field_70",
+          "sourceField": "审批文号",
+          "chinese_name": "审批文号",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "time",
+          "english_name": "time",
+          "sourceField": "审批时间",
+          "chinese_name": "审批时间",
+          "dataType": "DATE",
+          "length": 0,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "unit_3",
+          "english_name": "unit_3",
+          "sourceField": "发文单位",
+          "chinese_name": "发文单位",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "created_at",
+          "english_name": "created_at",
+          "sourceField": "创建时间",
+          "chinese_name": "创建时间",
+          "dataType": "DATETIME",
+          "length": 0,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        },
+        {
+          "targetField": "updated_at",
+          "english_name": "updated_at",
+          "sourceField": "更新时间",
+          "chinese_name": "更新时间",
+          "dataType": "DATETIME",
+          "length": 0,
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "",
+          "value_mapping": {}
+        }
+      ],
+      "updated_at": "2026-05-25T12:00:00"
+    },
+    "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang": {
+      "chinese_name": "出入境证件管理信息台账",
+      "type": "master",
+      "parent_table": "",
+      "fields": [
+        {
+          "name": "序号",
+          "chinese_name": "序号",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "姓名",
+          "chinese_name": "姓名",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": "",
+          "relation": {
+            "type": "to_master",
+            "ref_table": "teacher_basic_info",
+            "ref_field": "name",
+            "display_field": "name"
+          }
+        },
+        {
+          "name": "性别",
+          "chinese_name": "性别",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "身份证号码",
+          "chinese_name": "身份证号码",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": "",
+          "relation": {
+            "type": "to_master",
+            "ref_table": "teacher_basic_info",
+            "ref_field": "id_card",
+            "display_field": "id_card"
+          }
+        },
+        {
+          "name": "出生日期",
+          "chinese_name": "出生日期",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "原工作单位",
+          "chinese_name": "原工作单位",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "现工作单位",
+          "chinese_name": "现工作单位",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "任职状态",
+          "chinese_name": "任职状态",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "是否已登记备案",
+          "chinese_name": "是否已登记备案",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "证件种类",
+          "chinese_name": "证件种类",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "证件号码",
+          "chinese_name": "证件号码",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "是否集中保管",
+          "chinese_name": "是否集中保管",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "保管单位",
+          "chinese_name": "保管单位",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "未集中保管原因",
+          "chinese_name": "未集中保管原因",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "证件签发机关",
+          "chinese_name": "证件签发机关",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "证件有效期至",
+          "chinese_name": "证件有效期至",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "证件状态",
+          "chinese_name": "证件状态",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "证件签发日期",
+          "chinese_name": "证件签发日期",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "国家/地区",
+          "chinese_name": "国家/地区",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "出入境标识中文",
+          "chinese_name": "出入境标识中文",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "出入境日期",
+          "chinese_name": "出入境日期",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "出入境时间",
+          "chinese_name": "出入境时间",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "出入口岸中文",
+          "chinese_name": "出入口岸中文",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "交通工具",
+          "chinese_name": "交通工具",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "前往地/出发地",
+          "chinese_name": "前往地/出发地",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "备注",
+          "chinese_name": "备注",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        }
+      ],
+      "updated_at": "2026-06-17T08:10:14.332084"
+    },
+    "test_table_xyz": {
+      "chinese_name": "测试表",
+      "type": "master",
+      "parent_table": null,
+      "fields": [
+        {
+          "source_field": "国家/地区",
+          "target_field": "guo_jia_/_di_qu",
+          "data_type": "VARCHAR",
+          "length": 255
+        },
+        {
+          "source_field": "前往地/出发地",
+          "target_field": "qian_wang_di_/_chu_fa_di",
+          "data_type": "VARCHAR",
+          "length": 255
+        },
+        {
+          "source_field": "姓名",
+          "target_field": "name",
+          "data_type": "VARCHAR",
+          "length": 255
+        }
+      ],
+      "updated_at": "2026-06-17T08:19:57.745787"
+    },
+    "test_slash_fields": {
+      "chinese_name": "test_slash_fields",
+      "type": "master",
+      "parent_table": null,
+      "fields": [
+        {
+          "sourceField": "国家/地区",
+          "targetField": "guo_jia_di_qu",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "english_name": "guo_jia_di_qu"
+        },
+        {
+          "sourceField": "前往地/出发地",
+          "targetField": "qian_wang_di_chu_fa_di",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "english_name": "qian_wang_di_chu_fa_di"
+        },
+        {
+          "sourceField": "姓名",
+          "targetField": "name",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "english_name": "name"
+        }
+      ],
+      "updated_at": "2026-06-17T08:37:05.689657"
     }
   },
   "dictionaries": {},
   "mappings": {
     "身份证号码": {
-      "target": "id_card",
-      "table": "post_appointment_info",
+      "target": "身份证号码",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
       "data_type": "VARCHAR"
     },
     "档案出生日期": {
@@ -4762,8 +5523,8 @@
       "data_type": "DATE"
     },
     "任职状态": {
-      "target": "employment_status",
-      "table": "teacher_basic_info",
+      "target": "任职状态",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
       "data_type": "VARCHAR"
     },
     "学历类型": {
@@ -5027,8 +5788,8 @@
       "data_type": "VARCHAR"
     },
     "备注": {
-      "target": "remark",
-      "table": "post_appointment_info",
+      "target": "备注",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
       "data_type": "VARCHAR"
     },
     "金额": {
@@ -5093,7 +5854,7 @@
     },
     "姓名": {
       "target": "name",
-      "table": "post_appointment_info",
+      "table": "test_slash_fields",
       "data_type": "VARCHAR"
     },
     "人才类型": {
@@ -5164,6 +5925,151 @@
     "岗位等级": {
       "target": "post_level",
       "table": "dict_grade_dictionary",
+      "data_type": "VARCHAR"
+    },
+    "序号": {
+      "target": "序号",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "出生年月": {
+      "target": "birth_year_month",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "参加工作年月": {
+      "target": "work_start_year_month",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "退休年月": {
+      "target": "retired_year_month",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "退休前职务（待遇）": {
+      "target": "retired_job_title",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "基本退休费": {
+      "target": "retirement_fee",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "退休补贴": {
+      "target": "retired_subsidy",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "调整后退休费合计": {
+      "target": "retirement_fee_1",
+      "table": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "data_type": "VARCHAR"
+    },
+    "性别": {
+      "target": "性别",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "出生日期": {
+      "target": "出生日期",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "原工作单位": {
+      "target": "原工作单位",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "现工作单位": {
+      "target": "现工作单位",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "是否已登记备案": {
+      "target": "是否已登记备案",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "证件种类": {
+      "target": "证件种类",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "证件号码": {
+      "target": "证件号码",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "是否集中保管": {
+      "target": "是否集中保管",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "保管单位": {
+      "target": "保管单位",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "未集中保管原因": {
+      "target": "未集中保管原因",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "证件签发机关": {
+      "target": "证件签发机关",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "证件有效期至": {
+      "target": "证件有效期至",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "证件状态": {
+      "target": "证件状态",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "证件签发日期": {
+      "target": "证件签发日期",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "国家/地区": {
+      "target": "guo_jia_di_qu",
+      "table": "test_slash_fields",
+      "data_type": "VARCHAR"
+    },
+    "出入境标识中文": {
+      "target": "出入境标识中文",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "出入境日期": {
+      "target": "出入境日期",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "出入境时间": {
+      "target": "出入境时间",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "出入口岸中文": {
+      "target": "出入口岸中文",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "交通工具": {
+      "target": "交通工具",
+      "table": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "data_type": "VARCHAR"
+    },
+    "前往地/出发地": {
+      "target": "qian_wang_di_chu_fa_di",
+      "table": "test_slash_fields",
       "data_type": "VARCHAR"
     }
   }

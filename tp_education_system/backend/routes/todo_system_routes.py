@@ -325,9 +325,10 @@ async def confirm_trigger(request: TriggerConfirmRequest):
                 
                 # 获取模板详情
                 cursor.execute("""
-                    SELECT template_name, task_flow, due_date_rule
-                    FROM todo_templates
-                    WHERE template_code = %s
+                    SELECT 清单名称 as template_name, 任务项列表 as task_flow,
+                           NULL as due_date_rule
+                    FROM business_checklist
+                    WHERE id::text = %s
                 """, (template_code,))
                 template_detail = cursor.fetchone()
                 
@@ -472,12 +473,12 @@ async def get_todo_list(
         cursor.execute(sql, params)
         rows = cursor.fetchall()
         
-        # 查询模板名称映射 (template_code -> template_name)
-        cursor.execute("SELECT template_code, template_name FROM todo_templates")
-        template_map = {row[0]: row[1] for row in cursor.fetchall()}
+        # 查询模板名称映射 (从 business_checklist)
+        cursor.execute("SELECT id, 清单名称 as template_name FROM business_checklist WHERE 是否有效 = true")
+        template_map = {str(row[0]): row[1] for row in cursor.fetchall()}
         
-        # 查询模板ID到模板代码的映射 (template_id -> template_code)
-        cursor.execute("SELECT id, template_code FROM todo_templates")
+        # 查询模板ID到模板代码的映射
+        cursor.execute("SELECT id, id::text as template_code FROM business_checklist WHERE 是否有效 = true")
         template_id_to_code = {row[0]: row[1] for row in cursor.fetchall()}
         
         todos = []
@@ -677,82 +678,6 @@ async def return_todo(todo_id: int, data: dict = Body(...)):
     except Exception as e:
         conn.rollback()
         raise HTTPException(status_code=500, detail=f"操作失败: {str(e)}")
-    finally:
-        cursor.close()
-        conn.close()
-
-
-@router.get("/templates")
-async def get_templates():
-    """
-    获取所有清单模板
-    """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute("""
-            SELECT id, template_code, template_name, business_type,
-                   description, due_date_rule, is_enabled
-            FROM todo_templates
-            ORDER BY id
-        """)
-        
-        rows = cursor.fetchall()
-        
-        templates = []
-        for row in rows:
-            templates.append({
-                "id": row[0],
-                "template_code": row[1],
-                "template_name": row[2],
-                "business_type": row[3],
-                "description": row[4],
-                "due_date_rule": row[5],
-                "is_enabled": row[6]
-            })
-        
-        return {"success": True, "data": templates}
-    
-    finally:
-        cursor.close()
-        conn.close()
-
-
-@router.get("/trigger-conditions")
-async def get_trigger_conditions():
-    """
-    获取所有触发条件
-    """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute("""
-            SELECT id, condition_name, listen_table, listen_field,
-                   trigger_type, trigger_value, template_code, is_enabled, description
-            FROM trigger_conditions
-            ORDER BY id
-        """)
-        
-        rows = cursor.fetchall()
-        
-        conditions = []
-        for row in rows:
-            conditions.append({
-                "id": row[0],
-                "condition_name": row[1],
-                "listen_table": row[2],
-                "listen_field": row[3],
-                "trigger_type": row[4],
-                "trigger_value": row[5],
-                "template_code": row[6],
-                "is_enabled": row[7],
-                "description": row[8]
-            })
-        
-        return {"success": True, "data": conditions}
-    
     finally:
         cursor.close()
         conn.close()
@@ -1076,6 +1001,117 @@ async def check_delayed_retirement(teacher_id: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"检查失败: {str(e)}")
     
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@router.post("/activate-from-checklist")
+async def activate_from_checklist(data: dict = Body(...)):
+    """
+    手动激活清单模板，创建待办事项
+    参数: template_id, teacher_name, teacher_unit, checklist_name
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        template_id = data.get('template_id')
+        teacher_name = data.get('teacher_name', '').strip()
+        teacher_unit = data.get('teacher_unit', '')
+        checklist_name = data.get('checklist_name', '清单')
+
+        if not template_id or not teacher_name:
+            raise HTTPException(status_code=400, detail="缺少必要参数：模板ID和教师姓名不能为空")
+
+        cursor.execute("""
+            SELECT 清单名称, 任务项列表, 触发条件
+            FROM business_checklist
+            WHERE id = %s
+        """, (template_id,))
+
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="清单模板不存在")
+
+        template_checklist_name, task_items_raw, trigger_conditions = row
+
+        if isinstance(task_items_raw, str):
+            try:
+                task_items = json.loads(task_items_raw)
+            except:
+                task_items = []
+        else:
+            task_items = task_items_raw or []
+
+        if not task_items:
+            raise HTTPException(status_code=400, detail="清单模板无任务项")
+
+        import time
+        template_code = f"CHECKLIST_{int(time.time())}"
+
+        display_name = checklist_name or template_checklist_name or '清单'
+
+        formatted_items = []
+        for item in task_items:
+            formatted_items.append({
+                "title": item.get('标题', item.get('title', '')),
+                "desc": item.get('说明', item.get('desc', '')),
+                "type": item.get('类型', item.get('type', '')),
+                "completed": False,
+                "step": item.get('序号', item.get('step', None)),
+                "action": item.get('动作', item.get('action', '')),
+                "params": item.get('参数', item.get('params', {}))
+            })
+
+        cursor.execute("""
+            INSERT INTO todo_items (
+                template_id, business_type, teacher_id, teacher_name,
+                title, description, status, priority, due_date,
+                task_items, created_by
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
+        """, (
+            str(template_id),
+            template_code,
+            None,
+            teacher_name,
+            f"{teacher_name}老师{display_name}工作清单",
+            f"手动激活 - {display_name}",
+            'pending',
+            'normal',
+            None,
+            json.dumps(formatted_items) if formatted_items else None,
+            'system'
+        ))
+
+        new_id = cursor.fetchone()[0]
+
+        update_stats_table(cursor, new_id)
+
+        conn.commit()
+
+        return {
+            "success": True,
+            "message": "清单已激活",
+            "data": {
+                "id": new_id,
+                "title": f"{teacher_name}老师{display_name}工作清单",
+                "teacher_name": teacher_name,
+                "teacher_unit": teacher_unit,
+                "checklist_name": display_name,
+                "task_items": formatted_items,
+                "template_code": template_code,
+                "status": "pending"
+            }
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"激活失败: {str(e)}")
+
     finally:
         cursor.close()
         conn.close()

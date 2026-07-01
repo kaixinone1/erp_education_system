@@ -213,7 +213,7 @@ class UniversalImportService:
         return clean_field
     
     def _convert_date_format(self, value: str) -> str:
-        """转换日期格式"""
+        """转换日期格式（统一转为yyyy-MM-dd，去掉时分秒）"""
         if not value or pd.isna(value):
             return None
         
@@ -228,7 +228,9 @@ class UniversalImportService:
         # 获取配置的输入格式
         date_formats = self.config.get('date_formats', {})
         input_formats = date_formats.get('input_formats', [
-            '%Y-%m-%d', '%Y/%m/%d', '%Y年%m月%d日'
+            '%Y-%m-%d', '%Y/%m/%d', '%Y年%m月%d日',
+            '%Y-%m-%d %H:%M:%S', '%Y/%m/%d %H:%M:%S',
+            '%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f'
         ])
         
         # 尝试解析各种格式
@@ -250,6 +252,19 @@ class UniversalImportService:
         
         if re.match(r'^\d{4}年\d{1,2}月\d{1,2}日$', value_str):
             match = re.match(r'^(\d{4})年(\d{1,2})月(\d{1,2})日$', value_str)
+            if match:
+                year, month, day = match.groups()
+                return f"{year}-{int(month):02d}-{int(day):02d}"
+        
+        # 带时分秒的特殊格式
+        if re.match(r'^\d{4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})-(\d{1,2})-(\d{1,2})\s+', value_str)
+            if match:
+                year, month, day = match.groups()
+                return f"{year}-{int(month):02d}-{int(day):02d}"
+        
+        if re.match(r'^\d{4}/\d{1,2}/\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})/(\d{1,2})/(\d{1,2})\s+', value_str)
             if match:
                 year, month, day = match.groups()
                 return f"{year}-{int(month):02d}-{int(day):02d}"

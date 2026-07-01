@@ -25,8 +25,10 @@ router = APIRouter(prefix="/api/import", tags=["import"])
 
 def convert_date_format(value: str) -> str:
     """
-    智能转换日期格式为 YYYY-MM-DD
+    智能转换日期格式为 YYYY-MM-DD（统一日期格式管理工具）
     支持：2001-01-01, 2001-1-1, 2001/01/01, 2001/1/1, 2001年01月01日, 2001年1月1日
+    支持带时分秒：2001-01-01 10:30:00, 2001-1-1 10:30:00, 2001/01/01 10:30:00 等
+    只保留日期部分，去掉时分秒和毫秒
     如果已经是标准格式，直接返回
     """
     if not value or pd.isna(value):
@@ -41,7 +43,7 @@ def convert_date_format(value: str) -> str:
         return value_str
     
     try:
-        # 匹配 2001-1-1 格式
+        # 匹配 2001-1-1 格式（不补零的日期）
         if re.match(r'^\d{4}-\d{1,2}-\d{1,2}$', value_str):
             year, month, day = value_str.split('-')
             return f"{year}-{int(month):02d}-{int(day):02d}"
@@ -58,8 +60,37 @@ def convert_date_format(value: str) -> str:
                 year, month, day = match.groups()
                 return f"{year}-{int(month):02d}-{int(day):02d}"
         
-        # 尝试用 datetime 解析其他格式
-        for fmt in ['%Y-%m-%d', '%Y/%m/%d', '%Y年%m月%d日', '%Y-%m-%d %H:%M:%S', '%Y/%m/%d %H:%M:%S']:
+        # 匹配带时分秒（含毫秒）的格式，统一转为yyyy-MM-dd
+        elif re.match(r'^\d{4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})', value_str)
+            if match:
+                year, month, day = match.group(1), match.group(2), match.group(3)
+                return f"{year}-{int(month):02d}-{int(day):02d}"
+        
+        elif re.match(r'^\d{4}/\d{1,2}/\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})/(\d{1,2})/(\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})', value_str)
+            if match:
+                year, month, day = match.group(1), match.group(2), match.group(3)
+                return f"{year}-{int(month):02d}-{int(day):02d}"
+        
+        elif re.match(r'^\d{4}年\d{1,2}月\d{1,2}日\s+\d{1,2}:\d{1,2}:\d{1,2}', value_str):
+            match = re.match(r'^(\d{4})年(\d{1,2})月(\d{1,2})日\s+(\d{1,2}):(\d{1,2}):(\d{1,2})', value_str)
+            if match:
+                year, month, day = match.group(1), match.group(2), match.group(3)
+                return f"{year}-{int(month):02d}-{int(day):02d}"
+        
+        # 尝试用 datetime 解析其他格式（包含毫秒等）
+        for fmt in [
+            '%Y-%m-%d %H:%M:%S',
+            '%Y/%m/%d %H:%M:%S',
+            '%Y年%m月%d日 %H:%M:%S',
+            '%Y-%m-%d %H:%M:%S.%f', '%Y/%m/%d %H:%M:%S.%f',
+            '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f',
+            '%Y-%m-%d %H:%M', '%Y/%m/%d %H:%M',
+            '%Y-%m-%d',
+            '%Y/%m/%d',
+            '%Y年%m月%d日',
+        ]:
             try:
                 dt = datetime.strptime(value_str, fmt)
                 return dt.strftime('%Y-%m-%d')
@@ -153,9 +184,12 @@ DATA_TYPE_RULES = {
         "patterns": [
             r'^\d{4}-\d{1,2}-\d{1,2}$',  # 2001-01-01 或 2001-1-1
             r'^\d{4}/\d{1,2}/\d{1,2}$',  # 2001/01/01 或 2001/1/1
-            r'^\d{4}年\d{1,2}月\d{1,2}日$'  # 2001年01月01日 或 2001年1月1日
+            r'^\d{4}年\d{1,2}月\d{1,2}日$',  # 2001年01月01日 或 2001年1月1日
+            r'^\d{4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}',  # 2001-01-01 10:30:00
+            r'^\d{4}/\d{1,2}/\d{1,2}\s+\d{1,2}:\d{1,2}:\d{1,2}',  # 2001/01/01 10:30:00
+            r'^\d{4}年\d{1,2}月\d{1,2}日\s+\d{1,2}:\d{1,2}:\d{1,2}',  # 2001年01月01日 10:30:00
         ],
-        "examples": ['2023-01-15', '2023-1-1', '2023/01/15', '2023/1/1', '2023年01月15日', '2023年1月1日']
+        "examples": ['2023-01-15', '2023-1-1', '2023/01/15', '2023/1/1', '2023年01月15日', '2023年1月1日', '2023-01-15 10:30:00']
     },
     "BOOLEAN": {
         "patterns": [r'^(是|否|true|false|1|0|yes|no)$'],
@@ -608,12 +642,16 @@ async def import_data_v3(
     使用V3导入服务导入数据（支持自动字典表管理）
     """
     try:
+        # 0. 使用字段名管理器处理字段配置，确保中文字段名映射到唯一的英文字段名
+        processed_field_configs = field_name_manager.process_field_configs(field_configs)
+        print(f"字段配置已处理，共 {len(processed_field_configs)} 个字段")
+        
         # 使用V3导入服务
         import_service = UniversalImportServiceV3()
         
         result = import_service.import_data(
             table_name=table_name,
-            field_configs=field_configs,
+            field_configs=processed_field_configs,
             data=data,
             auto_manage_dict=True
         )

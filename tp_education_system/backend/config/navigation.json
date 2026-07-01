@@ -34,6 +34,14 @@
           "component": "DataMigration"
         },
         {
+          "id": "system-table-export",
+          "title": "数据表导出导入",
+          "icon": "Download",
+          "path": "/system/table-export",
+          "type": "component",
+          "component": "SystemTableExport"
+        },
+        {
           "id": "system-tag-relations",
           "title": "标签关系管理",
           "icon": "PriceTag",
@@ -191,34 +199,6 @@
           ]
         },
         {
-          "id": "system-checklist",
-          "title": "清单管理",
-          "icon": "List",
-          "path": "/system/checklist",
-          "type": "module",
-          "children": [
-            {
-              "id": "checklist-pushed",
-              "title": "待办工作项",
-              "icon": "Bell",
-              "path": "/system/checklist/pushed",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/todo_work_items",
-              "table_name": "todo_work_items",
-              "table_type": "business"
-            },
-            {
-              "id": "checklist-templates",
-              "title": "清单模板",
-              "icon": "Document",
-              "path": "/system/checklist/templates",
-              "type": "component",
-              "component": "ChecklistTemplateView"
-            }
-          ]
-        },
-        {
           "id": "system-intermediate-table",
           "title": "中间表管理",
           "icon": "Grid",
@@ -273,12 +253,12 @@
           "component": "TodoBusiness"
         },
         {
-          "id": "todo-template",
-          "title": "待办模板管理",
-          "icon": "Document",
-          "path": "/todo/template",
+          "id": "todo-checklist-template",
+          "title": "清单模板管理",
+          "icon": "DocumentCopy",
+          "path": "/todo/checklist-template",
           "type": "component",
-          "component": "TodoTemplate"
+          "component": "ChecklistTemplateView"
         },
         {
           "id": "todo-work",
@@ -320,14 +300,6 @@
           "path": "/import/workbench",
           "type": "component",
           "component": "DataImportWorkbench"
-        },
-        {
-          "id": "template-import-test",
-          "title": "测试导入模板功能",
-          "icon": "Upload",
-          "path": "/template-import-test",
-          "type": "component",
-          "component": "TemplateImportTest"
         },
         {
           "id": "table-structure",
@@ -525,6 +497,18 @@
               "api_endpoint": "/api/data/post_appointment_info",
               "table_name": "post_appointment_info",
               "table_type": "child"
+            },
+            {
+              "id": "table-shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "title": "离退休费变动明细表",
+              "name": "离退休费变动明细表",
+              "icon": "Document",
+              "path": "/data/shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "table_name": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "table_type": "child"
             }
           ]
         }
@@ -593,6 +577,50 @@
           "path": "/report/retirement/estimate",
           "type": "component",
           "component": "RetirementEstimate"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "测试",
+      "name": "测试",
+      "icon": "Folder",
+      "path": "/test",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-test_table_xyz",
+          "title": "测试表",
+          "name": "测试表",
+          "icon": "Document",
+          "path": "/data/test_table_xyz",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/test_table_xyz",
+          "table_name": "test_table_xyz",
+          "table_type": "master"
+        }
+      ]
+    },
+    {
+      "id": "test_module",
+      "title": "测试模块",
+      "name": "测试模块",
+      "icon": "Folder",
+      "path": "/test_module",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-test_slash_fields",
+          "title": "test_slash_fields",
+          "name": "test_slash_fields",
+          "icon": "Document",
+          "path": "/data/test_slash_fields",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/test_slash_fields",
+          "table_name": "test_slash_fields",
+          "table_type": "master"
         }
       ]
     }

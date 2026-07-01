@@ -762,7 +762,9 @@ def load_from_database(req: YearMonthRequest):
                     notes_parts.append(f"{seq}.{group['label']}{count}人：{names_str}")
                     seq += 1
             
-            result_data['notes'] = '\n     '.join(notes_parts) if notes_parts else ''
+            result_data['notes'] = '\n'.join(notes_parts) if notes_parts else ''
+            # 同步到「备注」字段，确保导出时数据正确传递
+            result_data['备注'] = result_data['notes']
             print(f"备注信息: {result_data['notes']}")
         except Exception as e:
             print(f"读取备注信息失败: {e}")

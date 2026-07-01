@@ -139,6 +139,132 @@
       "english_name": "post_appointment_info",
       "table_type": "child",
       "updated_at": "2026-05-08T08:05:18.906849"
+    },
+    "退休人员身份统计": {
+      "english_name": "v_retirement_identity_stats",
+      "table_type": "view",
+      "created_at": "2026-05-24T00:00:00"
+    },
+    "离退休费变动明细表": {
+      "english_name": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+      "table_type": "child",
+      "updated_at": "2026-05-25T15:21:16.953834"
+    },
+    "出入境证件管理信息台账": {
+      "english_name": "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang",
+      "table_type": "master",
+      "created_at": "2026-06-17T08:10:14.317060",
+      "field_signature": [
+        [
+          "交通工具",
+          "STRING"
+        ],
+        [
+          "任职状态",
+          "STRING"
+        ],
+        [
+          "保管单位",
+          "STRING"
+        ],
+        [
+          "出入口岸中文",
+          "STRING"
+        ],
+        [
+          "出入境日期",
+          "STRING"
+        ],
+        [
+          "出入境时间",
+          "STRING"
+        ],
+        [
+          "出入境标识中文",
+          "STRING"
+        ],
+        [
+          "出生日期",
+          "STRING"
+        ],
+        [
+          "前往地/出发地",
+          "STRING"
+        ],
+        [
+          "原工作单位",
+          "STRING"
+        ],
+        [
+          "国家/地区",
+          "STRING"
+        ],
+        [
+          "备注",
+          "STRING"
+        ],
+        [
+          "姓名",
+          "STRING"
+        ],
+        [
+          "序号",
+          "STRING"
+        ],
+        [
+          "性别",
+          "STRING"
+        ],
+        [
+          "是否已登记备案",
+          "STRING"
+        ],
+        [
+          "是否集中保管",
+          "STRING"
+        ],
+        [
+          "未集中保管原因",
+          "STRING"
+        ],
+        [
+          "现工作单位",
+          "STRING"
+        ],
+        [
+          "证件号码",
+          "STRING"
+        ],
+        [
+          "证件有效期至",
+          "STRING"
+        ],
+        [
+          "证件状态",
+          "STRING"
+        ],
+        [
+          "证件种类",
+          "STRING"
+        ],
+        [
+          "证件签发日期",
+          "STRING"
+        ],
+        [
+          "证件签发机关",
+          "STRING"
+        ],
+        [
+          "身份证号码",
+          "STRING"
+        ]
+      ]
+    },
+    "测试表": {
+      "english_name": "test_table_xyz",
+      "table_type": "master",
+      "updated_at": "2026-06-17T08:19:31.463531"
     }
   },
   "reverse_mappings": {
@@ -255,6 +381,10 @@
     "死亡登记信息": "死亡登记信息",
     "高龄提醒处理记录": "高龄提醒处理记录",
     "高龄提醒记录": "高龄提醒记录",
-    "高龄老人补贴信息": "高龄老人补贴信息"
+    "高龄老人补贴信息": "高龄老人补贴信息",
+    "v_retirement_identity_stats": "退休人员身份统计",
+    "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819": "离退休费变动明细表",
+    "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang": "出入境证件管理信息台账",
+    "test_table_xyz": "测试表"
   }
 }

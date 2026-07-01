@@ -339,6 +339,14 @@ class ImportService:
         if not target:
             return None
         
+        # 清理字段名中的非法字符（只保留字母、数字、下划线），防止SQL语法错误
+        target = re.sub(r'[^a-zA-Z0-9_]', '_', target)
+        target = re.sub(r'_+', '_', target)
+        target = target.strip('_')
+        
+        if not target:
+            return None
+        
         data_type = field.get('dataType') or field.get('data_type', 'VARCHAR')
         length = field.get('length', 255)
         
@@ -525,7 +533,7 @@ class ImportService:
         return False
     
     def _convert_date(self, value: Any) -> str:
-        """转换日期格式"""
+        """转换日期格式（统一转为yyyy-MM-dd，去掉时分秒）"""
         if not value:
             return None
         
@@ -540,12 +548,24 @@ class ImportService:
             (r'^(\d{4})-(\d{1,2})-(\d{1,2})$', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
             (r'^(\d{4})/(\d{1,2})/(\d{1,2})$', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
             (r'^(\d{4})年(\d{1,2})月(\d{1,2})日$', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            # 带时分秒的格式
+            (r'^(\d{4})-(\d{1,2})-(\d{1,2})\s+\d{1,2}:\d{1,2}:\d{1,2}', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            (r'^(\d{4})/(\d{1,2})/(\d{1,2})\s+\d{1,2}:\d{1,2}:\d{1,2}', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            (r'^(\d{4})年(\d{1,2})月(\d{1,2})日\s+\d{1,2}:\d{1,2}:\d{1,2}', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
         ]
         
         for pattern, formatter in patterns:
             match = re.match(pattern, value_str)
             if match:
                 return formatter(match)
+        
+        # datetime fallback
+        for fmt in ['%Y-%m-%d %H:%M:%S', '%Y/%m/%d %H:%M:%S', '%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f', '%Y-%m-%d', '%Y/%m/%d', '%Y年%m月%d日']:
+            try:
+                dt = datetime.strptime(value_str, fmt)
+                return dt.strftime('%Y-%m-%d')
+            except ValueError:
+                continue
         
         return value_str
     

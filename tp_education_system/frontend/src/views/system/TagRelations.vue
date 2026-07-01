@@ -554,8 +554,18 @@ const executeExport = async () => {
     })
 
     if (exportResponse.ok) {
-      const result = await exportResponse.json()
-      ElMessage.success(`导出成功`)
+      const blob = await exportResponse.blob()
+      let downloadFilename = exportForm.value.filename || '标签关系管理'
+      const ext = exportForm.value.format === 'pdf' ? 'pdf' : 'xlsx'
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = downloadFilename + '.' + ext
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      ElMessage.success('导出成功')
       exportDialogVisible.value = false
     } else {
       const error = await exportResponse.json()

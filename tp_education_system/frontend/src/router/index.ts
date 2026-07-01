@@ -47,6 +47,15 @@ const router = createRouter({
           }
         },
         {
+          path: "table-export",
+          name: "systemTableExport",
+          component: () => import("../views/system/SystemTableExport.vue"),
+          meta: {
+            title: "数据表导出导入",
+            icon: "Download"
+          }
+        },
+        {
           path: "tag-relations",
           name: "tagRelations",
           component: () => import("../views/system/TagRelations.vue"),
@@ -64,43 +73,7 @@ const router = createRouter({
             icon: "Files"
           }
         },
-        {
-          path: "todo-business",
-          name: "todoBusiness",
-          component: () => import("../views/system/TodoBusiness.vue"),
-          meta: {
-            title: "待办业务",
-            icon: "List"
-          }
-        },
-        {
-          path: "todo-template",
-          name: "todoTemplate",
-          component: () => import("../views/system/TodoTemplate.vue"),
-          meta: {
-            title: "清单模板",
-            icon: "DocumentChecked"
-          }
-        },
-        {
-          path: "todo-work",
-          name: "todoWork",
-          component: () => import("../views/system/TodoWork.vue"),
-          meta: {
-            title: "待办工作",
-            icon: "Bell"
-          }
-        },
-        {
-          path: "todo-history",
-          name: "todoHistory",
-          component: () => import("../views/system/TodoHistory.vue"),
-          meta: {
-            title: "待办历史",
-            icon: "Clock"
-          }
-        }
-      ]
+        ]
     },
     // 预警督办模块
     {
@@ -118,11 +91,11 @@ const router = createRouter({
           }
         },
         {
-          path: "template",
-          name: "todoTemplateNew",
+          path: "checklist-template",
+          name: "checklistTemplateManage",
           component: () => import("../views/checklist/ChecklistTemplateView.vue"),
           meta: {
-            title: "清单模板",
+            title: "清单模板管理",
             icon: "DocumentCopy"
           }
         },
@@ -284,6 +257,16 @@ const router = createRouter({
       component: () => import("../views/AutoTableView.vue"),
       meta: {
         title: "自动表管理（零配置）",
+        icon: "Document"
+      }
+    },
+    // 通用数据字典/数据表路由 - 匹配 /data/:tableName 格式（导航动态生成）
+    {
+      path: "/data/:tableName",
+      name: "dynamicDataView",
+      component: () => import("../views/AutoTableView.vue"),
+      meta: {
+        title: "数据管理",
         icon: "Document"
       }
     },

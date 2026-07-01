@@ -67,6 +67,65 @@
       </el-table>
     </el-card>
 
+    <!-- 备注编辑卡片 -->
+    <el-card style="margin-top: 20px">
+      <template #header>
+        <div class="card-header">
+          <span>备注编辑</span>
+          <div style="display: flex; gap: 8px">
+            <el-button type="primary" size="small" @click="openAddRemarkDialog">
+              <el-icon><Plus /></el-icon>
+              添加备注
+            </el-button>
+            <el-button type="info" size="small" @click="refreshRemarks">
+              <el-icon><Refresh /></el-icon>
+              刷新
+            </el-button>
+          </div>
+        </div>
+      </template>
+
+      <el-table :data="remarksList" border stripe max-height="500" v-loading="loadingRemarks">
+        <el-table-column prop="模板名称" label="模板名称" min-width="150" />
+        <el-table-column prop="单位名称" label="单位名称" width="120" />
+        <el-table-column prop="年月" label="年月" width="100" />
+        <el-table-column prop="备注" label="备注" min-width="250">
+          <template #default="{ row }">
+            <template v-if="row._editing">
+              <el-input
+                v-model="row._editValue"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入备注信息"
+                @keyup.enter.ctrl="saveRemark(row)"
+              />
+              <div style="margin-top: 4px; display: flex; gap: 6px">
+                <el-button size="small" type="primary" @click="saveRemark(row)">保存</el-button>
+                <el-button size="small" @click="cancelEditRemark(row)">取消</el-button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="remark-cell" @dblclick="startEditRemark(row)">
+                <span v-if="row.备注">{{ row.备注 }}</span>
+                <span v-else style="color: #c0c4cc; font-style: italic">双击编辑备注</span>
+              </div>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column prop="保存时间" label="保存时间" width="160" />
+        <el-table-column label="操作" width="200" fixed="right">
+          <template #default="{ row }">
+            <template v-if="!row._editing">
+              <el-button size="small" type="primary" @click="startEditRemark(row)">编辑备注</el-button>
+              <el-button size="small" type="danger" @click="deleteRemark(row)">删除</el-button>
+            </template>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-empty v-if="!loadingRemarks && remarksList.length === 0" description="暂无已保存的填报记录" />
+    </el-card>
+
     <el-dialog v-model="showUploadDialog" title="上传模板" width="500px">
       <el-form :model="uploadForm" label-width="80px">
         <el-form-item label="模板名称">
@@ -471,6 +530,40 @@
     </el-dialog>
 
     <!-- 手工编辑对话框 -->
+    <!-- 添加备注对话框 -->
+    <el-dialog v-model="showAddRemarkDialog" title="添加备注" width="500px" destroy-on-close>
+      <el-form :model="addRemarkForm" label-width="100px">
+        <el-form-item label="模板名称">
+          <el-select v-model="addRemarkForm.模板名称" placeholder="选择模板" style="width: 100%" filterable>
+            <el-option
+              v-for="t in templateList"
+              :key="t.template_id"
+              :label="t.template_name"
+              :value="t.template_name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="单位名称">
+          <el-input v-model="addRemarkForm.单位名称" placeholder="请输入单位名称" />
+        </el-form-item>
+        <el-form-item label="年月">
+          <el-input v-model="addRemarkForm.年月" placeholder="如：2026年6月" />
+        </el-form-item>
+        <el-form-item label="备注内容">
+          <el-input
+            v-model="addRemarkForm.备注"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入备注信息"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showAddRemarkDialog = false">取消</el-button>
+        <el-button type="primary" @click="handleAddRemark" :loading="addingRemark">保存</el-button>
+      </template>
+    </el-dialog>
+
     <ManualEditorDialog
       v-model="showManualEditor"
       :template-id="currentEditTemplate.template_id"
@@ -486,6 +579,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Refresh, Plus } from '@element-plus/icons-vue'
 import ManualEditorDialog from '@/components/ManualEditorDialog.vue'
 
 const route = useRoute()
@@ -1080,9 +1174,132 @@ const deleteTemplate = async (row: any) => {
   }
 }
 
+// 备注编辑相关
+const remarksList = ref<any[]>([])
+const loadingRemarks = ref(false)
+const showAddRemarkDialog = ref(false)
+const addingRemark = ref(false)
+const addRemarkForm = ref({
+  模板名称: '',
+  单位名称: '',
+  年月: '',
+  备注: ''
+})
+
+const openAddRemarkDialog = () => {
+  addRemarkForm.value = {
+    模板名称: '',
+    单位名称: '',
+    年月: '',
+    备注: ''
+  }
+  showAddRemarkDialog.value = true
+}
+
+const handleAddRemark = async () => {
+  if (!addRemarkForm.value.备注.trim()) {
+    ElMessage.warning('请输入备注内容')
+    return
+  }
+  addingRemark.value = true
+  try {
+    const response = await fetch('/api/universal-template/remarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addRemarkForm.value)
+    })
+    const res = await response.json()
+    if (res.成功) {
+      ElMessage.success('备注添加成功')
+      showAddRemarkDialog.value = false
+      loadRemarks()
+    } else {
+      ElMessage.error(res.消息 || '添加失败')
+    }
+  } catch (e: any) {
+    ElMessage.error('添加失败: ' + e.message)
+  } finally {
+    addingRemark.value = false
+  }
+}
+
+const loadRemarks = async () => {
+  loadingRemarks.value = true
+  try {
+    const response = await fetch('/api/universal-template/remarks')
+    const res = await response.json()
+    if (res.成功) {
+      remarksList.value = (res.数据 || []).map((item: any) => ({
+        ...item,
+        _editing: false,
+        _editValue: item.备注 || ''
+      }))
+    }
+  } catch (e: any) {
+    ElMessage.error('加载备注数据失败')
+  } finally {
+    loadingRemarks.value = false
+  }
+}
+
+const refreshRemarks = () => {
+  loadRemarks()
+}
+
+const startEditRemark = (row: any) => {
+  row._editing = true
+  row._editValue = row.备注 || ''
+}
+
+const cancelEditRemark = (row: any) => {
+  row._editing = false
+  row._editValue = row.备注 || ''
+}
+
+const saveRemark = async (row: any) => {
+  try {
+    const response = await fetch(`/api/universal-template/remarks/${row.ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 备注: row._editValue })
+    })
+    const res = await response.json()
+    if (res.成功) {
+      row.备注 = row._editValue
+      row._editing = false
+      ElMessage.success('备注保存成功')
+    } else {
+      ElMessage.error(res.消息 || '保存失败')
+    }
+  } catch (e: any) {
+    ElMessage.error('保存失败: ' + e.message)
+  }
+}
+
+const deleteRemark = async (row: any) => {
+  try {
+    await ElMessageBox.confirm(`确定要删除"${row.模板名称}"的填报记录吗？`, '确认删除', { type: 'warning' })
+    const response = await fetch(`/api/universal-template/remarks/${row.ID}`, {
+      method: 'DELETE'
+    })
+    const res = await response.json()
+    if (res.成功) {
+      ElMessage.success('删除成功')
+      loadRemarks()
+    } else {
+      ElMessage.error(res.消息 || '删除失败')
+    }
+  } catch (e: any) {
+    if (e !== 'cancel') {
+      ElMessage.error('删除失败: ' + e.message)
+    }
+  }
+}
+
 onMounted(() => {
   loadTemplates()
   loadMappings()
+  loadRemarks()
   
   // 检查是否有URL参数（从清单跳转过来）
   const action = route.query.action as string
@@ -1121,6 +1338,19 @@ onMounted(() => {
 .placeholder-tag {
   margin-right: 5px;
   margin-bottom: 2px;
+}
+
+.remark-cell {
+  min-height: 32px;
+  line-height: 32px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.remark-cell:hover {
+  background: #f5f7fa;
 }
 </style>
 

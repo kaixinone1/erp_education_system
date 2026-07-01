@@ -994,14 +994,24 @@ const showSaveConfigDialog = async () => {
 // 检查是否已有现有配置
 const checkExistingConfig = async (chineseName: string, englishName: string): Promise<boolean> => {
   try {
-    if (!englishName) return false
-    
-    // 检查 merged_schema_mappings.json 中是否有该表的配置
-    const response = await fetch(`/api/table-structure/${englishName}/field-config`)
-    if (response.ok) {
-      const result = await response.json()
-      return result.fields && result.fields.length > 0
+    // 尝试用英文名查找
+    if (englishName) {
+      const response = await fetch(`/api/table-structure/${englishName}/field-config`)
+      if (response.ok) {
+        const result = await response.json()
+        if (result.fields && result.fields.length > 0) return true
+      }
     }
+    
+    // 回退：用中文名查找（处理英文名与merged_schema_mappings.json中key不一致的情况）
+    if (chineseName && chineseName !== englishName) {
+      const response = await fetch(`/api/table-structure/${encodeURIComponent(chineseName)}/field-config`)
+      if (response.ok) {
+        const result = await response.json()
+        return result.fields && result.fields.length > 0
+      }
+    }
+    
     return false
   } catch (error) {
     console.error('检查现有配置失败:', error)

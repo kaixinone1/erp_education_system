@@ -8,7 +8,7 @@
   "field_configs": [
     {
       "sourceField": "身份证号码",
-      "targetField": "身份证号码",
+      "targetField": "id_card",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -26,7 +26,7 @@
     },
     {
       "sourceField": "姓名",
-      "targetField": "姓名",
+      "targetField": "name",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",
@@ -44,8 +44,8 @@
     },
     {
       "sourceField": "金额",
-      "targetField": "金额",
-      "dataType": "VARCHAR",
+      "targetField": "field_63",
+      "dataType": "DECIMAL",
       "length": 255,
       "precision": "",
       "scale": "",
@@ -62,5 +62,5 @@
     }
   ],
   "created_at": "2026-04-27T16:53:19.631196",
-  "updated_at": "2026-04-27T16:53:29.621717"
+  "updated_at": "2026-05-24T00:00:00.000000"
 }
