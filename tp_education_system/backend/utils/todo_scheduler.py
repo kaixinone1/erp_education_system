@@ -31,6 +31,59 @@ def get_db_connection():
     """获取数据库连接"""
     return psycopg2.connect(**DATABASE_CONFIG)
 
+
+def _load_checklist_template(cursor, template_name, fallback_name):
+    """从 business_checklist 表加载清单模板的任务项和名称"""
+    cursor.execute("""
+        SELECT 任务项列表, 清单名称 FROM business_checklist 
+        WHERE 清单名称 = %s LIMIT 1
+    """, (template_name,))
+    row = cursor.fetchone()
+    if row:
+        task_items = row[0]
+        name = row[1]
+    else:
+        task_items = None
+        name = fallback_name
+    if task_items and isinstance(task_items, str):
+        task_items = json.loads(task_items)
+    return task_items, name
+
+
+def _create_todo_with_history(cursor, teacher, template_code, business_type, 
+                               template_name, description, due_date, priority, task_items):
+    """创建待办事项及其历史记录，返回创建的 todo_id"""
+    cursor.execute("""
+        INSERT INTO todo_items (
+            template_id, business_type, teacher_id, teacher_name,
+            title, description, due_date, status, priority,
+            task_items, created_at, updated_at
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
+    """, (
+        template_code, business_type,
+        teacher['teacher_id'], teacher['name'],
+        f"{teacher['name']}{template_name}",
+        description, due_date, 'pending', priority,
+        json.dumps(task_items)
+    ))
+    
+    cursor.execute("SELECT lastval()")
+    new_todo_id = cursor.fetchone()[0]
+    
+    cursor.execute("""
+        INSERT INTO todo_history (
+            todo_id, teacher_id, teacher_name, template_code, business_type,
+            title, description, status, task_items, created_at
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+    """, (
+        new_todo_id, teacher['teacher_id'], teacher['name'],
+        template_code, business_type,
+        f"{teacher['name']}{template_name}",
+        description, 'pending', json.dumps(task_items)
+    ))
+    
+    return new_todo_id
+
 def get_birth_date_from_id_card(id_card):
     """从身份证号解析出生日期"""
     if not id_card or len(id_card) != 18:
@@ -200,25 +253,19 @@ def scan_octogenarian_subsidy():
             logger.info("[完成] 没有需要推送的80周岁高龄补贴待办")
             return
         
-        # 4. 使用用户设计好的模板 OCTOGENARIAN_001
+        # 4. 使用预警督办清单模板 "80周岁高龄补贴提醒"
         template_code = 'OCTOGENARIAN_001'
-        logger.info(f"  使用模板: {template_code}")
         
-        # 从清单模板获取任务项
-        cursor.execute("SELECT 任务项列表 FROM business_checklist WHERE 清单名称 LIKE %s LIMIT 1", ('%80周岁%',))
-        template_row = cursor.fetchone()
-        # 如果 business_checklist 没找到，尝试按 高龄 搜索
-        if not template_row:
-            cursor.execute("SELECT 任务项列表 FROM business_checklist WHERE 清单名称 LIKE %s LIMIT 1", ('%高龄%',))
-            template_row = cursor.fetchone()
-        template_task_items = template_row[0] if template_row else None
-        if template_task_items and isinstance(template_task_items, str):
-            template_task_items = json.loads(template_task_items)
+        # 从清单模板获取任务项和模板名称
+        template_task_items, template_name = _load_checklist_template(
+            cursor, '80周岁高龄补贴提醒', '80周岁高龄补贴提醒')
+        
+        logger.info(f"  使用模板: {template_name}")
         
         # 5. 创建待办事项
         created_count = 0
         for teacher in eligible_teachers:
-            # 检查是否已存在待办（不管状态如何，只要存在就不创建）
+            # 检查是否已存在待办
             cursor.execute("""
                 SELECT id FROM todo_items 
                 WHERE teacher_id = %s 
@@ -228,68 +275,23 @@ def scan_octogenarian_subsidy():
             if cursor.fetchone():
                 continue
             
-            # 检查历史记录中是否已有过该教师的退休提醒（不管是否完成）
-            cursor.execute("""
-                SELECT id FROM todo_history 
-                WHERE teacher_id = %s 
-                  AND (business_type LIKE %s OR business_type LIKE %s OR business_type = %s)
-            """, (teacher['teacher_id'], '%retirement%', '%退休%', 'RETIREMENT_REMIND'))
-            
-            if cursor.fetchone():
-                logger.info(f"    [跳过] {teacher['name']} - 历史记录中已有退休提醒")
-                continue
-            
             # 使用模板的任务项
             task_items = template_task_items if template_task_items else []
             
-            # 插入待办
-            cursor.execute("""
-                INSERT INTO todo_items (
-                    template_id,
-                    business_type,
-                    teacher_id,
-                    teacher_name,
-                    title,
-                    description,
-                    due_date,
-                    status,
-                    priority,
-                    task_items,
-                    created_at,
-                    updated_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
-            """, (
-                template_code,
-                'octogenarian_subsidy',
-                teacher['teacher_id'],
-                teacher['name'],
-                f"{teacher['name']} - 80周岁高龄补贴申请",
+            # 创建待办及历史记录
+            description = (
                 f"教师 {teacher['name']} 将于 {teacher['birthday_80'].strftime('%Y年%m月%d日')} 年满80周岁，"
-                f"距离现在还有 {teacher['days_until']} 天，请提前办理高龄补贴申请。",
-                teacher['birthday_80'],
-                'pending',
-                'high' if teacher['days_until'] <= 30 else 'normal',
-                json.dumps(task_items)
-            ))
+                f"距离现在还有 {teacher['days_until']} 天，请提前办理高龄补贴申请。"
+            )
+            priority = 'high' if teacher['days_until'] <= 30 else 'normal'
+            
+            _create_todo_with_history(
+                cursor, teacher, template_code, 'octogenarian_subsidy',
+                template_name, description, teacher['birthday_80'], priority, task_items
+            )
             
             created_count += 1
-            
-            # 创建待办历史记录
-            cursor.execute("""
-                INSERT INTO todo_history (
-                    todo_id, teacher_id, teacher_name, template_code, business_type,
-                    title, description, status, task_items, created_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
-            """, (
-                cursor.lastrowid, teacher['teacher_id'], teacher['name'], template_code,
-                'octogenarian_subsidy',
-                f"{teacher['name']} - 80周岁高龄补贴申请",
-                f"教师 {teacher['name']} 将于 {teacher['birthday_80'].strftime('%Y年%m月%d日')} 年满80周岁，距离现在还有 {teacher['days_until']} 天",
-                'pending',
-                json.dumps(task_items)
-            ))
-            
-            logger.info(f"    [创建] {teacher['name']} - 80周岁日期: {teacher['birthday_80']}, 还剩{teacher['days_until']}天")
+            logger.info(f"    [创建] {teacher['name']}{template_name} - 80周岁日期: {teacher['birthday_80']}, 还剩{teacher['days_until']}天")
         
         conn.commit()
         logger.info(f"[完成] 新建80周岁高龄补贴待办: {created_count}")
@@ -407,21 +409,19 @@ def scan_retirement_reminder():
             logger.info("[完成] 没有需要推送的到龄退休提醒待办")
             return
         
-        # 4. 使用用户设计好的模板 RETIREMENT_REMIND
+        # 4. 使用预警督办清单模板 "退休到龄提醒"
         template_code = 'RETIREMENT_REMIND'
-        logger.info(f"  使用模板: {template_code}")
         
-        # 从清单模板获取任务项
-        cursor.execute("SELECT 任务项列表 FROM business_checklist WHERE 清单名称 LIKE %s LIMIT 1", ('%退休%',))
-        template_row = cursor.fetchone()
-        template_task_items = template_row[0] if template_row else None
-        if template_task_items and isinstance(template_task_items, str):
-            template_task_items = json.loads(template_task_items)
+        # 从清单模板获取任务项和模板名称
+        template_task_items, template_name = _load_checklist_template(
+            cursor, '退休到龄提醒', '退休到龄提醒')
+        
+        logger.info(f"  使用模板: {template_name}")
         
         # 5. 创建待办事项
         created_count = 0
         for teacher in eligible_teachers:
-            # 检查是否已存在待办（不管状态如何，只要存在就不创建）
+            # 检查是否已存在待办
             cursor.execute("""
                 SELECT id FROM todo_items 
                 WHERE teacher_id = %s 
@@ -434,58 +434,21 @@ def scan_retirement_reminder():
             # 使用模板的任务项
             task_items = template_task_items if template_task_items else []
             
-            cursor.execute("""
-                INSERT INTO todo_items (
-                    template_id,
-                    business_type,
-                    teacher_id,
-                    teacher_name,
-                    title,
-                    description,
-                    due_date,
-                    status,
-                    priority,
-                    task_items,
-                    created_at,
-                    updated_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
-            """, (
-                template_code,
-                'retirement_reminder',
-                teacher['teacher_id'],
-                teacher['name'],
-                f"{teacher['name']} - 到龄退休审批（{teacher['retirement_age']}岁）",
+            # 创建待办及历史记录
+            description = (
                 f"教师 {teacher['name']}（{teacher['gender']}）将于 {teacher['retirement_date'].strftime('%Y年%m月%d日')} "
                 f"年满{teacher['retirement_age']}周岁，"
-                f"距离现在还有 {teacher['days_until']} 天，请提前办理退休审批手续。",
-                teacher['retirement_date'],
-                'pending',
-                'high' if teacher['days_until'] <= 14 else 'normal',
-                json.dumps(task_items)
-            ))
+                f"距离现在还有 {teacher['days_until']} 天，请提前办理退休审批手续。"
+            )
+            priority = 'high' if teacher['days_until'] <= 14 else 'normal'
+            
+            _create_todo_with_history(
+                cursor, teacher, template_code, 'retirement_reminder',
+                template_name, description, teacher['retirement_date'], priority, task_items
+            )
             
             created_count += 1
-            
-            # 获取刚创建的待办ID
-            cursor.execute("SELECT lastval()")
-            new_todo_id = cursor.fetchone()[0]
-            
-            # 创建待办历史记录
-            cursor.execute("""
-                INSERT INTO todo_history (
-                    todo_id, teacher_id, teacher_name, template_code, business_type,
-                    title, description, status, task_items, created_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
-            """, (
-                new_todo_id, teacher['teacher_id'], teacher['name'], template_code,
-                'retirement_reminder',
-                f"{teacher['name']} - 到龄退休审批（{teacher['retirement_age']}岁）",
-                f"教师 {teacher['name']}（{teacher['gender']}）将于 {teacher['retirement_date'].strftime('%Y年%m月%d日')} 年满{teacher['retirement_age']}周岁，距离现在还有 {teacher['days_until']} 天",
-                'pending',
-                json.dumps(task_items)
-            ))
-            
-            logger.info(f"    [创建] {teacher['name']}({teacher['gender']}) - 退休日期: {teacher['retirement_date']}, 还剩{teacher['days_until']}天")
+            logger.info(f"    [创建] {teacher['name']}{template_name} - 退休日期: {teacher['retirement_date']}, 还剩{teacher['days_until']}天")
         
         conn.commit()
         logger.info(f"[完成] 新建到龄退休提醒待办: {created_count}")

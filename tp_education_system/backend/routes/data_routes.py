@@ -154,28 +154,44 @@ def get_dict_mappings_for_table(table_name: str, columns: List[str]) -> List[Dic
         elif relation_type == "to_master" and relation_table:
             # 检查主表是否存在
             if check_dict_table_exists(relation_table):
-                # 获取关联字段和显示字段
-                relation_display_field = field_config.get("relation_display_field", "name")
-                
-                # 动态查找表中的身份证字段（id_card, id_card_1, id_card_2等）
+                # 动态查找表中的身份证字段（id_card, id_card_1, id_card_2, 身份证号码等）
                 id_card_field = None
                 for col in columns:
-                    if col.startswith('id_card'):
+                    if col.startswith('id_card') or col == '身份证号码':
                         id_card_field = col
                         break
                 
+                # 动态查找表中的姓名字段（name, 姓名等）
+                name_field_in_table = None
+                for col in columns:
+                    if col in ('name', '姓名'):
+                        name_field_in_table = col
+                        break
+                
                 # 如果找到身份证字段且当前是name字段，创建关联
-                if id_card_field and target_field == "name":
+                if id_card_field and name_field_in_table and target_field in ('name', '姓名'):
+                    # 动态获取主表的主键关联字段
+                    master_code_field, master_name_field = get_dict_fields(relation_table)
+                    # code_field 应该是主表中的身份证字段（如 身份证号码）
+                    # 如果 get_dict_fields 返回的第一个字段不是身份证字段，则查找主表中的身份证字段
+                    master_id_card_col = None
+                    for mc in [master_code_field, '身份证号码', 'id_card']:
+                        if mc and mc != 'id':  # 排除自增id
+                            master_id_card_col = mc
+                            break
+                    if not master_id_card_col:
+                        master_id_card_col = master_code_field
+                    
                     mapping = {
                         'field': id_card_field,
                         'table': relation_table,
-                        'code_field': 'id_card',
-                        'name_field': 'name',
-                        'alias': 'name_display',
+                        'code_field': master_id_card_col,
+                        'name_field': master_name_field if master_name_field != 'id' else name_field_in_table,
+                        'alias': f'{name_field_in_table}_display',
                         'is_master_relation': True
                     }
                     mappings.append(mapping)
-                    print(f"主表关联(姓名): {table_name}.{id_card_field} -> {relation_table}.id_card (显示: name)")
+                    print(f"主表关联(姓名): {table_name}.{id_card_field} -> {relation_table}.{master_id_card_col} (显示: {master_name_field})")
 
     # 3. 兼容旧的硬编码配置（作为后备）
     for field_name in columns:
@@ -269,13 +285,33 @@ def get_dict_fields(table_name: str) -> tuple:
 
 @router.get("/schema/{table_name}")
 async def get_table_schema(table_name: str):
-    """获取表结构定义 - 从配置文件读取，转换为前端期望的格式"""
+    """获取表结构定义 - 从配置文件读取，name使用数据库实际列名"""
     try:
         # 从配置文件读取表结构
         config = read_json_file(SCHEMA_FILE)
         if config and "tables" in config:
             table_schema = config["tables"].get(table_name)
             if table_schema and "fields" in table_schema:
+                # 获取数据库实际列名
+                db_columns = []
+                try:
+                    with engine.connect() as conn:
+                        cols_result = conn.execute(text("""
+                            SELECT column_name FROM information_schema.columns
+                            WHERE table_name = :tbl ORDER BY ordinal_position
+                        """), {"tbl": table_name})
+                        db_columns = [row[0] for row in cols_result]
+                except Exception:
+                    pass
+                
+                # 构建 targetField → sourceField 映射
+                field_map = {}
+                for field in table_schema["fields"]:
+                    tf = field.get("targetField", "")
+                    sf = field.get("sourceField", "")
+                    if tf and sf:
+                        field_map[tf] = sf
+                
                 # 转换为前端期望的格式
                 fields = []
                 for field in table_schema["fields"]:
@@ -283,11 +319,24 @@ async def get_table_schema(table_name: str):
                     if field.get("targetField") == "id":
                         continue
                     
-                    # 转换为前端期望的格式
+                    # 确定 name：优先使用数据库实际列名，回退到 targetField
+                    tf = field.get("targetField", "")
+                    sf = field.get("sourceField", "")
+                    # 如果数据库中存在 targetField 对应的列，使用 targetField（英文）
+                    # 如果数据库中存在 sourceField 对应的列（如 teacher_basic_info 的中文列名），使用 sourceField
+                    db_name = tf
+                    if db_columns:
+                        if tf in db_columns:
+                            db_name = tf
+                        elif sf in db_columns:
+                            db_name = sf
+                        elif field.get("english_name", "") in db_columns:
+                            db_name = field.get("english_name", "")
+                    
                     converted_field = {
-                        "name": field.get("targetField") or field.get("english_name") or field.get("name", ""),
-                        "label": field.get("sourceField") or field.get("chinese_name", ""),
-                        "source_name": field.get("sourceField") or field.get("chinese_name", ""),
+                        "name": db_name,
+                        "label": sf or tf,
+                        "source_name": sf or tf,
                         "type": field.get("dataType") or field.get("data_type", "VARCHAR"),
                         "required": field.get("required", False),
                         "unique": field.get("unique", False),
@@ -765,7 +814,7 @@ async def handle_post_change_remarks(record_id: int, new_post_id: int):
         teacher_name = row[2]
         
         # 获取教师ID
-        cursor.execute("SELECT id FROM teacher_basic_info WHERE id_card = %s", (id_card,))
+        cursor.execute("SELECT id FROM teacher_basic_info WHERE \"身份证号码\" = %s", (id_card,))
         teacher_row = cursor.fetchone()
         teacher_id = teacher_row[0] if teacher_row else None
         
@@ -843,7 +892,7 @@ async def handle_status_change_remarks(record_id: int, new_status: str):
         
         # 获取教师原有信息（包括身份证号）
         cursor.execute("""
-            SELECT id, name, employment_status, id_card 
+            SELECT id, "姓名", "任职状态", "身份证号码" 
             FROM teacher_basic_info 
             WHERE id = %s
         """, (record_id,))
@@ -1038,7 +1087,7 @@ async def handle_new_teacher_remarks(data: dict, new_id: int):
         # 从岗位聘任信息表获取岗位信息
         post_2 = None
         # 先获取身份证号码
-        cursor.execute("SELECT id_card FROM teacher_basic_info WHERE id = %s", (teacher_id,))
+        cursor.execute("SELECT \"身份证号码\" FROM teacher_basic_info WHERE id = %s", (teacher_id,))
         id_card_row = cursor.fetchone()
         if id_card_row:
             id_card = id_card_row[0]

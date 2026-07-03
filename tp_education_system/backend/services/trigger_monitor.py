@@ -36,9 +36,9 @@ class TriggerMonitor:
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT id, employment_status
+            SELECT id, "任职状态"
             FROM teacher_basic_info
-            WHERE employment_status IS NOT NULL
+            WHERE "任职状态" IS NOT NULL
         """)
 
         status_map = {}
@@ -127,7 +127,7 @@ class TriggerMonitor:
                         if not cursor.fetchone():
                             # 获取教师姓名
                             cursor.execute("""
-                                SELECT name FROM teacher_basic_info
+                                SELECT "姓名" FROM teacher_basic_info
                                 WHERE id = %s
                             """, (teacher_id,))
                             row = cursor.fetchone()

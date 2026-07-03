@@ -109,7 +109,7 @@
               <template #default="{ row }">
                 <!-- 任职状态列 - 显示为下拉菜单（动态加载字典） -->
                 <el-select
-                  v-if="field.name === 'employment_status'"
+                  v-if="field.name === '任职状态' || field.name === 'employment_status'"
                   :model-value="row[field.name]"
                   size="small"
                   style="width: 100%"
@@ -1447,7 +1447,7 @@ const triggerRetirementChecklist = async (teacherId: number, teacherName: string
 
 // 处理任职状态变更
 const handleStatusChange = async (row: any, newStatus: string) => {
-  const oldStatus = row['employment_status']
+  const oldStatus = row['任职状态'] || row['employment_status']
   const teacherName = row['name'] || row['姓名']
   const teacherId = row.id
 
@@ -1507,7 +1507,7 @@ const updateTeacherStatus = async (teacherId: number, teacherName: string, oldSt
       console.log('API响应数据:', result)
       
       // API调用成功，更新前端状态
-      row['employment_status'] = newStatus
+      row['任职状态'] = newStatus
       
       // 根据响应状态显示不同消息
       if (result.status === 'warning') {

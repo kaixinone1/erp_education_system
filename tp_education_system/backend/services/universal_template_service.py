@@ -1701,7 +1701,7 @@ table {{
                 emp_id = query_params['职工ID']
                 if str(emp_id).isdigit():
                     cursor.execute(
-                        "SELECT id_card FROM teacher_basic_info WHERE id = %s LIMIT 1",
+                        "SELECT \"身份证号码\" FROM teacher_basic_info WHERE id = %s LIMIT 1",
                         (int(emp_id),)
                     )
                     id_row = cursor.fetchone()

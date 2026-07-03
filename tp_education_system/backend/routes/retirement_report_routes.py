@@ -121,9 +121,9 @@ async def get_teachers():
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT id, name, id_card, archive_birth_date, employment_status
+            SELECT id, "姓名", "身份证号码", archive_birth_date, "任职状态"
             FROM teacher_basic_info
-            WHERE employment_status = '在职'
+            WHERE "任职状态" = '在职'
             ORDER BY id
         """)
         
@@ -178,7 +178,7 @@ async def search_teachers_by_name(
         if id:
             # 根据ID查询
             cursor.execute("""
-                SELECT id, name, id_card, gender, birth_date, ethnicity,
+                SELECT id, "姓名", "身份证号码", gender, birth_date, ethnicity,
                        native_place, work_start_date, contact_phone, archive_birth_date
                 FROM teacher_basic_info
                 WHERE id = %s
@@ -186,10 +186,10 @@ async def search_teachers_by_name(
         elif name:
             # 根据姓名模糊查询
             cursor.execute("""
-                SELECT id, name, id_card, gender, birth_date, ethnicity,
+                SELECT id, "姓名", "身份证号码", gender, birth_date, ethnicity,
                        native_place, work_start_date, contact_phone, archive_birth_date
                 FROM teacher_basic_info
-                WHERE name LIKE %s
+                WHERE "姓名" LIKE %s
                 ORDER BY id
             """, (f"%{name}%",))
         else:
@@ -238,7 +238,7 @@ async def collect_retirement_data(teacher_id: int):
     try:
         # 1. 查询教师基础信息
         cursor.execute("""
-            SELECT id, name, id_card, birth_date, ethnicity,
+            SELECT id, "姓名", "身份证号码", birth_date, ethnicity,
                    native_place, work_start_date, archive_birth_date
             FROM teacher_basic_info
             WHERE id = %s

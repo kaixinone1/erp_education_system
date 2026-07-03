@@ -37,7 +37,7 @@ def fill_word_template(template_id: str, teacher_id: int, get_db_connection) -> 
         
         # 获取教师姓名
         cursor.execute("""
-            SELECT name FROM teacher_basic_info WHERE id = %s
+            SELECT "姓名" FROM teacher_basic_info WHERE id = %s
         """, (teacher_id,))
         teacher_row = cursor.fetchone()
         teacher_name = teacher_row[0] if teacher_row else "未知"

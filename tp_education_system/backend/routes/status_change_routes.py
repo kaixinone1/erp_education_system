@@ -1,17 +1,20 @@
 """
 状态变更处理路由
+当教师任职状态变更时，自动匹配业务清单模板并创建待办工作项
 """
 from fastapi import APIRouter, HTTPException
-from typing import Dict, Any
+from typing import Any
 import psycopg2
 import json
+import logging
 from datetime import datetime
 import sys
 import os
 
-# 添加 utils 目录到路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.dict_utils import get_education_name
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/status-change", tags=["status-change"])
 
@@ -28,102 +31,109 @@ def get_db_connection():
     return psycopg2.connect(**DATABASE_CONFIG)
 
 
-def create_trigger_event(teacher_id: int, teacher_name: str, old_status: str, new_status: str, template_code: str = None):
-    """创建待办清单（自动确认，无需手动确认）
-    返回: (success: bool, message: str, existing_todo_id: int or None)
-    """
-    conn = get_db_connection()
-    cursor = conn.cursor()
+def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, education_row):
+    """构建退休呈报表数据"""
+    from datetime import datetime as dt
     
-    trigger_reason = f'教师 {teacher_name} 的任职状态从 "{old_status}" 变为 "{new_status}"'
-    
-    # 优先从 business_checklist 表获取用户配置的任务项
-    cursor.execute("""
-        SELECT id, 清单名称, 任务项列表
-        FROM business_checklist 
-        WHERE 触发条件::text LIKE %s
-        LIMIT 1
-    """, (f'%{new_status}%',))
-    checklist = cursor.fetchone()
-    
-    if checklist:
-        checklist_id, template_name, task_items = checklist
-        
-        # 检查是否已存在相同待办（相同template_id + teacher_id + pending状态）
-        cursor.execute("""
-            SELECT id, status FROM todo_items 
-            WHERE teacher_id = %s AND template_id = %s AND status = 'pending'
-        """, (teacher_id, str(checklist_id)))
-        existing = cursor.fetchone()
-        
-        if existing:
-            print(f"[触发] 跳过：教师{teacher_name}已有相同待办(ID:{existing[0]})")
-            cursor.close()
-            conn.close()
-            return (False, "已存在相同待办", existing[0])
-        
-        # 解析任务项列表
-        if isinstance(task_items, str):
-            try:
-                task_items = json.loads(task_items)
-            except:
-                task_items = []
-        
-        # 截止日期默认为30天
-        due_date_rule = 30
-        
-        # 计算截止日期
-        due_date = None
+    birth_date = teacher_row[3]
+    if not birth_date and id_card and len(id_card) == 18:
         try:
-            from datetime import timedelta
-            due_date = datetime.now().date() + timedelta(days=due_date_rule)
+            birth_date = f"{id_card[6:10]}-{id_card[10:12]}-{id_card[12:14]}"
         except:
             pass
-        
-        # 获取业务类型
-        business_type = 'RETIREMENT'
-        
-        # 将task_items转为JSON字符串
-        task_items_json = json.dumps(task_items) if task_items else '[]'
-        
-        # 创建待办事项
-        cursor.execute("""
-            INSERT INTO todo_items (
-                template_id, business_type, teacher_id, teacher_name,
-                title, description, status, priority, due_date, task_items,
-                created_by, created_at
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            RETURNING id
-        """, (
-            str(checklist_id),
-            business_type,
-            teacher_id,
-            teacher_name,
-            f"{template_name} - {teacher_name}",
-            trigger_reason,
-            'pending',
-            'normal',
-            due_date,
-            task_items_json,
-            'system',
-            datetime.now()
-        ))
-        
-        todo_id = cursor.fetchone()[0]
-        conn.commit()
-        print(f"[触发] 从business_checklist创建待办: ID={todo_id}, 教师={teacher_name}, 清单={template_name}")
-        cursor.close()
-        conn.close()
-        return (True, "创建成功", todo_id)
     
-    print(f"[触发] 没有找到匹配的清单模板: {trigger_reason}")
-    cursor.close()
-    conn.close()
-    return (False, "没有找到匹配的清单模板", None)
+    gender = None
+    if id_card and len(id_card) == 18:
+        try:
+            gender = "男" if int(id_card[16]) % 2 == 1 else "女"
+        except:
+            pass
+    
+    work_years = 0
+    if teacher_row[6]:
+        try:
+            start = dt.strptime(str(teacher_row[6]), "%Y-%m-%d")
+            today = dt.now()
+            work_years = today.year - start.year
+            if (today.month, today.day) < (start.month, start.day):
+                work_years -= 1
+        except:
+            pass
+    
+    education_name = get_education_name(education_row[0], DATABASE_CONFIG) if education_row else None
+    
+    return {
+        "姓名": teacher_row[1],
+        "身份证号码": id_card,
+        "性别": gender,
+        "出生日期": birth_date,
+        "民族": teacher_row[4],
+        "文化程度": education_name,
+        "参加工作时间": teacher_row[6],
+        "工作年限": work_years,
+        "籍贯": teacher_row[5],
+    }
+
+
+def _write_remark(teacher_id, teacher_name, old_status, target_status):
+    """写入任职状态变更备注"""
+    remark_conn = None
+    remark_cursor = None
+    try:
+        remark_conn = get_db_connection()
+        remark_cursor = remark_conn.cursor()
+
+        id_card = None
+        remark_cursor.execute(
+            'SELECT "身份证号码" FROM teacher_basic_info WHERE id = %s', (teacher_id,))
+        id_card_row = remark_cursor.fetchone()
+        if id_card_row:
+            id_card = id_card_row[0]
+
+        original_post = None
+        if id_card:
+            remark_cursor.execute("SELECT id, post FROM dict_dictionary_personal")
+            dict_mapping = {}
+            for dict_row in remark_cursor.fetchall():
+                dict_mapping[dict_row[0]] = dict_row[1]
+
+            remark_cursor.execute(
+                "SELECT post_1 FROM post_appointment_info WHERE id_card = %s", (id_card,))
+            post_row = remark_cursor.fetchone()
+            if post_row and post_row[0]:
+                post_id = int(post_row[0])
+                original_post = dict_mapping.get(post_id, f'未知岗位{post_id}')
+
+        current_month = datetime.now().strftime('%Y-%m')
+        remark_cursor.execute("""
+            INSERT INTO performance_pay_remarks (
+                report_period, remark_type, teacher_id, teacher_name,
+                original_status, new_status, original_post, new_post,
+                change_category, change_detail, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        """, (
+            current_month, 'status_change', teacher_id, teacher_name,
+            old_status, target_status, original_post, None,
+            'status_change', f'{old_status}->{target_status}'
+        ))
+        remark_conn.commit()
+        logger.info(f"已写入任职状态变更备注: {teacher_name} {old_status}->{target_status}")
+    except Exception as e:
+        logger.error(f"写入备注信息失败: {e}")
+        if remark_conn:
+            try:
+                remark_conn.rollback()
+            except:
+                pass
+    finally:
+        if remark_cursor:
+            remark_cursor.close()
+        if remark_conn:
+            remark_conn.close()
 
 
 @router.post("/process")
-async def process_status_change(data: Dict[str, Any]):
+async def process_status_change(data: dict[str, Any]):
     """
     处理教师状态变更
     当状态变更为退休时，自动汇集退休呈报表数据并创建待办工作清单
@@ -142,7 +152,7 @@ async def process_status_change(data: Dict[str, Any]):
         
         # 获取变更前的状态和教师姓名
         cursor.execute("""
-            SELECT employment_status, name FROM teacher_basic_info WHERE id = %s
+            SELECT "任职状态", "姓名" FROM teacher_basic_info WHERE id = %s
         """, (teacher_id,))
         row = cursor.fetchone()
         old_status = row[0] if row else None
@@ -151,109 +161,36 @@ async def process_status_change(data: Dict[str, Any]):
         # 更新教师状态
         cursor.execute("""
             UPDATE teacher_basic_info 
-            SET employment_status = %s, updated_at = CURRENT_TIMESTAMP
+            SET "任职状态" = %s
             WHERE id = %s
         """, (target_status, teacher_id))
 
         conn.commit()
 
-        # 自动写入备注信息表 - 使用独立连接避免影响主事务
+        # 自动写入备注信息表
         if old_status and old_status != target_status:
-            remark_conn = None
-            remark_cursor = None
-            try:
-                # 使用独立连接处理备注写入
-                remark_conn = get_db_connection()
-                remark_cursor = remark_conn.cursor()
-                
-                # 获取教师的身份证号（用于查询岗位信息）
-                id_card = None
-                remark_cursor.execute("""
-                    SELECT id_card FROM teacher_basic_info WHERE id = %s
-                """, (teacher_id,))
-                id_card_row = remark_cursor.fetchone()
-                if id_card_row:
-                    id_card = id_card_row[0]
-                
-                # 获取原岗位信息（从岗位聘任信息表查询，并通过字典转换）
-                original_post = None
-                if id_card:
-                    # 先读取字典映射
-                    remark_cursor.execute("SELECT id, post FROM dict_dictionary_personal")
-                    dict_mapping = {}
-                    for dict_row in remark_cursor.fetchall():
-                        dict_mapping[dict_row[0]] = dict_row[1]
-                    
-                    # 从岗位聘任信息表查询post_1字段
-                    remark_cursor.execute("""
-                        SELECT post_1 FROM post_appointment_info WHERE id_card = %s
-                    """, (id_card,))
-                    post_row = remark_cursor.fetchone()
-                    if post_row and post_row[0]:
-                        post_id = int(post_row[0])
-                        original_post = dict_mapping.get(post_id, f'未知岗位{post_id}')
+            _write_remark(teacher_id, teacher_name, old_status, target_status)
 
-                # 获取当前年月
-                from datetime import datetime
-                current_month = datetime.now().strftime('%Y-%m')
-
-                # 写入备注信息表
-                remark_cursor.execute("""
-                    INSERT INTO performance_pay_remarks (
-                        report_period, remark_type, teacher_id, teacher_name,
-                        original_status, new_status, original_post, new_post,
-                        change_category, change_detail, created_at
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
-                """, (
-                    current_month,
-                    'status_change',
-                    teacher_id,
-                    teacher_name,
-                    old_status,
-                    target_status,
-                    original_post,
-                    None,
-                    'status_change',
-                    f'{old_status}->{target_status}'
-                ))
-                remark_conn.commit()
-                print(f"[备注] 已写入任职状态变更: {teacher_name} {old_status}->{target_status}")
-            except Exception as e:
-                print(f"[备注] 写入备注信息失败: {e}")
-                if remark_conn:
-                    try:
-                        remark_conn.rollback()
-                    except:
-                        pass
-            finally:
-                if remark_cursor:
-                    remark_cursor.close()
-                if remark_conn:
-                    remark_conn.close()
-
-        # 实时触发提醒
-        if old_status and old_status != target_status:
-            create_trigger_event(teacher_id, teacher_name, old_status, target_status)
+        # 实时触发提醒已经在下面的循环中处理了
+        # 后续主流程会正确匹配并创建待办，这里不需要重复处理
         
         # 如果状态变更为退休，自动汇集退休呈报表数据
         data_collection_error = None
         if target_status == '退休':
             try:
-                # 查询教师基础信息
                 cursor.execute("""
-                    SELECT id, name, id_card, archive_birth_date, ethnicity, 
-                           native_place, work_start_date,
-                           employment_status, contact_phone
+                    SELECT id, "姓名", "身份证号码", "档案出生日期", "民族", 
+                           "籍贯", "参加工作日期",
+                           "任职状态", "联系电话"
                     FROM teacher_basic_info 
                     WHERE id = %s
                 """, (teacher_id,))
                 
                 teacher_row = cursor.fetchone()
                 if teacher_row:
-                    # 获取身份证号
-                    id_card = teacher_row[2]  # id_card
+                    id_card = teacher_row[2]
                     
-                    # 查询最高学历信息（通过 teacher_id 关联）
+                    # 查询最高学历信息
                     cursor.execute("""
                         SELECT education, graduate_date, graduate_school, major
                         FROM teacher_education_record
@@ -261,127 +198,51 @@ async def process_status_change(data: Dict[str, Any]):
                         ORDER BY graduate_date DESC
                         LIMIT 1
                     """, (teacher_id,))
-                    
                     education_row = cursor.fetchone()
                     
-                    # 处理数据
+                    # 使用辅助函数构建核心数据
+                    report_data = _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, education_row)
                     
-                    # 出生日期：优先使用档案出生日期，否则从身份证提取
-                    birth_date = teacher_row[3]  # archive_birth_date
-                    if not birth_date and id_card and len(id_card) == 18:
-                        try:
-                            birth_date = f"{id_card[6:10]}-{id_card[10:12]}-{id_card[12:14]}"
-                        except:
-                            pass
-                    
-                    # 从身份证号提取性别
-                    gender = None
-                    if id_card and len(id_card) == 18:
-                        try:
-                            gender_code = int(id_card[16])
-                            gender = "男" if gender_code % 2 == 1 else "女"
-                        except:
-                            pass
-                    
-                    # 计算工作年限
-                    work_years = 0
-                    if teacher_row[6]:  # work_start_date
-                        try:
-                            from datetime import datetime
-                            start = datetime.strptime(str(teacher_row[6]), "%Y-%m-%d")
-                            today = datetime.now()
-                            work_years = today.year - start.year
-                            if (today.month, today.day) < (start.month, start.day):
-                                work_years -= 1
-                        except:
-                            pass
-                    
-                    # 收集扩展数据（职务、岗位等）
-                    # 从现有表查询数据，没有则保持为空
+                    # 扩展数据（从现有表查询，没有就为空）
                     extended_data = {
-                        '职务': None,  # 从现有表查询，没有就为空
-                        '岗位': None,  # 从现有表查询，没有就为空
-                        '技术职称': None,  # 从现有表查询，没有就为空
-                        '退休原因': None,  # 从现有表查询，没有就为空
-                        '退休后居住地址': None,
-                        '退休时间': None,  # 从现有表查询，没有就为空
-                        '单位意见': None,
-                        '证明人及其住址': None,
-                        '直系亲属信息': None,
-                        '是否独生子女': None,  # 从现有表查询，没有就为空
-                        '入党年月': None,  # 从现有表查询，没有就为空
-                        '薪级工资': None,
-                        '岗位工资': None,
-                        '技术等级': None,
+                        '现住址': None, '职务': None, '岗位': None,
+                        '技术职称': None, '退休原因': None, '退休后居住地址': None,
+                        '退休时间': None, '单位意见': None, '证明人及其住址': None,
+                        '直系亲属信息': None, '是否独生子女': None, '入党年月': None,
+                        '薪级工资': None, '岗位工资': None, '技术等级': None,
                     }
                     
-                    # 插入或更新退休呈报表数据中间表（使用中文字段名）
-                    # 先检查是否已存在该教师的记录
+                    # 检查是否已存在该教师的记录
                     cursor.execute("""
                         SELECT id FROM retirement_report_data WHERE teacher_id = %s
                     """, (teacher_id,))
-                    
                     existing_row = cursor.fetchone()
                     
                     if existing_row:
-                        # 更新现有记录
                         cursor.execute("""
                             UPDATE retirement_report_data SET
-                                姓名 = %s,
-                                身份证号码 = %s,
-                                性别 = %s,
-                                出生日期 = %s,
-                                民族 = %s,
-                                文化程度 = %s,
-                                参加工作时间 = %s,
-                                工作年限 = %s,
-                                籍贯 = %s,
-                                现住址 = %s,
-                                职务 = %s,
-                                岗位 = %s,
-                                技术职称 = %s,
-                                退休原因 = %s,
-                                退休后居住地址 = %s,
-                                退休时间 = %s,
-                                单位意见 = %s,
-                                证明人及其住址 = %s,
-                                直系亲属信息 = %s,
-                                是否独生子女 = %s,
-                                入党年月 = %s,
-                                薪级工资 = %s,
-                                岗位工资 = %s,
-                                技术等级 = %s,
+                                姓名 = %s, 身份证号码 = %s, 性别 = %s, 出生日期 = %s,
+                                民族 = %s, 文化程度 = %s, 参加工作时间 = %s, 工作年限 = %s,
+                                籍贯 = %s, 现住址 = %s, 职务 = %s, 岗位 = %s, 技术职称 = %s,
+                                退休原因 = %s, 退休后居住地址 = %s, 退休时间 = %s,
+                                单位意见 = %s, 证明人及其住址 = %s, 直系亲属信息 = %s,
+                                是否独生子女 = %s, 入党年月 = %s,
+                                薪级工资 = %s, 岗位工资 = %s, 技术等级 = %s,
                                 updated_at = NOW()
                             WHERE teacher_id = %s
                         """, (
-                            teacher_row[1],  # name
-                            id_card,
-                            gender,
-                            birth_date,
-                            teacher_row[4],  # ethnicity
-                            get_education_name(education_row[0], DATABASE_CONFIG) if education_row else None,  # education - 转换为中文
-                            teacher_row[6],  # work_start_date
-                            work_years,
-                            teacher_row[5],  # native_place
-                            None,  # current_address
-                            extended_data['职务'],
-                            extended_data['岗位'],
-                            extended_data['技术职称'],
-                            extended_data['退休原因'],
-                            extended_data['退休后居住地址'],
-                            extended_data['退休时间'],
-                            extended_data['单位意见'],
-                            extended_data['证明人及其住址'],
-                            extended_data['直系亲属信息'],
-                            extended_data['是否独生子女'],
-                            extended_data['入党年月'],
-                            extended_data['薪级工资'],
-                            extended_data['岗位工资'],
-                            extended_data['技术等级'],
+                            report_data['姓名'], report_data['身份证号码'], report_data['性别'], report_data['出生日期'],
+                            report_data['民族'], report_data['文化程度'], report_data['参加工作时间'], report_data['工作年限'],
+                            report_data['籍贯'],
+                            extended_data['现住址'],
+                            extended_data['职务'], extended_data['岗位'], extended_data['技术职称'],
+                            extended_data['退休原因'], extended_data['退休后居住地址'], extended_data['退休时间'],
+                            extended_data['单位意见'], extended_data['证明人及其住址'], extended_data['直系亲属信息'],
+                            extended_data['是否独生子女'], extended_data['入党年月'],
+                            extended_data['薪级工资'], extended_data['岗位工资'], extended_data['技术等级'],
                             teacher_id
                         ))
                     else:
-                        # 插入新记录
                         cursor.execute("""
                             INSERT INTO retirement_report_data (
                                 teacher_id, 姓名, 身份证号码, 性别, 出生日期, 
@@ -394,45 +255,28 @@ async def process_status_change(data: Dict[str, Any]):
                             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
                         """, (
                             teacher_id,
-                            teacher_row[1],  # name
-                            id_card,
-                            gender,
-                            birth_date,
-                            teacher_row[4],  # ethnicity
-                            get_education_name(education_row[0], DATABASE_CONFIG) if education_row else None,  # education - 转换为中文
-                            teacher_row[6],  # work_start_date
-                            work_years,
-                            teacher_row[5],  # native_place
-                            None,  # current_address
-                            extended_data['职务'],
-                            extended_data['岗位'],
-                            extended_data['技术职称'],
-                            extended_data['退休原因'],
-                            extended_data['退休后居住地址'],
-                            extended_data['退休时间'],
-                            extended_data['单位意见'],
-                            extended_data['证明人及其住址'],
-                            extended_data['直系亲属信息'],
-                            extended_data['是否独生子女'],
-                            extended_data['入党年月'],
-                            extended_data['薪级工资'],
-                            extended_data['岗位工资'],
-                            extended_data['技术等级'],
+                            report_data['姓名'], report_data['身份证号码'], report_data['性别'], report_data['出生日期'],
+                            report_data['民族'], report_data['文化程度'], report_data['参加工作时间'], report_data['工作年限'],
+                            report_data['籍贯'],
+                            extended_data['现住址'],
+                            extended_data['职务'], extended_data['岗位'], extended_data['技术职称'],
+                            extended_data['退休原因'], extended_data['退休后居住地址'], extended_data['退休时间'],
+                            extended_data['单位意见'], extended_data['证明人及其住址'], extended_data['直系亲属信息'],
+                            extended_data['是否独生子女'], extended_data['入党年月'],
+                            extended_data['薪级工资'], extended_data['岗位工资'], extended_data['技术等级'],
                         ))
                     
-                    print(f"已自动汇集退休呈报表数据: 教师ID={teacher_id}, 姓名={teacher_row[1]}")
+                    logger.info(f"已自动汇集退休呈报表数据: 教师ID={teacher_id}, 姓名={teacher_row[1]}")
             except Exception as e:
                 error_msg = f"自动汇集退休呈报表数据失败: {str(e)}"
-                print(error_msg)
+                logger.error(error_msg)
                 import traceback
                 traceback.print_exc()
                 data_collection_error = error_msg
-                # 回滚事务避免abort
                 try:
                     conn.rollback()
                 except:
                     pass
-                # 重新开启事务
                 try:
                     conn.commit()
                 except:
@@ -449,8 +293,7 @@ async def process_status_change(data: Dict[str, Any]):
         """)
         
         all_checklists = cursor.fetchall()
-        print(f"找到 {len(all_checklists)} 个有效清单模板")
-        print(f"目标状态: {target_status}")
+        logger.info(f"找到 {len(all_checklists)} 个有效清单模板, 目标状态: {target_status}")
         
         # 筛选匹配的清单
         matched_checklists = []
@@ -462,28 +305,28 @@ async def process_status_change(data: Dict[str, Any]):
             try:
                 task_items = checklist_row[2] if isinstance(checklist_row[2], (dict, list)) else json.loads(checklist_row[2]) if checklist_row[2] else []
             except (json.JSONDecodeError, TypeError) as e:
-                print(f"解析task_items失败: {e}, 使用空列表")
+                logger.warning(f"解析task_items失败: {e}, 使用空列表")
                 task_items = []
             
             try:
                 trigger_condition = checklist_row[3] if isinstance(checklist_row[3], dict) else (checklist_row[3] if isinstance(checklist_row[3], list) else json.loads(checklist_row[3]) if checklist_row[3] else {})
             except (json.JSONDecodeError, TypeError) as e:
-                print(f"解析trigger_condition失败: {e}, 使用空字典")
+                logger.warning(f"解析trigger_condition失败: {e}, 使用空字典")
                 trigger_condition = {}
             
             associated_template_id = checklist_row[4]  # 关联模板ID
             
-            print(f"检查清单: {checklist_name}, 触发条件: {trigger_condition}, 关联模板: {associated_template_id}")
+            logger.debug(f"检查清单: {checklist_name}, 触发条件: {trigger_condition}, 关联模板: {associated_template_id}")
             
             # 检查触发条件是否匹配当前状态
             target_statuses = trigger_condition.get("target_status", []) if isinstance(trigger_condition, dict) else []
-            print(f"  target_statuses: {target_statuses}, 类型: {type(target_statuses)}")
+            logger.debug(f"  target_statuses: {target_statuses}, 类型: {type(target_statuses)}")
             
             if isinstance(target_statuses, str):
                 target_statuses = [target_statuses]
             
             # 如果当前状态在触发列表中，添加到匹配列表
-            print(f"  检查 {target_status} 是否在 {target_statuses}: {target_status in target_statuses}")
+            logger.debug(f"  检查 {target_status} 是否在 {target_statuses}: {target_status in target_statuses}")
             if target_status in target_statuses:
                 matched_checklists.append({
                     "id": checklist_id,
@@ -517,7 +360,7 @@ async def process_status_change(data: Dict[str, Any]):
             cursor.execute("""
                 SELECT id FROM todo_items
                 WHERE teacher_id = %s AND template_id = %s AND status = 'pending'
-            """, (teacher_id, checklist_id))
+        """, (teacher_id, str(checklist_id)))
             
             if not cursor.fetchone():
                 # 判断模板类型（检查是否是通用模板）
@@ -528,7 +371,7 @@ async def process_status_change(data: Dict[str, Any]):
                     """, (associated_template_id,))
                     if cursor.fetchone():
                         template_type = 'universal'
-                        print(f"【状态变更】检测到通用模板: {associated_template_id}")
+                        logger.info(f"【状态变更】检测到通用模板: {associated_template_id}")
                 
                 # 处理任务项，添加关联模板ID到任务参数
                 processed_task_items = []
@@ -554,7 +397,7 @@ async def process_status_change(data: Dict[str, Any]):
                     checklist_id,
                     'RETIREMENT',
                     teacher_name,
-                    checklist_name,
+                    f"{teacher_name}{checklist_name}",
                     f"状态变更触发: {target_status}",
                     json.dumps(processed_task_items),
                     "pending",
@@ -592,5 +435,5 @@ async def process_status_change(data: Dict[str, Any]):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"处理状态变更失败: {e}")
+        logger.error(f"处理状态变更失败: {e}")
         raise HTTPException(status_code=500, detail=f"处理状态变更失败: {str(e)}")

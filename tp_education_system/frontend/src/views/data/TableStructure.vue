@@ -7,16 +7,22 @@
           <div class="header-actions">
             <el-select
               v-model="selectedTable"
-              placeholder="选择数据表"
-              style="width: 250px"
+              placeholder="输入关键词搜索数据表"
+              style="width: 350px"
+              filterable
+              clearable
+              remote
+              :remote-method="remoteSearchTable"
+              :loading="tableSearchLoading"
               @change="handleTableChange"
+              @clear="handleTableClear"
             >
               <el-option
-              v-for="table in tableList"
-              :key="table.name"
-              :label="table.has_chinese_name ? table.chinese_name : table.name"
-              :value="table.name"
-            />
+                v-for="table in filteredTableList"
+                :key="table.name"
+                :label="table.has_chinese_name ? `${table.chinese_name} (${table.name})` : table.name"
+                :value="table.name"
+              />
             </el-select>
             <el-button type="primary" @click="refreshTableList">
               <el-icon><Refresh /></el-icon>
@@ -348,6 +354,8 @@ import { Refresh, Plus, Check } from '@element-plus/icons-vue'
 // 状态
 const loading = ref(false)
 const tableList = ref<any[]>([])
+const filteredTableList = ref<any[]>([])
+const tableSearchLoading = ref(false)
 const selectedTable = ref('')
 const tableInfo = ref<any>({})
 const addFieldDialogVisible = ref(false)
@@ -534,11 +542,39 @@ const refreshTableList = async () => {
     if (response.ok) {
       const result = await response.json()
       tableList.value = result.tables || []
+      // 初始显示全部表
+      filteredTableList.value = tableList.value
     }
   } catch (error) {
     console.error('获取表列表失败:', error)
     ElMessage.error('获取表列表失败')
   }
+}
+
+// 远程搜索表
+const remoteSearchTable = (query: string) => {
+  tableSearchLoading.value = true
+  try {
+    if (!query || query.trim() === '') {
+      filteredTableList.value = tableList.value
+    } else {
+      const keyword = query.toLowerCase()
+      filteredTableList.value = tableList.value.filter((table: any) => {
+        // 搜索中文名和英文名
+        const chineseName = (table.chinese_name || '').toLowerCase()
+        const englishName = (table.name || '').toLowerCase()
+        return chineseName.includes(keyword) || englishName.includes(keyword)
+      })
+    }
+  } finally {
+    tableSearchLoading.value = false
+  }
+}
+
+// 清空选择
+const handleTableClear = () => {
+  selectedTable.value = ''
+  filteredTableList.value = tableList.value
 }
 
 // 获取表结构

@@ -45,7 +45,7 @@ async def get_dashboard_stats():
 
         # 4. 退休人数
         cursor.execute(
-            "SELECT COUNT(*) FROM teacher_basic_info WHERE employment_status = %s", ("退休",)
+            "SELECT COUNT(*) FROM teacher_basic_info WHERE \"任职状态\" = %s", ("退休",)
         )
         retired_teachers = cursor.fetchone()[0]
 
@@ -55,19 +55,19 @@ async def get_dashboard_stats():
 
         # 6. 去世人数
         cursor.execute(
-            "SELECT COUNT(*) FROM teacher_basic_info WHERE employment_status = %s", ("去世",)
+            "SELECT COUNT(*) FROM teacher_basic_info WHERE \"任职状态\" = %s", ("去世",)
         )
         deceased_teachers = cursor.fetchone()[0]
 
         # 7. 性别分布
         cursor.execute("""
             SELECT
-                CASE WHEN CAST(SUBSTRING(id_card, 17, 1) AS INTEGER) % 2 = 0
+                CASE WHEN CAST(SUBSTRING("身份证号码", 17, 1) AS INTEGER) % 2 = 0
                      THEN '女' ELSE '男' END AS gender,
                 COUNT(*) AS cnt
             FROM teacher_basic_info
-            WHERE id_card IS NOT NULL AND LENGTH(id_card) = 18
-            GROUP BY (CASE WHEN CAST(SUBSTRING(id_card, 17, 1) AS INTEGER) % 2 = 0
+            WHERE "身份证号码" IS NOT NULL AND LENGTH("身份证号码") = 18
+            GROUP BY (CASE WHEN CAST(SUBSTRING("身份证号码", 17, 1) AS INTEGER) % 2 = 0
                            THEN '女' ELSE '男' END)
         """)
         gender_data = [{"name": row[0], "value": row[1]} for row in cursor.fetchall()]
@@ -113,17 +113,17 @@ async def get_dashboard_stats():
 
         # 10. 任职状态分布
         cursor.execute("""
-            SELECT employment_status, COUNT(*) AS cnt
+            SELECT "任职状态", COUNT(*) AS cnt
             FROM teacher_basic_info
-            WHERE employment_status IS NOT NULL
-            GROUP BY employment_status
+            WHERE "任职状态" IS NOT NULL
+            GROUP BY "任职状态"
             ORDER BY cnt DESC
         """)
         status_data = [{"name": row[0] if row[0] else "未知", "value": row[1]} for row in cursor.fetchall()]
 
         # 11. 离休人数
         cursor.execute(
-            "SELECT COUNT(*) FROM teacher_basic_info WHERE employment_status = %s", ("离休",)
+            "SELECT COUNT(*) FROM teacher_basic_info WHERE \"任职状态\" = %s", ("离休",)
         )
         retired_old_style = cursor.fetchone()[0]
 

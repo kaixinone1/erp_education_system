@@ -170,7 +170,7 @@ def _get_fill_unit_name(request):
                 conn = get_db_connection()
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT name FROM teacher_basic_info WHERE id_card = %s LIMIT 1",
+                    "SELECT \"姓名\" FROM teacher_basic_info WHERE \"身份证号码\" = %s LIMIT 1",
                     (id_card.strip(),)
                 )
                 row = cursor.fetchone()
@@ -188,7 +188,7 @@ def _get_fill_unit_name(request):
                 conn = get_db_connection()
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT name FROM teacher_basic_info WHERE id = %s",
+                    "SELECT \"姓名\" FROM teacher_basic_info WHERE id = %s",
                     (int(employee_id),)
                 )
                 row = cursor.fetchone()
@@ -676,7 +676,7 @@ async def find_teacher_by_idcard(id_card: str = Query(..., description="身份�
         cursor = conn.cursor()
         try:
             cursor.execute(
-                "SELECT id, name, id_card FROM teacher_basic_info WHERE id_card = %s LIMIT 1",
+                "SELECT id, \"姓名\", \"身份证号码\" FROM teacher_basic_info WHERE \"身份证号码\" = %s LIMIT 1",
                 (id_card.strip(),)
             )
             row = cursor.fetchone()
@@ -1874,13 +1874,13 @@ async def search_employee(
 
         if keyword.isdigit() and len(keyword) < 10:
             cur.execute(
-                """SELECT id, name, id_card FROM teacher_basic_info WHERE id = %s LIMIT 5""",
+                """SELECT id, \"姓名\", \"身份证号码\" FROM teacher_basic_info WHERE id = %s LIMIT 5""",
                 (int(keyword),)
             )
         else:
             cur.execute(
-                """SELECT id, name, id_card FROM teacher_basic_info
-                   WHERE name LIKE %s OR id_card LIKE %s LIMIT 10""",
+                """SELECT id, \"姓名\", \"身份证号码\" FROM teacher_basic_info
+                   WHERE \"姓名\" LIKE %s OR \"身份证号码\" LIKE %s LIMIT 10""",
                 (f"%{keyword}%", f"%{keyword}%")
             )
 

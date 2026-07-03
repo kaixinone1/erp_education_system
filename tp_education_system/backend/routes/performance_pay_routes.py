@@ -199,9 +199,9 @@ def save_data(data: PerformancePayData):
                 dict_mapping[dict_row[0]] = dict_row[1]
             
             cursor2.execute("""
-                SELECT t.id_card, t.name, t.employment_status, p.post_1
+                SELECT t."身份证号码", t."姓名", t."任职状态", p.post_1
                 FROM teacher_basic_info t
-                LEFT JOIN post_appointment_info p ON t.id_card = p.id_card
+                LEFT JOIN post_appointment_info p ON t."身份证号码" = p.id_card
             """)
             for row in cursor2.fetchall():
                 post_name = None
@@ -318,7 +318,7 @@ def load_from_database(req: YearMonthRequest):
                 SELECT p.post_1, COUNT(*) as cnt
                 FROM post_appointment_info p
                 WHERE p.id_card IN (
-                    SELECT id_card FROM teacher_basic_info 
+                    SELECT "身份证号码" FROM teacher_basic_info 
                     WHERE id IN ({})
                 )
                 AND p.post_1 IS NOT NULL
@@ -507,7 +507,7 @@ def load_from_database(req: YearMonthRequest):
         try:
             print("=== 开始查询无乡镇补贴人员 ===")
             cursor.execute("""
-                SELECT t.name 
+                SELECT t."姓名" 
                 FROM teacher_basic_info t
                 JOIN employee_tag_relations etr1 ON t.id = etr1.employee_id
                 JOIN personal_dict_dictionary pdd1 ON etr1.tag_id = pdd1.id
@@ -538,8 +538,8 @@ def load_from_database(req: YearMonthRequest):
             cursor.execute("""
                 SELECT COUNT(*)
                 FROM teacher_basic_info tbi
-                JOIN teacher_personal_identity tpi ON tbi.id_card = tpi.id_card
-                WHERE tbi.employment_status = '退休' AND (tpi.ge_ren_shen_fen = '1' OR tpi.ge_ren_shen_fen = '干部')
+                JOIN teacher_personal_identity tpi ON tbi."身份证号码" = tpi.id_card
+                WHERE tbi."任职状态" = '退休' AND (tpi.ge_ren_shen_fen = '1' OR tpi.ge_ren_shen_fen = '干部')
             """)
             row = cursor.fetchone()
             result_data['retirees']['cadre_count'] = int(row[0] or 0) if row else 0
@@ -548,14 +548,14 @@ def load_from_database(req: YearMonthRequest):
             cursor.execute("""
                 SELECT COUNT(*)
                 FROM teacher_basic_info tbi
-                JOIN teacher_personal_identity tpi ON tbi.id_card = tpi.id_card
-                WHERE tbi.employment_status = '退休' AND (tpi.ge_ren_shen_fen = '2' OR tpi.ge_ren_shen_fen = '工人')
+                JOIN teacher_personal_identity tpi ON tbi."身份证号码" = tpi.id_card
+                WHERE tbi."任职状态" = '退休' AND (tpi.ge_ren_shen_fen = '2' OR tpi.ge_ren_shen_fen = '工人')
             """)
             row = cursor.fetchone()
             result_data['retirees']['worker_count'] = int(row[0] or 0) if row else 0
             
             # 离休干部 = 任职状态为"离休"
-            cursor.execute("SELECT COUNT(*) FROM teacher_basic_info WHERE employment_status = '离休'")
+            cursor.execute("SELECT COUNT(*) FROM teacher_basic_info WHERE \"任职状态\" = '离休'")
             row = cursor.fetchone()
             result_data['retirees']['retired_count'] = int(row[0] or 0) if row else 0
             
