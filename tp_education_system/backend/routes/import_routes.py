@@ -561,11 +561,48 @@ async def finalize_import(
                 actual_table_name = existing_english_name
                 
             elif status == 'structure_mismatch':
-                # 中文表名已存在，但表结构不一致，拒绝导入
-                raise HTTPException(
-                    status_code=400, 
-                    detail=f"中文表名'{chinese_title}'已存在，但表结构不一致。请修改中文表名后重新导入。"
-                )
+                # 中文表名已存在，但表结构不一致
+                if force_overwrite:
+                    # 用户确认强制覆盖：删除旧表，使用新结构重建
+                    print(f"强制覆盖模式：删除旧表 {existing_english_name}，使用新结构重建")
+                    
+                    # 获取旧表名
+                    old_mapping = table_name_manager.table_name_mappings.get("mappings", {}).get(chinese_title, {})
+                    old_english_name = old_mapping.get("english_name", existing_english_name)
+                    
+                    # 删除旧表
+                    from sqlalchemy import create_engine, text as sa_text
+                    DATABASE_URL = "postgresql://taiping_user:taiping_password@localhost:5432/taiping_education"
+                    engine = create_engine(DATABASE_URL)
+                    with engine.connect() as conn:
+                        conn.execute(sa_text(f'DROP TABLE IF EXISTS "{old_english_name}" CASCADE'))
+                        conn.commit()
+                    print(f"已删除旧表: {old_english_name}")
+                    
+                    # 清除旧映射
+                    if chinese_title in table_name_manager.table_name_mappings.get("mappings", {}):
+                        del table_name_manager.table_name_mappings["mappings"][chinese_title]
+                    if old_english_name in table_name_manager.table_name_mappings.get("reverse_mappings", {}):
+                        del table_name_manager.table_name_mappings["reverse_mappings"][old_english_name]
+                    table_name_manager._save_table_name_mappings()
+                    print(f"已清除旧表名映射: {chinese_title} -> {old_english_name}")
+                    
+                    # 使用原始表名（新表将使用相同的英文名）
+                    actual_table_name = table_name
+                    
+                    # 注册新映射
+                    table_name_manager.register_table_name(
+                        chinese_name=chinese_title,
+                        english_name=table_name,
+                        table_type=table_type,
+                        field_configs=processed_field_configs
+                    )
+                else:
+                    # 不允许覆盖，提示用户修改中文表名
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"中文表名'{chinese_title}'已存在，但表结构不一致。请修改中文表名后重新导入，或启用强制覆盖模式。"
+                    )
                 
             elif status == 'name_conflict':
                 # 中文表名不重复，但表结构相同，需要用户确认

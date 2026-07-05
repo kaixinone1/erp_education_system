@@ -46,23 +46,21 @@ async def list_configs():
         # 使用 FieldConfigManager 获取所有配置
         configs = field_config_manager.get_all_configs()
 
-        # 只返回字段配置文件（配置名称以"字段配置"结尾）
+        # 返回所有字段配置（不限制名称格式）
         result = []
         for config in configs:
             config_name = config.get('config_name', '')
-            # 只显示以"字段配置"结尾的配置文件
-            if config_name.endswith('字段配置'):
-                result.append({
-                    "name": config_name,
-                    "display_name": config_name,
-                    "table_name": config.get('table_name', ''),
-                    "chinese_title": config_name,
-                    "created_at": config.get('created_at', ''),
-                    "updated_at": config.get('updated_at', ''),
-                    "field_count": len(config.get('field_mappings', [])),
-                    "version": config.get('version', 1),
-                    "is_latest": config.get('is_latest', True)
-                })
+            result.append({
+                "name": config_name,
+                "display_name": config_name,
+                "table_name": config.get('table_name', ''),
+                "chinese_title": config_name,
+                "created_at": config.get('created_at', ''),
+                "updated_at": config.get('updated_at', ''),
+                "field_count": len(config.get('field_mappings', [])),
+                "version": config.get('version', 1),
+                "is_latest": config.get('is_latest', True)
+            })
 
         # 按更新时间排序
         result.sort(key=lambda x: x.get("updated_at", ""), reverse=True)

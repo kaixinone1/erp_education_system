@@ -105,11 +105,6 @@
       "table_type": "child",
       "created_at": "2026-05-02T10:37:35.840957"
     },
-    "退休补充信息": {
-      "english_name": "retirement_info",
-      "table_type": "child",
-      "created_at": "2026-05-03T10:32:17.125551"
-    },
     "测试工资表": {
       "english_name": "test_wage",
       "table_type": "master",
@@ -265,6 +260,11 @@
       "english_name": "test_table_xyz",
       "table_type": "master",
       "updated_at": "2026-06-17T08:19:31.463531"
+    },
+    "退休补充信息": {
+      "english_name": "tui_xiu_bu_chong_xin_xi",
+      "table_type": "master",
+      "updated_at": "2026-07-05T16:44:15.026699"
     }
   },
   "reverse_mappings": {
@@ -385,6 +385,7 @@
     "v_retirement_identity_stats": "退休人员身份统计",
     "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819": "离退休费变动明细表",
     "chu_ru_jing_zheng_jian_guan_li_xin_xi_tai_zhang": "出入境证件管理信息台账",
-    "test_table_xyz": "测试表"
+    "test_table_xyz": "测试表",
+    "tui_xiu_bu_chong_xin_xi": "退休补充信息"
   }
 }

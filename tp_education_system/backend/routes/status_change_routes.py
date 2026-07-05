@@ -38,9 +38,10 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
     1. teacher_basic_info - 基础信息、出生日期
     2. post_appointment_info - 职务、职称
     3. salary_data - 三个时间点的职务岗位和级别薪级
-    4. retirement_info - 退休补充信息
+    4. retirement_info - 退休补充信息（动态查询实际列）
     """
     from datetime import datetime as dt
+    import re
     
     # ==================== 一、基础信息处理 ====================
     # 出生日期：优先档案出生日期，否则出生日期
@@ -98,11 +99,11 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
     }
     
     position_title = None  # 职务（正高级/副高级/中级/初级）
-    professional_title = None  # 职称（高级教师/一级教师等）
+    professional_title = None  # 职称（高级教师/一级教师等，优先取professional_title，为空取job_title）
     duty = None  # 岗位
     
     cursor.execute("""
-        SELECT post_level_1, professional_title, duty, job_title
+        SELECT post_level_1, professional_title, job_title
         FROM post_appointment_info
         WHERE id_card = %s
         ORDER BY id DESC LIMIT 1
@@ -115,12 +116,28 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
                 position_title = POST_LEVEL_TO_TITLE.get(level)
             except (ValueError, TypeError):
                 pass
-        professional_title = post_row[1]
-        duty = post_row[2]
+        # 职称：优先取 professional_title，为空则取 job_title（岗位名称）
+        professional_title = post_row[1] if post_row[1] else post_row[2]
+        duty = None
     
     # ==================== 三、单位岗位区（最新工资包数据） ====================
-    # 确定人员分类
-    # 机关工人、事业管理（职务岗位包含管理）、事业专技（包含专技或义教）、事业工勤（包含技工）
+    # 人员分类：根据 job_title_post 判断
+    # 机关工人、事业管理（包含"管理"）、事业专技（包含"专技"或"义教"）、事业工勤（包含"技工"）
+    personnel_category = 'unknown'  # 人员分类：management/technical/worker/other
+    
+    def classify_personnel(job_title_str):
+        """根据职务岗位字符串判断人员分类"""
+        if not job_title_str:
+            return 'unknown'
+        s = str(job_title_str)
+        if '管理' in s:
+            return 'management'
+        if '专技' in s or '义教' in s:
+            return 'technical'
+        if '技工' in s:
+            return 'worker'
+        return 'other'
+    
     salary_time_points = {
         '2014年9月30日': {'job_title': None, 'salary_level': None, 'salary': None, 'position_salary': None},
         '最后一次职务升降时间': {'time': None, 'job_title': None, 'salary_level': None, 'salary': None, 'position_salary': None},
@@ -137,6 +154,14 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
     salary_rows = cursor.fetchall()
     
     if salary_rows:
+        # 确定人员分类（使用最常见的分类）
+        category_counts = {}
+        for row in salary_rows:
+            cat = classify_personnel(row[0])
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+        if category_counts:
+            personnel_category = max(category_counts, key=category_counts.get)
+        
         # 1) 2014年9月30日：起薪时间=2014-10-01
         for row in salary_rows:
             if row[2] and str(row[2]) == '2014-10-01':
@@ -146,20 +171,15 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
                 salary_time_points['2014年9月30日']['position_salary'] = row[4]
                 break
         
-        # 2) 最后一次职务升降时间：职务岗位最高一级对应的最小起薪时间
-        # 职务岗位从高到低：四级->五级->...->13级
-        # 解析职务岗位等级
+        # 2) 最后一次职务升降时间：职务岗位最高一级（数字最小）对应起薪时间中的最小日期值
         def parse_job_rank(job_title):
             """解析职务岗位等级，返回数字以便比较（数字越小，级别越高）"""
             if not job_title:
                 return 999
-            import re
-            # 匹配中文数字或阿拉伯数字
             chinese_map = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9, '十': 10}
             for ch, num in chinese_map.items():
                 if ch in str(job_title):
                     return num
-            # 匹配阿拉伯数字
             match = re.search(r'(\d+)', str(job_title))
             if match:
                 return int(match.group(1))
@@ -167,14 +187,15 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
         
         # 找出最高职务岗位等级（数字最小）
         best_rank = 999
-        best_row = None
         for row in salary_rows:
             rank = parse_job_rank(row[0])
             if rank < best_rank:
                 best_rank = rank
-                best_row = row
         
-        if best_row:
+        # 在最高等级的所有记录中，找起薪时间最小的那条
+        best_rows = [r for r in salary_rows if parse_job_rank(r[0]) == best_rank]
+        if best_rows:
+            best_row = min(best_rows, key=lambda r: r[2] if r[2] else '9999-99-99')
             salary_time_points['最后一次职务升降时间']['time'] = best_row[2]
             salary_time_points['最后一次职务升降时间']['job_title'] = best_row[0]
             salary_time_points['最后一次职务升降时间']['salary_level'] = best_row[1]
@@ -188,20 +209,100 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
         salary_time_points['退休时']['salary'] = max_time_row[3]
         salary_time_points['退休时']['position_salary'] = max_time_row[4]
     
-    # ==================== 四、退休补充信息 ====================
-    retirement_info = {}
+    # ==================== 四、退休补充信息（动态查询实际列） ====================
+    # 退休补充信息表名：优先查 tui_xiu_bu_chong_xin_xi（新表），否则 retirement_info（旧表）
+    ri_table_name = 'tui_xiu_bu_chong_xin_xi'
     cursor.execute("""
-        SELECT children, name_birth_date
-        FROM retirement_info
+        SELECT EXISTS (
+            SELECT 1 FROM information_schema.tables 
+            WHERE table_name = 'tui_xiu_bu_chong_xin_xi'
+        )
+    """)
+    if not cursor.fetchone()[0]:
+        ri_table_name = 'retirement_info'
+    
+    # 动态获取退休补充信息表的所有列名
+    cursor.execute("""
+        SELECT column_name FROM information_schema.columns
+        WHERE table_name = %s ORDER BY ordinal_position
+    """, (ri_table_name,))
+    ri_columns = [r[0] for r in cursor.fetchall()]
+    
+    # 查询退休补充信息
+    cursor.execute(f"""
+        SELECT * FROM "{ri_table_name}"
         WHERE id_card = %s ORDER BY id DESC LIMIT 1
     """, (id_card,))
     ri_row = cursor.fetchone()
+    
+    # 字段名映射（数据库列名 -> 返回字典key）
+    # 覆盖新旧表的所有可能字段名
+    RI_FIELD_MAP = {
+        # 基础字段
+        'name': '姓名',
+        'id_card': '身份证号码',
+        # 旧表字段
+        'children': '是否独生子女',
+        'name_birth_date': '供养亲属',
+        # 新表字段（tui_xiu_bu_chong_xin_xi）
+        'retirement_reason': '退休原因',
+        'year_month': '自何年何月',
+        'year_month_1': '至何年何月',
+        'unit_3': '工作经历',
+        'zheng_ming_ren_ji_qi_zhu_zhi': '证明人及其住址',
+        'xian_zhu_zhi': '现住址',
+        'retired': '退休后居住地址',
+        'retirement_fee_unit': '发给退休费的单位',
+        # 可能的其他字段名
+        '在何单位任何职': '工作经历',
+        '证明人及住址': '证明人及其住址',
+        '退休后居住地': '退休后居住地址',
+        '现居住地址': '现住址',
+    }
+    
+    retirement_info = {}
     if ri_row:
-        retirement_info['是否独生子女'] = ri_row[0]
-        retirement_info['供养亲属'] = ri_row[1]
+        for i, col_name in enumerate(ri_columns):
+            key = RI_FIELD_MAP.get(col_name, col_name)
+            retirement_info[key] = ri_row[i]
+    
+    # 安全获取退休补充信息字段（不存在则返回None）
+    def get_ri_field(field_name):
+        return retirement_info.get(field_name)
     
     # ==================== 五、构建返回数据 ====================
-    return {
+    # 根据人员分类，将三个时间点的数据映射到对应的退休呈报表字段
+    # 退休呈报表字段命名规则：
+    #   时间点1(2014年9月30日): 事业管理→岗位1, 事业专技→岗位2, 事业工勤→岗位3
+    #   时间点2(最后一次职务升降): 事业管理→岗位4, 事业专技→岗位5, 事业工勤→岗位6
+    #   时间点3(退休时): 事业管理→岗位7, 事业专技→岗位8, 事业工勤→岗位9
+    
+    tp1 = salary_time_points['2014年9月30日']
+    tp2 = salary_time_points['最后一次职务升降时间']
+    tp3 = salary_time_points['退休时']
+    
+    # 分类岗位字段映射
+    CATEGORY_FIELDS = {
+        'management': {
+            'tp1_post': '事业管理岗位1', 'tp1_level': '薪级1', 'tp1_duty': '对应原职务1',
+            'tp2_post': '事业管理岗位4', 'tp2_level': '薪级4', 'tp2_duty': '对应原职务4',
+            'tp3_post': '退休时事业管理岗位7', 'tp3_level': '薪级7', 'tp3_duty': '对应原职务7',
+        },
+        'technical': {
+            'tp1_post': '事业专技岗位2', 'tp1_level': '薪级2', 'tp1_duty': '对应原职务2',
+            'tp2_post': '事业专技岗位5', 'tp2_level': '薪级5', 'tp2_duty': '对应原职务5',
+            'tp3_post': '退休时事业专技岗位8', 'tp3_level': '薪级8', 'tp3_duty': '对应原职务8',
+        },
+        'worker': {
+            'tp1_post': '事业工勤岗位3', 'tp1_level': '薪级3', 'tp1_duty': '对应技术等级3',
+            'tp2_post': '事业工勤岗位6', 'tp2_level': '薪级6', 'tp2_duty': '对应技术等级6',
+            'tp3_post': '退休时事业工勤岗位9', 'tp3_level': '薪级9', 'tp3_duty': '对应技术等级9',
+        },
+    }
+    
+    cat_fields = CATEGORY_FIELDS.get(personnel_category, CATEGORY_FIELDS['technical'])
+    
+    result = {
         # 基础信息
         "姓名": teacher_row[1],
         "身份证号码": id_card,
@@ -216,34 +317,58 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
         "职务": position_title,
         "技术职称": professional_title,
         "岗位": duty,
-        # 单位岗位区 - 三个时间点
-        "2014年9月30日职务岗位": salary_time_points['2014年9月30日']['job_title'],
-        "2014年9月30日级别薪级": salary_time_points['2014年9月30日']['salary_level'],
-        "2014年9月30日薪级工资": salary_time_points['2014年9月30日']['salary'],
-        "2014年9月30日岗位工资": salary_time_points['2014年9月30日']['position_salary'],
-        "最后一次职务升降时间": salary_time_points['最后一次职务升降时间']['time'],
-        "最后一次职务升降岗位": salary_time_points['最后一次职务升降时间']['job_title'],
-        "最后一次职务升降薪级": salary_time_points['最后一次职务升降时间']['salary_level'],
-        "最后一次职务升降薪级工资": salary_time_points['最后一次职务升降时间']['salary'],
-        "最后一次职务升降岗位工资": salary_time_points['最后一次职务升降时间']['position_salary'],
-        "退休时职务岗位": salary_time_points['退休时']['job_title'],
-        "退休时级别薪级": salary_time_points['退休时']['salary_level'],
-        "退休时薪级工资": salary_time_points['退休时']['salary'],
-        "退休时岗位工资": salary_time_points['退休时']['position_salary'],
-        # 退休补充信息
-        "退休原因": None,  # retirement_info 表中暂无此字段
-        "是否独生子女": retirement_info.get('是否独生子女'),
-        "供养亲属": retirement_info.get('供养亲属'),
-        "现住址": None,  # retirement_info 表中暂无此字段
-        "退休后居住地址": None,  # retirement_info 表中暂无此字段
-        "发给退休费的单位": None,  # retirement_info 表中暂无此字段
-        "工作经历": None,  # retirement_info 表中暂无此字段
+        # 退休补充信息（动态获取）
+        "退休原因": get_ri_field('退休原因'),
+        "是否独生子女": get_ri_field('是否独生子女'),
+        "供养亲属": get_ri_field('供养亲属'),
+        "现住址": get_ri_field('现住址'),
+        "退休后居住地址": get_ri_field('退休后居住地址'),
+        "发给退休费的单位": get_ri_field('发给退休费的单位'),
+        "工作经历": get_ri_field('工作经历'),
+        "自何年何月": get_ri_field('自何年何月'),
+        "至何年何月": get_ri_field('至何年何月'),
+        "所在单位及职务": get_ri_field('工作经历') or get_ri_field('所在单位及职务'),
+        "证明人及其住址": get_ri_field('证明人及其住址') or get_ri_field('证明人及住址'),
+        "直系亲属供养情况": get_ri_field('供养亲属') or get_ri_field('直系亲属供养情况'),
         "单位意见": None,
-        "证明人及其住址": None,
         "直系亲属信息": None,
         "入党年月": None,
         "退休时间": None,
+        "个人身份": None,
+        "备注": None,
+        # 人员分类
+        "人员分类": personnel_category,
+        # 通用薪级和岗位（退休时）
+        "薪级工资": tp3['salary'],
+        "岗位工资": tp3['position_salary'],
+        "技术等级": None,
+        "最后一次职务升降时间": tp2['time'],
+        # 分类岗位字段（根据人员分类动态填充）
+        cat_fields['tp1_post']: tp1['job_title'],
+        cat_fields['tp1_level']: tp1['salary_level'],
+        cat_fields['tp1_duty']: tp1['job_title'],
+        cat_fields['tp2_post']: tp2['job_title'],
+        cat_fields['tp2_level']: tp2['salary_level'],
+        cat_fields['tp2_duty']: tp2['job_title'],
+        cat_fields['tp3_post']: tp3['job_title'],
+        cat_fields['tp3_level']: tp3['salary_level'],
+        cat_fields['tp3_duty']: tp3['job_title'],
+        # 保留兼容旧字段名
+        "2014年9月30日职务岗位": tp1['job_title'],
+        "2014年9月30日级别薪级": tp1['salary_level'],
+        "2014年9月30日薪级工资": tp1['salary'],
+        "2014年9月30日岗位工资": tp1['position_salary'],
+        "最后一次职务升降岗位": tp2['job_title'],
+        "最后一次职务升降薪级": tp2['salary_level'],
+        "最后一次职务升降薪级工资": tp2['salary'],
+        "最后一次职务升降岗位工资": tp2['position_salary'],
+        "退休时职务岗位": tp3['job_title'],
+        "退休时级别薪级": tp3['salary_level'],
+        "退休时薪级工资": tp3['salary'],
+        "退休时岗位工资": tp3['position_salary'],
     }
+    
+    return result
 
 
 def _write_remark(teacher_id, teacher_name, old_status, target_status):
@@ -374,83 +499,104 @@ async def process_status_change(data: dict[str, Any]):
                     # 使用辅助函数构建完整数据
                     report_data = _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, education_row)
                     
+                    # 安全获取值的辅助函数
+                    def safe_get(key, default=None):
+                        return report_data.get(key, default)
+                    
                     # 检查是否已存在该教师的记录
                     cursor.execute("""
                         SELECT id FROM retirement_report_data WHERE teacher_id = %s
                     """, (teacher_id,))
                     existing_row = cursor.fetchone()
                     
+                    # 所有退休呈报表字段及其数据来源
+                    # 表字段名 -> report_data中的key
+                    field_mapping = [
+                        # 基础信息
+                        ('姓名', '姓名'),
+                        ('身份证号码', '身份证号码'),
+                        ('性别', '性别'),
+                        ('出生日期', '出生日期'),
+                        ('民族', '民族'),
+                        ('文化程度', '文化程度'),
+                        ('参加工作时间', '参加工作时间'),
+                        ('工作年限', '工作年限'),
+                        ('籍贯', '籍贯'),
+                        # 职务职称
+                        ('职务', '职务'),
+                        ('岗位', '岗位'),
+                        ('技术职称', '技术职称'),
+                        # 退休补充信息
+                        ('现住址', '现住址'),
+                        ('退休原因', '退休原因'),
+                        ('退休后居住地址', '退休后居住地址'),
+                        ('退休时间', '退休时间'),
+                        ('是否独生子女', '是否独生子女'),
+                        ('单位意见', '单位意见'),
+                        ('证明人及其住址', '证明人及其住址'),
+                        ('直系亲属供养情况', '直系亲属供养情况'),
+                        ('直系亲属信息', '直系亲属信息'),
+                        ('自何年何月', '自何年何月'),
+                        ('至何年何月', '至何年何月'),
+                        ('所在单位及职务', '所在单位及职务'),
+                        ('入党年月', '入党年月'),
+                        ('个人身份', '个人身份'),
+                        ('个人编号', '个人编号'),
+                        ('备注', '备注'),
+                        # 工资信息
+                        ('薪级工资', '薪级工资'),
+                        ('岗位工资', '岗位工资'),
+                        ('技术等级', '技术等级'),
+                        ('最后一次职务升降时间', '最后一次职务升降时间'),
+                        # 退休补充信息的其他字段
+                        ('自何年何月', '自何年何月'),
+                        ('至何年何月', '至何年何月'),
+                        ('所在单位及职务', '所在单位及职务'),
+                        ('证明人及住址', '证明人及住址'),
+                        ('直系亲属供养情况', '直系亲属供养情况'),
+                        ('备注', '备注'),
+                        ('个人身份', '个人身份'),
+                        ('个人编号', '个人编号'),
+                        # 分类岗位字段（根据人员分类动态填充，9个岗位组）
+                        # 时间点1: 管理岗位1 / 专技岗位2 / 工勤岗位3
+                        ('事业管理岗位1', '事业管理岗位1'), ('薪级1', '薪级1'), ('对应原职务1', '对应原职务1'),
+                        ('事业专技岗位2', '事业专技岗位2'), ('薪级2', '薪级2'), ('对应原职务2', '对应原职务2'),
+                        ('事业工勤岗位3', '事业工勤岗位3'), ('薪级3', '薪级3'), ('对应技术等级3', '对应技术等级3'),
+                        # 时间点2: 管理岗位4 / 专技岗位5 / 工勤岗位6
+                        ('事业管理岗位4', '事业管理岗位4'), ('薪级4', '薪级4'), ('对应原职务4', '对应原职务4'),
+                        ('事业专技岗位5', '事业专技岗位5'), ('薪级5', '薪级5'), ('对应原职务5', '对应原职务5'),
+                        ('事业工勤岗位6', '事业工勤岗位6'), ('薪级6', '薪级6'), ('对应技术等级6', '对应技术等级6'),
+                        # 时间点3: 管理岗位7 / 专技岗位8 / 工勤岗位9
+                        ('退休时事业管理岗位7', '退休时事业管理岗位7'), ('薪级7', '薪级7'), ('对应原职务7', '对应原职务7'),
+                        ('退休时事业专技岗位8', '退休时事业专技岗位8'), ('薪级8', '薪级8'), ('对应原职务8', '对应原职务8'),
+                        ('退休时事业工勤岗位9', '退休时事业工勤岗位9'), ('薪级9', '薪级9'), ('对应技术等级9', '对应技术等级9'),
+                    ]
+                    
+                    # 提取字段名和值
+                    col_names = [m[0] for m in field_mapping]
+                    col_values = [safe_get(m[1]) for m in field_mapping]
+                    
                     if existing_row:
-                        cursor.execute("""
+                        # UPDATE
+                        set_clauses = [f'"{col}" = %s' for col in col_names]
+                        update_sql = f"""
                             UPDATE retirement_report_data SET
-                                姓名 = %s, 身份证号码 = %s, 性别 = %s, 出生日期 = %s,
-                                民族 = %s, 文化程度 = %s, 参加工作时间 = %s, 工作年限 = %s,
-                                籍贯 = %s,
-                                现住址 = %s,
-                                职务 = %s, 岗位 = %s, 技术职称 = %s,
-                                退休原因 = %s, 退休后居住地址 = %s, 退休时间 = %s,
-                                单位意见 = %s, 证明人及其住址 = %s, 直系亲属信息 = %s,
-                                是否独生子女 = %s, 入党年月 = %s,
-                                薪级工资 = %s, 岗位工资 = %s, 技术等级 = %s,
-                                最后一次职务升降时间 = %s,
-                                薪级1 = %s, 薪级2 = %s, 薪级3 = %s,
-                                对应原职务1 = %s, 对应原职务2 = %s, 对应原职务3 = %s,
+                                {', '.join(set_clauses)},
                                 updated_at = NOW()
                             WHERE teacher_id = %s
-                        """, (
-                            report_data['姓名'], report_data['身份证号码'], report_data['性别'], report_data['出生日期'],
-                            report_data['民族'], report_data['文化程度'], report_data['参加工作时间'], report_data['工作年限'],
-                            report_data['籍贯'],
-                            report_data['现住址'],
-                            report_data['职务'], report_data['岗位'], report_data['技术职称'],
-                            report_data['退休原因'], report_data['退休后居住地址'], report_data['退休时间'],
-                            report_data['单位意见'], report_data['证明人及其住址'], report_data['直系亲属信息'],
-                            report_data['是否独生子女'], report_data['入党年月'],
-                            report_data['退休时薪级工资'], report_data['退休时岗位工资'], None,
-                            report_data['最后一次职务升降时间'],
-                            # 薪级1-3：2014年、最后一次、退休时
-                            report_data['2014年9月30日级别薪级'],
-                            report_data['最后一次职务升降薪级'],
-                            report_data['退休时级别薪级'],
-                            # 对应原职务1-3
-                            report_data['2014年9月30日职务岗位'],
-                            report_data['最后一次职务升降岗位'],
-                            report_data['退休时职务岗位'],
-                            teacher_id
-                        ))
+                        """
+                        cursor.execute(update_sql, col_values + [teacher_id])
                     else:
-                        cursor.execute("""
+                        # INSERT
+                        quoted_cols = [f'"{col}"' for col in ['teacher_id'] + col_names]
+                        placeholders = ['%s'] * (len(col_names) + 1)
+                        insert_sql = f"""
                             INSERT INTO retirement_report_data (
-                                teacher_id, 姓名, 身份证号码, 性别, 出生日期, 
-                                民族, 文化程度, 参加工作时间, 工作年限,
-                                籍贯, 现住址, 职务, 岗位, 技术职称,
-                                退休原因, 退休后居住地址, 退休时间, 单位意见,
-                                证明人及其住址, 直系亲属信息, 是否独生子女,
-                                入党年月, 薪级工资, 岗位工资, 技术等级,
-                                最后一次职务升降时间,
-                                薪级1, 薪级2, 薪级3,
-                                对应原职务1, 对应原职务2, 对应原职务3,
+                                {', '.join(quoted_cols)},
                                 created_at, updated_at
-                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
-                        """, (
-                            teacher_id,
-                            report_data['姓名'], report_data['身份证号码'], report_data['性别'], report_data['出生日期'],
-                            report_data['民族'], report_data['文化程度'], report_data['参加工作时间'], report_data['工作年限'],
-                            report_data['籍贯'],
-                            report_data['现住址'],
-                            report_data['职务'], report_data['岗位'], report_data['技术职称'],
-                            report_data['退休原因'], report_data['退休后居住地址'], report_data['退休时间'],
-                            report_data['单位意见'], report_data['证明人及其住址'], report_data['直系亲属信息'],
-                            report_data['是否独生子女'], report_data['入党年月'],
-                            report_data['退休时薪级工资'], report_data['退休时岗位工资'], None,
-                            report_data['最后一次职务升降时间'],
-                            report_data['2014年9月30日级别薪级'],
-                            report_data['最后一次职务升降薪级'],
-                            report_data['退休时级别薪级'],
-                            report_data['2014年9月30日职务岗位'],
-                            report_data['最后一次职务升降岗位'],
-                            report_data['退休时职务岗位'],
-                        ))
+                            ) VALUES ({', '.join(placeholders)}, NOW(), NOW())
+                        """
+                        cursor.execute(insert_sql, [teacher_id] + col_values)
                     
                     logger.info(f"已自动汇集退休呈报表数据: 教师ID={teacher_id}, 姓名={teacher_row[1]}")
             except Exception as e:

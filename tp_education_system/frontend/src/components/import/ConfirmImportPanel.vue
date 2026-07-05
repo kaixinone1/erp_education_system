@@ -33,7 +33,7 @@
           <el-alert
             v-if="importError?.includes('表结构不一致')"
             :title="importError"
-            type="error"
+            type="warning"
             show-icon
             :closable="false"
             style="margin-bottom: 10px;"
@@ -41,11 +41,22 @@
             <template #default>
               <div style="margin-top: 8px;">
                 <p>该中文表名已存在，但字段结构与当前导入的数据不匹配。</p>
-                <p>请修改中文表名后重新导入：</p>
+                <p>请选择以下方式之一：</p>
+                <div style="margin-top: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                  <el-checkbox
+                    v-model="forceOverwrite"
+                    :disabled="importing"
+                    style="margin-right: 8px;"
+                  >
+                    <span style="color: #e6a23c; font-weight: bold;">强制覆盖已有表</span>
+                    <span style="color: #909399; font-size: 12px; margin-left: 4px;">（将删除旧表数据，使用新结构重建）</span>
+                  </el-checkbox>
+                </div>
+                <p v-if="!forceOverwrite" style="margin-top: 8px; color: #909399;">或修改中文表名后重新导入：</p>
               </div>
             </template>
           </el-alert>
-          <el-form :inline="true">
+          <el-form v-if="!forceOverwrite" :inline="true">
             <el-form-item label="中文表名">
               <el-input
                 v-model="editableChineseTitle"
@@ -258,6 +269,7 @@ const currentStep = ref(0)
 const stepDescriptions = ref(['等待开始...', '等待开始...', '等待开始...', '等待开始...'])
 const importResult = ref<any>(null)
 const importError = ref<string>('')
+const forceOverwrite = ref(false)  // 强制覆盖已有表
 
 // 中文表名编辑状态
 const editableChineseTitle = ref(props.chineseTitle || '')
@@ -355,7 +367,8 @@ const handleImport = async () => {
         sub_module_id: props.subModuleId,
         sub_module_name: props.subModuleName,
         table_type: props.tableType || 'master',
-        parent_table: props.parentTable
+        parent_table: props.parentTable,
+        force_overwrite: forceOverwrite.value
       })
     })
 

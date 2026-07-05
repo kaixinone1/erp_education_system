@@ -509,6 +509,18 @@
               "api_endpoint": "/api/data/shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
               "table_name": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
               "table_type": "child"
+            },
+            {
+              "id": "table-tui_xiu_bu_chong_xin_xi",
+              "title": "退休补充信息",
+              "name": "退休补充信息",
+              "icon": "Document",
+              "path": "/data/tui_xiu_bu_chong_xin_xi",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/tui_xiu_bu_chong_xin_xi",
+              "table_name": "tui_xiu_bu_chong_xin_xi",
+              "table_type": "master"
             }
           ]
         }

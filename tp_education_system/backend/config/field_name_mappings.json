@@ -106,7 +106,15 @@
     "出入境时间": "time_1",
     "出入口岸中文": "chu_ru_kou_an_zhong_wen",
     "交通工具": "jiao_tong_gong_ju",
-    "前往地/出发地": "qian_wang_di_chu_fa_di"
+    "前往地/出发地": "qian_wang_di_chu_fa_di",
+    "退休原因": "retirement_reason",
+    "自何年何月": "year_month",
+    "至何年何月": "year_month_1",
+    "在何单位任何职": "unit_3",
+    "证明人及其住址": "zheng_ming_ren_ji_qi_zhu_zhi",
+    "现住址": "xian_zhu_zhi",
+    "退休后居住地": "retired",
+    "发给退休费的单位": "retirement_fee_unit"
   },
   "reverse_mappings": {
     "name": "姓名",
@@ -215,6 +223,14 @@
     "time_1": "出入境时间",
     "chu_ru_kou_an_zhong_wen": "出入口岸中文",
     "jiao_tong_gong_ju": "交通工具",
-    "qian_wang_di_chu_fa_di": "前往地/出发地"
+    "qian_wang_di_chu_fa_di": "前往地/出发地",
+    "retirement_reason": "退休原因",
+    "year_month": "自何年何月",
+    "year_month_1": "至何年何月",
+    "unit_3": "在何单位任何职",
+    "zheng_ming_ren_ji_qi_zhu_zhi": "证明人及其住址",
+    "xian_zhu_zhi": "现住址",
+    "retired": "退休后居住地",
+    "retirement_fee_unit": "发给退休费的单位"
   }
 }
