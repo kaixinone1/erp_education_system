@@ -102,8 +102,8 @@ class TableNameManager:
                 existing_signature = self._get_table_signature_from_db(engine, existing_english_name)
                 new_signature = self._get_signature_from_configs(field_configs)
                 
-                if existing_signature and self._compare_signatures(existing_signature, new_signature):
-                    # 表结构完全一致，直接使用现有表
+                if existing_signature and self._compare_signatures(new_signature, existing_signature):
+                    # 导入字段是数据库字段的子集，直接使用现有表
                     return 'existing', f'中文表名"{chinese_name}"已存在，表结构一致，将使用现有表"{existing_english_name}"', existing_english_name
                 else:
                     # 表结构不一致，提示用户修改中文表名
@@ -322,12 +322,18 @@ class TableNameManager:
             return None
     
     def _compare_signatures(self, sig1: List[tuple], sig2: List[tuple]) -> bool:
-        """比较两个表签名是否完全一致"""
-        if len(sig1) != len(sig2):
+        """比较两个表签名：sig1 中的所有字段是否都在 sig2 中存在（子集匹配）"""
+        if len(sig1) == 0 or len(sig2) == 0:
             return False
         
-        for i in range(len(sig1)):
-            if sig1[i] != sig2[i]:
+        # 将 sig2 转为 dict 便于查找
+        sig2_dict = {name: dtype for name, dtype in sig2}
+        
+        # 检查 sig1 的每个字段是否都在 sig2 中
+        for name, dtype in sig1:
+            if name not in sig2_dict:
+                return False
+            if sig2_dict[name] != dtype:
                 return False
         
         return True

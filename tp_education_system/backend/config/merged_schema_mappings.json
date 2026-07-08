@@ -5757,13 +5757,321 @@
         }
       ],
       "updated_at": "2026-07-05T16:44:36.763806"
+    },
+    "salary_info": {
+      "chinese_name": "最新工资包数据",
+      "type": "master",
+      "parent_table": "",
+      "fields": [
+        {
+          "sourceField": "单位名称",
+          "targetField": "unit",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "unit"
+        },
+        {
+          "sourceField": "姓名",
+          "targetField": "name",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic_info",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "name"
+        },
+        {
+          "sourceField": "人才类型",
+          "targetField": "type",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "type"
+        },
+        {
+          "sourceField": "身份证号码",
+          "targetField": "id_card",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "to_master",
+          "relation_table": "teacher_basic_info",
+          "relation_display_field": "id_card",
+          "value_mapping": {},
+          "english_name": "id_card"
+        },
+        {
+          "sourceField": "调资类型",
+          "targetField": "type_1",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "type_1"
+        },
+        {
+          "sourceField": "起薪时间",
+          "targetField": "time",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "time"
+        },
+        {
+          "sourceField": "职务岗位",
+          "targetField": "job_title_post",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "job_title_post"
+        },
+        {
+          "sourceField": "职岗工资",
+          "targetField": "salary",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "salary"
+        },
+        {
+          "sourceField": "级别薪级",
+          "targetField": "salary_level",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "salary_level"
+        },
+        {
+          "sourceField": "级薪工资",
+          "targetField": "salary_1",
+          "dataType": "VARCHAR",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "salary_1"
+        }
+      ],
+      "updated_at": "2026-07-08T08:50:47.316564"
+    },
+    "salary_information": {
+      "chinese_name": "最新工资包数据",
+      "type": "master",
+      "parent_table": "",
+      "fields": [
+        {
+          "name": "单位名称",
+          "chinese_name": "单位名称",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "姓名",
+          "chinese_name": "姓名",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": "",
+          "relation": {
+            "type": "to_master",
+            "ref_table": "teacher_basic_info",
+            "ref_field": "name",
+            "display_field": "name"
+          }
+        },
+        {
+          "name": "人才类型",
+          "chinese_name": "人才类型",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "身份证号码",
+          "chinese_name": "身份证号码",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": "",
+          "relation": {
+            "type": "to_master",
+            "ref_table": "teacher_basic_info",
+            "ref_field": "id_card",
+            "display_field": "id_card"
+          }
+        },
+        {
+          "name": "调资类型",
+          "chinese_name": "调资类型",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "起薪时间",
+          "chinese_name": "起薪时间",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "职务岗位",
+          "chinese_name": "职务岗位",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "职岗工资",
+          "chinese_name": "职岗工资",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "级别薪级",
+          "chinese_name": "级别薪级",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        },
+        {
+          "name": "级薪工资",
+          "chinese_name": "级薪工资",
+          "data_type": "VARCHAR",
+          "length": 255,
+          "required": false,
+          "unique": false,
+          "description": ""
+        }
+      ],
+      "updated_at": "2026-07-08T08:50:03.218623"
     }
   },
   "dictionaries": {},
   "mappings": {
     "身份证号码": {
       "target": "id_card",
-      "table": "tui_xiu_bu_chong_xin_xi",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "档案出生日期": {
@@ -6123,17 +6431,17 @@
     },
     "单位名称": {
       "target": "unit",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "姓名": {
       "target": "name",
-      "table": "tui_xiu_bu_chong_xin_xi",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "人才类型": {
       "target": "type",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "身份证号": {
@@ -6143,32 +6451,32 @@
     },
     "调资类型": {
       "target": "type_1",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "起薪时间": {
       "target": "time",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "职务岗位": {
       "target": "job_title_post",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "职岗工资": {
       "target": "salary",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "级别薪级": {
-      "target": "field_21",
-      "table": "salary_data",
+      "target": "salary_level",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "级薪工资": {
       "target": "salary_1",
-      "table": "salary_data",
+      "table": "salary_info",
       "data_type": "VARCHAR"
     },
     "学校名称": {

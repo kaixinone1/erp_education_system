@@ -114,7 +114,9 @@
     "证明人及其住址": "zheng_ming_ren_ji_qi_zhu_zhi",
     "现住址": "xian_zhu_zhi",
     "退休后居住地": "retired",
-    "发给退休费的单位": "retirement_fee_unit"
+    "发给退休费的单位": "retirement_fee_unit",
+    "岗位": "post_2",
+    "薪级": "field_117"
   },
   "reverse_mappings": {
     "name": "姓名",
@@ -231,6 +233,8 @@
     "zheng_ming_ren_ji_qi_zhu_zhi": "证明人及其住址",
     "xian_zhu_zhi": "现住址",
     "retired": "退休后居住地",
-    "retirement_fee_unit": "发给退休费的单位"
+    "retirement_fee_unit": "发给退休费的单位",
+    "post_2": "岗位",
+    "field_117": "薪级"
   }
 }

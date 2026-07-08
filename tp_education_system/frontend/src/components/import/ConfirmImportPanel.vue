@@ -16,7 +16,7 @@
               {{ validatedData?.length || 0 }} 条记录
             </el-descriptions-item>
             <el-descriptions-item label="目标表名">
-              {{ tableName }}
+              {{ currentChineseTitle || chineseTitle || tableName }}
             </el-descriptions-item>
             <el-descriptions-item label="归属模块">
               {{ moduleName }}
@@ -146,18 +146,16 @@
         <!-- 导入确认 -->
         <div class="confirm-section">
           <el-alert
-            title="确认导入后，系统将执行以下操作："
+            title="点击"开始导入"后，系统将先分析数据差异，再由您确认是否执行导入："
             type="info"
             :closable="false"
             show-icon
           >
             <template #default>
               <ol>
-                <li>在数据库中创建/更新数据表</li>
-                <li>将验证通过的数据批量插入新表</li>
-                <li>更新系统配置文件（表结构、字段映射）</li>
-                <li>在导航菜单中创建对应的数据节点</li>
-                <li>刷新系统界面，显示新导入的数据</li>
+                <li>对比导入数据与数据库现有数据，精准识别每一条数据的变更类型</li>
+                <li>展示分析报告：<strong>更新</strong>（数据有变化）、<strong>新增</strong>（全新记录）、<strong>插入</strong>（同标识符的新记录）、<strong>未变</strong>（数据无变化）</li>
+                <li>由您确认后，再执行实际导入操作</li>
               </ol>
             </template>
           </el-alert>
@@ -172,8 +170,8 @@
           <el-button
             type="primary"
             size="large"
-            @click="handleImport"
-            :loading="importing"
+            @click="handleAnalyzeAndImport"
+            :loading="analyzing"
             :disabled="!canImport"
           >
             <el-icon><Upload /></el-icon>
@@ -182,6 +180,133 @@
         </div>
       </div>
     </el-card>
+
+    <!-- 数据差异分析报告弹窗 -->
+    <el-dialog
+      v-model="analysisVisible"
+      title="数据差异分析报告"
+      width="800px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      top="5vh"
+    >
+      <div class="analysis-content">
+        <!-- 分析摘要 -->
+        <div class="analysis-summary">
+          <el-row :gutter="16">
+            <el-col :span="6">
+              <div class="stat-card stat-update">
+                <div class="stat-number">{{ analysisResult?.更新 || 0 }}</div>
+                <div class="stat-label">更新</div>
+                <div class="stat-desc">数据有变化</div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="stat-card stat-insert">
+                <div class="stat-number">{{ analysisResult?.插入 || 0 }}</div>
+                <div class="stat-label">插入</div>
+                <div class="stat-desc">同标识符新记录</div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="stat-card stat-new">
+                <div class="stat-number">{{ analysisResult?.新增 || 0 }}</div>
+                <div class="stat-label">新增</div>
+                <div class="stat-desc">全新记录</div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="stat-card stat-unchanged">
+                <div class="stat-number">{{ analysisResult?.未变 || 0 }}</div>
+                <div class="stat-label">未变</div>
+                <div class="stat-desc">数据无变化</div>
+              </div>
+            </el-col>
+          </el-row>
+
+          <div class="analysis-meta" style="margin-top: 12px; color: #909399; font-size: 13px;">
+            导入数据共 <strong>{{ analysisResult?.总计 || 0 }}</strong> 条，
+            数据库现有 <strong>{{ analysisResult?.['数据库现有记录'] || 0 }}</strong> 条记录
+          </div>
+        </div>
+
+        <!-- 变更明细表 -->
+        <div v-if="analysisDetails.length > 0" class="analysis-details" style="margin-top: 20px;">
+          <h4 style="margin-bottom: 10px; font-size: 14px; color: #606266;">
+            变更明细
+            <span v-if="analysisResult?.明细?.length >= 20" style="font-size: 12px; color: #909399;">
+              （仅显示前20条）
+            </span>
+          </h4>
+          <el-table
+            :data="analysisDetails"
+            style="width: 100%"
+            max-height="350px"
+            border
+            size="small"
+          >
+            <el-table-column prop="行号" label="行号" width="60" align="center" />
+            <el-table-column label="类型" width="80" align="center">
+              <template #default="{ row }">
+                <el-tag
+                  :type="row.类型 === '更新' ? 'warning' : row.类型 === '插入' ? 'primary' : 'success'"
+                  size="small"
+                >
+                  {{ row.类型 }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="匹配键" label="匹配键" min-width="180" show-overflow-tooltip />
+            <el-table-column label="变更详情" min-width="250">
+              <template #default="{ row }">
+                <div v-if="row.类型 === '更新' && row.变更字段">
+                  <div
+                    v-for="(change, idx) in row.变更字段"
+                    :key="idx"
+                    class="change-item"
+                  >
+                    <span class="change-field">{{ change.字段 }}：</span>
+                    <span class="change-old">{{ change.原值 || '(空)' }}</span>
+                    <el-icon style="margin: 0 4px;"><ArrowRight /></el-icon>
+                    <span class="change-new">{{ change.新值 }}</span>
+                  </div>
+                </div>
+                <span v-else-if="row.说明" class="change-desc">{{ row.说明 }}</span>
+                <span v-else>-</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <!-- 无变更提示 -->
+        <div v-if="analysisResult && analysisResult.更新 === 0 && analysisResult.插入 === 0 && analysisResult.新增 === 0" class="no-changes">
+          <el-alert
+            title="所有导入数据与数据库现有数据一致，无需导入。"
+            type="info"
+            :closable="false"
+            show-icon
+          />
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="analysis-footer">
+          <el-button @click="handleCancelImport" :disabled="executingImport">
+            取消导入
+          </el-button>
+          <el-button
+            type="primary"
+            @click="handleConfirmImport"
+            :loading="executingImport"
+            :disabled="analysisResult && analysisResult.更新 === 0 && analysisResult.插入 === 0 && analysisResult.新增 === 0"
+          >
+            <el-icon><Upload /></el-icon>
+            确认导入
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
 
     <!-- 导入进度弹窗 -->
     <el-dialog
@@ -193,28 +318,15 @@
       :show-close="false"
     >
       <div class="progress-content">
-        <el-steps :active="currentStep" direction="vertical">
-          <el-step title="创建数据表" :status="getStepStatus(0)">
-            <template #description>
-              {{ stepDescriptions[0] }}
-            </template>
-          </el-step>
-          <el-step title="插入数据" :status="getStepStatus(1)">
-            <template #description>
-              {{ stepDescriptions[1] }}
-            </template>
-          </el-step>
-          <el-step title="更新配置" :status="getStepStatus(2)">
-            <template #description>
-              {{ stepDescriptions[2] }}
-            </template>
-          </el-step>
-          <el-step title="更新导航" :status="getStepStatus(3)">
-            <template #description>
-              {{ stepDescriptions[3] }}
-            </template>
-          </el-step>
-        </el-steps>
+        <el-progress
+          :percentage="importProgress"
+          :status="importProgress === 100 ? 'success' : undefined"
+          :stroke-width="20"
+          :text-inside="true"
+        />
+        <div class="progress-text" style="margin-top: 16px; text-align: center; color: #606266;">
+          {{ progressText }}
+        </div>
 
         <div v-if="importResult" class="import-result">
           <el-alert
@@ -223,6 +335,28 @@
             show-icon
             :closable="false"
           />
+          <div v-if="importResult.status === 'success'" class="result-stats" style="margin-top: 12px;">
+            <el-row :gutter="12">
+              <el-col :span="8">
+                <div class="mini-stat">
+                  <div class="mini-number">{{ importResult.updated || 0 }}</div>
+                  <div class="mini-label">更新</div>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="mini-stat">
+                  <div class="mini-number">{{ importResult.inserted || 0 }}</div>
+                  <div class="mini-label">插入/新增</div>
+                </div>
+              </el-col>
+              <el-col :span="8">
+                <div class="mini-stat">
+                  <div class="mini-number">{{ importResult.errors || 0 }}</div>
+                  <div class="mini-label">错误</div>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
         </div>
       </div>
 
@@ -241,7 +375,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { ArrowLeft, Upload } from '@element-plus/icons-vue'
+import { ArrowLeft, ArrowRight, Upload } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 
 // 组件属性
@@ -262,102 +396,77 @@ const props = defineProps<{
 // 组件事件
 const emit = defineEmits(['previous-step', 'import-complete'])
 
-// 导入状态
-const importing = ref(false)
-const progressVisible = ref(false)
-const currentStep = ref(0)
-const stepDescriptions = ref(['等待开始...', '等待开始...', '等待开始...', '等待开始...'])
-const importResult = ref<any>(null)
-const importError = ref<string>('')
-const forceOverwrite = ref(false)  // 强制覆盖已有表
+// ===== 导入状态 =====
+const analyzing = ref(false)           // 正在分析数据差异
+const executingImport = ref(false)     // 正在执行实际导入
+const importing = computed(() => analyzing.value || executingImport.value)
 
-// 中文表名编辑状态
+// ===== 分析报告 =====
+const analysisVisible = ref(false)
+const analysisResult = ref<any>(null)
+
+// 分析明细（格式化后的）
+const analysisDetails = computed(() => {
+  return analysisResult.value?.明细 || []
+})
+
+// ===== 导入进度 =====
+const progressVisible = ref(false)
+const importProgress = ref(0)
+const progressText = ref('')
+const importResult = ref<any>(null)
+
+// ===== 错误处理 =====
+const importError = ref<string>('')
+const forceOverwrite = ref(false)
+
+// ===== 中文表名编辑 =====
 const editableChineseTitle = ref(props.chineseTitle || '')
 const updatingTitle = ref(false)
 const titleUpdateMessage = ref('')
 const titleUpdateStatus = ref<'success' | 'error'>('success')
-
-// 当前使用的中文表名（可能被修改过）
 const currentChineseTitle = ref(props.chineseTitle || '')
 const currentTableName = ref(props.tableName || '')
 
-// 计算属性：是否可以导入
+// ===== 计算属性 =====
 const canImport = computed(() => {
   return props.validatedData && props.validatedData.length > 0 &&
          props.fieldConfigs && props.fieldConfigs.length > 0 &&
          props.tableName && props.moduleId
 })
 
-// 计算属性：显示字段
 const displayFields = computed(() => {
   return props.fieldConfigs?.slice(0, 5) || []
 })
 
-// 计算属性：预览数据
 const previewData = computed(() => {
   return props.validatedData?.slice(0, 5).map((item: any) => item.data || item) || []
 })
 
-// 获取步骤状态
-const getStepStatus = (step: number) => {
-  if (currentStep.value > step) {
-    return 'success'
-  } else if (currentStep.value === step) {
-    return 'process'
-  }
-  return 'wait'
-}
-
-// 处理上一步
+// ===== 事件处理 =====
 const handlePrevious = () => {
   emit('previous-step')
 }
 
-// 处理导入
-const handleImport = async () => {
+// 核心流程：分析数据差异 → 展示报告 → 用户确认 → 执行导入
+const handleAnalyzeAndImport = async () => {
   if (!canImport.value) {
     ElMessage.warning('数据不完整，无法导入')
     return
   }
 
-  importing.value = true
-  progressVisible.value = true
-  currentStep.value = 0
-  importResult.value = null
+  analyzing.value = true
+  analysisResult.value = null
 
   try {
-    // 准备导入数据
     const importData = props.validatedData?.map((item: any) => item.data || item) || []
 
-    // 模拟步骤进度
-    stepDescriptions.value[0] = '正在创建数据表和字典表...'
-    currentStep.value = 0
-    await sleep(500)
-
-    stepDescriptions.value[0] = '数据表创建完成'
-    stepDescriptions.value[1] = '正在插入数据...'
-    currentStep.value = 1
-    await sleep(500)
-
-    // 转换字段配置格式（适配V3服务）
-    const v3FieldConfigs = props.fieldConfigs?.map((config: any) => ({
-      source_field: config.sourceField,
-      target_field: config.targetField,
-      data_type: config.dataType,
-      length: config.length,
-      link_to_dictionary: config.relation_type === 'to_dict',
-      dictionary_table: config.relation_table,
-      value_mapping: config.value_mapping
-    })) || []
-
-    // 调用finalize后端API（支持导航更新）
+    // 第一步：调用后端分析数据差异（analyze_only=true）
     const response = await fetch('/api/import/finalize', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        table_name: props.tableName,
+        table_name: currentTableName.value || props.tableName,
         field_configs: props.fieldConfigs,
         data: importData,
         module_id: props.moduleId,
@@ -368,29 +477,98 @@ const handleImport = async () => {
         sub_module_name: props.subModuleName,
         table_type: props.tableType || 'master',
         parent_table: props.parentTable,
-        force_overwrite: forceOverwrite.value
+        force_overwrite: forceOverwrite.value,
+        analyze_only: true  // 关键：仅分析，不执行导入
       })
     })
 
     if (response.ok) {
       const result = await response.json()
 
-      stepDescriptions.value[1] = `成功插入 ${result.inserted} 条数据`
-      stepDescriptions.value[2] = '正在更新配置文件...'
-      currentStep.value = 2
-      await sleep(500)
+      if (result.status === 'analyzed') {
+        analysisResult.value = result.analysis
+        analysisVisible.value = true
+      } else {
+        // 可能是新表，没有分析结果，直接导入
+        ElMessage.info('该表为新表，无需差异分析，直接执行导入')
+        await executeRealImport(importData)
+      }
+    } else {
+      const error = await response.json()
+      throw new Error(error.detail || '分析数据差异失败')
+    }
+  } catch (error: any) {
+    console.error('分析数据差异失败:', error)
+    ElMessage.error(error.message || '分析数据差异失败')
+  } finally {
+    analyzing.value = false
+  }
+}
 
-      stepDescriptions.value[2] = '配置文件更新完成'
-      stepDescriptions.value[3] = '正在更新导航菜单...'
-      currentStep.value = 3
-      await sleep(500)
+// 取消导入
+const handleCancelImport = () => {
+  analysisVisible.value = false
+  analysisResult.value = null
+  ElMessage.info('已取消导入')
+}
 
-      stepDescriptions.value[3] = '导航菜单更新完成'
-      currentStep.value = 4
+// 确认导入：执行实际导入操作
+const handleConfirmImport = async () => {
+  const importData = props.validatedData?.map((item: any) => item.data || item) || []
+  await executeRealImport(importData)
+}
 
+// 执行实际导入
+const executeRealImport = async (importData: any[]) => {
+  executingImport.value = true
+  analysisVisible.value = false
+  progressVisible.value = true
+  importProgress.value = 0
+  progressText.value = '正在执行导入...'
+  importResult.value = null
+
+  // 模拟进度动画
+  const progressTimer = setInterval(() => {
+    if (importProgress.value < 90) {
+      importProgress.value += Math.random() * 15
+      if (importProgress.value > 90) importProgress.value = 90
+    }
+  }, 500)
+
+  try {
+    const response = await fetch('/api/import/finalize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        table_name: currentTableName.value || props.tableName,
+        field_configs: props.fieldConfigs,
+        data: importData,
+        module_id: props.moduleId,
+        module_name: props.moduleName,
+        file_name: props.fileName,
+        chinese_title: currentChineseTitle.value || props.chineseTitle,
+        sub_module_id: props.subModuleId,
+        sub_module_name: props.subModuleName,
+        table_type: props.tableType || 'master',
+        parent_table: props.parentTable,
+        force_overwrite: forceOverwrite.value,
+        analyze_only: false  // 关键：执行实际导入
+      })
+    })
+
+    clearInterval(progressTimer)
+
+    if (response.ok) {
+      importProgress.value = 100
+      progressText.value = '导入完成'
+
+      const result = await response.json()
       importResult.value = {
         status: 'success',
-        message: result.message
+        message: result.message || '数据导入成功',
+        updated: result.updated || 0,
+        inserted: result.inserted || 0,
+        errors: result.errors || 0
       }
 
       ElMessage.success('导入成功！')
@@ -401,18 +579,24 @@ const handleImport = async () => {
       // 触发导入完成事件
       emit('import-complete', result)
     } else {
+      importProgress.value = 0
+      progressText.value = '导入失败'
+
       const error = await response.json()
       throw new Error(error.detail || '导入失败')
     }
   } catch (error: any) {
+    clearInterval(progressTimer)
     console.error('导入失败:', error)
+    importProgress.value = 0
+    progressText.value = '导入失败'
     importResult.value = {
       status: 'error',
       message: error.message || '导入失败'
     }
     ElMessage.error(error.message || '导入失败')
   } finally {
-    importing.value = false
+    executingImport.value = false
   }
 }
 
@@ -422,24 +606,22 @@ const handleComplete = () => {
 }
 
 // 导出导入报告
-const exportImportReport = async (importResult: any) => {
+const exportImportReport = async (result: any) => {
   try {
     const reportData = {
       file_name: props.fileName,
       chinese_title: currentChineseTitle.value || props.chineseTitle,
-      table_name: props.tableName,
+      table_name: currentTableName.value || props.tableName,
       module_name: props.moduleName,
       total_count: props.validatedData?.length || 0,
-      success_count: importResult.inserted || 0,
-      error_count: (props.validatedData?.length || 0) - (importResult.inserted || 0),
+      success_count: (result.updated || 0) + (result.inserted || 0),
+      error_count: result.errors || 0,
       import_time: new Date().toISOString()
     }
 
     const response = await fetch('/api/import/export-report', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         report_data: reportData,
         file_name: props.chineseTitle || '导入报告'
@@ -447,7 +629,6 @@ const exportImportReport = async (importResult: any) => {
     })
 
     if (response.ok) {
-      // 获取文件名
       const contentDisposition = response.headers.get('content-disposition')
       let fileName = '导入报告.xlsx'
       if (contentDisposition) {
@@ -457,7 +638,6 @@ const exportImportReport = async (importResult: any) => {
         }
       }
 
-      // 下载文件
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -488,12 +668,9 @@ const updateChineseTitle = async () => {
   titleUpdateMessage.value = ''
 
   try {
-    // 调用后端API检查新表名是否可用
     const response = await fetch('/api/import/check-table-name', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chinese_name: editableChineseTitle.value,
         field_configs: props.fieldConfigs || [],
@@ -505,14 +682,13 @@ const updateChineseTitle = async () => {
       const result = await response.json()
 
       if (result.status === 'new_table' || result.status === 'name_conflict') {
-        // 表名可用，更新当前使用的表名
         currentChineseTitle.value = editableChineseTitle.value
         if (result.english_name) {
           currentTableName.value = result.english_name
         }
         titleUpdateMessage.value = '表名已更新，可以重新导入'
         titleUpdateStatus.value = 'success'
-        importError.value = '' // 清除错误信息
+        importError.value = ''
       } else if (result.status === 'existing') {
         titleUpdateMessage.value = '该表名已存在，请使用其他名称'
         titleUpdateStatus.value = 'error'
@@ -533,9 +709,6 @@ const updateChineseTitle = async () => {
     updatingTitle.value = false
   }
 }
-
-// 辅助函数：延迟
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 </script>
 
 <style scoped>
@@ -591,6 +764,118 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
   border-top: 1px solid #ebeef5;
 }
 
+/* ===== 分析报告样式 ===== */
+.analysis-content {
+  padding: 0;
+}
+
+.analysis-summary {
+  margin-bottom: 8px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 16px 8px;
+  border-radius: 8px;
+  border: 1px solid #e4e7ed;
+  background: #fafafa;
+}
+
+.stat-card.stat-update {
+  border-left: 4px solid #e6a23c;
+  background: #fdf6ec;
+}
+
+.stat-card.stat-insert {
+  border-left: 4px solid #409eff;
+  background: #ecf5ff;
+}
+
+.stat-card.stat-new {
+  border-left: 4px solid #67c23a;
+  background: #f0f9eb;
+}
+
+.stat-card.stat-unchanged {
+  border-left: 4px solid #909399;
+  background: #f4f4f5;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: #303133;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #606266;
+  margin-top: 4px;
+}
+
+.stat-desc {
+  font-size: 11px;
+  color: #909399;
+  margin-top: 2px;
+}
+
+.analysis-details h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #606266;
+}
+
+.change-item {
+  font-size: 12px;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.change-field {
+  color: #606266;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.change-old {
+  color: #f56c6c;
+  text-decoration: line-through;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-new {
+  color: #67c23a;
+  font-weight: 500;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-desc {
+  font-size: 12px;
+  color: #909399;
+}
+
+.no-changes {
+  margin-top: 20px;
+}
+
+.analysis-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ===== 进度弹窗样式 ===== */
 .progress-content {
   padding: 20px;
 }
@@ -598,5 +883,41 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 .import-result {
   margin-top: 20px;
 }
-</style>
 
+.result-stats {
+  margin-top: 12px;
+}
+
+.mini-stat {
+  text-align: center;
+  padding: 8px;
+  border-radius: 6px;
+  background: #f5f7fa;
+}
+
+.mini-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: #303133;
+}
+
+.mini-label {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 2px;
+}
+
+/* ===== 中文表名更新消息 ===== */
+.update-message {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.update-message.success {
+  color: #67c23a;
+}
+
+.update-message.error {
+  color: #f56c6c;
+}
+</style>

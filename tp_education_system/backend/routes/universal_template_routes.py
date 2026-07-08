@@ -773,6 +773,313 @@ async def delete_field_mapping(template_id: str, field_name: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def _auto_fill_retirement_report(config: dict, query_params: dict, template_engine) -> dict:
+    """
+    退休呈报表代码自动填报
+    从多个数据源（教师基础信息、岗位聘任信息、最新工资包数据、退休补充信息）自动汇集数据
+    
+    参数:
+        config: 模板配置
+        query_params: 查询参数 {"职工ID": "xxx", "年月": "2026-07"}
+        template_engine: 模板引擎实例
+    
+    返回:
+        填充后的配置
+    """
+    import copy
+    from services.universal_template_service import get_db_connection
+    
+    filled_config = copy.deepcopy(config)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        teacher_id = int(query_params.get('职工ID', 0))
+        if teacher_id <= 0:
+            return filled_config
+        
+        # 1. 查询教师基础信息
+        cursor.execute("""
+            SELECT id, "姓名", "身份证号码", "档案出生日期", "民族", "籍贯", "参加工作日期"
+            FROM teacher_basic_info WHERE id = %s
+        """, (teacher_id,))
+        teacher_row = cursor.fetchone()
+        if not teacher_row:
+            return filled_config
+        
+        teacher_id_val = teacher_row[0]
+        teacher_name = teacher_row[1]
+        id_card = teacher_row[2]
+        
+        # 导入自动填报函数
+        from routes.status_change_routes import _build_retirement_report_data
+        import sys
+        import os
+        
+        # 查询学历
+        cursor.execute("""
+            SELECT education, graduate_date FROM teacher_education_record
+            WHERE teacher_id = %s ORDER BY graduate_date DESC LIMIT 1
+        """, (teacher_id_val,))
+        education_row = cursor.fetchone()
+        
+        # 调用自动填报函数
+        report_data = _build_retirement_report_data(cursor, teacher_id_val, teacher_row, id_card, education_row)
+        
+        if not report_data:
+            return filled_config
+        
+        # 2. 构建模板合并单元格映射，用于确定正确的值填充位置
+        # 关键：标签和值在分开的合并单元格中，必须填充到值合并单元格的主单元格
+        merges = config.get('合并单元格', [])
+        merge_master = {}  # (行,列) → (起始行,起始列,结束行,结束列)
+        for mc in merges:
+            sr, sc = mc.get('起始行'), mc.get('起始列')
+            er, ec = mc.get('结束行'), mc.get('结束列')
+            if sr and sc and er and ec:
+                for r in range(sr, er + 1):
+                    for c in range(sc, ec + 1):
+                        merge_master[(r, c)] = (sr, sc, er, ec)
+        
+        cells = filled_config.get('单元格数据', [])
+        cell_index = {}
+        for cell in cells:
+            cell_index[(cell.get('行号'), cell.get('列号'))] = cell
+        
+        # 3. 基本信息区域：字段名 → 值单元格主单元格(行,列)
+        # 这些映射基于模板实际合并单元格结构分析得出
+        basic_info_value_cells = {
+            '姓名': (22, 2),
+            '性别': (22, 7),
+            '出生日期': (22, 12),
+            '民族': (23, 2),
+            '文化程度': (23, 7),
+            '是否独生子女': (23, 12),
+            '入党年月': (24, 2),
+            '职务': (24, 7),
+            '技术职称': (24, 12),
+            '参加工作时间': (25, 3),
+            '工作年限': (25, 9),
+            '籍贯': (26, 2),
+            '现住址': (26, 8),
+            '退休原因': (33, 4),
+            '退休后居住地址': (38, 2),
+        }
+        
+        def set_cell_value(row, col, value):
+            """设置指定单元格的值，自动处理合并单元格（填充到主单元格）"""
+            master = merge_master.get((row, col))
+            if master:
+                row, col = master[0], master[1]  # 使用主单元格
+            cell = cell_index.get((row, col))
+            if cell:
+                cell['值'] = str(value)
+                cell['显示值'] = str(value)
+        
+        # 填充基本信息
+        for field_name, (row, col) in basic_info_value_cells.items():
+            val = report_data.get(field_name)
+            if val is not None and val != '':
+                set_cell_value(row, col, val)
+        
+        # 4. 封面区域：单位名称、姓名
+        # 封面单位（行18列17）
+        unit_name = report_data.get('单位名称') or report_data.get('发给退休费的单位')
+        if unit_name:
+            set_cell_value(18, 17, unit_name)
+        # 封面姓名（行19列17）
+        if report_data.get('姓名'):
+            set_cell_value(19, 17, report_data['姓名'])
+        
+        # 5. 工作简历区域
+        # 自何年何月 → 行28列2(主单元格,合并28-28列1-2)
+        # 至何年何月 → 行28列6(合并28-28列3-6)  
+        # 在何单位任何职 → 行28列9(合并28-28列7-9)
+        # 证明人及其住址 → 行28列12(合并28-28列10-12)
+        work_exp = report_data.get('工作经历')
+        if work_exp and len(work_exp) > 0:
+            first_exp = work_exp[0]
+            set_cell_value(28, 2, first_exp.get('自何年何月', ''))
+            set_cell_value(28, 6, first_exp.get('至何年何月', ''))
+            set_cell_value(28, 9, first_exp.get('所在单位及职务', ''))
+            set_cell_value(28, 12, first_exp.get('证明人及其住址', ''))
+        
+        # 6. 供养直系亲属
+        support_info = report_data.get('直系亲属供养情况')
+        if support_info:
+            set_cell_value(35, 4, support_info)
+        
+        # 7. 最后一次职务升降时间：直接写入标签单元格，格式为"最后一次职务（技术职称）升降时间：XXXX年XX月XX日"
+        last_promotion = report_data.get('最后一次职务升降时间')
+        if last_promotion:
+            # 格式化日期为中文格式
+            try:
+                from datetime import datetime
+                dt = datetime.strptime(str(last_promotion)[:10], '%Y-%m-%d')
+                formatted_date = f"{dt.year}年{dt.month}月{dt.day}日"
+            except:
+                formatted_date = str(last_promotion)
+            set_cell_value(28, 15, f'最后一次职务（技术职称）升降时间：{formatted_date}')
+        
+        # 8. 工资信息区域（三个时间点：2014年9月30日、最后升降、退休时）
+        # 数据来源于最新工资包数据表，按人员分类填充到对应行
+        person_category = report_data.get('人员分类', '')
+        
+        # 辅助函数：从岗位名称中提取等级数字和纯等级名称
+        # 如"12级专技"→(12, "十二级")，"八级义教"→(8, "八级")
+        CN_NUM_MAP = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12,'十三':13}
+        NUM_CN_MAP = {1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七',8:'八',9:'九',10:'十',11:'十一',12:'十二',13:'十三'}
+        
+        def extract_grade_level(job_title_str):
+            """从岗位名称中提取等级数字和中文等级，如'12级专技'→(12,'十二级')"""
+            import re
+            if not job_title_str:
+                return None, None
+            # 匹配阿拉伯数字+级
+            m = re.match(r'(\d+)级', str(job_title_str))
+            if m:
+                num = int(m.group(1))
+                cn = NUM_CN_MAP.get(num, str(num))
+                return num, f'{cn}级'
+            # 匹配中文数字+级
+            for cn_num in sorted(CN_NUM_MAP.keys(), key=len, reverse=True):
+                if str(job_title_str).startswith(cn_num + '级'):
+                    num = CN_NUM_MAP[cn_num]
+                    return num, f'{cn_num}级'
+            return None, str(job_title_str)
+        
+        def get_duty_by_grade(grade_num):
+            """根据岗位等级数字映射职务级别"""
+            if grade_num is None:
+                return None
+            if 5 <= grade_num <= 7:
+                return '副高级'
+            elif 8 <= grade_num <= 10:
+                return '中级'
+            elif 11 <= grade_num <= 13:
+                return '初级'
+            return None
+        
+        def extract_salary_level_num(level_str):
+            """从级别薪级字符串中提取数字，如'专技22级'→'22'，'义教32级'→'32'"""
+            import re
+            if not level_str:
+                return None
+            m = re.search(r'(\d+)', str(level_str))
+            if m:
+                return m.group(1)
+            return str(level_str)
+        
+        # 确定人员分类对应的行号和列映射
+        # 格式: { 时间点: { 人员分类: (行号, 岗位/技术等级(列18), 级别薪级/对应原职务(列20), 薪级(列22)) } }
+        time_points = {
+            # 2014年9月30日
+            '2014': {
+                'other':      (22, 18, None, 22),  # 机关工人: 技术等级(18), 级别薪级(22)
+                'management': (23, 18, 20, 22),     # 事业管理: 岗位(18), 对应原职务(20), 薪级(22)
+                'technical':  (25, 18, 20, 22),     # 事业专技: 岗位(18), 对应原职务(20), 薪级(22)
+                'worker':     (27, 18, 20, 22),     # 事业工勤: 岗位(18), 对应技术等级(20), 薪级(22)
+            },
+            # 最后一次职务升降
+            '最新': {
+                'other':      (28, 18, None, 22),
+                'management': (30, 18, 20, 22),
+                'technical':  (32, 18, 20, 22),
+                'worker':     (34, 18, 20, 22),
+            },
+            # 退休时
+            '退休': {
+                'other':      (35, 18, None, 22),
+                'management': (36, 18, 20, 22),
+                'technical':  (38, 18, 20, 22),
+                'worker':     (39, 18, 20, 22),
+            },
+        }
+        
+        # 从 report_data 提取三个时间点的数据
+        # 字段名映射: (岗位/技术等级字段, 级别薪级/对应原职务字段, 薪级字段)
+        time_field_names = {
+            '2014': ('2014年9月30日职务岗位', '2014年9月30日级别薪级', '2014年9月30日薪级工资'),
+            '最新': ('最后一次职务升降岗位', '最后一次职务升降薪级', '最后一次职务升降薪级工资'),
+            '退休': ('退休时职务岗位', '退休时级别薪级', '退休时薪级工资'),
+        }
+        
+        for tp_name, (job_field, level_field, salary_field) in time_field_names.items():
+            rows = time_points[tp_name].get(person_category)
+            if not rows:
+                continue
+            row, job_col, level_col, salary_col = rows
+            
+            # 岗位：提取纯等级（如"12级专技"→"十二级"，"八级义教"→"八级"）
+            job_raw = report_data.get(job_field)
+            if job_raw is not None:
+                grade_num, grade_name = extract_grade_level(job_raw)
+                if grade_name:
+                    set_cell_value(row, job_col, grade_name)
+            
+            # 对应原职务：根据岗位等级映射（5-7副高/8-10中级/11-13初级）
+            if level_col is not None:
+                # 从岗位中提取等级，映射到职务
+                job_raw_for_duty = report_data.get(job_field)
+                if job_raw_for_duty:
+                    grade_num_for_duty, _ = extract_grade_level(job_raw_for_duty)
+                    duty = get_duty_by_grade(grade_num_for_duty)
+                    if duty:
+                        set_cell_value(row, level_col, duty)
+            
+            # 薪级：从级别薪级字段提取数字（如"专技22级"→"22"）
+            level_raw = report_data.get(level_field)
+            if level_raw is not None and salary_col is not None:
+                salary_num = extract_salary_level_num(level_raw)
+                if salary_num:
+                    set_cell_value(row, salary_col, salary_num)
+        
+        # 9. "同意...同志"模式自动扩散（用于封面审批区域）
+        # 这些区域（行1-17）的"同志"前后需要填充姓名
+        if teacher_name:
+            for cell in cells:
+                cell_text = str(cell.get('显示值', '') or '')
+                if '同志' in cell_text:
+                    # 不修改已有"同志"的单元格
+                    pass
+        
+        # 9. 同意...同志之间的姓名填充
+        # 扫描所有单元格，找"同意"和"同志"之间的空单元格填充姓名
+        for row in range(1, 18):
+            row_cells = [c for c in cells if c.get('行号') == row]
+            for i, cell in enumerate(row_cells):
+                text = str(cell.get('显示值', '') or '')
+                if '同意' in text:
+                    # 向右查找"同志"
+                    for j in range(i + 1, len(row_cells)):
+                        next_text = str(row_cells[j].get('显示值', '') or '')
+                        next_val = str(row_cells[j].get('值', '') or '')
+                        if '同志' in next_text:
+                            # 在"同意"和"同志"之间填充姓名
+                            for k in range(i + 1, j):
+                                mid_text = str(row_cells[k].get('显示值', '') or '')
+                                mid_val = str(row_cells[k].get('值', '') or '')
+                                if not mid_text.strip() or mid_text == 'None':
+                                    set_cell_value(row_cells[k]['行号'], row_cells[k]['列号'], teacher_name)
+                            break
+                elif '经研究，同意' in text:
+                    # 特殊处理"经研究，同意"行
+                    for j in range(i + 1, len(row_cells)):
+                        next_text = str(row_cells[j].get('显示值', '') or '')
+                        if '同志' in next_text:
+                            for k in range(i + 1, j):
+                                mid_text = str(row_cells[k].get('显示值', '') or '')
+                                if not mid_text.strip() or mid_text == 'None':
+                                    set_cell_value(row_cells[k]['行号'], row_cells[k]['列号'], teacher_name)
+                            break
+        
+        return filled_config
+        
+    finally:
+        cursor.close()
+        conn.close()
+
+
 @router.post("/fill")
 async def fill_template(request: FillTemplateRequest):
     """
@@ -806,7 +1113,12 @@ async def fill_template(request: FillTemplateRequest):
         mappings = template_engine.load_field_mappings(request.模板ID)
         config['字段映射'] = mappings
         
-        filled_config = template_engine.fill_template_data(config, request.查询条件)
+        # ========== 退休呈报表：代码自动填报 ==========
+        if config.get('模板名称') == '职工退休呈报表':
+            from services.universal_template_service import get_db_connection
+            filled_config = _auto_fill_retirement_report(config, request.查询条件, template_engine)
+        else:
+            filled_config = template_engine.fill_template_data(config, request.查询条件)
         
         html = template_engine.generate_print_html(filled_config, request.查询条件, excel_path=config.get('原始文件路径'))
         

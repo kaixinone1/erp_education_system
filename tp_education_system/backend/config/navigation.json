@@ -199,14 +199,6 @@
           ]
         },
         {
-          "id": "system-intermediate-table",
-          "title": "中间表管理",
-          "icon": "Grid",
-          "path": "/system/intermediate-table",
-          "type": "component",
-          "component": "IntermediateTableManager"
-        },
-        {
           "id": "system-octogenarian",
           "title": "高龄补贴管理",
           "icon": "FirstAidKit",
@@ -520,6 +512,18 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/tui_xiu_bu_chong_xin_xi",
               "table_name": "tui_xiu_bu_chong_xin_xi",
+              "table_type": "master"
+            },
+            {
+              "id": "table-salary_info",
+              "title": "最新工资包数据",
+              "name": "最新工资包数据",
+              "icon": "Document",
+              "path": "/data/salary_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/salary_info",
+              "table_name": "salary_info",
               "table_type": "master"
             }
           ]

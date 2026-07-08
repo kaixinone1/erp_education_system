@@ -303,6 +303,128 @@ def generate_smart_mapping(field_name: str, values: List[Any], module_name: str 
     }
 
 
+def _detect_encoding(contents: bytes) -> str:
+    """自动检测文件编码，支持 UTF-8, UTF-8-BOM, GBK, GB2312, GB18030, latin-1"""
+    # 按优先级尝试常见编码
+    encodings = ['utf-8-sig', 'utf-8', 'gb18030', 'gbk', 'gb2312', 'latin-1']
+    for enc in encodings:
+        try:
+            contents.decode(enc)
+            return enc
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+    return 'latin-1'  # 兜底
+
+
+def _detect_delimiter(text: str) -> str:
+    """自动检测CSV/文本文件的分隔符"""
+    # 取前几行来检测
+    lines = text.split('\n')[:10]
+    if not lines:
+        return ','
+    
+    candidates = [',', '\t', ';', '|']
+    # 统计每行每个分隔符的出现次数，选最稳定且出现次数最多的
+    best_delim = ','
+    best_score = -1
+    
+    for delim in candidates:
+        counts = [line.count(delim) for line in lines if line.strip()]
+        if not counts:
+            continue
+        # 要求至少2行且分隔符出现次数一致
+        if len(counts) >= 2 and len(set(counts)) == 1 and counts[0] > 0:
+            score = counts[0]
+            if score > best_score:
+                best_score = score
+                best_delim = delim
+    
+    return best_delim
+
+
+def _parse_excel_auto(contents: bytes, filename: str) -> pd.DataFrame:
+    """
+    统一Excel解析器，自动适配各种Excel格式。
+    支持：.xls, .xlsx, .xlsm, .xlsb, .xlt, .xltx, .xltm, .ods, .et, .csv
+    自动探测非空sheet，尝试多种解析引擎。
+    """
+    filename_lower = filename.lower()
+    io_bytes = io.BytesIO(contents)
+    
+    # 第一步：用xlrd探测.xls文件的sheet结构（找到非空sheet）
+    if filename_lower.endswith('.xls') and not filename_lower.endswith('.xlsx'):
+        try:
+            import xlrd
+            wb = xlrd.open_workbook(file_contents=contents, on_demand=True)
+            sheet_name = None
+            for i in range(wb.nsheets):
+                sheet = wb.sheet_by_index(i)
+                if sheet.nrows > 0 and sheet.ncols > 0:
+                    sheet_name = sheet.name
+                    break
+            if sheet_name is None:
+                raise ValueError("所有工作表均为空")
+            # 用xlrd引擎读取找到的非空sheet
+            return pd.read_excel(io_bytes, sheet_name=sheet_name)
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"无法解析此.xls文件（{str(e)}）。请将文件另存为.xlsx格式后重新上传。"
+            )
+    
+    # 第二步：处理其他Excel格式（.xlsx, .xlsm, .xlsb, .ods 等）
+    # 引擎尝试顺序：openpyxl → calamine
+    engines_to_try = ['openpyxl', 'calamine']
+    
+    for engine in engines_to_try:
+        try:
+            df = pd.read_excel(io_bytes, engine=engine)
+            if df.shape[0] > 0 and df.shape[1] > 0:
+                return df
+        except Exception:
+            io_bytes.seek(0)  # 重置指针，尝试下一个引擎
+            continue
+    
+    # 第三步：尝试读取所有sheet，找到第一个非空的
+    try:
+        io_bytes.seek(0)
+        all_sheets = pd.read_excel(io_bytes, sheet_name=None)
+        for name, sheet_df in all_sheets.items():
+            if sheet_df.shape[0] > 0 and sheet_df.shape[1] > 0:
+                return sheet_df
+    except Exception:
+        pass
+    
+    raise HTTPException(
+        status_code=400,
+        detail=f"无法解析此文件。请确认文件格式正确，或尝试另存为.xlsx格式后重新上传。"
+    )
+
+
+def _parse_csv_auto(contents: bytes, filename: str) -> pd.DataFrame:
+    """统一CSV/文本解析器，自动检测编码和分隔符"""
+    encoding = _detect_encoding(contents)
+    text = contents.decode(encoding)
+    delimiter = _detect_delimiter(text)
+    
+    print(f"[parse-file] CSV解析: 编码={encoding}, 分隔符={repr(delimiter)}")
+    
+    try:
+        df = pd.read_csv(io.BytesIO(contents), encoding=encoding, sep=delimiter,
+                         on_bad_lines='skip')
+    except Exception:
+        # 如果自动检测的编码失败，用latin-1兜底
+        df = pd.read_csv(io.BytesIO(contents), encoding='latin-1', sep=delimiter,
+                         on_bad_lines='skip')
+    
+    if df.shape[0] == 0 or df.shape[1] == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="此文件解析后为空。请检查文件内容是否正确。"
+        )
+    return df
+
+
 def parse_word_document(file_path: str) -> pd.DataFrame:
     """
     解析Word文档，提取表格数据
@@ -342,17 +464,23 @@ def parse_word_document(file_path: str) -> pd.DataFrame:
 async def parse_file(file: UploadFile = File(...), module_name: str = "", preview_only: bool = Query(True)):
     """解析上传的文件并生成智能映射建议"""
     try:
-        # 检查文件类型
-        allowed_extensions = ('.xlsx', '.xls', '.csv', '.doc', '.docx')
-        if not file.filename.endswith(allowed_extensions):
-            raise HTTPException(status_code=400, detail=f"只支持Excel、CSV和Word文件，支持的格式: {allowed_extensions}")
+        # 检查文件类型（不区分大小写，支持更多格式）
+        filename_lower = file.filename.lower()
+        excel_extensions = ('.xlsx', '.xls', '.xlsm', '.xlsb', '.xlt', '.xltx', '.xltm', '.ods', '.et')
+        csv_extensions = ('.csv', '.tsv', '.txt')
+        word_extensions = ('.doc', '.docx')
+        all_allowed = excel_extensions + csv_extensions + word_extensions
+        
+        if not filename_lower.endswith(all_allowed):
+            raise HTTPException(
+                status_code=400,
+                detail=f"不支持的文件格式。支持的格式：Excel({', '.join(excel_extensions)})、CSV/TSV/TXT、Word(.doc/.docx)"
+            )
 
         # 读取文件内容
         contents = await file.read()
 
         # 保存上传的文件用于检查（临时）
-        import os
-        from datetime import datetime
         upload_dir = os.path.join(os.path.dirname(__file__), '..', 'uploads')
         os.makedirs(upload_dir, exist_ok=True)
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -362,13 +490,12 @@ async def parse_file(file: UploadFile = File(...), module_name: str = "", previe
             f.write(contents)
         print(f"[parse-file] 文件已保存到: {saved_path}")
 
-        # 根据文件类型解析
-        if file.filename.endswith('.csv'):
-            df = pd.read_csv(io.BytesIO(contents), encoding='utf-8')
-        elif file.filename.endswith(('.xlsx', '.xls')):
-            df = pd.read_excel(io.BytesIO(contents))
-        elif file.filename.endswith(('.doc', '.docx')):
-            # Word文档解析
+        # 根据文件类型选择合适的解析器
+        if filename_lower.endswith(excel_extensions):
+            df = _parse_excel_auto(contents, file.filename)
+        elif filename_lower.endswith(csv_extensions):
+            df = _parse_csv_auto(contents, file.filename)
+        elif filename_lower.endswith(word_extensions):
             df = parse_word_document(saved_path)
         else:
             raise HTTPException(status_code=400, detail="不支持的文件格式")
@@ -538,19 +665,25 @@ async def finalize_import(
     table_type: str = Body("master"),
     parent_table: Optional[str] = Body(None),
     force_use_existing: bool = Body(False),  # 强制使用已存在的表（当表结构相同时）
-    force_overwrite: bool = Body(False)  # 强制覆盖已有表（当表结构不一致时）
+    force_overwrite: bool = Body(False),  # 强制覆盖已有表（当表结构不一致时）
+    analyze_only: bool = Body(False)  # 仅分析不执行，返回数据差异报告
 ):
     """完成导入 - 原子化操作"""
     try:
         # 0. 首先使用字段名管理器处理字段配置，确保中文字段名映射到唯一的英文字段名
+        # 注意：analyze_only 模式下使用原始字段配置（因为需要匹配数据库已有列名）
         processed_field_configs = field_name_manager.process_field_configs(field_configs)
         print(f"字段配置已处理，共 {len(processed_field_configs)} 个字段")
         
+        # 用于表名检查的字段配置：analyze_only 时用原始配置，否则用处理后的配置
+        check_field_configs = field_configs if analyze_only else processed_field_configs
+        
         # 1. 检查中文表名
+        actual_table_name = table_name
         if chinese_title:
             status, message, existing_english_name = table_name_manager.check_table_name(
                 chinese_name=chinese_title,
-                field_configs=processed_field_configs,
+                field_configs=check_field_configs,
                 table_type=table_type
             )
             
@@ -625,21 +758,39 @@ async def finalize_import(
                 )
                 
             else:  # 'new_table'
-                # 新表，注册表名映射
+                # 新表，注册表名映射（仅在非分析模式下注册）
                 actual_table_name = table_name
-                table_name_manager.register_table_name(
-                    chinese_name=chinese_title,
-                    english_name=table_name,
-                    table_type=table_type,
-                    field_configs=field_configs
-                )
+                if not analyze_only:
+                    table_name_manager.register_table_name(
+                        chinese_name=chinese_title,
+                        english_name=table_name,
+                        table_type=table_type,
+                        field_configs=field_configs
+                    )
         else:
             # 没有中文标题，直接使用传入的表名
             actual_table_name = table_name
         
-        # 2. 创建导入服务并执行导入
+        # 2. 创建导入服务
         import_service = ImportService()
         
+        # 2.5 如果是 analyze_only 模式，仅分析数据差异并返回报告
+        if analyze_only and actual_table_name:
+            # 使用原始字段配置（因为需要匹配数据库已有列名）
+            analysis = import_service.analyze_data_diff(
+                table_name=actual_table_name,
+                field_configs=field_configs,
+                data=data
+            )
+            return {
+                "status": "analyzed",
+                "message": "数据差异分析完成，请确认后执行导入",
+                "table_name": actual_table_name,
+                "chinese_name": chinese_title,
+                "analysis": analysis
+            }
+        
+        # 3. 执行导入
         result = import_service.import_data(
             table_name=actual_table_name,
             field_configs=processed_field_configs,

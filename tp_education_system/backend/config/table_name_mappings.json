@@ -265,6 +265,11 @@
       "english_name": "tui_xiu_bu_chong_xin_xi",
       "table_type": "master",
       "updated_at": "2026-07-05T16:44:15.026699"
+    },
+    "最新工资包数据": {
+      "english_name": "salary_data",
+      "table_type": "master",
+      "updated_at": "2026-07-08T08:50:03.232885"
     }
   },
   "reverse_mappings": {

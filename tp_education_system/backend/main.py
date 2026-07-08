@@ -11,7 +11,6 @@ from routes.retirement_report_routes import router as retirement_report_router
 from routes.report_designer_routes import router as report_designer_router
 from routes.retirement_data_routes import router as retirement_data_router
 from routes.checklist_template_routes import router as checklist_template_router
-from routes.intermediate_table_routes import router as intermediate_table_router
 from routes.filter_condition_routes import router as filter_condition_router
 from routes.migration_routes import router as migration_router
 from routes.tag_relations_routes import router as tag_relations_router
@@ -146,7 +145,6 @@ app.include_router(retirement_report_router)
 app.include_router(report_designer_router)
 app.include_router(retirement_data_router)
 app.include_router(checklist_template_router)
-app.include_router(intermediate_table_router)
 app.include_router(filter_condition_router)
 app.include_router(migration_router)
 app.include_router(tag_relations_router)
@@ -181,19 +179,6 @@ print("[OK] 聚合查询路由已注册")
 app.include_router(unit_hierarchy_router)
 print("[OK] 单位层级路由已注册")
 
-# 注册通用中间表框架路由（旧框架，保留兼容）
-from utils.intermediate_table_framework import register_intermediate_table, create_intermediate_table_routes
-
-# 注册退休呈报数据中间表（旧框架）
-try:
-    retirement_engine = register_intermediate_table(
-        os.path.join(CONFIG_DIR, 'intermediate_tables', 'retirement_report_data.json')
-    )
-    app.include_router(create_intermediate_table_routes('retirement_report_data'))
-    print("[OK] 退休呈报数据中间表已注册到旧框架")
-except Exception as e:
-    print(f"注册退休呈报数据中间表失败: {e}")
-
 # 注册自动表管理框架（新框架 - 零配置）
 from utils.auto_table_framework import create_auto_table_routes, create_dynamic_auto_table_router
 
@@ -210,14 +195,6 @@ try:
     print("[OK] 退休呈报表已注册到新框架")
 except Exception as e:
     print(f"注册退休呈报表到新框架失败: {e}")
-
-# 注册中间表管理路由
-try:
-    from utils.intermediate_table_manager import create_intermediate_table_manager_routes
-    app.include_router(create_intermediate_table_manager_routes())
-    print("[OK] 中间表管理路由已注册")
-except Exception as e:
-    print(f"注册中间表管理路由失败: {e}")
 
 # 注册仪表盘数据路由
 try:

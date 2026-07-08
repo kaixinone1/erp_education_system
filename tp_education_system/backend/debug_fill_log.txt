@@ -4113,3 +4113,47 @@
 [1782804058.3438275] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
 [1782804058.3478103] C:query_field table=teacher_basic_info col=name id_card=420683197206202198 sql=SELECT name FROM teacher_basic_info WHERE id_card = %s LIMIT 1 has_result=True val=高书兵
 [1782804058.3478103] E:collected count=1 values={'姓名': '高书兵'}
+[1783383594.958135] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 366, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783383595.4439085] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
+[1783383595.4550385] E:collected count=0 values={}
+[1783384167.4671698] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
+[1783384167.4829056] E:collected count=0 values={}
+[1783384743.4579694] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783384744.0310946] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
+[1783384744.045586] E:collected count=0 values={}
+[1783385431.727331] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783385432.3177052] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
+[1783385432.3302138] E:collected count=0 values={}
+[1783385476.641968] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783385477.273889] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
+[1783385477.2847376] E:collected count=0 values={}
+[1783385587.2149377] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783385587.8115318] B:mappings db=1 formula=0 detail={'姓名': 'teacher_basic_info.name'}
+[1783385587.8222544] E:collected count=0 values={}
+[1783385713.2971902] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783385816.6261473] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783385896.4338212] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783386453.8436947] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 366, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783386504.8085678] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 366, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783386867.3550265] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '1', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783387066.4614823] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 366, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783387234.5464199] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783388083.406557] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783406635.6638935] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783406813.1254508] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783406865.5885444] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783406987.9077373] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783407259.5668342] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783407328.7344115] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783410085.4805715] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 366, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783410611.8785613] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783410901.7148485] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783411716.5512412] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 296, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783412906.6325507] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783413004.4863424] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 296, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783415037.0032403] A:fill_entry 模板ID=退休呈报表 查询条件={'教师姓名': '高书兵'} 统计范围=None 填报口径=None
+[1783415108.389892] A:fill_entry 模板ID=tpl_6218b894 查询条件={'教师姓名': '高书兵'} 统计范围=None 填报口径=None
+[1783415144.3218305] A:fill_entry 模板ID=tpl_6218b894 查询条件={'教师姓名': '高书兵'} 统计范围=None 填报口径=None
+[1783415247.4473581] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '366', '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783415349.440234] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': 296, '年月': '2026-07'} 统计范围=None 填报口径=None
+[1783415653.742283] A:fill_entry 模板ID=tpl_6218b894 查询条件={'职工ID': '296', '年月': '2026-07'} 统计范围=None 填报口径=None

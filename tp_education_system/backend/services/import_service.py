@@ -97,13 +97,24 @@ class ImportService:
                 return {"status": "error", "message": "字段配置为空", "record_count": 0}
             
             # 步骤1: 动态建表
-            actual_table_name, is_existing_table = self._create_or_update_table(
+            actual_table_name, is_existing_table, field_diff = self._create_or_update_table(
                 table_name=table_name,
                 field_configs=field_configs,
                 table_type=table_type,
                 parent_table=parent_table,
-                foreign_keys=foreign_keys
+                foreign_keys=foreign_keys,
+                chinese_title=chinese_title
             )
+            
+            # 如果字段有差异，返回差异报告让用户确认
+            if field_diff:
+                return {
+                    "status": "field_diff",
+                    "message": "导入字段与数据库表字段不一致，请确认",
+                    "table_name": actual_table_name,
+                    "chinese_name": chinese_title,
+                    "field_diff": field_diff
+                }
             
             # 步骤2: 插入数据
             if is_existing_table:
@@ -121,6 +132,7 @@ class ImportService:
                     data=data
                 )
                 total_count = inserted_count
+                updated_count = 0
                 message = f"成功导入 {inserted_count} 条数据"
             
             # 步骤3: 更新配置文件
@@ -165,7 +177,7 @@ class ImportService:
                 "table_type": table_type,
                 "record_count": total_count,
                 "inserted": inserted_count,
-                "updated": updated_count if is_existing_table else 0,
+                "updated": updated_count,
                 "is_existing_table": is_existing_table
             }
             
@@ -188,25 +200,104 @@ class ImportService:
                                field_configs: List[Dict[str, Any]],
                                table_type: str = "master",
                                parent_table: Optional[str] = None,
-                               foreign_keys: Optional[List[Dict[str, Any]]] = None) -> tuple:
+                               foreign_keys: Optional[List[Dict[str, Any]]] = None,
+                               chinese_title: str = "") -> tuple:
         """
         动态创建或更新数据表
-        返回: (实际使用的表名, 是否是已存在的表)
+        优先通过中文表名在 table_name_mappings.json 中查找已有表
+        返回: (实际使用的表名, 是否是已存在的表, 字段差异报告或None)
         """
-        # 检查表是否已存在
+        # 1. 通过中文表名在映射配置中查找已有表
+        existing_english_name = None
+        if chinese_title:
+            existing_english_name = self._find_table_by_chinese_name(chinese_title)
+        
+        if existing_english_name:
+            # 找到中文名映射，检查数据库表是否存在
+            if self._table_exists(existing_english_name):
+                print(f"中文名'{chinese_title}'已映射到表 {existing_english_name}")
+                # 比较字段结构
+                diff_report = self._compare_field_structures(
+                    existing_english_name, field_configs
+                )
+                if diff_report is None:
+                    # 字段完全一致，直接使用已有表
+                    print(f"字段结构一致，使用已有表 {existing_english_name}")
+                    return existing_english_name, True, None
+                else:
+                    # 字段有差异，返回差异报告让用户确认
+                    print(f"字段结构有差异: {diff_report}")
+                    return existing_english_name, True, diff_report
+            else:
+                # 映射指向的表不存在，当新表处理
+                print(f"映射表 {existing_english_name} 不存在，创建新表")
+        
+        # 2. 检查英文表名是否已存在
         if self._table_exists(table_name):
             print(f"表 {table_name} 已存在，使用现有表")
-            return table_name, True
+            return table_name, True, None
         
-        # 检查是否存在结构相同的表
-        existing_table = self._find_matching_table(field_configs)
-        if existing_table:
-            print(f"找到匹配的表: {existing_table}，使用现有表")
-            return existing_table, True
-        
-        # 创建新表
+        # 3. 创建新表
         self._create_table(table_name, field_configs, table_type, foreign_keys)
-        return table_name, False
+        return table_name, False, None
+    
+    def _find_table_by_chinese_name(self, chinese_title: str) -> Optional[str]:
+        """通过中文表名在 table_name_mappings.json 中查找英文表名"""
+        try:
+            mappings_path = os.path.join(self.config_dir, 'table_name_mappings.json')
+            if os.path.exists(mappings_path):
+                with open(mappings_path, 'r', encoding='utf-8') as f:
+                    mappings = json.load(f)
+                table_info = mappings.get('mappings', {}).get(chinese_title)
+                if table_info:
+                    return table_info.get('english_name')
+        except Exception as e:
+            print(f"查找中文表名映射失败: {e}")
+        return None
+    
+    def _compare_field_structures(self, existing_table: str, 
+                                   field_configs: List[Dict]) -> Optional[Dict]:
+        """
+        比较导入字段配置与数据库表字段结构
+        返回 None 表示完全一致，否则返回差异报告
+        """
+        # 获取导入字段签名
+        import_sig = self._get_table_signature(field_configs)
+        import_fields = {name: dtype for name, dtype in import_sig}
+        
+        # 获取数据库表字段签名
+        db_sig = self._get_table_signature_from_db(existing_table)
+        if db_sig is None:
+            return None
+        db_fields = {name: self._normalize_data_type(dtype) for name, dtype in db_sig}
+        
+        # 比较
+        import_set = set(import_fields.keys())
+        db_set = set(db_fields.keys())
+        
+        only_in_import = import_set - db_set
+        only_in_db = db_set - import_set
+        common = import_set & db_set
+        
+        type_mismatches = {}
+        for field in common:
+            if import_fields[field] != db_fields[field]:
+                type_mismatches[field] = {
+                    "导入类型": import_fields[field],
+                    "数据库类型": db_fields[field]
+                }
+        
+        if not only_in_import and not only_in_db and not type_mismatches:
+            return None  # 完全一致
+        
+        return {
+            "导入独有字段": list(only_in_import),
+            "数据库独有字段": list(only_in_db),
+            "类型不一致字段": type_mismatches,
+            "共同字段": list(common),
+            "导入字段数": len(import_fields),
+            "数据库字段数": len(db_fields)
+        }
     
     def _table_exists(self, table_name: str) -> bool:
         """检查表是否存在"""
@@ -273,15 +364,19 @@ class ImportService:
             return None
     
     def _compare_signatures(self, sig1: List[tuple], sig2: List[tuple]) -> bool:
-        """比较两个表签名是否匹配"""
-        if len(sig1) != len(sig2):
+        """比较两个表签名：sig1 中的所有字段是否都在 sig2 中存在（子集匹配）"""
+        if len(sig1) == 0 or len(sig2) == 0:
             return False
         
         # 标准化数据类型后比较
-        normalized_sig1 = [(name, self._normalize_data_type(t)) for name, t in sig1]
-        normalized_sig2 = [(name, self._normalize_data_type(t)) for name, t in sig2]
-        
-        return normalized_sig1 == normalized_sig2
+        sig2_dict = {name: self._normalize_data_type(t) for name, t in sig2}
+        for name, t in sig1:
+            normalized = self._normalize_data_type(t)
+            if name not in sig2_dict:
+                return False
+            if sig2_dict[name] != normalized:
+                return False
+        return True
     
     def _normalize_data_type(self, data_type: str) -> str:
         """标准化数据类型"""
@@ -450,9 +545,159 @@ class ImportService:
         print(f"批量插入完成，共插入 {inserted_count} 条数据")
         return inserted_count, errors
     
+    def analyze_data_diff(self, table_name: str, field_configs: List[Dict],
+                          data: List[Dict]) -> Dict:
+        """
+        分析导入数据与现有数据的差异
+        返回分析报告：更新、新增、插入、未变的统计
+        """
+        if not data:
+            return {"更新": 0, "新增": 0, "插入": 0, "未变": 0, "总计": 0, "明细": []}
+        
+        # 构建字段映射
+        field_mapping = {}
+        for field in field_configs:
+            source = field.get('sourceField') or field.get('chinese_name', '')
+            target = field.get('targetField') or field.get('english_name', '')
+            if source and target:
+                field_mapping[source] = target
+        
+        # 获取匹配键（与 _upsert_data 使用相同逻辑）
+        unique_columns = self._get_upsert_keys(table_name, field_configs, field_mapping, data)
+        print(f"数据分析匹配键: {unique_columns}")
+        
+        # 查询数据库所有记录（如果表不存在则视为空表）
+        db_rows = []
+        if self._table_exists(table_name):
+            with self.engine.connect() as conn:
+                result = conn.execute(text(f'SELECT * FROM "{table_name}"'))
+                db_rows = [dict(row._mapping) for row in result]
+        else:
+            print(f"表 {table_name} 不存在，视为新表，所有数据为新增")
+        
+        print(f"数据库现有 {len(db_rows)} 条记录，导入 {len(data)} 条记录")
+        
+        # 构建数据库索引：按匹配键 → 行数据
+        db_index = {}
+        for db_row in db_rows:
+            key_parts = []
+            for col in unique_columns:
+                val = str(db_row.get(col, '')).strip() if db_row.get(col) is not None else ''
+                key_parts.append(val)
+            key = '|||'.join(key_parts)
+            db_index[key] = db_row
+        
+        # 分析每条导入数据
+        update_count = 0
+        new_count = 0
+        insert_count = 0
+        unchanged_count = 0
+        details = []
+        
+        for row_idx, row in enumerate(data):
+            # 构建映射后的行数据
+            mapped_row = {}
+            for source_field, target_field in field_mapping.items():
+                value = row.get(source_field, '')
+                if value is not None and str(value).strip() != '':
+                    mapped_row[target_field] = str(value).strip()
+            
+            # 构建匹配键
+            key_parts = []
+            for col in unique_columns:
+                val = mapped_row.get(col, '')
+                key_parts.append(val)
+            key = '|||'.join(key_parts)
+            
+            if key in db_index:
+                # 匹配到已有记录，检查是否有变化
+                existing = db_index[key]
+                changed_fields = []
+                for target_field, new_val in mapped_row.items():
+                    old_val = str(existing.get(target_field, '')).strip() if existing.get(target_field) is not None else ''
+                    if new_val != old_val:
+                        changed_fields.append({
+                            "字段": target_field,
+                            "原值": old_val,
+                            "新值": new_val
+                        })
+                
+                if changed_fields:
+                    update_count += 1
+                    details.append({
+                        "行号": row_idx + 1,
+                        "类型": "更新",
+                        "匹配键": key,
+                        "变更字段": changed_fields
+                    })
+                else:
+                    unchanged_count += 1
+            else:
+                # 不匹配，判断是新增还是插入
+                # 如果匹配键中部分匹配（如身份证号码相同但起薪时间不同），则为"插入"
+                is_insert = False
+                if len(unique_columns) > 1:
+                    partial_match = False
+                    for db_key, db_row in db_index.items():
+                        db_parts = db_key.split('|||')
+                        match_count = sum(1 for i, p in enumerate(key_parts) if p and p == db_parts[i])
+                        if match_count >= 1 and match_count < len(key_parts):
+                            partial_match = True
+                            break
+                    if partial_match:
+                        is_insert = True
+                
+                if is_insert:
+                    insert_count += 1
+                    details.append({
+                        "行号": row_idx + 1,
+                        "类型": "插入",
+                        "匹配键": key,
+                        "说明": "同标识符的新记录"
+                    })
+                else:
+                    new_count += 1
+                    details.append({
+                        "行号": row_idx + 1,
+                        "类型": "新增",
+                        "匹配键": key,
+                        "说明": "全新记录"
+                    })
+        
+        return {
+            "更新": update_count,
+            "新增": new_count,
+            "插入": insert_count,
+            "未变": unchanged_count,
+            "总计": len(data),
+            "数据库现有记录": len(db_rows),
+            "明细": details[:20]  # 只返回前20条明细
+        }
+    
+    def _get_upsert_keys(self, table_name: str, field_configs: List[Dict],
+                         field_mapping: Dict, data: List[Dict]) -> List[str]:
+        """获取UPSERT匹配键（与 _upsert_data 使用相同逻辑）"""
+        unique_columns = self._get_table_unique_columns(table_name)
+        if not unique_columns:
+            unique_columns = [f.get('targetField') or f.get('english_name') 
+                            for f in field_configs if f.get('unique')]
+        if not unique_columns:
+            system_cols = {'id', 'created_at', 'updated_at', 'import_time'}
+            measure_keywords = ['工资', 'salary', '金额', 'amount', '数量', 'quantity', 
+                              '价格', 'price', '费用', 'cost', 'fee', '成绩', 'score',
+                              '得分', '总计', 'total', '合计', 'sum']
+            unique_columns = []
+            for target in field_mapping.values():
+                if target.lower() in system_cols:
+                    continue
+                if any(kw in target.lower() for kw in measure_keywords):
+                    continue
+                unique_columns.append(target)
+        return unique_columns
+    
     def _upsert_data(self, table_name: str, field_configs: List[Dict], 
                     data: List[Dict]) -> tuple:
-        """插入或更新数据"""
+        """插入或更新数据（使用数据库真实唯一约束做匹配）"""
         if not data:
             return 0, 0, []
         
@@ -464,9 +709,9 @@ class ImportService:
             if source and target:
                 field_mapping[source] = target
         
-        # 查找唯一键字段
-        unique_fields = [f.get('targetField') or f.get('english_name') 
-                        for f in field_configs if f.get('unique')]
+        # 使用统一的匹配键获取逻辑
+        unique_columns = self._get_upsert_keys(table_name, field_configs, field_mapping, data)
+        print(f"UPSERT 唯一键列: {unique_columns}")
         
         inserted_count = 0
         updated_count = 0
@@ -486,24 +731,28 @@ class ImportService:
                     if not insert_data:
                         continue
                     
-                    # 检查是否存在
-                    if unique_fields:
+                    # 检查是否存在（使用唯一键匹配）
+                    if unique_columns:
                         where_conditions = []
                         where_values = {}
-                        for uf in unique_fields:
-                            if uf in insert_data:
-                                where_conditions.append(f"{uf} = :{uf}_check")
-                                where_values[f"{uf}_check"] = insert_data[uf]
+                        has_all_keys = True
+                        for uc in unique_columns:
+                            if uc in insert_data and insert_data[uc] is not None:
+                                where_conditions.append(f'"{uc}" = :{uc}_check')
+                                where_values[f"{uc}_check"] = insert_data[uc]
+                            else:
+                                has_all_keys = False
+                                break
                         
-                        if where_conditions:
-                            check_sql = f"SELECT id FROM {table_name} WHERE {' AND '.join(where_conditions)} LIMIT 1"
+                        if has_all_keys and where_conditions:
+                            check_sql = f'SELECT id FROM "{table_name}" WHERE {" AND ".join(where_conditions)} LIMIT 1'
                             result = conn.execute(text(check_sql), where_values)
                             existing = result.fetchone()
                             
                             if existing:
                                 # 更新
-                                update_sets = [f"{k} = :{k}" for k in insert_data.keys()]
-                                update_sql = f"UPDATE {table_name} SET {', '.join(update_sets)} WHERE id = :id"
+                                update_sets = [f'"{k}" = :{k}' for k in insert_data.keys()]
+                                update_sql = f'UPDATE "{table_name}" SET {", ".join(update_sets)} WHERE id = :id'
                                 insert_data['id'] = existing[0]
                                 conn.execute(text(update_sql), insert_data)
                                 updated_count += 1
@@ -511,8 +760,9 @@ class ImportService:
                     
                     # 插入
                     columns = list(insert_data.keys())
+                    quoted_columns = [f'"{c}"' for c in columns]
                     placeholders = [f":{col}" for col in columns]
-                    insert_sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(placeholders)})"
+                    insert_sql = f'INSERT INTO "{table_name}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
                     conn.execute(text(insert_sql), insert_data)
                     inserted_count += 1
                     
@@ -521,7 +771,27 @@ class ImportService:
             
             conn.commit()
         
+        print(f"UPSERT完成: 新增 {inserted_count} 条, 更新 {updated_count} 条")
         return inserted_count, updated_count, errors
+    
+    def _get_table_unique_columns(self, table_name: str) -> List[str]:
+        """查询数据库表的唯一约束列（排除SERIAL主键id）"""
+        try:
+            with self.engine.connect() as conn:
+                result = conn.execute(text("""
+                    SELECT DISTINCT a.attname as column_name
+                    FROM pg_index i
+                    JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+                    JOIN pg_class c ON c.oid = i.indrelid
+                    WHERE c.relname = :table_name
+                      AND i.indisunique
+                      AND a.attname != 'id'
+                """), {"table_name": table_name})
+                columns = [row[0] for row in result]
+                return columns
+        except Exception as e:
+            print(f"查询唯一约束失败: {e}")
+            return []
     
     def _is_date_field(self, field_name: str, field_configs: List[Dict]) -> bool:
         """检查字段是否为日期类型"""
@@ -706,12 +976,19 @@ class ImportService:
             if "children" not in target:
                 target["children"] = []
             
-            existing = [t for t in target.get("children", []) if t.get("table_name") == table_name]
+            existing = [t for t in target.get("children", []) 
+                       if t.get("table_name") == table_name 
+                       or t.get("title") == chinese_title]
             if not existing:
                 target["children"].append(table_node)
                 print(f"[导航配置] 已添加表到{target_type} {target_id}: {chinese_title or table_name}")
             else:
-                print(f"[导航配置] 表已存在，跳过: {chinese_title or table_name}")
+                # 已存在，更新现有节点信息（确保指向正确的表名）
+                for t in existing:
+                    t["table_name"] = table_name
+                    t["path"] = f"/data/{table_name}"
+                    t["api_endpoint"] = f"/api/data/{table_name}"
+                print(f"[导航配置] 表已存在，已更新节点: {chinese_title or table_name}")
             
             # 保存导航配置
             print(f"[导航配置] 正在保存到文件...")

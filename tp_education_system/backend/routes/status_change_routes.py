@@ -81,43 +81,67 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
     education_name = get_education_name(education_row[0], DATABASE_CONFIG) if education_row else None
     
     # ==================== 二、职务和职称（岗位聘任信息） ====================
-    # 职务等级映射：post_level_1 -> 正高级/副高级/中级/初级
+    # 先加载字典表数据
+    cursor.execute("SELECT id, post FROM dict_dictionary_personal ORDER BY id")
+    dict_personal = {row[0]: row[1] for row in cursor.fetchall()}  # id -> 职称名称
+    
+    cursor.execute("SELECT id, post_level FROM dict_grade_dictionary ORDER BY id")
+    dict_grade = {row[0]: row[1] for row in cursor.fetchall()}  # id -> 岗位等级名称（如"七级专技"）
+    
+    # 岗位等级名称（如"四级专技"） -> 职务（正高级/副高级/中级/初级）
     POST_LEVEL_TO_TITLE = {
-        4: '正高级',    # 四级专技
-        5: '副高级',    # 五级专技
-        6: '副高级',    # 六级专技
-        7: '副高级',    # 七级专技
-        8: '中级',      # 八级专技
-        9: '中级',      # 九级专技
-        10: '中级',     # 十级专技
-        11: '初级',     # 11级专技
-        12: '初级',     # 12级专技
-        2: '初级',      # 二级
-        3: '初级',      # 三级
-        15: '副高级',   # 15级
-        17: '正高级',   # 17级
+        '四级专技': '正高级', '四级义教': '正高级',
+        '五级专技': '副高级', '五级义教': '副高级',
+        '六级专技': '副高级', '六级义教': '副高级',
+        '七级专技': '副高级', '七级义教': '副高级',
+        '八级专技': '中级', '八级义教': '中级',
+        '九级专技': '中级', '九级义教': '中级',
+        '十级专技': '中级', '十级义教': '中级',
+        '11级专技': '初级', '11级义教': '初级',
+        '12级专技': '初级', '12级义教': '初级',
+        '13级专技': '初级', '13级义教': '初级',
     }
     
     position_title = None  # 职务（正高级/副高级/中级/初级）
-    professional_title = None  # 职称（高级教师/一级教师等，优先取professional_title，为空取job_title）
+    professional_title = None  # 职称（高级教师/一级教师/二级教师/三级教师）
     duty = None  # 岗位
     
     cursor.execute("""
-        SELECT post_level_1, professional_title, job_title
+        SELECT post_1, post_level_1, professional_title, job_title
         FROM post_appointment_info
         WHERE id_card = %s
         ORDER BY id DESC LIMIT 1
     """, (id_card,))
     post_row = cursor.fetchone()
     if post_row:
-        if post_row[0] is not None:
+        post_1_val = post_row[0]   # 字典id -> 职称（高级教师/一级教师等）
+        post_level_1_val = post_row[1]  # 字典id -> 岗位等级名称（如"七级专技"）
+        prof_title_val = post_row[2]    # 已评职称（如"高级"）
+        job_title_val = post_row[3]     # 原聘职务（如"六级专技"）
+        
+        # 职称（专业技术职称）：优先从 post_1 字典转换，否则取 professional_title，再取 job_title
+        if post_1_val is not None:
             try:
-                level = int(post_row[0])
-                position_title = POST_LEVEL_TO_TITLE.get(level)
+                post_1_id = int(post_1_val)
+                professional_title = dict_personal.get(post_1_id)
             except (ValueError, TypeError):
                 pass
-        # 职称：优先取 professional_title，为空则取 job_title（岗位名称）
-        professional_title = post_row[1] if post_row[1] else post_row[2]
+        if not professional_title:
+            professional_title = prof_title_val if prof_title_val else job_title_val
+        
+        # 职务（正高级/副高级/中级/初级）：先从 post_level_1 字典转换为岗位等级名称，再映射
+        if post_level_1_val is not None:
+            try:
+                level_id = int(post_level_1_val)
+                level_name = dict_grade.get(level_id)  # 如"七级专技"
+                if level_name:
+                    position_title = POST_LEVEL_TO_TITLE.get(level_name)
+            except (ValueError, TypeError):
+                pass
+        # 如果字典转换失败，尝试从 job_title 直接解析（如"六级专技"）
+        if not position_title and job_title_val:
+            position_title = POST_LEVEL_TO_TITLE.get(str(job_title_val))
+        
         duty = None
     
     # ==================== 三、单位岗位区（最新工资包数据） ====================
@@ -154,21 +178,20 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
     salary_rows = cursor.fetchall()
     
     if salary_rows:
-        # 确定人员分类（使用最常见的分类）
-        category_counts = {}
-        for row in salary_rows:
-            cat = classify_personnel(row[0])
-            category_counts[cat] = category_counts.get(cat, 0) + 1
-        if category_counts:
-            personnel_category = max(category_counts, key=category_counts.get)
+        # 先确定退休时的时间点（最大起薪时间），用于后续人员分类
+        max_time_row = max(salary_rows, key=lambda r: r[2] if r[2] else '')
+        
+        # 确定人员分类（以退休时职务岗位为准）
+        personnel_category = classify_personnel(max_time_row[0])
         
         # 1) 2014年9月30日：起薪时间=2014-10-01
+        # 注意：salary_data表中 salary列=岗位工资，salary_1列=薪级工资
         for row in salary_rows:
             if row[2] and str(row[2]) == '2014-10-01':
                 salary_time_points['2014年9月30日']['job_title'] = row[0]
                 salary_time_points['2014年9月30日']['salary_level'] = row[1]
-                salary_time_points['2014年9月30日']['salary'] = row[3]
-                salary_time_points['2014年9月30日']['position_salary'] = row[4]
+                salary_time_points['2014年9月30日']['position_salary'] = row[3]  # salary列=岗位工资
+                salary_time_points['2014年9月30日']['salary'] = row[4]           # salary_1列=薪级工资
                 break
         
         # 2) 最后一次职务升降时间：职务岗位最高一级（数字最小）对应起薪时间中的最小日期值
@@ -199,15 +222,14 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
             salary_time_points['最后一次职务升降时间']['time'] = best_row[2]
             salary_time_points['最后一次职务升降时间']['job_title'] = best_row[0]
             salary_time_points['最后一次职务升降时间']['salary_level'] = best_row[1]
-            salary_time_points['最后一次职务升降时间']['salary'] = best_row[3]
-            salary_time_points['最后一次职务升降时间']['position_salary'] = best_row[4]
+            salary_time_points['最后一次职务升降时间']['position_salary'] = best_row[3]  # salary列=岗位工资
+            salary_time_points['最后一次职务升降时间']['salary'] = best_row[4]           # salary_1列=薪级工资
         
-        # 3) 退休时：最大起薪时间
-        max_time_row = max(salary_rows, key=lambda r: r[2] if r[2] else '')
+        # 3) 退休时：最大起薪时间（已在上面计算）
         salary_time_points['退休时']['job_title'] = max_time_row[0]
         salary_time_points['退休时']['salary_level'] = max_time_row[1]
-        salary_time_points['退休时']['salary'] = max_time_row[3]
-        salary_time_points['退休时']['position_salary'] = max_time_row[4]
+        salary_time_points['退休时']['position_salary'] = max_time_row[3]  # salary列=岗位工资
+        salary_time_points['退休时']['salary'] = max_time_row[4]           # salary_1列=薪级工资
     
     # ==================== 四、退休补充信息（动态查询实际列） ====================
     # 退休补充信息表名：优先查 tui_xiu_bu_chong_xin_xi（新表），否则 retirement_info（旧表）
@@ -486,12 +508,12 @@ async def process_status_change(data: dict[str, Any]):
                 if teacher_row:
                     id_card = teacher_row[2]
                     
-                    # 查询最高学历信息
+                    # 查询最高学历信息（按学历代码降序，学历代码越大学历越高：1小学→8博士）
                     cursor.execute("""
                         SELECT education, graduate_date, graduate_school, major
                         FROM teacher_education_record
                         WHERE teacher_id = %s
-                        ORDER BY graduate_date DESC
+                        ORDER BY education DESC
                         LIMIT 1
                     """, (teacher_id,))
                     education_row = cursor.fetchone()
@@ -548,15 +570,6 @@ async def process_status_change(data: dict[str, Any]):
                         ('岗位工资', '岗位工资'),
                         ('技术等级', '技术等级'),
                         ('最后一次职务升降时间', '最后一次职务升降时间'),
-                        # 退休补充信息的其他字段
-                        ('自何年何月', '自何年何月'),
-                        ('至何年何月', '至何年何月'),
-                        ('所在单位及职务', '所在单位及职务'),
-                        ('证明人及住址', '证明人及住址'),
-                        ('直系亲属供养情况', '直系亲属供养情况'),
-                        ('备注', '备注'),
-                        ('个人身份', '个人身份'),
-                        ('个人编号', '个人编号'),
                         # 分类岗位字段（根据人员分类动态填充，9个岗位组）
                         # 时间点1: 管理岗位1 / 专技岗位2 / 工勤岗位3
                         ('事业管理岗位1', '事业管理岗位1'), ('薪级1', '薪级1'), ('对应原职务1', '对应原职务1'),

@@ -735,10 +735,10 @@ const clearRowConfig = (row: any) => {
 
 const loadTemplates = async () => {
   try {
-    const response = await fetch('/api/universal-templates/list')
+    const response = await fetch('/api/universal-template/list')
     const res = await response.json()
-    if (res.status === 'success') {
-      templateList.value = res.data
+    if (res.成功 || res.status === 'success') {
+      templateList.value = res.数据 || res.data
     }
   } catch (e: any) {
     ElMessage.error('加载模板列表失败')
@@ -747,10 +747,10 @@ const loadTemplates = async () => {
 
 const loadMappings = async () => {
   try {
-    const response = await fetch('/api/universal-templates/field-mappings')
+    const response = await fetch('/api/universal-template/field-mappings')
     const res = await response.json()
-    if (res.status === 'success') {
-      fieldMappings.value = res.data
+    if (res.成功 || res.status === 'success') {
+      fieldMappings.value = res.数据 || res.data
     }
   } catch (e: any) {
     ElMessage.error('加载字段映射失败')
@@ -784,14 +784,14 @@ const handleUpload = async () => {
     formData.append('file', uploadForm.value.file)
     formData.append('template_name', uploadForm.value.template_name)
     
-    const response = await fetch('/api/universal-templates/upload', {
+    const response = await fetch('/api/universal-template/import', {
       method: 'POST',
       body: formData
     })
     const res = await response.json()
     
-    if (res.status === 'success') {
-      ElMessage.success(res.message)
+    if (res.成功 || res.status === 'success') {
+      ElMessage.success(res.消息 || res.message)
       showUploadDialog.value = false
       uploadForm.value = { template_name: '', file: null }
       uploadFileList.value = []
@@ -811,13 +811,13 @@ const handleAddMapping = async () => {
   }
   
   try {
-    const response = await fetch('/api/universal-templates/field-mappings', {
+    const response = await fetch('/api/universal-template/field-mapping', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(mappingForm.value)
     })
     const res = await response.json()
-    if (res.status === 'success') {
+    if (res.成功 || res.status === 'success') {
       ElMessage.success('添加成功')
       showMappingDialog.value = false
       mappingForm.value = { placeholder_name: '', table_name: '', field_name: '' }
@@ -831,7 +831,7 @@ const handleAddMapping = async () => {
 const deleteMapping = async (row: any) => {
   try {
     await ElMessageBox.confirm('确定删除此映射?', '提示', { type: 'warning' })
-    await fetch(`/api/universal-templates/field-mappings/${row.id}`, { method: 'DELETE' })
+    await fetch(`/api/universal-template/field-mapping/${row.id}`, { method: 'DELETE' })
     ElMessage.success('删除成功')
     loadMappings()
   } catch (e: any) {
@@ -856,7 +856,7 @@ const handleExport = async () => {
   
   exporting.value = true
   try {
-    const url = `/api/universal-templates/${exportForm.value.template_id}/export?teacher_id=${exportForm.value.teacher_id}&teacher_name=${exportForm.value.teacher_name}`
+    const url = `/api/universal-template/export?teacher_id=${exportForm.value.teacher_id}&teacher_name=${exportForm.value.teacher_name}`
     const response = await fetch(url, { method: 'POST' })
     
     if (!response.ok) {
@@ -905,10 +905,17 @@ const searchTeachers = async (query: string) => {
   
   searchingTeachers.value = true
   try {
-    const response = await fetch(`/api/universal-templates/teachers/search?q=${encodeURIComponent(query)}`)
+    const response = await fetch(`/api/universal-template/search-employee?keyword=${encodeURIComponent(query)}`)
     const res = await response.json()
-    if (res.status === 'success') {
-      teacherOptions.value = res.data || []
+    if (res.成功 || res.status === 'success') {
+      const rawData = res.数据 || res.data || []
+      // 后端返回 {职工ID, 姓名, 身份证号}，转换为前端期望的 {id, name, id_card}
+      teacherOptions.value = rawData.map((item: any) => ({
+        id: item.职工ID || item.id,
+        name: item.姓名 || item.name,
+        id_card: item.身份证号 || item.id_card,
+        employment_status: item.任职状态 || item.employment_status || ''
+      }))
       selectedTeachers.value = [...teacherOptions.value]
     }
   } catch (e) {
@@ -939,7 +946,7 @@ const handleBatchExport = async () => {
   
   exporting.value = true
   try {
-    const url = `/api/universal-templates/${batchExportForm.value.template_id}/batch-export?teacher_ids=${batchExportForm.value.teacher_ids.join(',')}`
+    const url = `/api/universal-template/batch-export?teacher_ids=${batchExportForm.value.teacher_ids.join(',')}`
     const response = await fetch(url, { method: 'POST' })
     
     if (!response.ok) {
@@ -972,7 +979,7 @@ const handleSummaryExport = async () => {
   
   exporting.value = true
   try {
-    const url = `/api/universal-templates/${summaryExportForm.value.template_id}/summary-export?teacher_ids=${summaryExportForm.value.teacher_ids.join(',')}`
+    const url = `/api/universal-template/summary-export?teacher_ids=${summaryExportForm.value.teacher_ids.join(',')}`
     const response = await fetch(url, { method: 'POST' })
     
     if (!response.ok) {
@@ -999,12 +1006,13 @@ const handleSummaryExport = async () => {
 
 const editConfig = async (row: any) => {
   try {
-    const response = await fetch(`/api/universal-templates/${row.template_id}/refresh-placeholders`, {
+    const response = await fetch(`/api/universal-template/refresh-placeholders`, {
       method: 'POST'
     })
     const res = await response.json()
-    if (res.status === 'success') {
-      const placeholders = res.data.placeholders || []
+    if (res.成功 || res.status === 'success') {
+      const data = res.数据 || res.data || {}
+      const placeholders = data.placeholders || []
       currentConfig.value = {
         template_id: row.template_id,
         template_name: row.template_name,
@@ -1073,13 +1081,13 @@ const saveConfig = async () => {
 
   saving.value = true
   try {
-    const response = await fetch(`/api/universal-templates/${currentConfig.value.template_id}/config`, {
+    const response = await fetch(`/api/universal-template/${currentConfig.value.template_id}/config`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ placeholder_config: config })
     })
     const res = await response.json()
-    if (res.status === 'success') {
+    if (res.成功 || res.status === 'success') {
       ElMessage.success('映射保存成功')
       showConfigDialog.value = false
       loadTemplates()
@@ -1149,7 +1157,7 @@ const saveActivationConfig = async () => {
       })
     })
     const res = await response.json()
-    if (res.status === 'success') {
+    if (res.成功 || res.status === 'success') {
       ElMessage.success('激活方式配置保存成功')
       showActivationDialog.value = false
       loadTemplates()
@@ -1164,7 +1172,7 @@ const saveActivationConfig = async () => {
 const deleteTemplate = async (row: any) => {
   try {
     await ElMessageBox.confirm('确定删除此模板?', '提示', { type: 'warning' })
-    await fetch(`/api/universal-templates/${row.template_id}`, { method: 'DELETE' })
+    await fetch(`/api/universal-template/${row.template_id}`, { method: 'DELETE' })
     ElMessage.success('删除成功')
     loadTemplates()
   } catch (e: any) {

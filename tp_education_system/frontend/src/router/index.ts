@@ -240,16 +240,6 @@ const router = createRouter({
         icon: "Document"
       }
     },
-    // 通用中间表路由（旧框架）- 匹配 /intermediate/:tableName 格式
-    {
-      path: "/intermediate/:tableName",
-      name: "intermediateTableView",
-      component: () => import("../views/IntermediateTableView.vue"),
-      meta: {
-        title: "中间表管理（旧框架）",
-        icon: "Document"
-      }
-    },
     // 自动表管理路由（新框架 - 零配置）- 匹配 /auto-table/:tableName 格式
     {
       path: "/auto-table/:tableName",
@@ -316,15 +306,6 @@ const router = createRouter({
       meta: {
         title: "清单模板",
         icon: "DocumentCopy"
-      }
-    },
-    {
-      path: "/system/intermediate-table",
-      name: "intermediateTableManager",
-      component: () => import("../views/intermediate-table/IntermediateTableManager.vue"),
-      meta: {
-        title: "中间表管理",
-        icon: "Grid"
       }
     },
     // 报表管理子模块路由
