@@ -1,0 +1,17 @@
+{
+  "table_name_mappings": {
+    "retirement_report_data": "退休呈报数据",
+    "retirement_cert_records": "退休证书记录",
+    "retirement_report_form": "退休申报表",
+    "performance_pay_approval": "绩效工资审批",
+    "business_checklist": "业务清单",
+    "document_templates": "文档模板",
+    "template_field_mapping": "模板字段映射",
+    "template_field_mappings": "模板字段映射表",
+    "template_regions": "模板区域配置",
+    "template_usage_records": "模板使用记录",
+    "teacher_basic_info": "教师基础信息",
+    "teacher_education_record": "教师学历记录",
+    "todo_work_items": "待办工作项"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "config_name": "教师资格字典",
+  "display_name": "教师资格字典",
+  "chinese_title": "教师资格字典",
+  "table_name": "dict_teacher_dictionary",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "类别",
+      "targetField": "类别",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    },
+    {
+      "sourceField": "Unnamed: 1",
+      "targetField": "unnamed:_1",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-05-02T10:16:55.446318",
+  "updated_at": "2026-05-02T10:17:06.756849"
+}

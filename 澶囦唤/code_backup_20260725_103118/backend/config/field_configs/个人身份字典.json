@@ -1,0 +1,30 @@
+{
+  "config_name": "个人身份字典",
+  "display_name": "个人身份字典",
+  "chinese_title": "个人身份字典",
+  "table_name": "dict_personal_identity_dictionary",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "个人身份",
+      "targetField": "个人身份",
+      "dataType": "VARCHAR",
+      "length": 255,
+      "precision": "",
+      "scale": "",
+      "required": false,
+      "unique": false,
+      "indexed": false,
+      "defaultValue": "",
+      "description": "",
+      "confidence": "low",
+      "relation_type": "none",
+      "relation_table": "",
+      "relation_display_field": "name",
+      "value_mapping": {}
+    }
+  ],
+  "created_at": "2026-03-04T11:09:23.362962",
+  "updated_at": "2026-03-04T11:09:23.362962"
+}
