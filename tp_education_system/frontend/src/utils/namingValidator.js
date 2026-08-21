@@ -24,7 +24,10 @@ const NAMING_RULES = {
       '教师管理': 'teacher_',
       '数据中心': 'data_',
       '部门管理': 'dept_',
-      '考勤管理': 'attendance_'
+      '考勤管理': 'attendance_',
+      '薪酬管理': 'salary_',
+      '学校管理': 'school_',
+      '党组织管理': 'party_'
     }
   },
   // 字段名规则

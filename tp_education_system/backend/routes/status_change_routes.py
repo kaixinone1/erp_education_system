@@ -387,8 +387,8 @@ def _build_retirement_report_data(cursor, teacher_id, teacher_row, id_card, educ
         "岗位": duty,
         # 退休补充信息（动态获取）
         "退休原因": get_ri_field('退休原因'),
-        # 是否独生子女：转为中文"是"/"否"（面向用户显示）
-        "是否独生子女": (_to_chinese_bool(get_ri_field('是否独生子女'))),
+        # 是否独生子女：保持原始值（数据库列类型为boolean）
+        "是否独生子女": get_ri_field('是否独生子女'),
         "供养亲属": get_ri_field('供养亲属'),
         "现住址": get_ri_field('现住址'),
         "退休后居住地址": get_ri_field('退休后居住地址'),

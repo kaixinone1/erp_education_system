@@ -1,0 +1,73 @@
+{
+  "placeholder_formats": [
+    {
+      "name": "curly_braces",
+      "description": "花括号格式",
+      "pattern": "\\{([^{}]+)\\}",
+      "example": "{姓名}"
+    },
+    {
+      "name": "double_curly_braces",
+      "description": "双花括号格式",
+      "pattern": "\\{\\{([^{}]+)\\}\\}",
+      "example": "{{姓名}}"
+    },
+    {
+      "name": "dollar_braces",
+      "description": "美元花括号格式",
+      "pattern": "\\$\\{([^}]+)\\}",
+      "example": "${姓名}"
+    },
+    {
+      "name": "percent_sign",
+      "description": "百分号格式",
+      "pattern": "%([a-zA-Z_][a-zA-Z0-9_]*)%",
+      "example": "%姓名%"
+    }
+  ],
+  "excluded_patterns": [
+    "mso-",
+    "style",
+    "font-",
+    "border",
+    "padding",
+    "margin",
+    "color:",
+    "background",
+    "text-align",
+    "white-space"
+  ],
+  "system_fields": {
+    "id": "记录编号",
+    "teacher_id": "教师编号",
+    "template_id": "模板编号",
+    "created_at": "创建时间",
+    "updated_at": "更新时间"
+  },
+  "file_types": {
+    ".docx": {
+      "handler": "word",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    },
+    ".xlsx": {
+      "handler": "excel",
+      "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    },
+    ".xls": {
+      "handler": "excel",
+      "mime_type": "application/vnd.ms-excel"
+    },
+    ".pdf": {
+      "handler": "pdf",
+      "mime_type": "application/pdf"
+    },
+    ".html": {
+      "handler": "html",
+      "mime_type": "text/html"
+    },
+    ".htm": {
+      "handler": "html",
+      "mime_type": "text/html"
+    }
+  }
+}

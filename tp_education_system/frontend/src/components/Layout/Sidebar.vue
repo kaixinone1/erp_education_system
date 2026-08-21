@@ -87,7 +87,11 @@ import {
   Delete,
   User,
   Fold,
-  Expand
+  Expand,
+  Money,
+  Flag,
+  School,
+  Calendar
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -115,7 +119,11 @@ const iconMap: Record<string, any> = {
   DataLine,
   Upload,
   Delete,
-  User
+  User,
+  Money,
+  Flag,
+  School,
+  Calendar
 }
 
 // 获取图标组件

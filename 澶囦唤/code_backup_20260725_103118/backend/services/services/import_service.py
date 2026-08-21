@@ -1,0 +1,1021 @@
+#!/usr/bin/env python3
+"""
+通用导入服务 - 100% 配置驱动
+
+核心原则：
+1. 所有行为由配置文件决定
+2. 动态生成 SQL，不预先编写特定表的 SQL
+3. 原子化导入事务
+4. 无硬编码字段名或表名
+"""
+
+from typing import List, Dict, Any, Optional
+import json
+import os
+import re
+import uuid
+from datetime import datetime
+from sqlalchemy import create_engine, text
+from sqlalchemy.pool import NullPool
+
+
+class ImportService:
+    """
+    通用导入服务 - 配置驱动
+    """
+    
+    def __init__(self, db_url: str = None):
+        # 数据库连接
+        if db_url is None:
+            db_url = "postgresql://taiping_user:taiping_password@localhost:5432/taiping_education"
+        self.engine = create_engine(db_url, poolclass=NullPool)
+        
+        # 配置文件路径
+        self.config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
+        self.navigation_file = os.path.join(self.config_dir, 'navigation.json')
+        self.schema_file = os.path.join(self.config_dir, 'merged_schema_mappings.json')
+        self.table_schemas_file = os.path.join(self.config_dir, 'table_schemas.json')
+        
+        # 加载配置
+        self.config = self._load_config()
+    
+    def _load_config(self) -> Dict:
+        """加载配置文件"""
+        try:
+            with open(self.schema_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"加载配置失败: {e}")
+            return {"tables": {}, "mappings": {}, "validation_rules": {}}
+    
+    def import_data(self, 
+                   table_name: str,
+                   field_configs: List[Dict[str, Any]],
+                   data: List[Dict[str, Any]],
+                   module_id: str,
+                   module_name: str,
+                   table_type: str = "master",
+                   parent_table: Optional[str] = None,
+                   foreign_keys: Optional[List[Dict[str, Any]]] = None,
+                   file_name: str = "",
+                   chinese_title: str = "",
+                   sub_module_id: str = "",
+                   sub_module_name: str = "") -> Dict[str, Any]:
+        """
+        原子化导入数据
+        
+        Args:
+            table_name: 目标表名（英文）
+            field_configs: 字段配置列表
+            data: 要导入的数据
+            module_id: 归属模块ID
+            module_name: 归属模块名称
+            table_type: 表类型 (master/child/dictionary)
+            parent_table: 父表名（子表使用）
+            foreign_keys: 外键配置列表
+            file_name: 原始文件名
+            chinese_title: 中文标题
+            sub_module_id: 子模块ID
+            sub_module_name: 子模块名称
+        
+        Returns:
+            导入结果
+        """
+        try:
+            print(f"\n{'='*80}")
+            print(f"开始导入数据")
+            print(f"表名: {table_name}")
+            print(f"中文标题: {chinese_title}")
+            print(f"表类型: {table_type}")
+            print(f"数据条数: {len(data)}")
+            print(f"{'='*80}")
+            
+            if not data:
+                return {"status": "error", "message": "数据为空", "record_count": 0}
+            
+            if not field_configs:
+                return {"status": "error", "message": "字段配置为空", "record_count": 0}
+            
+            # 步骤1: 动态建表
+            actual_table_name, is_existing_table, field_diff = self._create_or_update_table(
+                table_name=table_name,
+                field_configs=field_configs,
+                table_type=table_type,
+                parent_table=parent_table,
+                foreign_keys=foreign_keys,
+                chinese_title=chinese_title
+            )
+            
+            # 如果字段有差异，返回差异报告让用户确认
+            if field_diff:
+                return {
+                    "status": "field_diff",
+                    "message": "导入字段与数据库表字段不一致，请确认",
+                    "table_name": actual_table_name,
+                    "chinese_name": chinese_title,
+                    "field_diff": field_diff
+                }
+            
+            # 步骤2: 插入数据
+            if is_existing_table:
+                inserted_count, updated_count, errors = self._upsert_data(
+                    table_name=actual_table_name,
+                    field_configs=field_configs,
+                    data=data
+                )
+                total_count = inserted_count + updated_count
+                message = f"成功导入 {total_count} 条数据（新增 {inserted_count} 条，更新 {updated_count} 条）"
+            else:
+                inserted_count, errors = self._insert_data(
+                    table_name=actual_table_name,
+                    field_configs=field_configs,
+                    data=data
+                )
+                total_count = inserted_count
+                updated_count = 0
+                message = f"成功导入 {inserted_count} 条数据"
+            
+            # 步骤3: 更新配置文件
+            self._update_schema_config(
+                table_name=actual_table_name,
+                chinese_title=chinese_title,
+                field_configs=field_configs,
+                table_type=table_type,
+                parent_table=parent_table
+            )
+            
+            # 步骤4: 更新导航
+            print(f"\n{'='*80}")
+            print(f"步骤4: 更新导航配置")
+            print(f"module_id: {module_id}")
+            print(f"module_name: {module_name}")
+            print(f"chinese_title: {chinese_title}")
+            print(f"{'='*80}")
+            
+            try:
+                self._update_navigation_config(
+                    table_name=actual_table_name,
+                    chinese_title=chinese_title,
+                    module_id=module_id,
+                    module_name=module_name,
+                    table_type=table_type,
+                    parent_table=parent_table,
+                    sub_module_id=sub_module_id,
+                    sub_module_name=sub_module_name
+                )
+                print("导航配置更新成功")
+            except Exception as nav_error:
+                print(f"导航配置更新失败: {nav_error}")
+                import traceback
+                traceback.print_exc()
+            
+            result = {
+                "status": "success" if not errors else "partial_success",
+                "message": message,
+                "table_name": actual_table_name,
+                "chinese_name": chinese_title,
+                "table_type": table_type,
+                "record_count": total_count,
+                "inserted": inserted_count,
+                "updated": updated_count,
+                "is_existing_table": is_existing_table
+            }
+            
+            if errors:
+                result["errors"] = errors
+            
+            print(f"\n{'='*80}")
+            print(f"导入完成: {message}")
+            print(f"{'='*80}")
+            
+            return result
+            
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            raise Exception(f"导入失败: {str(e)}")
+    
+    def _create_or_update_table(self, 
+                               table_name: str, 
+                               field_configs: List[Dict[str, Any]],
+                               table_type: str = "master",
+                               parent_table: Optional[str] = None,
+                               foreign_keys: Optional[List[Dict[str, Any]]] = None,
+                               chinese_title: str = "") -> tuple:
+        """
+        动态创建或更新数据表
+        优先通过中文表名在 table_name_mappings.json 中查找已有表
+        返回: (实际使用的表名, 是否是已存在的表, 字段差异报告或None)
+        """
+        # 1. 通过中文表名在映射配置中查找已有表
+        existing_english_name = None
+        if chinese_title:
+            existing_english_name = self._find_table_by_chinese_name(chinese_title)
+        
+        if existing_english_name:
+            # 找到中文名映射，检查数据库表是否存在
+            if self._table_exists(existing_english_name):
+                print(f"中文名'{chinese_title}'已映射到表 {existing_english_name}")
+                # 比较字段结构
+                diff_report = self._compare_field_structures(
+                    existing_english_name, field_configs
+                )
+                if diff_report is None:
+                    # 字段完全一致，直接使用已有表
+                    print(f"字段结构一致，使用已有表 {existing_english_name}")
+                    return existing_english_name, True, None
+                else:
+                    # 字段有差异，返回差异报告让用户确认
+                    print(f"字段结构有差异: {diff_report}")
+                    return existing_english_name, True, diff_report
+            else:
+                # 映射指向的表不存在，当新表处理
+                print(f"映射表 {existing_english_name} 不存在，创建新表")
+        
+        # 2. 检查英文表名是否已存在
+        if self._table_exists(table_name):
+            print(f"表 {table_name} 已存在，使用现有表")
+            return table_name, True, None
+        
+        # 3. 创建新表
+        self._create_table(table_name, field_configs, table_type, foreign_keys)
+        return table_name, False, None
+    
+    def _find_table_by_chinese_name(self, chinese_title: str) -> Optional[str]:
+        """通过中文表名在 table_name_mappings.json 中查找英文表名"""
+        try:
+            mappings_path = os.path.join(self.config_dir, 'table_name_mappings.json')
+            if os.path.exists(mappings_path):
+                with open(mappings_path, 'r', encoding='utf-8') as f:
+                    mappings = json.load(f)
+                table_info = mappings.get('mappings', {}).get(chinese_title)
+                if table_info:
+                    return table_info.get('english_name')
+        except Exception as e:
+            print(f"查找中文表名映射失败: {e}")
+        return None
+    
+    def _compare_field_structures(self, existing_table: str, 
+                                   field_configs: List[Dict]) -> Optional[Dict]:
+        """
+        比较导入字段配置与数据库表字段结构
+        返回 None 表示完全一致，否则返回差异报告
+        """
+        # 获取导入字段签名
+        import_sig = self._get_table_signature(field_configs)
+        import_fields = {name: dtype for name, dtype in import_sig}
+        
+        # 获取数据库表字段签名
+        db_sig = self._get_table_signature_from_db(existing_table)
+        if db_sig is None:
+            return None
+        db_fields = {name: self._normalize_data_type(dtype) for name, dtype in db_sig}
+        
+        # 比较
+        import_set = set(import_fields.keys())
+        db_set = set(db_fields.keys())
+        
+        only_in_import = import_set - db_set
+        only_in_db = db_set - import_set
+        common = import_set & db_set
+        
+        type_mismatches = {}
+        for field in common:
+            if import_fields[field] != db_fields[field]:
+                type_mismatches[field] = {
+                    "导入类型": import_fields[field],
+                    "数据库类型": db_fields[field]
+                }
+        
+        if not only_in_import and not only_in_db and not type_mismatches:
+            return None  # 完全一致
+        
+        return {
+            "导入独有字段": list(only_in_import),
+            "数据库独有字段": list(only_in_db),
+            "类型不一致字段": type_mismatches,
+            "共同字段": list(common),
+            "导入字段数": len(import_fields),
+            "数据库字段数": len(db_fields)
+        }
+    
+    def _table_exists(self, table_name: str) -> bool:
+        """检查表是否存在"""
+        with self.engine.connect() as conn:
+            result = conn.execute(text("""
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_name = :table_name AND table_schema = 'public'
+                )
+            """), {"table_name": table_name})
+            return result.scalar()
+    
+    def _find_matching_table(self, field_configs: List[Dict]) -> Optional[str]:
+        """查找是否存在字段结构匹配的现有表"""
+        new_signature = self._get_table_signature(field_configs)
+        
+        with self.engine.connect() as conn:
+            result = conn.execute(text("""
+                SELECT table_name 
+                FROM information_schema.tables 
+                WHERE table_schema = 'public'
+            """))
+            db_tables = [row[0] for row in result]
+        
+        for table_name in db_tables:
+            existing_signature = self._get_table_signature_from_db(table_name)
+            if existing_signature and self._compare_signatures(new_signature, existing_signature):
+                return table_name
+        
+        return None
+    
+    def _get_table_signature(self, field_configs: List[Dict]) -> List[tuple]:
+        """获取表的字段签名"""
+        signature = []
+        for field in field_configs:
+            target = field.get('targetField') or field.get('english_name', '')
+            data_type = field.get('dataType') or field.get('data_type', 'VARCHAR')
+            if target:
+                signature.append((target.lower(), data_type.lower()))
+        return sorted(signature)
+    
+    def _get_table_signature_from_db(self, table_name: str) -> Optional[List[tuple]]:
+        """从数据库获取表的字段签名"""
+        try:
+            with self.engine.connect() as conn:
+                result = conn.execute(text("""
+                    SELECT column_name, data_type 
+                    FROM information_schema.columns 
+                    WHERE table_name = :table_name AND table_schema = 'public'
+                    ORDER BY column_name
+                """), {"table_name": table_name})
+                
+                signature = []
+                for row in result:
+                    col_name = row[0]
+                    data_type = row[1]
+                    # 跳过系统字段
+                    if col_name in ['id', 'created_at', 'updated_at']:
+                        continue
+                    signature.append((col_name.lower(), data_type.lower()))
+                return signature
+        except Exception as e:
+            print(f"获取表签名失败: {e}")
+            return None
+    
+    def _compare_signatures(self, sig1: List[tuple], sig2: List[tuple]) -> bool:
+        """比较两个表签名：sig1 中的所有字段是否都在 sig2 中存在（子集匹配）"""
+        if len(sig1) == 0 or len(sig2) == 0:
+            return False
+        
+        # 标准化数据类型后比较
+        sig2_dict = {name: self._normalize_data_type(t) for name, t in sig2}
+        for name, t in sig1:
+            normalized = self._normalize_data_type(t)
+            if name not in sig2_dict:
+                return False
+            if sig2_dict[name] != normalized:
+                return False
+        return True
+    
+    def _normalize_data_type(self, data_type: str) -> str:
+        """标准化数据类型"""
+        dt = data_type.lower()
+        if dt in ['integer', 'int', 'int4']:
+            return 'integer'
+        elif dt in ['varchar', 'character varying', 'text']:
+            return 'varchar'
+        elif dt in ['decimal', 'numeric']:
+            return 'decimal'
+        elif dt in ['date']:
+            return 'date'
+        elif dt in ['timestamp', 'datetime', 'timestamp without time zone']:
+            return 'timestamp'
+        elif dt in ['boolean', 'bool']:
+            return 'boolean'
+        return dt
+    
+    def _create_table(self, table_name: str, field_configs: List[Dict], 
+                     table_type: str, foreign_keys: Optional[List[Dict]] = None):
+        """创建新表"""
+        columns = ["id SERIAL PRIMARY KEY"]
+        
+        # 添加用户配置的字段
+        for field in field_configs:
+            col_def = self._build_column_definition(field)
+            if col_def:
+                columns.append(col_def)
+        
+        # 添加系统字段
+        columns.extend([
+            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+            "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        ])
+        
+        # 添加外键约束
+        if foreign_keys:
+            for fk in foreign_keys:
+                ref_table = fk.get('ref_table')
+                ref_field = fk.get('ref_field')
+                local_field = fk.get('local_field')
+                if ref_table and ref_field and local_field:
+                    columns.append(f"FOREIGN KEY ({local_field}) REFERENCES {ref_table}({ref_field})")
+        
+        create_sql = f"CREATE TABLE {table_name} ({', '.join(columns)})"
+        print(f"创建表 SQL: {create_sql}")
+        
+        with self.engine.connect() as conn:
+            conn.execute(text(create_sql))
+            conn.commit()
+    
+    def _build_column_definition(self, field: Dict) -> Optional[str]:
+        """构建列定义"""
+        target = field.get('targetField') or field.get('english_name')
+        if not target:
+            return None
+        
+        # 清理字段名中的非法字符（只保留字母、数字、下划线），防止SQL语法错误
+        target = re.sub(r'[^a-zA-Z0-9_]', '_', target)
+        target = re.sub(r'_+', '_', target)
+        target = target.strip('_')
+        
+        if not target:
+            return None
+        
+        data_type = field.get('dataType') or field.get('data_type', 'VARCHAR')
+        length = field.get('length', 255)
+        
+        # 构建数据类型
+        if data_type == 'VARCHAR':
+            type_str = f"VARCHAR({length})"
+        elif data_type == 'DECIMAL':
+            precision = field.get('precision', 10)
+            scale = field.get('scale', 2)
+            type_str = f"DECIMAL({precision}, {scale})"
+        else:
+            type_str = data_type
+        
+        # 构建约束
+        constraints = []
+        if field.get('required') or field.get('not_null'):
+            constraints.append("NOT NULL")
+        if field.get('unique'):
+            constraints.append("UNIQUE")
+        
+        return f"{target} {type_str} {' '.join(constraints)}".strip()
+    
+    def _insert_data(self, table_name: str, field_configs: List[Dict], 
+                    data: List[Dict]) -> tuple:
+        """批量插入数据"""
+        if not data:
+            return 0, []
+        
+        # 构建字段映射
+        field_mapping = {}
+        for field in field_configs:
+            source = field.get('sourceField') or field.get('chinese_name', '')
+            target = field.get('targetField') or field.get('english_name', '')
+            if source and target:
+                field_mapping[source] = target
+        
+        print(f"字段映射: {field_mapping}")
+        print(f"准备批量插入 {len(data)} 条数据...")
+        
+        # 准备批量插入数据
+        batch_data = []
+        errors = []
+        
+        for row_idx, row in enumerate(data):
+            try:
+                insert_data = {}
+                for source_field, target_field in field_mapping.items():
+                    value = row.get(source_field)
+                    
+                    # 数据清洗和转换
+                    if value is not None and str(value).strip() != '':
+                        # 日期格式转换
+                        if self._is_date_field(target_field, field_configs):
+                            value = self._convert_date(value)
+                        insert_data[target_field] = value
+                
+                if insert_data:
+                    batch_data.append(insert_data)
+                    
+            except Exception as e:
+                errors.append(f"第 {row_idx + 1} 行数据准备失败: {str(e)}")
+        
+        if not batch_data:
+            return 0, errors
+        
+        # 批量插入
+        inserted_count = 0
+        batch_size = 100  # 每批100条
+        
+        with self.engine.connect() as conn:
+            for i in range(0, len(batch_data), batch_size):
+                batch = batch_data[i:i + batch_size]
+                try:
+                    # 获取所有字段
+                    all_columns = set()
+                    for row in batch:
+                        all_columns.update(row.keys())
+                    columns = sorted(all_columns)
+                    
+                    # 构建批量 INSERT 语句
+                    values_list = []
+                    params = {}
+                    for idx, row in enumerate(batch):
+                        placeholders = []
+                        for col in columns:
+                            param_name = f"p{idx}_{col}"
+                            placeholders.append(f":{param_name}")
+                            params[param_name] = row.get(col)
+                        values_list.append(f"({', '.join(placeholders)})")
+                    
+                    insert_sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES {', '.join(values_list)}"
+                    conn.execute(text(insert_sql), params)
+                    inserted_count += len(batch)
+                    print(f"已插入 {inserted_count}/{len(batch_data)} 条数据...")
+                    
+                except Exception as e:
+                    errors.append(f"批量插入失败 (第 {i+1}-{i+len(batch)} 行): {str(e)}")
+            
+            conn.commit()
+        
+        print(f"批量插入完成，共插入 {inserted_count} 条数据")
+        return inserted_count, errors
+    
+    def analyze_data_diff(self, table_name: str, field_configs: List[Dict],
+                          data: List[Dict]) -> Dict:
+        """
+        分析导入数据与现有数据的差异
+        返回分析报告：更新、新增、插入、未变的统计
+        """
+        if not data:
+            return {"更新": 0, "新增": 0, "插入": 0, "未变": 0, "总计": 0, "明细": []}
+        
+        # 构建字段映射
+        field_mapping = {}
+        for field in field_configs:
+            source = field.get('sourceField') or field.get('chinese_name', '')
+            target = field.get('targetField') or field.get('english_name', '')
+            if source and target:
+                field_mapping[source] = target
+        
+        # 获取匹配键（与 _upsert_data 使用相同逻辑）
+        unique_columns = self._get_upsert_keys(table_name, field_configs, field_mapping, data)
+        print(f"数据分析匹配键: {unique_columns}")
+        
+        # 查询数据库所有记录（如果表不存在则视为空表）
+        db_rows = []
+        if self._table_exists(table_name):
+            with self.engine.connect() as conn:
+                result = conn.execute(text(f'SELECT * FROM "{table_name}"'))
+                db_rows = [dict(row._mapping) for row in result]
+        else:
+            print(f"表 {table_name} 不存在，视为新表，所有数据为新增")
+        
+        print(f"数据库现有 {len(db_rows)} 条记录，导入 {len(data)} 条记录")
+        
+        # 构建数据库索引：按匹配键 → 行数据
+        db_index = {}
+        for db_row in db_rows:
+            key_parts = []
+            for col in unique_columns:
+                val = str(db_row.get(col, '')).strip() if db_row.get(col) is not None else ''
+                key_parts.append(val)
+            key = '|||'.join(key_parts)
+            db_index[key] = db_row
+        
+        # 分析每条导入数据
+        update_count = 0
+        new_count = 0
+        insert_count = 0
+        unchanged_count = 0
+        details = []
+        
+        for row_idx, row in enumerate(data):
+            # 构建映射后的行数据
+            mapped_row = {}
+            for source_field, target_field in field_mapping.items():
+                value = row.get(source_field, '')
+                if value is not None and str(value).strip() != '':
+                    mapped_row[target_field] = str(value).strip()
+            
+            # 构建匹配键
+            key_parts = []
+            for col in unique_columns:
+                val = mapped_row.get(col, '')
+                key_parts.append(val)
+            key = '|||'.join(key_parts)
+            
+            if key in db_index:
+                # 匹配到已有记录，检查是否有变化
+                existing = db_index[key]
+                changed_fields = []
+                for target_field, new_val in mapped_row.items():
+                    old_val = str(existing.get(target_field, '')).strip() if existing.get(target_field) is not None else ''
+                    if new_val != old_val:
+                        changed_fields.append({
+                            "字段": target_field,
+                            "原值": old_val,
+                            "新值": new_val
+                        })
+                
+                if changed_fields:
+                    update_count += 1
+                    details.append({
+                        "行号": row_idx + 1,
+                        "类型": "更新",
+                        "匹配键": key,
+                        "变更字段": changed_fields
+                    })
+                else:
+                    unchanged_count += 1
+            else:
+                # 不匹配，判断是新增还是插入
+                # 如果匹配键中部分匹配（如身份证号码相同但起薪时间不同），则为"插入"
+                is_insert = False
+                if len(unique_columns) > 1:
+                    partial_match = False
+                    for db_key, db_row in db_index.items():
+                        db_parts = db_key.split('|||')
+                        match_count = sum(1 for i, p in enumerate(key_parts) if p and p == db_parts[i])
+                        if match_count >= 1 and match_count < len(key_parts):
+                            partial_match = True
+                            break
+                    if partial_match:
+                        is_insert = True
+                
+                if is_insert:
+                    insert_count += 1
+                    details.append({
+                        "行号": row_idx + 1,
+                        "类型": "插入",
+                        "匹配键": key,
+                        "说明": "同标识符的新记录"
+                    })
+                else:
+                    new_count += 1
+                    details.append({
+                        "行号": row_idx + 1,
+                        "类型": "新增",
+                        "匹配键": key,
+                        "说明": "全新记录"
+                    })
+        
+        return {
+            "更新": update_count,
+            "新增": new_count,
+            "插入": insert_count,
+            "未变": unchanged_count,
+            "总计": len(data),
+            "数据库现有记录": len(db_rows),
+            "明细": details[:20]  # 只返回前20条明细
+        }
+    
+    def _get_upsert_keys(self, table_name: str, field_configs: List[Dict],
+                         field_mapping: Dict, data: List[Dict]) -> List[str]:
+        """获取UPSERT匹配键（与 _upsert_data 使用相同逻辑）"""
+        unique_columns = self._get_table_unique_columns(table_name)
+        if not unique_columns:
+            unique_columns = [f.get('targetField') or f.get('english_name') 
+                            for f in field_configs if f.get('unique')]
+        if not unique_columns:
+            system_cols = {'id', 'created_at', 'updated_at', 'import_time'}
+            measure_keywords = ['工资', 'salary', '金额', 'amount', '数量', 'quantity', 
+                              '价格', 'price', '费用', 'cost', 'fee', '成绩', 'score',
+                              '得分', '总计', 'total', '合计', 'sum']
+            unique_columns = []
+            for target in field_mapping.values():
+                if target.lower() in system_cols:
+                    continue
+                if any(kw in target.lower() for kw in measure_keywords):
+                    continue
+                unique_columns.append(target)
+        return unique_columns
+    
+    def _upsert_data(self, table_name: str, field_configs: List[Dict], 
+                    data: List[Dict]) -> tuple:
+        """插入或更新数据（使用数据库真实唯一约束做匹配）"""
+        if not data:
+            return 0, 0, []
+        
+        # 构建字段映射
+        field_mapping = {}
+        for field in field_configs:
+            source = field.get('sourceField') or field.get('chinese_name', '')
+            target = field.get('targetField') or field.get('english_name', '')
+            if source and target:
+                field_mapping[source] = target
+        
+        # 使用统一的匹配键获取逻辑
+        unique_columns = self._get_upsert_keys(table_name, field_configs, field_mapping, data)
+        print(f"UPSERT 唯一键列: {unique_columns}")
+        
+        inserted_count = 0
+        updated_count = 0
+        errors = []
+        
+        with self.engine.connect() as conn:
+            for row_idx, row in enumerate(data):
+                try:
+                    insert_data = {}
+                    for source_field, target_field in field_mapping.items():
+                        value = row.get(source_field)
+                        if value is not None and str(value).strip() != '':
+                            if self._is_date_field(target_field, field_configs):
+                                value = self._convert_date(value)
+                            insert_data[target_field] = value
+                    
+                    if not insert_data:
+                        continue
+                    
+                    # 检查是否存在（使用唯一键匹配）
+                    if unique_columns:
+                        where_conditions = []
+                        where_values = {}
+                        has_all_keys = True
+                        for uc in unique_columns:
+                            if uc in insert_data and insert_data[uc] is not None:
+                                where_conditions.append(f'"{uc}" = :{uc}_check')
+                                where_values[f"{uc}_check"] = insert_data[uc]
+                            else:
+                                has_all_keys = False
+                                break
+                        
+                        if has_all_keys and where_conditions:
+                            check_sql = f'SELECT id FROM "{table_name}" WHERE {" AND ".join(where_conditions)} LIMIT 1'
+                            result = conn.execute(text(check_sql), where_values)
+                            existing = result.fetchone()
+                            
+                            if existing:
+                                # 更新
+                                update_sets = [f'"{k}" = :{k}' for k in insert_data.keys()]
+                                update_sql = f'UPDATE "{table_name}" SET {", ".join(update_sets)} WHERE id = :id'
+                                insert_data['id'] = existing[0]
+                                conn.execute(text(update_sql), insert_data)
+                                updated_count += 1
+                                continue
+                    
+                    # 插入
+                    columns = list(insert_data.keys())
+                    quoted_columns = [f'"{c}"' for c in columns]
+                    placeholders = [f":{col}" for col in columns]
+                    insert_sql = f'INSERT INTO "{table_name}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
+                    conn.execute(text(insert_sql), insert_data)
+                    inserted_count += 1
+                    
+                except Exception as e:
+                    errors.append(f"第 {row_idx + 1} 行处理失败: {str(e)}")
+            
+            conn.commit()
+        
+        print(f"UPSERT完成: 新增 {inserted_count} 条, 更新 {updated_count} 条")
+        return inserted_count, updated_count, errors
+    
+    def _get_table_unique_columns(self, table_name: str) -> List[str]:
+        """查询数据库表的唯一约束列（排除SERIAL主键id）"""
+        try:
+            with self.engine.connect() as conn:
+                result = conn.execute(text("""
+                    SELECT DISTINCT a.attname as column_name
+                    FROM pg_index i
+                    JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+                    JOIN pg_class c ON c.oid = i.indrelid
+                    WHERE c.relname = :table_name
+                      AND i.indisunique
+                      AND a.attname != 'id'
+                """), {"table_name": table_name})
+                columns = [row[0] for row in result]
+                return columns
+        except Exception as e:
+            print(f"查询唯一约束失败: {e}")
+            return []
+    
+    def _is_date_field(self, field_name: str, field_configs: List[Dict]) -> bool:
+        """检查字段是否为日期类型"""
+        for field in field_configs:
+            target = field.get('targetField') or field.get('english_name', '')
+            if target == field_name:
+                data_type = field.get('dataType') or field.get('data_type', '')
+                return data_type in ['DATE', 'DATETIME', 'TIMESTAMP']
+        return False
+    
+    def _convert_date(self, value: Any) -> str:
+        """转换日期格式（统一转为yyyy-MM-dd，去掉时分秒）"""
+        if not value:
+            return None
+        
+        value_str = str(value).strip()
+        
+        # 如果已经是标准格式，直接返回
+        if re.match(r'^\d{4}-\d{2}-\d{2}$', value_str):
+            return value_str
+        
+        # 尝试各种格式
+        patterns = [
+            (r'^(\d{4})-(\d{1,2})-(\d{1,2})$', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            (r'^(\d{4})/(\d{1,2})/(\d{1,2})$', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            (r'^(\d{4})年(\d{1,2})月(\d{1,2})日$', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            # 带时分秒的格式
+            (r'^(\d{4})-(\d{1,2})-(\d{1,2})\s+\d{1,2}:\d{1,2}:\d{1,2}', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            (r'^(\d{4})/(\d{1,2})/(\d{1,2})\s+\d{1,2}:\d{1,2}:\d{1,2}', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+            (r'^(\d{4})年(\d{1,2})月(\d{1,2})日\s+\d{1,2}:\d{1,2}:\d{1,2}', lambda m: f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"),
+        ]
+        
+        for pattern, formatter in patterns:
+            match = re.match(pattern, value_str)
+            if match:
+                return formatter(match)
+        
+        # datetime fallback
+        for fmt in ['%Y-%m-%d %H:%M:%S', '%Y/%m/%d %H:%M:%S', '%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f', '%Y-%m-%d', '%Y/%m/%d', '%Y年%m月%d日']:
+            try:
+                dt = datetime.strptime(value_str, fmt)
+                return dt.strftime('%Y-%m-%d')
+            except ValueError:
+                continue
+        
+        return value_str
+    
+    def _update_schema_config(self, table_name: str, chinese_title: str,
+                            field_configs: List[Dict], table_type: str,
+                            parent_table: Optional[str] = None):
+        """更新 schema 配置"""
+        try:
+            # 加载现有配置
+            config = self.config
+            
+            # 更新 tables
+            if "tables" not in config:
+                config["tables"] = {}
+            
+            config["tables"][table_name] = {
+                "chinese_name": chinese_title or table_name,
+                "type": table_type,
+                "parent_table": parent_table,
+                "fields": field_configs,
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            # 更新 mappings
+            if "mappings" not in config:
+                config["mappings"] = {}
+            
+            for field in field_configs:
+                source = field.get('sourceField') or field.get('chinese_name', '')
+                target = field.get('targetField') or field.get('english_name', '')
+                if source and target:
+                    config["mappings"][source] = {
+                        "target": target,
+                        "table": table_name,
+                        "data_type": field.get('dataType') or field.get('data_type', 'VARCHAR')
+                    }
+            
+            # 保存配置
+            with open(self.schema_file, 'w', encoding='utf-8') as f:
+                json.dump(config, f, ensure_ascii=False, indent=2)
+            
+            print(f"已更新 schema 配置: {table_name}")
+            
+        except Exception as e:
+            print(f"更新 schema 配置失败: {e}")
+    
+    def _update_navigation_config(self, table_name: str, chinese_title: str,
+                                 module_id: str, module_name: str,
+                                 table_type: str, parent_table: Optional[str] = None,
+                                 sub_module_id: str = "", sub_module_name: str = ""):
+        """更新导航配置"""
+        print(f"\n[导航配置] 开始更新...")
+        print(f"[导航配置] 参数: table_name={table_name}, chinese_title={chinese_title}")
+        print(f"[导航配置] 参数: module_id={module_id}, module_name={module_name}")
+        print(f"[导航配置] 参数: sub_module_id={sub_module_id}, sub_module_name={sub_module_name}")
+        print(f"[导航配置] 配置文件路径: {self.navigation_file}")
+        
+        try:
+            # 加载现有导航配置
+            if os.path.exists(self.navigation_file):
+                print(f"[导航配置] 文件存在，正在加载...")
+                with open(self.navigation_file, 'r', encoding='utf-8') as f:
+                    nav_config = json.load(f)
+                print(f"[导航配置] 已加载，现有模块数: {len(nav_config.get('modules', []))}")
+            else:
+                print(f"[导航配置] 文件不存在，创建新配置")
+                nav_config = {"modules": []}
+            
+            # 查找或创建模块
+            module = None
+            for m in nav_config.get("modules", []):
+                if m.get("id") == module_id:
+                    module = m
+                    print(f"[导航配置] 找到现有模块: {module_id}")
+                    break
+            
+            if not module:
+                print(f"[导航配置] 创建新模块: {module_id}")
+                module = {
+                    "id": module_id,
+                    "title": module_name,
+                    "name": module_name,
+                    "icon": "Folder",
+                    "path": f"/{module_id}",
+                    "type": "module",
+                    "children": []
+                }
+                nav_config["modules"].append(module)
+                print(f"[导航配置] 新模块已添加")
+            
+            # 确保模块有 children 字段
+            if "children" not in module:
+                module["children"] = []
+            
+            # 查找或创建子模块
+            sub_module = None
+            if sub_module_id:
+                for sm in module.get("children", []):
+                    if sm.get("id") == sub_module_id:
+                        sub_module = sm
+                        print(f"[导航配置] 找到现有子模块: {sub_module_id}")
+                        break
+                
+                if not sub_module:
+                    print(f"[导航配置] 创建新子模块: {sub_module_id}")
+                    sub_module = {
+                        "id": sub_module_id,
+                        "title": sub_module_name,
+                        "name": sub_module_name,
+                        "icon": "Folder",
+                        "path": f"/{module_id}/sub-{sub_module_id}",
+                        "type": "module",
+                        "children": []
+                    }
+                    module["children"].append(sub_module)
+                    print(f"[导航配置] 新子模块已添加")
+            
+            # 构建表节点信息
+            table_node = {
+                "id": f"table-{table_name}",
+                "title": chinese_title or table_name,
+                "name": chinese_title or table_name,
+                "icon": "Document",
+                "path": f"/data/{table_name}",
+                "type": "component",
+                "component": "DynamicDataView",
+                "api_endpoint": f"/api/data/{table_name}",
+                "table_name": table_name,
+                "table_type": table_type
+            }
+            
+            # 添加表到子模块或模块
+            target = sub_module if sub_module else module
+            target_type = "子模块" if sub_module else "模块"
+            target_id = sub_module_id if sub_module else module_id
+            
+            # 确保目标有 children 字段
+            if "children" not in target:
+                target["children"] = []
+            
+            existing = [t for t in target.get("children", []) 
+                       if t.get("table_name") == table_name 
+                       or t.get("title") == chinese_title]
+            if not existing:
+                target["children"].append(table_node)
+                print(f"[导航配置] 已添加表到{target_type} {target_id}: {chinese_title or table_name}")
+            else:
+                # 已存在，更新现有节点信息（确保指向正确的表名）
+                for t in existing:
+                    t["table_name"] = table_name
+                    t["path"] = f"/data/{table_name}"
+                    t["api_endpoint"] = f"/api/data/{table_name}"
+                print(f"[导航配置] 表已存在，已更新节点: {chinese_title or table_name}")
+            
+            # 保存导航配置
+            print(f"[导航配置] 正在保存到文件...")
+            print(f"[导航配置] 保存前 target children 数量: {len(target.get('children', []))}")
+            with open(self.navigation_file, 'w', encoding='utf-8') as f:
+                json.dump(nav_config, f, ensure_ascii=False, indent=2)
+            
+            print(f"[导航配置] 保存成功！")
+            
+            # 验证保存结果
+            with open(self.navigation_file, 'r', encoding='utf-8') as f:
+                saved_config = json.load(f)
+            # 找到对应的模块和子模块，验证表是否添加成功
+            for mod in saved_config.get('modules', []):
+                if mod.get('id') == module_id:
+                    print(f"[导航配置] 验证: 找到模块 {module_id}")
+                    for sm in mod.get('children', []):
+                        if sm.get('id') == sub_module_id:
+                            print(f"[导航配置] 验证: 找到子模块 {sub_module_id}, 子模块children数量: {len(sm.get('children', []))}")
+                            for child in sm.get('children', []):
+                                if child.get('table_name') == table_name:
+                                    print(f"[导航配置] 验证成功: 找到表节点 {table_name}")
+                        elif sub_module_id == '' and sm.get('table_name') == table_name:
+                            print(f"[导航配置] 验证成功: 在模块下找到表节点 {table_name}")
+                    break
+            
+        except Exception as e:
+            print(f"[导航配置] 更新失败: {e}")
+            import traceback
+            traceback.print_exc()

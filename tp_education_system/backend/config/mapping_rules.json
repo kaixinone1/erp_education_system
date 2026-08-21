@@ -94,6 +94,12 @@
   "naming_rules": {
     "max_length": 64,
     "valid_chars": "^[a-z][a-z0-9_]*$",
-    "reserved_names": ["id", "created_at", "updated_at", "deleted_at", "is_deleted"]
+    "reserved_names": [
+      "id",
+      "created_at",
+      "updated_at",
+      "deleted_at",
+      "is_deleted"
+    ]
   }
 }

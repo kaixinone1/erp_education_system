@@ -84,7 +84,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="子模块" v-if="selectedMainModule">
+                <el-form-item label="子模块" v-if="selectedMainModule && subModules.length > 0">
                   <el-select 
                     v-model="selectedSubModule" 
                     placeholder="请选择子模块"
@@ -97,6 +97,9 @@
                       :value="subModule.id"
                     />
                   </el-select>
+                </el-form-item>
+                <el-form-item label="子模块" v-else-if="selectedMainModule && subModules.length === 0">
+                  <span class="no-submodule-hint">该模块下暂无子模块，导入的表将直接添加到主模块下</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -202,17 +205,19 @@ const mainModules = computed(() => {
 })
 
 // 计算属性：子模块列表
+// 只筛选 type === 'module' 的子菜单节点，type === 'component' 的是数据表，不是子菜单
 const subModules = computed(() => {
   const mainModule = mainModules.value.find((m: any) => m.id === selectedMainModule.value)
-  // 获取主模块的所有子模块（children），包括module和component类型
   return mainModule?.children?.filter((child: any) => 
-    child.type === 'module' || child.type === 'component'
+    child.type === 'module'
   ) || []
 })
 
 // 计算属性：是否可以进行下一步
+// 如果主模块有子模块，必须选择子模块；如果没有子模块，可以直接进入下一步
 const canProceed = computed(() => {
-  return parsedData.value && selectedMainModule.value && selectedSubModule.value
+  const hasSubModules = subModules.value.length > 0
+  return parsedData.value && selectedMainModule.value && (hasSubModules ? selectedSubModule.value : true)
 })
 
 // 加载导航数据
@@ -443,6 +448,12 @@ onMounted(() => {
   justify-content: flex-end;
   padding-top: 20px;
   border-top: 1px solid #ebeef5;
+}
+
+.no-submodule-hint {
+  color: #909399;
+  font-size: 13px;
+  line-height: 32px;
 }
 </style>
 

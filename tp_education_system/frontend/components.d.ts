@@ -89,6 +89,7 @@ declare module 'vue' {
     Sidebar: typeof import('./src/components/Layout/Sidebar.vue')['default']
     SidebarItem: typeof import('./src/components/Layout/SidebarItem.vue')['default']
     TagsView: typeof import('./src/components/Layout/TagsView.vue')['default']
+    TemplateOperator: typeof import('./src/components/template/TemplateOperator.vue')['default']
     TodoList: typeof import('./src/components/TodoList.vue')['default']
     TodoTriggerDialog: typeof import('./src/components/TodoTriggerDialog.vue')['default']
     YearlyPerformanceSummary: typeof import('./src/components/YearlyPerformanceSummary.vue')['default']

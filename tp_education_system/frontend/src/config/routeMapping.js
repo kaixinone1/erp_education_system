@@ -36,7 +36,30 @@ export const ROUTE_MAPPING = {
     path: '/personnel',
     children: {}
   },
-  
+
+  // 薪酬管理
+  salary: {
+    path: '/salary',
+    children: {
+      performance: '/salary/performance'
+    }
+  },
+
+  // 学校管理
+  school: {
+    path: '/school',
+    children: {
+      student: '/school/student',
+      attendance: '/school/attendance'
+    }
+  },
+
+  // 党组织管理
+  party: {
+    path: '/party',
+    children: {}
+  },
+
   // 通用数据视图
   genericDataView: '/data/:tableName',
   moduleDataView: '/:moduleId/:tableName'

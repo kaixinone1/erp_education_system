@@ -856,6 +856,11 @@ class UniversalTemplateEngine:
                 cell = ws.cell(r, c)
                 style = self._build_cell_style_excel(cell)
                 
+                # 三级教师下划线加粗：教师系列最后一行，底部边框应与其他列一致为2px
+                cell_text = str(cell.value or '')
+                if '三级教师' in cell_text and 'border-bottom:1px solid #000' in style:
+                    style = style.replace('border-bottom:1px solid #000', 'border-bottom:2px solid #000')
+                
                 # 优先使用填充值
                 filled = filled_map.get(key, {})
                 cv = filled.get('显示值', '')
@@ -1435,10 +1440,13 @@ table {{
         cursor = conn.cursor()
         
         # #region debug-point B:mappings-loaded
-        import json as _dj, time as _dt, os as _dos
-        _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
-        with open(_logp, 'a', encoding='utf-8') as _df:
-            _df.write(f"[{_dt.time()}] B:mappings db={len(db_mappings)} formula={len(formula_mappings)} detail={ {k:v.get('数据源','') for k,v in db_mappings.items()} }\n")
+        try:
+            import json as _dj, time as _dt, os as _dos
+            _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
+            with open(_logp, 'a', encoding='utf-8') as _df:
+                _df.write(f"[{_dt.time()}] B:mappings db={len(db_mappings)} formula={len(formula_mappings)} detail={ {k:v.get('数据源','') for k,v in db_mappings.items()} }\n")
+        except Exception:
+            pass
         # #endregion
         
         try:
@@ -1466,10 +1474,13 @@ table {{
                         self._set_cell_value(filled_config, pos['行'], pos['列'], value)
             
             # #region debug-point E:values-collected
-            import json as _dj, time as _dt, os as _dos
-            _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
-            with open(_logp, 'a', encoding='utf-8') as _df:
-                _df.write(f"[{_dt.time()}] E:collected count={len(field_values)} values={ {k:str(v) for k,v in field_values.items()} }\n")
+            try:
+                import json as _dj, time as _dt, os as _dos
+                _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
+                with open(_logp, 'a', encoding='utf-8') as _df:
+                    _df.write(f"[{_dt.time()}] E:collected count={len(field_values)} values={ {k:str(v) for k,v in field_values.items()} }\n")
+            except Exception:
+                pass
             # #endregion
             
             sorted_formula_mappings = sorted(formula_mappings.items(), key=lambda x: (x[1].get('行', 0), x[1].get('列', 0)))
@@ -1529,8 +1540,6 @@ table {{
         
         模板名称 = config.get('模板名称', '')
         if '绩效工资审批' in 模板名称:
-            with open('d:/erp_thirteen/tp_education_system/backend/debug_block.txt', 'a', encoding='utf-8') as _f2:
-                _f2.write('[DEBUG] 绩效工资审批块已执行 模板名称=' + 模板名称 + '\n')
             try:
                 year_month = query_params.get('年月', '')
                 if not year_month:
@@ -1574,8 +1583,6 @@ table {{
                 print(f"备注信息填充失败: {e}")
             
             # 退休人员、乡镇补贴和绩效汇总数据查询与填充
-            with open('d:/erp_thirteen/tp_education_system/backend/debug_block.txt', 'a', encoding='utf-8') as _f:
-                _f.write('[DEBUG] 进入退休人员/乡镇补贴块\n')
             try:
                 conn3 = get_db_connection()
                 cur3 = conn3.cursor()
@@ -1728,14 +1735,19 @@ table {{
                         cell['值'] = sub_total_str
                 
                 # 验证填充结果
-                with open('d:/erp_thirteen/tp_education_system/backend/debug_fill_log2.txt', 'a', encoding='utf-8') as f:
-                    f.write(f"[DEBUG] retired_cadre={retired_cadre_count} worker={retired_worker_count} office={retired_cadre_office_count}\n")
-                    f.write(f"[DEBUG] subsidy_count={subsidy_count} standard={subsidy_standard} total={subsidy_total}\n")
-                    f.write(f"[DEBUG] perf_count={performance_count} perf_total={performance_total}\n")
-                    for cell in filled_config.get('单元格数据', []):
-                        r, c = cell.get('行号'), cell.get('列号')
-                        if r in [20, 21, 25, 26, 27] and c in [1, 2, 4]:
-                            f.write(f"[DEBUG] 填充后 行{r}列{c} = {cell.get('显示值')}\n")
+                try:
+                    import os as _dos2
+                    _logp2 = _dos2.path.join(_dos2.path.dirname(_dos2.path.dirname(__file__)), 'debug_fill_log2.txt')
+                    with open(_logp2, 'a', encoding='utf-8') as f:
+                        f.write(f"[DEBUG] retired_cadre={retired_cadre_count} worker={retired_worker_count} office={retired_cadre_office_count}\n")
+                        f.write(f"[DEBUG] subsidy_count={subsidy_count} standard={subsidy_standard} total={subsidy_total}\n")
+                        f.write(f"[DEBUG] perf_count={performance_count} perf_total={performance_total}\n")
+                        for cell in filled_config.get('单元格数据', []):
+                            r, c = cell.get('行号'), cell.get('列号')
+                            if r in [20, 21, 25, 26, 27] and c in [1, 2, 4]:
+                                f.write(f"[DEBUG] 填充后 行{r}列{c} = {cell.get('显示值')}\n")
+                except Exception:
+                    pass
             except Exception as e:
                 print(f"退休人员和乡镇补贴数据填充失败: {e}")
                 import traceback
@@ -1933,10 +1945,13 @@ table {{
                 row = cursor.fetchone()
                 result = row[0] if row else None
                 # #region debug-point C:query-field-value
-                import json as _dj, time as _dt, os as _dos
-                _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
-                with open(_logp, 'a', encoding='utf-8') as _df:
-                    _df.write(f"[{_dt.time()}] C:query_field table={table} col={column} id_card={身份证号} sql={sql} has_result={row is not None} val={str(result)}\n")
+                try:
+                    import json as _dj, time as _dt, os as _dos
+                    _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
+                    with open(_logp, 'a', encoding='utf-8') as _df:
+                        _df.write(f"[{_dt.time()}] C:query_field table={table} col={column} id_card={身份证号} sql={sql} has_result={row is not None} val={str(result)}\n")
+                except Exception:
+                    pass
                 # #endregion
                 return result
             return None
@@ -2153,10 +2168,13 @@ table {{
                 elif abs(result) < 0.001:
                     result = 0
             # #region debug-point D:query-aggregated
-            import json as _dj, time as _dt, os as _dos
-            _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
-            with open(_logp, 'a', encoding='utf-8') as _df:
-                _df.write(f"[{_dt.time()}] D:aggregated table={table} col={column} agg={transform_func} sql={sql} params={str(params)} has_result={row is not None} val={str(result)}\n")
+            try:
+                import json as _dj, time as _dt, os as _dos
+                _logp = _dos.path.join(_dos.path.dirname(_dos.path.dirname(__file__)), 'debug_fill_log.txt')
+                with open(_logp, 'a', encoding='utf-8') as _df:
+                    _df.write(f"[{_dt.time()}] D:aggregated table={table} col={column} agg={transform_func} sql={sql} params={str(params)} has_result={row is not None} val={str(result)}\n")
+            except Exception:
+                pass
             # #endregion
             return result
         except Exception as e:
@@ -2900,8 +2918,10 @@ table {{
                 
                 if key and teacher_name:
                     if key not in notes_groups:
-                        notes_groups[key] = {'label': group_label, 'names': []}
-                    notes_groups[key]['names'].append(teacher_name)
+                        notes_groups[key] = {'label': group_label, 'names': [], '_seen': set()}
+                    if teacher_name not in notes_groups[key]['_seen']:
+                        notes_groups[key]['_seen'].add(teacher_name)
+                        notes_groups[key]['names'].append(teacher_name)
             
             notes_parts = []
             seq = 1

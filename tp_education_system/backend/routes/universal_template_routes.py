@@ -18,7 +18,7 @@ from datetime import datetime
 
 from services.universal_template_service import template_engine, get_db_connection
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Border, Side
 
 router = APIRouter(prefix="/api/universal-template", tags=["通用模板自动填报"])
 
@@ -155,9 +155,15 @@ def _build_export_filename(config, request, include_seconds=False):
 def _get_fill_unit_name(request):
     """获取导出文件名中的单位/个人名称
     
-    对于个人表（查询条件包含身份证号或职工ID），返回教师姓名
-    对于单位表，返回单位名称
+    优先级：
+    1. 封面单位（登录时选择的单位，确保每次一致）
+    2. 统计范围中的单位名称
+    3. 个人表：通过身份证号或职工ID查询教师姓名
     """
+    # 优先使用登录时选择的封面单位（保证每次导出文件名中单位名称一致）
+    if getattr(request, '封面单位', None):
+        return request.封面单位
+    
     if request.统计范围:
         scope = request.统计范围.get('单位范围', {})
         for level in ['学校', '镇', '县', '地区', '省']:
@@ -257,6 +263,8 @@ class FillTemplateRequest(BaseModel):
     备注: Optional[str] = None
     填报配置: Optional[Dict[str, Any]] = None  # 前端传来的已填充配置，用于保存时避免重新填充
     封面单位: Optional[str] = None  # 登录时选择的单位，用于封面显示
+    saved_export_id: Optional[int] = None  # 已保存记录ID，用于导出时直接下载已保存文件
+    导出格式: Optional[str] = 'Excel'  # 导出格式：Excel/Word/PDF
 
 
 @router.get("/check-filename/{filename}")
@@ -386,9 +394,8 @@ async def get_all_remarks():
         cursor = conn.cursor()
         cursor.execute("""
             SELECT id, 模板ID, 模板名称, 单位名称, 年月, 备注, 保存时间,
-                   CASE WHEN Excel路径 IS NOT NULL AND Excel路径 != '' THEN true ELSE false END as 有Excel,
-                   CASE WHEN PDF路径 IS NOT NULL AND PDF路径 != '' THEN true ELSE false END as 有PDF,
-                   CASE WHEN "HTML路径" IS NOT NULL AND "HTML路径" != '' THEN true ELSE false END as 有HTML
+                   CASE WHEN "excel路径" IS NOT NULL AND "excel路径" != '' THEN true ELSE false END as 有Excel,
+                   CASE WHEN "pdf路径" IS NOT NULL AND "pdf路径" != '' THEN true ELSE false END as 有PDF
             FROM saved_exports
             ORDER BY 保存时间 DESC
         """)
@@ -408,7 +415,7 @@ async def get_all_remarks():
                 "保存时间": row[6].strftime("%Y-%m-%d %H:%M:%S") if row[6] else '',
                 "有Excel": row[7],
                 "有PDF": row[8],
-                "有HTML": row[9]
+                "有HTML": False  # HTML不再保存到磁盘
             })
 
         return {"成功": True, "数据": records}
@@ -1117,10 +1124,13 @@ async def fill_template(request: FillTemplateRequest):
     """
     try:
         # #region debug-point A:fill-entry
-        import json as _dj, time as _dt
-        _logp = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'debug_fill_log.txt')
-        with open(_logp, 'a', encoding='utf-8') as _df:
-            _df.write(f"[{_dt.time()}] A:fill_entry 模板ID={request.模板ID} 查询条件={request.查询条件} 统计范围={request.统计范围} 填报口径={request.填报口径}\n")
+        try:
+            import json as _dj, time as _dt
+            _logp = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'debug_fill_log.txt')
+            with open(_logp, 'a', encoding='utf-8') as _df:
+                _df.write(f"[{_dt.time()}] A:fill_entry 模板ID={request.模板ID} 查询条件={request.查询条件} 统计范围={request.统计范围} 填报口径={request.填报口径}\n")
+        except Exception:
+            pass
         # #endregion
         config = template_engine.load_template_config(request.模板ID)
         if not config:
@@ -1201,7 +1211,7 @@ def _find_latest_saved_file(template_id, unit_name, year_month):
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute(
-            """SELECT Excel路径, PDF路径, "HTML路径" FROM saved_exports
+            """SELECT "excel路径", "pdf路径" FROM saved_exports
                WHERE 模板ID = %s AND 单位名称 = %s AND 年月 = %s
                ORDER BY 保存时间 DESC LIMIT 1""",
             (template_id, unit_name, year_month)
@@ -1210,7 +1220,7 @@ def _find_latest_saved_file(template_id, unit_name, year_month):
         cursor.close()
         conn.close()
         if row and row[0] and os.path.exists(row[0]):
-            return {'Excel路径': row[0], 'PDF路径': row[1], 'HTML路径': row[2]}
+            return {'Excel路径': row[0], 'PDF路径': row[1]}
         return None
     except Exception as e:
         print(f"[WARNING] 查找保存文件失败: {e}")
@@ -1470,7 +1480,7 @@ def _build_word_fill_data(report_data: dict, 封面单位: str = '') -> dict:
     return data
 
 
-def _fill_word_retirement_report(report_data: dict, output_path: str, 封面单位: str = '') -> str:
+def _fill_word_retirement_report(report_data: dict, output_path: str, 封面单位: str = '', template_path: str = None) -> str:
     """
     使用Word模板填充退休呈报表
     
@@ -1478,17 +1488,20 @@ def _fill_word_retirement_report(report_data: dict, output_path: str, 封面单�
         report_data: 退休呈报表数据
         output_path: 输出路径
         封面单位: 登录时选择的单位名称
+        template_path: Word模板路径（不传则使用默认路径）
     
     Returns:
         输出文件路径
     """
     from services.word_template_filler import fill_word_template
     
-    if not os.path.exists(WORD_TEMPLATE_PATH):
-        raise FileNotFoundError(f"Word模板不存在: {WORD_TEMPLATE_PATH}")
+    if template_path is None:
+        template_path = WORD_TEMPLATE_PATH
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"Word模板不存在: {template_path}")
     
     fill_data = _build_word_fill_data(report_data, 封面单位)
-    return fill_word_template(WORD_TEMPLATE_PATH, output_path, fill_data)
+    return fill_word_template(template_path, output_path, fill_data)
 
 
 def _build_job_promotion_fill_data(report_data: dict, 封面单位: str = '', personal_id: str = '') -> dict:
@@ -1539,7 +1552,7 @@ def _build_job_promotion_fill_data(report_data: dict, 封面单位: str = '', pe
     return data
 
 
-def _fill_job_promotion_report(report_data: dict, output_path: str, 封面单位: str = '', personal_id: str = '') -> str:
+def _fill_job_promotion_report(report_data: dict, output_path: str, 封面单位: str = '', personal_id: str = '', template_path: str = None) -> str:
     """
     使用Word模板填充职务升降退休人员信息申报表
     
@@ -1548,17 +1561,20 @@ def _fill_job_promotion_report(report_data: dict, output_path: str, 封面单位
         output_path: 输出路径
         封面单位: 登录时选择的单位名称
         personal_id: 个人编号
+        template_path: Word模板路径（不传则使用默认路径）
     
     Returns:
         输出文件路径
     """
     from services.word_template_filler import fill_word_template
     
-    if not os.path.exists(JOB_PROMOTION_TEMPLATE_PATH):
-        raise FileNotFoundError(f"职务升降申报表模板不存在: {JOB_PROMOTION_TEMPLATE_PATH}")
+    if template_path is None:
+        template_path = JOB_PROMOTION_TEMPLATE_PATH
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"职务升降申报表模板不存在: {template_path}")
     
     fill_data = _build_job_promotion_fill_data(report_data, 封面单位, personal_id)
-    return fill_word_template(JOB_PROMOTION_TEMPLATE_PATH, output_path, fill_data)
+    return fill_word_template(template_path, output_path, fill_data)
 
 
 def _write_filled_to_excel(config, filled_config, output_path):
@@ -1608,6 +1624,18 @@ def _write_filled_to_excel(config, filled_config, output_path):
             except Exception:
                 pass
 
+    # 三级教师下划线加粗：教师系列最后一行，底部边框应与其他列一致为2px
+    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+        for cell in row:
+            if cell.value and '三级教师' in str(cell.value):
+                medium_side = Side(style='medium', color='000000')
+                cell.border = Border(
+                    top=cell.border.top if cell.border else Side(),
+                    bottom=medium_side,
+                    left=cell.border.left if cell.border else Side(),
+                    right=cell.border.right if cell.border else Side()
+                )
+
     wb.save(output_path)
     return output_path
 
@@ -1626,32 +1654,171 @@ def _do_full_fill_to_excel(config, request, output_path):
 
 @router.post("/export")
 async def export_template(request: FillTemplateRequest):
+    """
+    导出已保存的模板文件（不再重新填充数据，保证数据一致性）
+    
+    优先使用 saved_export_id 下载已保存文件；
+    如果未提供 saved_export_id，则返回错误提示用户先保存。
+    """
     try:
+        # 新流程：通过保存记录ID下载已保存文件
+        saved_id = getattr(request, 'saved_export_id', None)
+        export_format = getattr(request, '导出格式', 'Excel')
+        
+        if saved_id:
+            return await download_history_file(saved_id, export_format)
+        
+        # 旧流程兼容：提示用户先保存
         config = template_engine.load_template_config(request.模板ID)
         if not config:
             raise HTTPException(status_code=404, detail="模板不存在")
-
-        original_file_path = config.get('原始文件路径')
-        if not original_file_path or not os.path.exists(original_file_path):
-            raise HTTPException(status_code=404, detail="原始文件不存在")
-
-        base_name = _build_export_filename(config, request)
-        filename = f"{base_name}.xlsx"
-        output_path = os.path.join(EXPORT_DIR, filename)
-
-        _do_full_fill_to_excel(config, request, output_path)
-
-        return FileResponse(
-            output_path,
-            filename=filename,
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        
+        # 查找最近一次保存记录
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            'SELECT id FROM saved_exports WHERE "模板ID" = %s ORDER BY "保存时间" DESC LIMIT 1',
+            (request.模板ID,)
         )
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if row:
+            return await download_history_file(row[0], export_format)
+        
+        raise HTTPException(status_code=404, detail="没有找到已保存的文件，请先点击「填报」保存后再导出")
     except HTTPException:
         raise
     except Exception as e:
         print(f"导出失败: {e}")
         print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
+
+
+def _write_compatibility_json(request, filled_config, template_config):
+    """
+    方案A兼容写入：将通用模板填充结果写入旧系统JSON格式
+    确保 performance_pay_history_routes.py 等旧模块能继续读取数据
+    """
+    # 旧系统数据目录
+    OLD_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'performance_pay_approval')
+    os.makedirs(OLD_DATA_DIR, exist_ok=True)
+
+    # 解析年月
+    user_ym = request.查询条件.get('年月', '') if request.查询条件 else ''
+    year = datetime.now().year
+    month = datetime.now().month
+    if user_ym:
+        ym_match = re.match(r'^(\d{4})-(\d{1,2})$', user_ym)
+        if ym_match:
+            year = int(ym_match.group(1))
+            month = int(ym_match.group(2))
+
+    # 从 filled_config 的单元格数据中提取关键统计字段
+    cells = filled_config.get('单元格数据', [])
+    cell_by_field = {}
+    for cell in cells:
+        field_name = cell.get('字段名称', '')
+        if field_name:
+            cell_by_field[field_name] = cell
+
+    def _get_cell_value(field_name, default=0):
+        """从填充配置中获取指定字段的值"""
+        cell = cell_by_field.get(field_name)
+        if cell:
+            val = cell.get('值')
+            if val is not None and val != '':
+                try:
+                    return float(val) if '.' in str(val) else int(val)
+                except (ValueError, TypeError):
+                    return str(val)
+        return default
+
+    def _get_cell_display(field_name, default=''):
+        """从填充配置中获取指定字段的显示值"""
+        cell = cell_by_field.get(field_name)
+        if cell:
+            return str(cell.get('显示值', '') or '')
+        return default
+
+    # 构建兼容JSON
+    unit_name = ''
+    if request.统计范围 and request.统计范围.get('单位范围'):
+        scope = request.统计范围['单位范围']
+        for level_key in ['学校', '镇', '县', '地区', '省']:
+            if scope.get(level_key) and scope[level_key].get('unit_name'):
+                unit_name = scope[level_key]['unit_name']
+                break
+    if not unit_name:
+        unit_name = request.封面单位 or '太平中心学校'
+
+    compatibility_data = {
+        '填报单位': unit_name,
+        '年月': f"{year}年{month}月",
+        '填报时间': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        # 行政管理人员
+        '副处级人数': _get_cell_value('副处级人数', 0),
+        '副处级标准': _get_cell_value('副处级标准', 0),
+        '正科级人数': _get_cell_value('正科级人数', 0),
+        '正科级标准': _get_cell_value('正科级标准', 0),
+        '副科级人数': _get_cell_value('副科级人数', 0),
+        '副科级标准': _get_cell_value('副科级标准', 0),
+        '科员级人数': _get_cell_value('科员级人数', 0),
+        '科员级标准': _get_cell_value('科员级标准', 1185),
+        '办事员级人数': _get_cell_value('办事员级人数', 0),
+        '办事员级标准': _get_cell_value('办事员级标准', 0),
+        # 专业技术人员
+        '正高级教师人数': _get_cell_value('正高级教师人数', 0),
+        '正高级教师标准': _get_cell_value('正高级教师标准', 1862),
+        '高级教师人数': _get_cell_value('高级教师人数', 0),
+        '高级教师标准': _get_cell_value('高级教师标准', 1523),
+        '一级教师人数': _get_cell_value('一级教师人数', 0),
+        '一级教师标准': _get_cell_value('一级教师标准', 1309),
+        '二级教师人数': _get_cell_value('二级教师人数', 0),
+        '二级教师标准': _get_cell_value('二级教师标准', 1241),
+        '三级教师人数': _get_cell_value('三级教师人数', 0),
+        '三级教师标准': _get_cell_value('三级教师标准', 1128),
+        # 工人
+        '高级技师人数': _get_cell_value('高级技师人数', 0),
+        '高级技师标准': _get_cell_value('高级技师标准', 0),
+        '技师人数': _get_cell_value('技师人数', 0),
+        '技师标准': _get_cell_value('技师标准', 1331),
+        '高级工人数': _get_cell_value('高级工人数', 0),
+        '高级工标准': _get_cell_value('高级工标准', 1219),
+        '中级工人数': _get_cell_value('中级工人数', 0),
+        '中级工标准': _get_cell_value('中级工标准', 1185),
+        '初级工人数': _get_cell_value('初级工人数', 0),
+        '初级工标准': _get_cell_value('初级工标准', 1106),
+        '普工人数': _get_cell_value('普工人数', 0),
+        '普工标准': _get_cell_value('普工标准', 1106),
+        # 汇总
+        '绩效人数合计': _get_cell_value('绩效人数合计', 0),
+        '绩效工资合计': _get_cell_value('绩效工资合计', 0),
+        # 乡镇补贴
+        '在职人数': _get_cell_value('在职人数', 0),
+        '乡镇补贴标准': _get_cell_value('乡镇补贴标准', 350),
+        '乡镇补贴合计': _get_cell_value('乡镇补贴合计', 0),
+        # 退休人员
+        '退休干部': _get_cell_value('退休干部', 0),
+        '退休职工': _get_cell_value('退休职工', 0),
+        '离休干部人数': _get_cell_value('离休干部人数', 0),
+        # 遗留问题
+        '遗留问题详情': _get_cell_display('遗留问题详情', ''),
+        '遗留问题人数': _get_cell_value('遗留问题人数', 0),
+        '遗留问题金额': _get_cell_value('遗留问题金额', 0),
+        '无补贴人数': _get_cell_value('无补贴人数', 0),
+        '无补贴名单': _get_cell_display('无补贴名单', ''),
+        # 备注
+        '备注': request.备注 or _get_cell_display('备注', ''),
+    }
+
+    # 写入旧系统JSON文件
+    filename = f"performance_pay_{year}_{month:02d}.json"
+    filepath = os.path.join(OLD_DATA_DIR, filename)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(compatibility_data, f, ensure_ascii=False, indent=2)
+    print(f"[兼容写入] 绩效工资JSON已写入: {filepath}")
 
 
 @router.post("/save")
@@ -1681,44 +1848,98 @@ async def save_filled_template(request: FillTemplateRequest):
             xlsx_path = os.path.join(SAVED_DIR, xlsx_filename)
 
             # 使用前端传来的已填充配置（避免重复填充，保证数据一致性）
+            HAS_FILLED_CONFIG = request.填报配置 is not None
+            print(f"[SAVE DEBUG] 模板={config.get('模板名称','')}, 收到填报配置={HAS_FILLED_CONFIG}, 收到备注={'YES' if request.备注 else 'NO'}")
+            
             if request.填报配置:
                 filled_config = request.填报配置
-                # 如果有编辑后的备注，也要更新到填报配置中（双保险）
-                if request.备注:
-                    for cell in filled_config.get('单元格数据', []):
-                        显示值 = str(cell.get('显示值', '') or '')
-                        if 显示值.startswith('备注：') or 显示值 == '备注' or '备注' in 显示值:
-                            cell['显示值'] = f"备注：\n{request.备注}"
-                            cell['值'] = cell['显示值']
-                            break
+                # 记录关键数据用于调试
+                key_cells_log = {}
+                for cell in filled_config.get('单元格数据', []):
+                    r, c = cell.get('行号'), cell.get('列号')
+                    if r in [7, 10, 11, 12, 13, 15, 18, 20, 21, 24, 25, 26, 27, 28]:
+                        key_cells_log[f"({r},{c})"] = str(cell.get('显示值',''))[:60]
+                print(f"[SAVE DEBUG] 填报配置关键数据: {key_cells_log}")
+                
+                # 如果有编辑后的备注，也要更新到填报配置中
+                # 注意：只在备注确实被修改过且内容不包含完整表格文本时才更新
+                if request.备注 is not None and request.备注 != '':
+                    # 检测备注内容是否异常（包含整个表格文本的异常情况）
+                    备注内容 = str(request.备注)
+                    # 异常检测：包含表格结构关键词，或长度超过正常备注范围
+                    is_abnormal_remark = (
+                        ('项目' in 备注内容 and '人数' in 备注内容 and '标准' in 备注内容 and '小计' in 备注内容) or
+                        len(备注内容) > 800
+                    )
+                    if is_abnormal_remark:
+                        print(f"[SAVE WARNING] 备注内容异常！包含完整表格文本或过长，拒绝使用！备注长度={len(备注内容)}")
+                        # 不使用异常备注，保持filled_config中的原始备注
+                    else:
+                        print(f"[SAVE DEBUG] 备注内容正常，长度={len(备注内容)}，将更新到配置中")
+                        updated = False
+                        # 第一优先级：精确行号+列号匹配（A28 = 行28,列1）
+                        for cell in filled_config.get('单元格数据', []):
+                            if cell.get('行号') == 28 and cell.get('列号') == 1:
+                                cell['显示值'] = f"备注：\n{request.备注}"
+                                cell['值'] = cell['显示值']
+                                print(f"[SAVE DEBUG] 备注已精确更新到单元格 (28,1)")
+                                updated = True
+                                break
+                        # 第二优先级：回退到文本匹配
+                        if not updated:
+                            for cell in filled_config.get('单元格数据', []):
+                                显示值 = str(cell.get('显示值', '') or '')
+                                if 显示值.strip().startswith('备注') or 显示值.strip() == '备注':
+                                    cell['显示值'] = f"备注：\n{request.备注}"
+                                    cell['值'] = cell['显示值']
+                                    print(f"[SAVE DEBUG] 备注已文本匹配更新到单元格 ({cell.get('行号')},{cell.get('列号')})")
+                                    updated = True
+                                    break
+                        if not updated:
+                            print(f"[SAVE WARNING] 未找到备注单元格，无法更新备注！")
                 _write_filled_to_excel(config, filled_config, xlsx_path)
             else:
                 # 兜底：没有填报配置时，重新填充
+                print(f"[SAVE WARNING] 未收到填报配置，走兜底路径重新填充！")
                 filled_config = _do_full_fill_to_excel(config, request, xlsx_path)
                 if request.备注:
                     for cell in filled_config.get('单元格数据', []):
                         显示值 = str(cell.get('显示值', '') or '')
-                        if 显示值.startswith('备注：') or 显示值 == '备注' or '备注' in 显示值:
+                        if 显示值.startswith('备注'):
                             cell['显示值'] = request.备注 if not 显示值.startswith('备注：') else f"备注：{request.备注}"
                             _write_filled_to_excel(config, filled_config, xlsx_path)
                             break
                     else:
                         _write_filled_to_excel(config, filled_config, xlsx_path)
 
-            filled_html = template_engine.generate_print_html(filled_config, request.查询条件, excel_path=config.get('原始文件路径'))
-            html_path = None
-            if filled_html:
-                html_name = f"{base_name}.html"
-                html_path = os.path.join(SAVED_DIR, html_name)
-                with open(html_path, 'w', encoding='utf-8') as fh:
-                    fh.write(filled_html)
+            # 保存HTML文件用于打印（与Excel同名，仅扩展名不同）
+            html_filename = f"{base_name}.html"
+            html_path = os.path.join(SAVED_DIR, html_filename)
+            try:
+                html_content = template_engine.generate_print_html(filled_config, request.查询条件, excel_path=config.get('原始文件路径'))
+                with open(html_path, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+                print(f"[SAVE DEBUG] HTML已保存: {html_path}")
+            except Exception as html_e:
+                print(f"[SAVE WARNING] HTML保存失败: {html_e}")
+                html_path = None
 
-        # Word模板填充：如果是退休呈报表相关模板且Word模板存在
+        # Word模板填充：根据源文件类型确定模板路径和填充方式
         docx_path = None
         template_name = config.get('模板名称', '')
         is_retirement_template = template_name in ['职工退休呈报表', '职工退休呈报表（Word版）']
         is_job_promotion_template = template_name == '枣阳市机关事业单位养老保险改革过渡期内职务升降退休人员信息申报表'
-        if (is_retirement_template and os.path.exists(WORD_TEMPLATE_PATH)) or (is_job_promotion_template and os.path.exists(JOB_PROMOTION_TEMPLATE_PATH)):
+        
+        # 确定Word模板路径：优先使用源文件（.docx），其次使用硬编码路径（兼容旧配置）
+        word_template_path = None
+        if is_word_template:
+            word_template_path = original_file_path
+        elif is_retirement_template and os.path.exists(WORD_TEMPLATE_PATH):
+            word_template_path = WORD_TEMPLATE_PATH
+        elif is_job_promotion_template and os.path.exists(JOB_PROMOTION_TEMPLATE_PATH):
+            word_template_path = JOB_PROMOTION_TEMPLATE_PATH
+        
+        if word_template_path:
             try:
                 docx_filename = f"{base_name}.docx"
                 docx_path = os.path.join(SAVED_DIR, docx_filename)
@@ -1742,8 +1963,6 @@ async def save_filled_template(request: FillTemplateRequest):
                     """, (teacher_id_val,))
                     education_row = cursor2.fetchone()
                     report_data = _build_retirement_report_data(cursor2, teacher_id_val, teacher_row, id_card, education_row)
-                    # 注意：发给退休费的单位已在 _build_retirement_report_data 中从退休补充信息表获取
-                    # 不再用 teacher_unit 覆盖，以保持数据来源一致
                     if is_job_promotion_template:
                         # 职务升降申报表：额外查询个人编号
                         personal_id = ''
@@ -1754,16 +1973,16 @@ async def save_filled_template(request: FillTemplateRequest):
                                 personal_id = str(pi_row[0])
                         except Exception:
                             pass
-                        _fill_job_promotion_report(report_data, docx_path, request.封面单位 or '', personal_id)
+                        _fill_job_promotion_report(report_data, docx_path, request.封面单位 or '', personal_id, template_path=word_template_path)
                         print(f"[Word] 职务升降申报表已生成: {docx_path}")
                     else:
-                        _fill_word_retirement_report(report_data, docx_path, request.封面单位 or '')
+                        _fill_word_retirement_report(report_data, docx_path, request.封面单位 or '', template_path=word_template_path)
                         print(f"[Word] 退休呈报表已生成: {docx_path}")
                 finally:
                     cursor2.close()
                     conn2.close()
             except Exception as e:
-                print(f"[Word] 退休呈报表生成失败: {e}")
+                print(f"[Word] 生成失败: {e}")
                 import traceback
                 traceback.print_exc()
 
@@ -1798,8 +2017,8 @@ async def save_filled_template(request: FillTemplateRequest):
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute(
-            """INSERT INTO saved_exports (模板ID, 模板名称, 单位名称, 年月, 查询条件, 统计范围, 填报口径, Excel路径, PDF路径, "HTML路径", 保存时间)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id""",
+            """INSERT INTO saved_exports (模板ID, 模板名称, 单位名称, 年月, 查询条件, 统计范围, 填报口径, Excel路径, PDF路径, 保存时间)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id""",
             (
                 request.模板ID,
                 config.get('模板名称', ''),
@@ -1810,8 +2029,7 @@ async def save_filled_template(request: FillTemplateRequest):
                 json.dumps(request.填报口径, ensure_ascii=False) if request.填报口径 else '{}',
                 # Word模板：docx路径存入Excel路径列（Excel路径对Word模板无意义，复用此列存储Word路径）
                 docx_path or xlsx_path,
-                '',  # PDF路径先为空，后台线程生成后更新
-                html_path or '',
+                '',  # PDF路径先为空，转换后更新
                 now
             )
         )
@@ -1886,6 +2104,16 @@ async def save_filled_template(request: FillTemplateRequest):
         cursor.close()
         conn.close()
 
+        # ============================================================
+        # 方案A兼容写入：当保存的是绩效工资审批表时，额外写一份JSON到旧目录
+        # 确保绩效工资历史、统计、上传模块能继续读取数据
+        # ============================================================
+        if request.模板ID == 'tpl_15cc984d' and filled_config and not is_word_template:
+            try:
+                _write_compatibility_json(request, filled_config, config)
+            except Exception as compat_e:
+                print(f"[兼容写入] 绩效工资审批表兼容JSON写入失败: {compat_e}")
+
         return {
             "成功": True,
             "消息": "保存成功",
@@ -1893,7 +2121,6 @@ async def save_filled_template(request: FillTemplateRequest):
                 "Excel文件": xlsx_filename,
                 "Word文件": os.path.basename(docx_path) if docx_path else None,
                 "PDF文件": os.path.basename(pdf_candidate) if (pdf_source_path and SOFFICE_PATH and os.path.exists(pdf_candidate)) else None,
-                "HTML文件": os.path.basename(html_path) if html_path else None,
                 "保存时间": now.strftime("%Y-%m-%d %H:%M:%S"),
                 "记录ID": saved_id
             }
@@ -2009,51 +2236,38 @@ async def check_libreoffice():
 
 @router.post("/export-pdf")
 async def export_pdf(request: FillTemplateRequest):
+    """
+    导出PDF（优先从已保存文件下载，不再重新填充数据）
+    """
     if not SOFFICE_PATH:
         raise HTTPException(status_code=503, detail="服务器未安装LibreOffice，PDF导出不可用")
 
     try:
+        # 新流程：通过保存记录ID下载已保存PDF文件
+        saved_id = getattr(request, 'saved_export_id', None)
+        
+        if saved_id:
+            return await download_history_file(saved_id, 'PDF')
+        
+        # 旧流程兼容：查找最近一次保存记录的PDF
         config = template_engine.load_template_config(request.模板ID)
         if not config:
             raise HTTPException(status_code=404, detail="模板不存在")
-
-        original_file_path = config.get('原始文件路径')
-        if not original_file_path or not os.path.exists(original_file_path):
-            raise HTTPException(status_code=404, detail=f"原始文件不存在: {original_file_path}")
-
-        base_name = _build_export_filename(config, request)
-        xlsx_filename = f"{base_name}.xlsx"
-        xlsx_path = os.path.join(EXPORT_DIR, xlsx_filename)
-
-        _do_full_fill_to_excel(config, request, xlsx_path)
-
-        if not os.path.exists(xlsx_path):
-            raise Exception(f"XLSX文件未生成: {xlsx_path}")
-
-        result = await asyncio.to_thread(
-            lambda: subprocess.run(
-                [SOFFICE_PATH, '--headless',
-                 f'-env:UserInstallation=file:///{LIBREOFFICE_PROFILE.replace(os.sep, "/")}',
-                 '--convert-to', 'pdf', xlsx_filename, '--outdir', EXPORT_DIR],
-                capture_output=True, text=True, timeout=120,
-                cwd=EXPORT_DIR
-            )
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            'SELECT id FROM saved_exports WHERE "模板ID" = %s ORDER BY "保存时间" DESC LIMIT 1',
+            (request.模板ID,)
         )
-
-        if result.returncode != 0:
-            raise Exception(f"LibreOffice转换失败: stdout={result.stdout} stderr={result.stderr}")
-
-        pdf_path = os.path.join(EXPORT_DIR, f"{base_name}.pdf")
-        if not os.path.exists(pdf_path):
-            raise Exception(f"PDF文件未生成: {pdf_path}")
-
-        pdf_filename = f"{base_name}.pdf"
-
-        return FileResponse(
-            pdf_path,
-            filename=pdf_filename,
-            media_type="application/pdf"
-        )
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if row:
+            return await download_history_file(row[0], 'PDF')
+        
+        raise HTTPException(status_code=404, detail="没有找到已保存的PDF文件，请先点击「填报」保存后再导出")
     except HTTPException:
         raise
     except Exception as e:
@@ -2727,7 +2941,7 @@ async def get_saved_files(template_id: str, 年月: Optional[str] = None):
 
         if formatted_ym:
             cursor.execute(
-                """SELECT id, 模板名称, 单位名称, 年月, Excel路径, PDF路径, "HTML路径", 保存时间
+                """SELECT id, 模板名称, 单位名称, 年月, Excel路径, PDF路径, 保存时间
                    FROM saved_exports WHERE 模板ID = %s AND 年月 = %s
                    ORDER BY 保存时间 DESC""",
                 (template_id, formatted_ym)
@@ -2735,7 +2949,7 @@ async def get_saved_files(template_id: str, 年月: Optional[str] = None):
             rows = cursor.fetchall()
         else:
             cursor.execute(
-                """SELECT id, 模板名称, 单位名称, 年月, Excel路径, PDF路径, "HTML路径", 保存时间
+                """SELECT id, 模板名称, 单位名称, 年月, Excel路径, PDF路径, 保存时间
                    FROM saved_exports WHERE 模板ID = %s
                    ORDER BY 保存时间 DESC LIMIT 50""",
                 (template_id,)
@@ -2759,6 +2973,11 @@ async def get_saved_files(template_id: str, 年月: Optional[str] = None):
             has_excel = False
             if excel_path and not excel_path.endswith('.docx') and os.path.exists(excel_path):
                 has_excel = True
+            # HTML文件检测：与Excel/Word同名，仅扩展名不同
+            has_html = False
+            if excel_path:
+                html_candidate = os.path.splitext(excel_path)[0] + '.html'
+                has_html = os.path.exists(html_candidate)
             results.append({
                 "ID": row[0],
                 "模板名称": row[1],
@@ -2766,9 +2985,9 @@ async def get_saved_files(template_id: str, 年月: Optional[str] = None):
                 "年月": row[3],
                 "有Excel": has_excel,
                 "有PDF": bool(pdf_path and os.path.exists(pdf_path)),
-                "有HTML": bool(row[6] and os.path.exists(row[6])),
+                "有HTML": has_html,
                 "有Word": has_word,
-                "保存时间": row[7].strftime("%Y-%m-%d %H:%M:%S") if hasattr(row[7], 'strftime') else str(row[7])
+                "保存时间": row[6].strftime("%Y-%m-%d %H:%M:%S") if hasattr(row[6], 'strftime') else str(row[6])
             })
         return {"成功": True, "数据": results}
     except Exception as e:
@@ -2812,7 +3031,7 @@ async def query_history(request: HistoryQueryRequest):
             conditions.append("保存时间 <= %s::date + interval '1 day'")
             params.append(request.截止日期)
         where = " AND ".join(conditions)
-        sql = f'SELECT id, 模板名称, 单位名称, 年月, 查询条件, Excel路径, PDF路径, "HTML路径", 保存时间 FROM saved_exports WHERE {where} ORDER BY 保存时间 DESC'
+        sql = f'SELECT id, 模板名称, 单位名称, 年月, 查询条件, Excel路径, PDF路径, 保存时间 FROM saved_exports WHERE {where} ORDER BY 保存时间 DESC'
         cursor.execute(sql, params)
         rows = cursor.fetchall()
         results = []
@@ -2833,8 +3052,7 @@ async def query_history(request: HistoryQueryRequest):
                 "Excel路径": row[5],
                 "PDF路径": pdf_path,
                 "Word路径": word_path,
-                "HTML路径": row[7],
-                "保存时间": row[8].strftime("%Y-%m-%d %H:%M:%S") if hasattr(row[8], 'strftime') else str(row[8])
+                "保存时间": row[7].strftime("%Y-%m-%d %H:%M:%S") if hasattr(row[7], 'strftime') else str(row[7])
             }
             results.append(entry)
         cursor.close()
@@ -2851,13 +3069,13 @@ async def download_history_file(record_id: int, format: str = "Excel", inline: i
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('SELECT Excel路径, PDF路径, "HTML路径" FROM saved_exports WHERE id = %s', (record_id,))
+        cursor.execute('SELECT "excel路径", "pdf路径" FROM saved_exports WHERE id = %s', (record_id,))
         row = cursor.fetchone()
         cursor.close()
         conn.close()
         if not row:
             raise HTTPException(status_code=404, detail="记录不存在")
-        excel_path, pdf_path, html_path = row[0], row[1], row[2]
+        excel_path, pdf_path = row[0], row[1]
         # Word格式：优先从Excel路径检测（Word模板时将docx路径存入Excel路径列）
         # 其次从PDF路径推导（兼容旧数据）
         word_path = None
@@ -2882,12 +3100,20 @@ async def download_history_file(record_id: int, format: str = "Excel", inline: i
             if inline:
                 response.headers["Content-Disposition"] = "inline"
             return response
-        if format == "HTML" and html_path and os.path.exists(html_path):
-            return FileResponse(
-                html_path,
-                media_type="text/html",
-                headers={"Content-Disposition": "inline"}
-            )
+        if format == "HTML":
+            # 查找与Excel/Word同名的HTML文件
+            html_path = None
+            if excel_path and os.path.exists(excel_path):
+                html_candidate = os.path.splitext(excel_path)[0] + '.html'
+                if os.path.exists(html_candidate):
+                    html_path = html_candidate
+            if html_path:
+                return FileResponse(
+                    html_path,
+                    filename=os.path.basename(html_path),
+                    media_type="text/html; charset=utf-8"
+                )
+            raise HTTPException(status_code=404, detail="HTML文件不存在，请先保存后重试")
         if excel_path and os.path.exists(excel_path):
             return FileResponse(
                 excel_path,

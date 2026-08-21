@@ -76,7 +76,7 @@ const router = createRouter({
         {
           path: "universal-template",
           name: "universalTemplate",
-          component: () => import("../views/template/UniversalTemplateSystem.vue"),
+          component: () => import("../views/template/TemplateManager.vue"),
           meta: {
             title: "通用模板系统",
             icon: "Files"
@@ -98,6 +98,24 @@ const router = createRouter({
           meta: {
             title: "用户管理",
             icon: "User"
+          }
+        },
+        {
+          path: "backup",
+          name: "systemBackup",
+          component: () => import("../views/system/SystemBackup.vue"),
+          meta: {
+            title: "系统自动备份",
+            icon: "Upload"
+          }
+        },
+        {
+          path: "snapshot-history",
+          name: "snapshotHistory",
+          component: () => import("../views/system/SnapshotHistory.vue"),
+          meta: {
+            title: "历史快照",
+            icon: "Timer"
           }
         },
         ]
@@ -166,21 +184,12 @@ const router = createRouter({
         icon: "Document"
       }
     },
-    // 绩效管理模块
+    // 绩效管理模块（其他子路由保留，仅绩效工资审批移到薪酬管理）
     {
       path: "/performance",
       name: "performance",
-      redirect: "/performance/pay-approval",
+      redirect: "/performance/pay-history",
       children: [
-        {
-          path: "pay-approval",
-          name: "performancePayApproval",
-          component: () => import("../views/performance/PerformancePayApproval.vue"),
-          meta: {
-            title: "绩效工资审批",
-            icon: "Document"
-          }
-        },
         {
           path: "pay-history",
           name: "performancePayHistory",
@@ -225,17 +234,7 @@ const router = createRouter({
             title: "聚合查询",
             icon: "Search"
           }
-        },
-        {
-          path: "test-table",
-          name: "testTable",
-          component: () => import("../views/performance/TestTable.vue"),
-          meta: {
-            title: "测试表格",
-            icon: "Document"
-          }
-        }
-      ]
+        },      ]
     },
     // 模块数据节点路由 - 匹配 /module-id/table-name 格式
     {
@@ -333,6 +332,72 @@ const router = createRouter({
       meta: {
         title: "清单模板",
         icon: "DocumentCopy"
+      }
+    },
+    // 薪酬管理模块
+    {
+      path: "/salary",
+      name: "salary",
+      redirect: "/salary/performance",
+      children: [
+        {
+          path: "performance",
+          name: "salaryPerformance",
+          redirect: "/salary/performance/approval",
+          meta: {
+            title: "绩效工资管理",
+            icon: "Money"
+          }
+        },
+        {
+          path: "performance/approval",
+          name: "salaryPerformanceApproval",
+          component: () => import("../views/salary/SalaryPerformanceApproval.vue"),
+          meta: {
+            title: "绩效工资审批",
+            icon: "Document"
+          }
+        }
+      ]
+    },
+    // 学校管理模块（含学生管理和考勤管理预留子路由）
+    {
+      path: "/school",
+      name: "school",
+      redirect: "/data/school_information_table",
+      children: [
+        {
+          path: "student",
+          name: "schoolStudent",
+          component: () => import("../views/school/SchoolPlaceholder.vue"),
+          meta: {
+            title: "学生管理",
+            icon: "User"
+          }
+        },
+        {
+          path: "attendance",
+          name: "schoolAttendance",
+          component: () => import("../views/school/SchoolPlaceholder.vue"),
+          meta: {
+            title: "考勤管理",
+            icon: "Calendar"
+          }
+        }
+      ],
+      meta: {
+        title: "学校管理",
+        icon: "School"
+      }
+    },
+    // 党组织管理模块
+    {
+      path: "/party",
+      name: "party",
+      redirect: "/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+      meta: {
+        title: "党组织管理",
+        icon: "Flag"
       }
     },
     // 报表管理子模块路由

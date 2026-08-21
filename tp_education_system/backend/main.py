@@ -20,6 +20,8 @@ from routes.menu_routes_new import router as menu_router
 from routes.performance_pay_routes import router as performance_pay_router
 from routes.performance_pay_history_routes import router as performance_pay_history_router
 from routes.performance_pay_template import router as performance_pay_template_router
+from routes.performance_pay_standards_routes import router as performance_pay_standards_router
+from routes.party_statistics_routes import router as party_statistics_router
 from routes.aggregate_query_routes import router as aggregate_query_router
 from routes.unit_hierarchy_routes import router as unit_hierarchy_router
 from routes.template_data_fill_routes import router as template_data_fill_router
@@ -170,6 +172,9 @@ print("[OK] 菜单管理路由已注册")
 app.include_router(performance_pay_router)
 app.include_router(performance_pay_history_router)
 app.include_router(performance_pay_template_router, prefix="/api/performance-pay-approval", tags=["绩效审批表模板"])
+app.include_router(performance_pay_standards_router)
+
+app.include_router(party_statistics_router)
 print("[OK] 绩效工资审批路由已注册")
 
 # 注册聚合查询路由
@@ -187,6 +192,13 @@ print("[OK] 单位层级路由已注册")
 from routes.file_manager_routes import router as file_manager_router
 app.include_router(file_manager_router)
 print("[OK] 文件管理路由已注册")
+
+# 注册系统备份与更新路由
+from routes.backup_routes import router as backup_router
+from routes.snapshot_routes import router as snapshot_router
+app.include_router(backup_router)
+app.include_router(snapshot_router)
+print("[OK] 系统备份与更新路由已注册")
 
 # 注册自动表管理框架（新框架 - 零配置）
 from utils.auto_table_framework import create_auto_table_routes, create_dynamic_auto_table_router

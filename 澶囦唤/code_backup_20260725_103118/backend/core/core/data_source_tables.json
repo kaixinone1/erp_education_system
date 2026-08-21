@@ -1,0 +1,2068 @@
+{
+  "teacher_basic_info": {
+    "name": "教师基础信息",
+    "description": "教师基础信息表",
+    "fields": {
+      "id": "主键ID",
+      "name": "姓名",
+      "id_card": "身份证号码",
+      "gender": "性别",
+      "birth_date": "出生日期",
+      "nation": "民族",
+      "native_place": "籍贯",
+      "political_status": "政治面貌",
+      "join_work_date": "参加工作时间",
+      "education": "学历",
+      "degree": "学位",
+      "major": "专业",
+      "graduate_school": "毕业院校",
+      "graduate_date": "毕业时间",
+      "phone": "联系电话",
+      "address": "家庭住址",
+      "employment_status": "任职状态",
+      "unit": "所在单位",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "基础信息",
+    "is_active": true
+  },
+  "post_appointment_info": {
+    "name": "岗位聘任信息",
+    "description": "教师岗位聘任信息表",
+    "fields": {
+      "id": "主键ID",
+      "id_card": "身份证号码",
+      "post": "岗位名称",
+      "post_level": "岗位级别",
+      "post_date": "聘任日期",
+      "post_end_date": "聘任结束日期",
+      "post_status": "聘任状态",
+      "salary_level": "工资级别",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "岗位信息",
+    "is_active": true
+  },
+  "teacher_personal_identity": {
+    "name": "教师个人身份",
+    "description": "教师个人身份信息表",
+    "fields": {
+      "id": "主键ID",
+      "id_card": "身份证号码",
+      "ge_ren_shen_fen": "个人身份",
+      "is_teacher": "是否教师",
+      "is_cadre": "是否干部",
+      "is_worker": "是否工人",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "身份信息",
+    "is_active": true
+  },
+  "retirement_info": {
+    "name": "退休补充信息",
+    "description": "教师退休补充信息表",
+    "fields": {
+      "id": "主键ID",
+      "id_card": "身份证号码",
+      "retirement_date": "退休日期",
+      "retirement_type": "退休类型",
+      "retirement_reason": "退休原因",
+      "pension_standard": "养老金标准",
+      "pension_amount": "养老金金额",
+      "retirement_unit": "退休单位",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "退休信息",
+    "is_active": true
+  },
+  "retirement_report_data": {
+    "name": "退休呈报数据",
+    "description": "退休呈报表数据",
+    "fields": {
+      "id": "主键ID",
+      "name": "姓名",
+      "id_card": "身份证号码",
+      "gender": "性别",
+      "birth_date": "出生日期",
+      "age": "年龄",
+      "unit": "所在单位",
+      "post": "岗位名称",
+      "post_level": "岗位级别",
+      "retirement_date": "退休日期",
+      "retirement_type": "退休类型",
+      "pension_amount": "养老金金额",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "退休信息",
+    "is_active": true
+  },
+  "performance_pay_approval": {
+    "name": "绩效工资审批",
+    "description": "绩效工资审批表",
+    "fields": {
+      "id": "主键ID",
+      "year_month": "年月",
+      "name": "姓名",
+      "id_card": "身份证号码",
+      "unit": "所在单位",
+      "post": "岗位名称",
+      "performance_amount": "绩效工资",
+      "subsidy_amount": "补贴金额",
+      "total_amount": "总金额",
+      "status": "审批状态",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "绩效工资",
+    "is_active": true
+  },
+  "performance_pay_standards": {
+    "name": "绩效工资标准",
+    "description": "绩效工资标准表",
+    "fields": {
+      "id": "主键ID",
+      "post_level": "岗位级别",
+      "performance_standard": "绩效标准",
+      "subsidy_standard": "补贴标准",
+      "effective_date": "生效日期",
+      "created_at": "创建时间",
+      "updated_at": "更新时间"
+    },
+    "category": "绩效工资",
+    "is_active": true
+  },
+  "dict_dictionary": {
+    "name": "任职状态字典",
+    "description": "教师任职状态字典表",
+    "fields": {
+      "id": "主键ID",
+      "employment_status": "任职状态",
+      "status_code": "状态代码",
+      "sort_order_sequence": "排序序号",
+      "shi_fou_you_xiao": "是否有效"
+    },
+    "category": "字典",
+    "is_dict": true,
+    "is_active": true
+  },
+  "dict_dictionary_personal": {
+    "name": "岗位名称字典",
+    "description": "教师岗位名称字典表",
+    "fields": {
+      "id": "主键ID",
+      "post": "岗位名称",
+      "post_code": "岗位代码",
+      "sort_order_sequence": "排序序号",
+      "shi_fou_you_xiao": "是否有效"
+    },
+    "category": "字典",
+    "is_dict": true,
+    "is_active": true
+  },
+  "dict_education_level_dictionary": {
+    "name": "学历字典",
+    "description": "学历层次字典表",
+    "fields": {
+      "id": "主键ID",
+      "education": "学历",
+      "education_code": "学历代码",
+      "sort_order_sequence": "排序序号"
+    },
+    "category": "字典",
+    "is_dict": true,
+    "is_active": true
+  },
+  "dict_unit_dictionary": {
+    "name": "单位字典",
+    "description": "学校单位字典表",
+    "fields": {
+      "id": "主键ID",
+      "unit": "单位名称",
+      "unit_code": "单位代码",
+      "sort_order_sequence": "排序序号"
+    },
+    "category": "字典",
+    "is_dict": true,
+    "is_active": true
+  },
+  "teacher_education_record": {
+    "name": "教师学历记录",
+    "description": "教师学历教育记录表",
+    "fields": {
+      "id": "主键ID",
+      "id_card": "身份证号码",
+      "education": "学历",
+      "degree": "学位",
+      "major": "专业",
+      "graduate_school": "毕业院校",
+      "graduate_date": "毕业时间",
+      "education_type": "学历类型"
+    },
+    "category": "教育信息",
+    "is_active": true
+  },
+  "teacher_certificate_info": {
+    "name": "教师资格信息",
+    "description": "教师资格证信息表",
+    "fields": {
+      "id": "主键ID",
+      "id_card": "身份证号码",
+      "certificate_type": "资格证类型",
+      "certificate_no": "资格证编号",
+      "certificate_date": "取得日期",
+      "certificate_level": "资格证级别"
+    },
+    "category": "资格信息",
+    "is_active": true
+  },
+  "salary_data": {
+    "name": "工资数据",
+    "description": "教师工资数据表",
+    "fields": {
+      "id": "主键ID",
+      "id_card": "身份证号码",
+      "year_month": "年月",
+      "basic_salary": "基本工资",
+      "performance_salary": "绩效工资",
+      "subsidy": "补贴",
+      "total_salary": "总工资"
+    },
+    "category": "工资信息",
+    "is_active": true
+  },
+  "business_checklist": {
+    "name": "business_checklist",
+    "description": "business_checklist表",
+    "fields": {
+      "id": "id",
+      "清单名称": "清单名称",
+      "触发条件": "触发条件",
+      "任务项列表": "任务项列表",
+      "是否有效": "是否有效",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "关联模板ID": "关联模板ID"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "business_checklist_instances": {
+    "name": "business_checklist_instances",
+    "description": "business_checklist_instances表",
+    "fields": {
+      "id": "id",
+      "模板id": "模板id",
+      "实例编码": "实例编码",
+      "关联对象id": "关联对象id",
+      "关联对象类型": "关联对象类型",
+      "关联对象名称": "关联对象名称",
+      "关联对象编码": "关联对象编码",
+      "触发事件": "触发事件",
+      "状态": "状态",
+      "完成进度": "完成进度",
+      "总任务数": "总任务数",
+      "已完成数": "已完成数",
+      "逾期任务数": "逾期任务数",
+      "创建时间": "创建时间",
+      "截止时间": "截止时间",
+      "实际完成时间": "实际完成时间",
+      "处理人": "处理人",
+      "备注": "备注",
+      "是否归档": "是否归档",
+      "归档时间": "归档时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "business_checklist_item_records": {
+    "name": "business_checklist_item_records",
+    "description": "business_checklist_item_records表",
+    "fields": {
+      "id": "id",
+      "实例id": "实例id",
+      "任务项id": "任务项id",
+      "任务名称": "任务名称",
+      "完成状态": "完成状态",
+      "完成时间": "完成时间",
+      "操作人": "操作人",
+      "操作人id": "操作人id",
+      "处理说明": "处理说明",
+      "附件列表": "附件列表",
+      "关联数据记录id": "关联数据记录id",
+      "创建时间": "创建时间",
+      "更新时间": "更新时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "business_checklist_items": {
+    "name": "business_checklist_items",
+    "description": "business_checklist_items表",
+    "fields": {
+      "id": "id",
+      "模板id": "模板id",
+      "任务序号": "任务序号",
+      "任务编码": "任务编码",
+      "任务名称": "任务名称",
+      "任务说明": "任务说明",
+      "是否必填": "是否必填",
+      "办理时限天数": "办理时限天数",
+      "时限计算方式": "时限计算方式",
+      "提醒方式": "提醒方式",
+      "提醒提前天数": "提醒提前天数",
+      "关联文档模板id": "关联文档模板id",
+      "关联数据表": "关联数据表",
+      "关联数据字段": "关联数据字段",
+      "前置任务id": "前置任务id",
+      "允许批量处理": "允许批量处理",
+      "排序": "排序",
+      "创建时间": "创建时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "business_checklist_templates": {
+    "name": "business_checklist_templates",
+    "description": "business_checklist_templates表",
+    "fields": {
+      "id": "id",
+      "模板编码": "模板编码",
+      "模板名称": "模板名称",
+      "模板描述": "模板描述",
+      "适用对象类型": "适用对象类型",
+      "业务类型": "业务类型",
+      "状态": "状态",
+      "触发条件配置": "触发条件配置",
+      "自动推送": "自动推送",
+      "创建人": "创建人",
+      "创建时间": "创建时间",
+      "更新时间": "更新时间",
+      "截止天数": "截止天数"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_instances": {
+    "name": "checklist_instances",
+    "description": "checklist_instances表",
+    "fields": {
+      "id": "id",
+      "模板id": "模板id",
+      "关联对象id": "关联对象id",
+      "关联对象类型": "关联对象类型",
+      "关联对象名称": "关联对象名称",
+      "触发条件详情": "触发条件详情",
+      "状态": "状态",
+      "完成进度": "完成进度",
+      "创建时间": "创建时间",
+      "截止时间": "截止时间",
+      "完成时间": "完成时间",
+      "备注": "备注"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_item_records": {
+    "name": "checklist_item_records",
+    "description": "checklist_item_records表",
+    "fields": {
+      "id": "id",
+      "实例id": "实例id",
+      "任务项id": "任务项id",
+      "完成状态": "完成状态",
+      "完成时间": "完成时间",
+      "操作人": "操作人",
+      "备注": "备注",
+      "创建时间": "创建时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_template_items": {
+    "name": "checklist_template_items",
+    "description": "checklist_template_items表",
+    "fields": {
+      "id": "id",
+      "模板id": "模板id",
+      "任务序号": "任务序号",
+      "任务名称": "任务名称",
+      "任务说明": "任务说明",
+      "是否必填": "是否必填",
+      "关联文档模板id": "关联文档模板id",
+      "前置任务id": "前置任务id",
+      "办理时限天数": "办理时限天数",
+      "时限提醒方式": "时限提醒方式",
+      "排序": "排序",
+      "创建时间": "创建时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_templates": {
+    "name": "checklist_templates",
+    "description": "checklist_templates表",
+    "fields": {
+      "id": "id",
+      "模板名称": "模板名称",
+      "模板描述": "模板描述",
+      "适用对象": "适用对象",
+      "状态": "状态",
+      "创建时间": "创建时间",
+      "更新时间": "更新时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_trigger_conditions": {
+    "name": "checklist_trigger_conditions",
+    "description": "checklist_trigger_conditions表",
+    "fields": {
+      "id": "id",
+      "模板id": "模板id",
+      "条件名称": "条件名称",
+      "条件类型": "条件类型",
+      "条件字段": "条件字段",
+      "操作符": "操作符",
+      "条件值": "条件值",
+      "自定义条件sql": "自定义条件sql",
+      "排序": "排序",
+      "创建时间": "创建时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_trigger_type_defs": {
+    "name": "checklist_trigger_type_defs",
+    "description": "checklist_trigger_type_defs表",
+    "fields": {
+      "id": "id",
+      "类型编码": "类型编码",
+      "类型名称": "类型名称",
+      "类型分类": "类型分类",
+      "描述": "描述",
+      "适用表名": "适用表名",
+      "字段名": "字段名",
+      "字段类型": "字段类型",
+      "操作符列表": "操作符列表",
+      "默认值": "默认值",
+      "是否系统内置": "是否系统内置",
+      "是否允许自定义": "是否允许自定义",
+      "排序": "排序",
+      "创建时间": "创建时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "checklist_trigger_types": {
+    "name": "checklist_trigger_types",
+    "description": "checklist_trigger_types表",
+    "fields": {
+      "id": "id",
+      "类型编码": "类型编码",
+      "类型名称": "类型名称",
+      "描述": "描述",
+      "默认字段": "默认字段",
+      "可用操作符": "可用操作符",
+      "是否系统内置": "是否系统内置",
+      "排序": "排序"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "custom_todo_stats": {
+    "name": "custom_todo_stats",
+    "description": "custom_todo_stats表",
+    "fields": {
+      "id": "id",
+      "todo_item_id": "todo_item_id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "create_time": "create_time",
+      "start_process_time": "start_process_time",
+      "progress_update_time": "progress_update_time",
+      "complete_time": "complete_time",
+      "return_time": "return_time",
+      "current_progress": "current_progress",
+      "total_tasks": "total_tasks",
+      "completed_tasks": "completed_tasks",
+      "status": "status",
+      "notes": "notes",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "return_reason": "return_reason"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "data_filling_field_mappings": {
+    "name": "data_filling_field_mappings",
+    "description": "data_filling_field_mappings表",
+    "fields": {
+      "mapping_id": "mapping_id",
+      "template_id": "template_id",
+      "field_name": "field_name",
+      "field_position": "field_position",
+      "source_table": "source_table",
+      "source_field": "source_field",
+      "stat_type": "stat_type",
+      "stat_formula": "stat_formula",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "death_registration_stats": {
+    "name": "death_registration_stats",
+    "description": "death_registration_stats表",
+    "fields": {
+      "id": "id",
+      "todo_item_id": "todo_item_id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "create_time": "create_time",
+      "start_process_time": "start_process_time",
+      "progress_update_time": "progress_update_time",
+      "complete_time": "complete_time",
+      "return_time": "return_time",
+      "current_progress": "current_progress",
+      "total_tasks": "total_tasks",
+      "completed_tasks": "completed_tasks",
+      "status": "status",
+      "notes": "notes",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "return_reason": "return_reason"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "delayed_retirement_records": {
+    "name": "delayed_retirement_records",
+    "description": "delayed_retirement_records表",
+    "fields": {
+      "id": "id",
+      "教师id": "教师id",
+      "批准日期": "批准日期",
+      "退休年龄": "退休年龄",
+      "备注": "备注",
+      "created_at": "created_at",
+      "姓名": "姓名",
+      "身份证号码": "身份证号码"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "dict_education_type_dictionary": {
+    "name": "dict_education_type_dictionary",
+    "description": "dict_education_type_dictionary表",
+    "fields": {
+      "id": "id",
+      "education_type": "education_type",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "dict_grade_dictionary": {
+    "name": "dict_grade_dictionary",
+    "description": "dict_grade_dictionary表",
+    "fields": {
+      "id": "id",
+      "post_level": "post_level",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "dict_personal_identity_dictionary": {
+    "name": "dict_personal_identity_dictionary",
+    "description": "dict_personal_identity_dictionary表",
+    "fields": {
+      "id": "id",
+      "ge_ren_shen_fen": "ge_ren_shen_fen",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "dict_salary_dictionary": {
+    "name": "dict_salary_dictionary",
+    "description": "dict_salary_dictionary表",
+    "fields": {
+      "id": "id",
+      "post_1": "post_1",
+      "month_performance_salary": "month_performance_salary",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "dict_subsidy_dictionary": {
+    "name": "dict_subsidy_dictionary",
+    "description": "dict_subsidy_dictionary表",
+    "fields": {
+      "id": "id",
+      "subsidy_1": "subsidy_1",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "dict_teacher_dictionary": {
+    "name": "dict_teacher_dictionary",
+    "description": "dict_teacher_dictionary表",
+    "fields": {
+      "id": "id",
+      "category": "category",
+      "field_11": "field_11",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "document_templates": {
+    "name": "document_templates",
+    "description": "document_templates表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "template_name": "template_name",
+      "file_path": "file_path",
+      "file_name": "file_name",
+      "description": "description",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "intermediate_table": "intermediate_table",
+      "intermediate_table_cn": "intermediate_table_cn"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "employee_tag_relations": {
+    "name": "employee_tag_relations",
+    "description": "employee_tag_relations表",
+    "fields": {
+      "id": "id",
+      "employee_id": "employee_id",
+      "tag_id": "tag_id",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "fill_records": {
+    "name": "fill_records",
+    "description": "fill_records表",
+    "fields": {
+      "record_id": "record_id",
+      "template_id": "template_id",
+      "fill_type": "fill_type",
+      "fill_target": "fill_target",
+      "teacher_id": "teacher_id",
+      "fill_date": "fill_date",
+      "filled_by": "filled_by",
+      "status": "status",
+      "file_path": "file_path",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "filter_condition_templates": {
+    "name": "filter_condition_templates",
+    "description": "filter_condition_templates表",
+    "fields": {
+      "id": "id",
+      "category": "category",
+      "name": "name",
+      "field_name": "field_name",
+      "field_value": "field_value",
+      "filter_condition": "filter_condition",
+      "sort_order": "sort_order",
+      "is_active": "is_active",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "id_card": {
+    "name": "id_card",
+    "description": "id_card表",
+    "fields": {
+      "id": "id",
+      "name": "name",
+      "id_card": "id_card",
+      "salary": "salary",
+      "performance_salary": "performance_salary",
+      "subsidy": "subsidy",
+      "post": "post",
+      "xin_ji_zhi": "xin_ji_zhi",
+      "year_assessment": "year_assessment",
+      "year": "year",
+      "salary_year": "salary_year",
+      "xiang_cun_ding_xiang": "xiang_cun_ding_xiang",
+      "retired": "retired",
+      "party_member": "party_member",
+      "dang_ji": "dang_ji",
+      "league_member": "league_member",
+      "tuan_ji": "tuan_ji",
+      "masses": "masses",
+      "active": "active",
+      "diao_chu": "diao_chu",
+      "diao_li": "diao_li",
+      "ci_zhi": "ci_zhi",
+      "jie_diao": "jie_diao",
+      "li_xiu": "li_xiu",
+      "retired_1": "retired_1",
+      "si_wang": "si_wang",
+      "bing_xiu": "bing_xiu",
+      "bing_jia": "bing_jia",
+      "zu_zhi_guan_xi_gua_kao": "zu_zhi_guan_xi_gua_kao",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "info": {
+    "name": "info",
+    "description": "info表",
+    "fields": {
+      "id": "id",
+      "id_card": "id_card",
+      "name": "name",
+      "job_title": "job_title",
+      "post_2": "post_2",
+      "post_level_1": "post_level_1",
+      "post_time": "post_time",
+      "field_81": "field_81",
+      "field_82": "field_82",
+      "professional_title_3": "professional_title_3",
+      "professional_title_time": "professional_title_time",
+      "field_70": "field_70",
+      "field_85": "field_85",
+      "remark": "remark",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "intermediate_tables": {
+    "name": "intermediate_tables",
+    "description": "intermediate_tables表",
+    "fields": {
+      "id": "id",
+      "table_name": "table_name",
+      "table_name_cn": "table_name_cn",
+      "description": "description",
+      "fields": "fields",
+      "is_active": "is_active",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "navigation_backups": {
+    "name": "navigation_backups",
+    "description": "navigation_backups表",
+    "fields": {
+      "id": "id",
+      "backup_name": "backup_name",
+      "modules_data": "modules_data",
+      "source": "source",
+      "description": "description",
+      "created_at": "created_at",
+      "created_by": "created_by"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "navigation_modules": {
+    "name": "navigation_modules",
+    "description": "navigation_modules表",
+    "fields": {
+      "id": "id",
+      "module_id": "module_id",
+      "title": "title",
+      "icon": "icon",
+      "path": "path",
+      "type": "type",
+      "parent_id": "parent_id",
+      "sort_order": "sort_order",
+      "is_active": "is_active",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "table_name": "table_name",
+      "api_endpoint": "api_endpoint",
+      "component": "component"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "octogenarian_elderly_subsidy_info": {
+    "name": "octogenarian_elderly_subsidy_info",
+    "description": "octogenarian_elderly_subsidy_info表",
+    "fields": {
+      "id": "id",
+      "sequence": "sequence",
+      "name": "name",
+      "gender": "gender",
+      "id_card": "id_card",
+      "retired_unit": "retired_unit",
+      "household": "household",
+      "field_53": "field_53",
+      "account": "account",
+      "field_55": "field_55",
+      "contact_phone_1": "contact_phone_1",
+      "name_1": "name_1",
+      "field_58": "field_58",
+      "contact_phone_2": "contact_phone_2",
+      "field_60": "field_60",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "octogenarian_subsidy_stats": {
+    "name": "octogenarian_subsidy_stats",
+    "description": "octogenarian_subsidy_stats表",
+    "fields": {
+      "id": "id",
+      "todo_item_id": "todo_item_id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "create_time": "create_time",
+      "start_process_time": "start_process_time",
+      "progress_update_time": "progress_update_time",
+      "complete_time": "complete_time",
+      "return_time": "return_time",
+      "current_progress": "current_progress",
+      "total_tasks": "total_tasks",
+      "completed_tasks": "completed_tasks",
+      "status": "status",
+      "notes": "notes",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "return_reason": "return_reason"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "pending_triggers": {
+    "name": "pending_triggers",
+    "description": "pending_triggers表",
+    "fields": {
+      "id": "id",
+      "trigger_time": "trigger_time",
+      "trigger_reason": "trigger_reason",
+      "listen_table": "listen_table",
+      "listen_field": "listen_field",
+      "old_value": "old_value",
+      "new_value": "new_value",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "template_code": "template_code",
+      "template_name": "template_name",
+      "status": "status",
+      "handler": "handler",
+      "handle_time": "handle_time",
+      "handle_note": "handle_note",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "performance_pay_approval_detail": {
+    "name": "performance_pay_approval_detail",
+    "description": "performance_pay_approval_detail表",
+    "fields": {
+      "id": "id",
+      "approval_id": "approval_id",
+      "category": "category",
+      "level_name": "level_name",
+      "people_count": "people_count",
+      "monthly_standard": "monthly_standard",
+      "subtotal": "subtotal",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "performance_pay_remarks": {
+    "name": "performance_pay_remarks",
+    "description": "performance_pay_remarks表",
+    "fields": {
+      "id": "id",
+      "report_period": "report_period",
+      "remark_type": "remark_type",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "original_status": "original_status",
+      "new_status": "new_status",
+      "original_post": "original_post",
+      "new_post": "new_post",
+      "change_category": "change_category",
+      "change_detail": "change_detail",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "person_tags": {
+    "name": "person_tags",
+    "description": "person_tags表",
+    "fields": {
+      "id": "id",
+      "tag_name": "tag_name",
+      "tag_name_cn": "tag_name_cn",
+      "description": "description",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "personal_dict_dictionary": {
+    "name": "personal_dict_dictionary",
+    "description": "personal_dict_dictionary表",
+    "fields": {
+      "id": "id",
+      "biao_qian": "biao_qian",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "personal_statistics": {
+    "name": "personal_statistics",
+    "description": "personal_statistics表",
+    "fields": {
+      "id": "id",
+      "id_card": "id_card",
+      "name": "name",
+      "field_63": "field_63",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "personnel_change_records": {
+    "name": "personnel_change_records",
+    "description": "personnel_change_records表",
+    "fields": {
+      "id": "id",
+      "teacher_id": "teacher_id",
+      "change_type": "change_type",
+      "change_date": "change_date",
+      "effective_month": "effective_month",
+      "cancel_performance_month": "cancel_performance_month",
+      "remarks": "remarks",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "position_legacy_issues": {
+    "name": "position_legacy_issues",
+    "description": "position_legacy_issues表",
+    "fields": {
+      "id": "id",
+      "teacher_id": "teacher_id",
+      "amount": "amount",
+      "effective_month": "effective_month",
+      "expiry_month": "expiry_month",
+      "is_active": "is_active",
+      "remarks": "remarks",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "query_configs": {
+    "name": "query_configs",
+    "description": "query_configs表",
+    "fields": {
+      "id": "id",
+      "name": "name",
+      "config": "config",
+      "tags": "tags",
+      "target_table": "target_table",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_calculate_fields": {
+    "name": "report_calculate_fields",
+    "description": "report_calculate_fields表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "field_name": "field_name",
+      "formula": "formula",
+      "description": "description",
+      "depends_on_fields": "depends_on_fields",
+      "sort_order": "sort_order",
+      "is_enabled": "is_enabled",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_data_remarks": {
+    "name": "report_data_remarks",
+    "description": "report_data_remarks表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "report_period": "report_period",
+      "remark_type": "remark_type",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "change_content": "change_content",
+      "change_reason": "change_reason",
+      "created_at": "created_at",
+      "created_by": "created_by"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_field_sources": {
+    "name": "report_field_sources",
+    "description": "report_field_sources表",
+    "fields": {
+      "id": "id",
+      "field_id": "field_id",
+      "source_type": "source_type",
+      "source_config": "source_config",
+      "sort_order": "sort_order",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_generation_logs": {
+    "name": "report_generation_logs",
+    "description": "report_generation_logs表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "report_period": "report_period",
+      "generation_params": "generation_params",
+      "generated_file_path": "generated_file_path",
+      "generated_by": "generated_by",
+      "generated_at": "generated_at",
+      "status": "status",
+      "error_message": "error_message"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_tag_filters": {
+    "name": "report_tag_filters",
+    "description": "report_tag_filters表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "tag_id": "tag_id",
+      "tag_name": "tag_name",
+      "logic_type": "logic_type",
+      "logic_operator": "logic_operator",
+      "sort_order": "sort_order",
+      "is_required": "is_required",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_template_fields": {
+    "name": "report_template_fields",
+    "description": "report_template_fields表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "field_name": "field_name",
+      "field_label": "field_label",
+      "field_type": "field_type",
+      "placeholder": "placeholder",
+      "sort_order": "sort_order",
+      "is_enabled": "is_enabled",
+      "is_visible": "is_visible",
+      "width": "width",
+      "format_string": "format_string",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "report_templates": {
+    "name": "report_templates",
+    "description": "report_templates表",
+    "fields": {
+      "id": "id",
+      "template_name": "template_name",
+      "template_code": "template_code",
+      "template_type": "template_type",
+      "description": "description",
+      "file_format": "file_format",
+      "template_file_path": "template_file_path",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "created_by": "created_by",
+      "updated_by": "updated_by"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "retirement_approval_stats": {
+    "name": "retirement_approval_stats",
+    "description": "retirement_approval_stats表",
+    "fields": {
+      "id": "id",
+      "todo_item_id": "todo_item_id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "create_time": "create_time",
+      "start_process_time": "start_process_time",
+      "progress_update_time": "progress_update_time",
+      "complete_time": "complete_time",
+      "return_time": "return_time",
+      "current_progress": "current_progress",
+      "total_tasks": "total_tasks",
+      "completed_tasks": "completed_tasks",
+      "status": "status",
+      "notes": "notes",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "return_reason": "return_reason"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "retirement_cert_records": {
+    "name": "retirement_cert_records",
+    "description": "retirement_cert_records表",
+    "fields": {
+      "id": "id",
+      "教师id": "教师id",
+      "教师姓名": "教师姓名",
+      "签收人": "签收人",
+      "签收日期": "签收日期",
+      "created_at": "created_at",
+      "签发日期": "签发日期",
+      "退休证编号": "退休证编号",
+      "备注": "备注"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "retirement_certificate_data": {
+    "name": "retirement_certificate_data",
+    "description": "retirement_certificate_data表",
+    "fields": {
+      "id": "id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "id_card": "id_card",
+      "recipient_name": "recipient_name",
+      "receive_date": "receive_date",
+      "certificate_number": "certificate_number",
+      "remarks": "remarks",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "retirement_estimate": {
+    "name": "retirement_estimate",
+    "description": "retirement_estimate表",
+    "fields": {
+      "id": "id",
+      "teacher_id": "teacher_id",
+      "name": "name",
+      "id_card": "id_card",
+      "gender": "gender",
+      "birth_date": "birth_date",
+      "is_cadre": "is_cadre",
+      "original_retirement_date": "original_retirement_date",
+      "delay_months": "delay_months",
+      "new_retirement_date": "new_retirement_date",
+      "estimate_type": "estimate_type",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "retirement_reminder_stats": {
+    "name": "retirement_reminder_stats",
+    "description": "retirement_reminder_stats表",
+    "fields": {
+      "id": "id",
+      "todo_item_id": "todo_item_id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "create_time": "create_time",
+      "start_process_time": "start_process_time",
+      "progress_update_time": "progress_update_time",
+      "complete_time": "complete_time",
+      "return_time": "return_time",
+      "current_progress": "current_progress",
+      "total_tasks": "total_tasks",
+      "completed_tasks": "completed_tasks",
+      "status": "status",
+      "notes": "notes",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "return_reason": "return_reason"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "retirement_report_form": {
+    "name": "retirement_report_form",
+    "description": "retirement_report_form表",
+    "fields": {
+      "id": "id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "gender": "gender",
+      "birth_date": "birth_date",
+      "id_card": "id_card",
+      "ethnicity": "ethnicity",
+      "native_place": "native_place",
+      "education": "education",
+      "graduation_school": "graduation_school",
+      "major": "major",
+      "degree": "degree",
+      "work_start_date": "work_start_date",
+      "work_unit": "work_unit",
+      "position": "position",
+      "title": "title",
+      "age": "age",
+      "work_years": "work_years",
+      "retirement_date": "retirement_date",
+      "contact_phone": "contact_phone",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "is_only_child": "is_only_child",
+      "join_party_date": "join_party_date",
+      "current_address": "current_address",
+      "work_experience": "work_experience",
+      "retirement_reason": "retirement_reason",
+      "family_members": "family_members",
+      "retirement_address": "retirement_address",
+      "pension_unit": "pension_unit",
+      "birth_date_display": "birth_date_display",
+      "work_start_date_display": "work_start_date_display",
+      "work_years_display": "work_years_display"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "school_information_table": {
+    "name": "school_information_table",
+    "description": "school_information_table表",
+    "fields": {
+      "id": "id",
+      "school": "school",
+      "credit_code": "credit_code",
+      "legal_person": "legal_person",
+      "school_address": "school_address",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "statistics": {
+    "name": "statistics",
+    "description": "statistics表",
+    "fields": {
+      "id": "id",
+      "id_card": "id_card",
+      "name": "name",
+      "field_65": "field_65",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "system_messages": {
+    "name": "system_messages",
+    "description": "system_messages表",
+    "fields": {
+      "id": "id",
+      "user_id": "user_id",
+      "title": "title",
+      "content": "content",
+      "message_type": "message_type",
+      "related_type": "related_type",
+      "related_id": "related_id",
+      "is_read": "is_read",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "table_field_relations": {
+    "name": "table_field_relations",
+    "description": "table_field_relations表",
+    "fields": {
+      "id": "id",
+      "table_name": "table_name",
+      "表名": "表名",
+      "field_name": "field_name",
+      "字段名": "字段名",
+      "数据类型": "数据类型",
+      "关联类型": "关联类型",
+      "关联表": "关联表",
+      "关联字段": "关联字段",
+      "关联显示字段": "关联显示字段",
+      "字典值列表": "字典值列表",
+      "字典值数量": "字典值数量",
+      "创建时间": "创建时间",
+      "更新时间": "更新时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "teacher_certificate_info_backup": {
+    "name": "teacher_certificate_info_backup",
+    "description": "teacher_certificate_info_backup表",
+    "fields": {
+      "id": "id",
+      "name": "name",
+      "id_card": "id_card",
+      "code": "code",
+      "date": "date",
+      "field_5": "field_5",
+      "field_6": "field_6",
+      "field_7": "field_7",
+      "field_8": "field_8",
+      "remark": "remark",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "teacher_title_info": {
+    "name": "teacher_title_info",
+    "description": "teacher_title_info表",
+    "fields": {
+      "id": "id",
+      "name": "name",
+      "id_card_1": "id_card_1",
+      "professional_title_1": "professional_title_1",
+      "unit_2": "unit_2",
+      "field_70": "field_70",
+      "time": "time",
+      "unit_3": "unit_3",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "teacher_training_records": {
+    "name": "teacher_training_records",
+    "description": "teacher_training_records表",
+    "fields": {
+      "id": "id",
+      "teacher_id": "teacher_id",
+      "培训名称": "培训名称",
+      "培训机构": "培训机构",
+      "培训开始日期": "培训开始日期",
+      "培训结束日期": "培训结束日期",
+      "培训时长": "培训时长",
+      "培训证书": "培训证书",
+      "备注": "备注",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "teacher_unit": {
+    "name": "teacher_unit",
+    "description": "teacher_unit表",
+    "fields": {
+      "id": "id",
+      "name": "name",
+      "id_card": "id_card",
+      "unit_1": "unit_1",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_auto_fill_rules": {
+    "name": "template_auto_fill_rules",
+    "description": "template_auto_fill_rules表",
+    "fields": {
+      "id": "id",
+      "label_pattern": "label_pattern",
+      "fill_type": "fill_type",
+      "date_format": "date_format",
+      "position": "position",
+      "enabled": "enabled",
+      "description": "description",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_configs": {
+    "name": "template_configs",
+    "description": "template_configs表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "template_name": "template_name",
+      "version": "version",
+      "description": "description",
+      "category": "category",
+      "config_json": "config_json",
+      "is_active": "is_active",
+      "created_by": "created_by",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_data_records": {
+    "name": "template_data_records",
+    "description": "template_data_records表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "year": "year",
+      "month": "month",
+      "data_json": "data_json",
+      "status": "status",
+      "created_by": "created_by",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_field_mapping": {
+    "name": "template_field_mapping",
+    "description": "template_field_mapping表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "template_name": "template_name",
+      "placeholder_name": "placeholder_name",
+      "intermediate_table": "intermediate_table",
+      "intermediate_table_cn": "intermediate_table_cn",
+      "intermediate_field": "intermediate_field",
+      "intermediate_field_cn": "intermediate_field_cn",
+      "is_active": "is_active",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "aggregate_func": "aggregate_func",
+      "filter_condition": "filter_condition"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_field_mappings": {
+    "name": "template_field_mappings",
+    "description": "template_field_mappings表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "field_name": "field_name",
+      "field_label": "field_label",
+      "field_type": "field_type",
+      "position_type": "position_type",
+      "position_data": "position_data",
+      "default_value": "default_value",
+      "data_source": "data_source",
+      "sort_order": "sort_order",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_field_values": {
+    "name": "template_field_values",
+    "description": "template_field_values表",
+    "fields": {
+      "id": "id",
+      "record_id": "record_id",
+      "field_id": "field_id",
+      "field_name": "field_name",
+      "field_value": "field_value",
+      "value_type": "value_type",
+      "calculation_formula": "calculation_formula",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_page_settings": {
+    "name": "template_page_settings",
+    "description": "template_page_settings表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "page_width": "page_width",
+      "page_height": "page_height",
+      "is_landscape": "is_landscape",
+      "paper_size": "paper_size",
+      "margin_top": "margin_top",
+      "margin_bottom": "margin_bottom",
+      "margin_left": "margin_left",
+      "margin_right": "margin_right",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "orientation": "orientation",
+      "width_cm": "width_cm",
+      "height_cm": "height_cm",
+      "margin_left_cm": "margin_left_cm",
+      "margin_right_cm": "margin_right_cm",
+      "margin_top_cm": "margin_top_cm",
+      "margin_bottom_cm": "margin_bottom_cm"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_placeholders": {
+    "name": "template_placeholders",
+    "description": "template_placeholders表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "placeholder_name": "placeholder_name",
+      "format_type": "format_type",
+      "table_index": "table_index",
+      "row_index": "row_index",
+      "cell_index": "cell_index",
+      "page_num": "page_num",
+      "x_pos": "x_pos",
+      "y_pos": "y_pos",
+      "css_selector": "css_selector",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_regions": {
+    "name": "template_regions",
+    "description": "template_regions表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "region_id": "region_id",
+      "name": "name",
+      "page": "page",
+      "x0": "x0",
+      "y0": "y0",
+      "x1": "x1",
+      "y1": "y1",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_tags": {
+    "name": "template_tags",
+    "description": "template_tags表",
+    "fields": {
+      "tag_id": "tag_id",
+      "tag_name": "tag_name",
+      "tag_color": "tag_color",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_usage_logs": {
+    "name": "template_usage_logs",
+    "description": "template_usage_logs表",
+    "fields": {
+      "log_id": "log_id",
+      "template_id": "template_id",
+      "action": "action",
+      "user_id": "user_id",
+      "details": "details",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "template_usage_records": {
+    "name": "template_usage_records",
+    "description": "template_usage_records表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "business_type": "business_type",
+      "business_id": "business_id",
+      "teacher_id": "teacher_id",
+      "generated_file_path": "generated_file_path",
+      "generated_file_name": "generated_file_name",
+      "generated_at": "generated_at",
+      "generated_by": "generated_by"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "templates": {
+    "name": "templates",
+    "description": "templates表",
+    "fields": {
+      "template_id": "template_id",
+      "template_name": "template_name",
+      "original_filename": "original_filename",
+      "file_path": "file_path",
+      "metadata_path": "metadata_path",
+      "template_type": "template_type",
+      "tags": "tags",
+      "description": "description",
+      "file_size": "file_size",
+      "row_count": "row_count",
+      "col_count": "col_count",
+      "cell_count": "cell_count",
+      "merge_count": "merge_count",
+      "usage_count": "usage_count",
+      "last_used_at": "last_used_at",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "created_by": "created_by"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "test_wage": {
+    "name": "test_wage",
+    "description": "test_wage表",
+    "fields": {
+      "id": "id",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "test_wage_fix": {
+    "name": "test_wage_fix",
+    "description": "test_wage_fix表",
+    "fields": {
+      "id": "id",
+      "unit": "unit",
+      "name": "name",
+      "id_card_1": "id_card_1",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "title_info": {
+    "name": "title_info",
+    "description": "title_info表",
+    "fields": {
+      "id": "id",
+      "id_card_1": "id_card_1",
+      "name": "name",
+      "major_1": "major_1",
+      "time": "time",
+      "field_70": "field_70",
+      "field_74": "field_74",
+      "professional_title_2": "professional_title_2",
+      "field_76": "field_76",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "todo_history": {
+    "name": "todo_history",
+    "description": "todo_history表",
+    "fields": {
+      "id": "id",
+      "todo_id": "todo_id",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "template_code": "template_code",
+      "business_type": "business_type",
+      "title": "title",
+      "description": "description",
+      "status": "status",
+      "completed_at": "completed_at",
+      "created_at": "created_at",
+      "task_items": "task_items",
+      "return_count": "return_count",
+      "return_reason": "return_reason",
+      "archived_at": "archived_at",
+      "notes": "notes"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "todo_items": {
+    "name": "todo_items",
+    "description": "todo_items表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "business_type": "business_type",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "title": "title",
+      "description": "description",
+      "status": "status",
+      "priority": "priority",
+      "due_date": "due_date",
+      "task_items": "task_items",
+      "created_by": "created_by",
+      "created_at": "created_at",
+      "completed_at": "completed_at",
+      "return_reason": "return_reason",
+      "trigger_id": "trigger_id",
+      "updated_at": "updated_at",
+      "started_at": "started_at",
+      "returned_at": "returned_at",
+      "notes": "notes"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "todo_templates": {
+    "name": "todo_templates",
+    "description": "todo_templates表",
+    "fields": {
+      "id": "id",
+      "template_code": "template_code",
+      "template_name": "template_name",
+      "business_type": "business_type",
+      "description": "description",
+      "task_flow": "task_flow",
+      "due_date_rule": "due_date_rule",
+      "default_priority": "default_priority",
+      "is_enabled": "is_enabled",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "town_subsidy_standards": {
+    "name": "town_subsidy_standards",
+    "description": "town_subsidy_standards表",
+    "fields": {
+      "id": "id",
+      "town_name": "town_name",
+      "subsidy_amount": "subsidy_amount",
+      "effective_date": "effective_date",
+      "is_active": "is_active",
+      "remarks": "remarks",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "trigger_conditions": {
+    "name": "trigger_conditions",
+    "description": "trigger_conditions表",
+    "fields": {
+      "id": "id",
+      "condition_name": "condition_name",
+      "listen_table": "listen_table",
+      "listen_field": "listen_field",
+      "trigger_type": "trigger_type",
+      "trigger_value": "trigger_value",
+      "advance_notice": "advance_notice",
+      "template_code": "template_code",
+      "is_enabled": "is_enabled",
+      "description": "description",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "trigger_logs": {
+    "name": "trigger_logs",
+    "description": "trigger_logs表",
+    "fields": {
+      "id": "id",
+      "trigger_type": "trigger_type",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "condition_name": "condition_name",
+      "old_value": "old_value",
+      "new_value": "new_value",
+      "action_taken": "action_taken",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "unified_todos": {
+    "name": "unified_todos",
+    "description": "unified_todos表",
+    "fields": {
+      "id": "id",
+      "todo_type": "todo_type",
+      "template_id": "template_id",
+      "business_type": "business_type",
+      "teacher_id": "teacher_id",
+      "teacher_name": "teacher_name",
+      "title": "title",
+      "description": "description",
+      "status": "status",
+      "priority": "priority",
+      "due_date": "due_date",
+      "task_items": "task_items",
+      "source": "source",
+      "assignee_id": "assignee_id",
+      "assignee_name": "assignee_name",
+      "created_by": "created_by",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "completed_at": "completed_at",
+      "return_reason": "return_reason"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "unit_hierarchy": {
+    "name": "unit_hierarchy",
+    "description": "unit_hierarchy表",
+    "fields": {
+      "id": "id",
+      "unit_level": "unit_level",
+      "unit_name": "unit_name",
+      "parent_id": "parent_id",
+      "school_dict_id": "school_dict_id",
+      "full_path": "full_path",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "universal_field_mapping": {
+    "name": "universal_field_mapping",
+    "description": "universal_field_mapping表",
+    "fields": {
+      "id": "id",
+      "placeholder_name": "placeholder_name",
+      "table_name": "table_name",
+      "field_name": "field_name",
+      "created_at": "created_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "universal_templates": {
+    "name": "universal_templates",
+    "description": "universal_templates表",
+    "fields": {
+      "id": "id",
+      "template_id": "template_id",
+      "template_name": "template_name",
+      "file_path": "file_path",
+      "file_type": "file_type",
+      "placeholders": "placeholders",
+      "created_at": "created_at",
+      "updated_at": "updated_at",
+      "placeholder_config": "placeholder_config",
+      "page_info": "page_info",
+      "activation_type": "activation_type",
+      "activation_config": "activation_config"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "user_custom_todos": {
+    "name": "user_custom_todos",
+    "description": "user_custom_todos表",
+    "fields": {
+      "id": "id",
+      "creator": "creator",
+      "title": "title",
+      "description": "description",
+      "plan_date": "plan_date",
+      "remind_days": "remind_days",
+      "related_teacher_id": "related_teacher_id",
+      "related_teacher_name": "related_teacher_name",
+      "status": "status",
+      "created_at": "created_at",
+      "updated_at": "updated_at"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "教师死亡待办处理记录": {
+    "name": "教师死亡待办处理记录",
+    "description": "教师死亡待办处理记录表",
+    "fields": {
+      "id": "id",
+      "待办id": "待办id",
+      "任务1_收集死亡证明": "任务1_收集死亡证明",
+      "任务2_打印终保承诺书": "任务2_打印终保承诺书",
+      "任务3_扫描上传材料": "任务3_扫描上传材料",
+      "任务4_填报抚恤金审批表": "任务4_填报抚恤金审批表",
+      "任务5_送审材料": "任务5_送审材料",
+      "任务6_机关中心签批": "任务6_机关中心签批",
+      "任务7_工资科预审核": "任务7_工资科预审核",
+      "任务8_教育局审批": "任务8_教育局审批",
+      "任务9_人社局审批": "任务9_人社局审批",
+      "任务10_财政局备案": "任务10_财政局备案",
+      "完成进度": "完成进度",
+      "操作人": "操作人",
+      "操作时间": "操作时间",
+      "任务11_处理绩效工资": "任务11_处理绩效工资"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "教师死亡待办工作": {
+    "name": "教师死亡待办工作",
+    "description": "教师死亡待办工作表",
+    "fields": {
+      "id": "id",
+      "教师id": "教师id",
+      "教师姓名": "教师姓名",
+      "身份证号码": "身份证号码",
+      "死亡日期": "死亡日期",
+      "状态": "状态",
+      "完成进度": "完成进度",
+      "创建时间": "创建时间",
+      "完成时间": "完成时间",
+      "更新时间": "更新时间",
+      "备注": "备注"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "死亡登记信息": {
+    "name": "死亡登记信息",
+    "description": "死亡登记信息表",
+    "fields": {
+      "id": "id",
+      "序号": "序号",
+      "姓名": "姓名",
+      "性别": "性别",
+      "身份证号码": "身份证号码",
+      "退休单位": "退休单位",
+      "户籍地": "户籍地",
+      "现住址": "现住址",
+      "银行账号": "银行账号",
+      "开户行": "开户行",
+      "本人联系电话": "本人联系电话",
+      "代理人姓名": "代理人姓名",
+      "与本人关系": "与本人关系",
+      "代理人联系电话": "代理人联系电话",
+      "死亡日期": "死亡日期",
+      "死亡原因": "死亡原因",
+      "备注": "备注",
+      "原记录id": "原记录id",
+      "登记人": "登记人",
+      "登记时间": "登记时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "高龄提醒处理记录": {
+    "name": "高龄提醒处理记录",
+    "description": "高龄提醒处理记录表",
+    "fields": {
+      "id": "id",
+      "提醒id": "提醒id",
+      "选项1_已通知家属": "选项1_已通知家属",
+      "选项2_已收到申请表": "选项2_已收到申请表",
+      "选项3_已上报": "选项3_已上报",
+      "完成进度": "完成进度",
+      "操作人": "操作人",
+      "操作时间": "操作时间",
+      "备注": "备注",
+      "选项4_已批准": "选项4_已批准"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "高龄提醒记录": {
+    "name": "高龄提醒记录",
+    "description": "高龄提醒记录表",
+    "fields": {
+      "id": "id",
+      "教师id": "教师id",
+      "教师姓名": "教师姓名",
+      "身份证号码": "身份证号码",
+      "出生日期": "出生日期",
+      "年满80周岁日期": "年满80周岁日期",
+      "提醒日期": "提醒日期",
+      "状态": "状态",
+      "创建时间": "创建时间",
+      "完成时间": "完成时间"
+    },
+    "category": "其他",
+    "is_active": true
+  },
+  "高龄老人补贴信息": {
+    "name": "高龄老人补贴信息",
+    "description": "高龄老人补贴信息表",
+    "fields": {
+      "id": "id",
+      "序号": "序号",
+      "姓名": "姓名",
+      "性别": "性别",
+      "身份证号码": "身份证号码",
+      "退休单位": "退休单位",
+      "户籍地": "户籍地",
+      "现住址": "现住址",
+      "银行账号": "银行账号",
+      "开户行": "开户行",
+      "本人联系电话": "本人联系电话",
+      "代理人姓名": "代理人姓名",
+      "与本人关系": "与本人关系",
+      "代理人联系电话": "代理人联系电话",
+      "备注": "备注",
+      "状态": "状态",
+      "信息来源": "信息来源",
+      "创建时间": "创建时间",
+      "更新时间": "更新时间"
+    },
+    "category": "其他",
+    "is_active": true
+  }
+}

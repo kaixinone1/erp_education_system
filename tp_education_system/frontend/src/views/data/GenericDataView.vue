@@ -46,36 +46,68 @@
 
         <!-- 筛选区域 -->
         <div v-if="showFilter" class="filter-section">
-          <el-form :model="filterForm" inline>
-            <el-form-item
-              v-for="field in filterableFields"
-              :key="field.name"
-              :label="field.label || field.source_name || field.name"
+          <div class="filter-conditions">
+            <div 
+              v-for="(condition, index) in filterConditions" 
+              :key="index" 
+              class="filter-condition-row"
             >
+              <el-select
+                v-model="condition.field"
+                placeholder="选择字段"
+                style="width: 160px"
+                clearable
+                @change="onFilterFieldChange(index)"
+              >
+                <el-option
+                  v-for="field in filterableFields"
+                  :key="field.name"
+                  :label="field.label || field.source_name || field.name"
+                  :value="field.name"
+                />
+              </el-select>
+              <el-select
+                v-model="condition.operator"
+                placeholder="操作符"
+                style="width: 130px"
+              >
+                <el-option label="包含" value="contains" />
+                <el-option label="不包含" value="not_contains" />
+                <el-option label="等于" value="eq" />
+                <el-option label="不等于" value="neq" />
+                <el-option label="大于" value="gt" />
+                <el-option label="大于等于" value="gte" />
+                <el-option label="小于" value="lt" />
+                <el-option label="小于等于" value="lte" />
+                <el-option label="开头是" value="starts_with" />
+                <el-option label="结尾是" value="ends_with" />
+                <el-option label="为空" value="is_null" />
+                <el-option label="不为空" value="is_not_null" />
+              </el-select>
               <el-input
-                v-if="field.type === 'VARCHAR' || field.type === 'TEXT'"
-                v-model="filterForm[field.name]"
-                :placeholder="`请输入${field.label || field.source_name || field.name}`"
+                v-if="!['is_null', 'is_not_null'].includes(condition.operator)"
+                v-model="condition.value"
+                :placeholder="'请输入值'"
+                style="width: 200px"
                 clearable
               />
-              <el-input-number
-                v-else-if="field.type === 'INTEGER' || field.type === 'DECIMAL'"
-                v-model="filterForm[field.name]"
-                :placeholder="`请输入${field.label || field.source_name || field.name}`"
-                clearable
+              <el-button 
+                type="danger" 
+                size="small" 
+                circle 
+                @click="removeFilterCondition(index)"
+                :icon="Delete"
               />
-              <el-date-picker
-                v-else-if="field.type === 'DATE' || field.type === 'DATETIME'"
-                v-model="filterForm[field.name]"
-                :placeholder="`请选择${field.label || field.source_name || field.name}`"
-                clearable
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="applyFilter">筛选</el-button>
-              <el-button @click="resetFilter">重置</el-button>
-            </el-form-item>
-          </el-form>
+            </div>
+          </div>
+          <div class="filter-actions">
+            <el-button type="primary" size="small" @click="addFilterCondition">
+              <el-icon><Plus /></el-icon>
+              添加条件
+            </el-button>
+            <el-button type="success" size="small" @click="applyFilter">筛选</el-button>
+            <el-button size="small" @click="resetFilter">重置</el-button>
+          </div>
         </div>
 
         <!-- 数据表格 -->
@@ -347,8 +379,9 @@
         </el-form-item>
         
         <el-form-item label="导出范围">
-          <el-radio-group v-model="exportForm.scope">
+          <el-radio-group v-model="exportScope">
             <el-radio label="all">全部数据</el-radio>
+            <el-radio label="filtered">筛选结果</el-radio>
             <el-radio label="current">当前页</el-radio>
             <el-radio label="selected">选中行</el-radio>
           </el-radio-group>
@@ -479,7 +512,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Refresh, Search, Setting, Upload, Download } from '@element-plus/icons-vue'
+import { Refresh, Search, Setting, Upload, Download, Plus, Delete } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import RetirementCalculatorDialog from '@/components/RetirementCalculatorDialog.vue'
 import { useTagsStore } from '@/store/tags'
@@ -623,7 +656,23 @@ const tableSchema = ref<any>(null)
 
 // 筛选
 const showFilter = ref(false)
-const filterForm = ref<Record<string, any>>({})
+// 筛选条件接口
+interface FilterCondition {
+  field: string
+  operator: string
+  value: string
+}
+const filterConditions = ref<FilterCondition[]>([])
+// 兼容旧代码：从 filterConditions 计算 filterForm
+const filterForm = computed(() => {
+  const form: Record<string, any> = {}
+  filterConditions.value.forEach(c => {
+    if (c.field && c.operator && (c.value || c.operator === 'is_null' || c.operator === 'is_not_null')) {
+      form[c.field] = c.value || ''
+    }
+  })
+  return form
+})
 
 // 搜索
 const searchKeyword = ref('')
@@ -746,9 +795,16 @@ const exportDialogVisible = ref(false)
 const exporting = ref(false)
 const exportForm = ref({
   format: 'excel',
-  scope: 'all',
+  scope: 'filtered',
   path: '',
   filename: ''
+})
+
+// 导出范围单独使用ref，确保v-model响应式绑定可靠
+const exportScope = ref('filtered')
+// 同步到exportForm，确保executeExport使用正确的值
+watch(exportScope, (val) => {
+  exportForm.value.scope = val
 })
 
 // 导入相关
@@ -871,16 +927,12 @@ const loadData = async () => {
       params.append('keyword', searchKeyword.value)
     }
     
-    // 添加筛选条件
-    const filterParams: Record<string, string> = {}
-    Object.entries(filterForm.value).forEach(([key, value]) => {
-      if (value !== '' && value !== null && value !== undefined) {
-        filterParams[key] = String(value)
-      }
-    })
-    
-    if (Object.keys(filterParams).length > 0) {
-      params.append('filter', JSON.stringify(filterParams))
+    // 添加筛选条件（新格式：条件数组）
+    const activeConditions = filterConditions.value.filter(
+      c => c.field && c.operator && (c.value || c.operator === 'is_null' || c.operator === 'is_not_null')
+    )
+    if (activeConditions.length > 0) {
+      params.append('filter', JSON.stringify(activeConditions))
     }
 
     const apiUrl = `/api/data/${tableName.value}?${params.toString()}`
@@ -1213,9 +1265,13 @@ const handleDuplicateOverwrite = () => {
 }
 
 const handleExport = () => {
+  // 重置导出范围为"筛选结果"（确保每次打开对话框默认选中筛选结果）
+  exportScope.value = 'filtered'
+  exportForm.value.format = 'excel'
   // 设置默认文件名（使用节点中文名）
   exportForm.value.filename = `${tableTitle.value}_${getCurrentDate()}`
   // 路径为空，让用户自己选择
+  exportForm.value.path = ''
   exportDialogVisible.value = true
 }
 
@@ -1255,15 +1311,20 @@ const executeExport = async () => {
     let exportData: any[] = []
     
     console.log('=== 导出调试信息 ===')
-    console.log('导出范围:', exportForm.value.scope)
+    console.log('导出范围(exportScope):', exportScope.value)
+    console.log('导出范围(exportForm.scope):', exportForm.value.scope)
     console.log('当前路由参数:', route.params)
     console.log('当前表名(tableName):', tableName.value)
     console.log('当前路径(route.path):', route.path)
     console.log('当前页数据条数:', tableData.value.length)
     console.log('选中行数:', selectedRows.value.length)
+    console.log('筛选条件:', filterConditions.value)
+    console.log('搜索关键词:', searchKeyword.value)
     console.log('====================')
     
-    switch (exportForm.value.scope) {
+    // 直接使用 exportScope.value 避免 watcher 同步时序问题
+    const currentScope = exportScope.value
+    switch (currentScope) {
       case 'selected':
         exportData = selectedRows.value
         break
@@ -1271,39 +1332,53 @@ const executeExport = async () => {
         exportData = tableData.value
         break
       case 'all':
-      default:
-        // 获取所有数据（包括筛选条件）
+        // 导出全部数据（不含筛选条件）
         console.log('正在获取全部数据...')
-        let allDataUrl = `/api/data/${tableName.value}?page=1&size=10000`
+        const allResponse = await fetch(`/api/data/${tableName.value}?page=1&size=10000`)
+        console.log('全部数据API响应状态:', allResponse.status)
+        if (allResponse.ok) {
+          const result = await allResponse.json()
+          console.log('全部数据返回条数:', result.data?.length)
+          exportData = result.data || []
+        } else {
+          const errorText = await allResponse.text()
+          console.error('全部数据API错误:', errorText)
+        }
+        break
+      case 'filtered':
+      default:
+        // 导出筛选结果（带上当前筛选条件）
+        console.log('正在获取筛选结果数据...')
+        let filteredUrl = `/api/data/${tableName.value}?page=1&size=10000`
         
         // 添加搜索关键词
         if (searchKeyword.value) {
-          allDataUrl += `&keyword=${encodeURIComponent(searchKeyword.value)}`
+          filteredUrl += `&keyword=${encodeURIComponent(searchKeyword.value)}`
         }
         
-        // 添加筛选条件
-        const filterParams: Record<string, string> = {}
-        Object.entries(filterForm.value).forEach(([key, value]) => {
-          if (value !== '' && value !== null && value !== undefined) {
-            filterParams[key] = String(value)
-          }
-        })
-        
-        if (Object.keys(filterParams).length > 0) {
-          allDataUrl += `&filter=${encodeURIComponent(JSON.stringify(filterParams))}`
+        // 添加筛选条件（新格式：条件数组）
+        const activeFilterConditions = filterConditions.value.filter(
+          c => c.field && c.operator && (c.value || c.operator === 'is_null' || c.operator === 'is_not_null')
+        )
+        if (activeFilterConditions.length > 0) {
+          filteredUrl += `&filter=${encodeURIComponent(JSON.stringify(activeFilterConditions))}`
         }
         
-        console.log('全部数据URL:', allDataUrl)
+        console.log('筛选结果URL:', filteredUrl)
+        console.log('筛选条件数量:', activeFilterConditions.length)
         
-        const response = await fetch(allDataUrl)
-        console.log('API响应状态:', response.status)
+        const response = await fetch(filteredUrl)
+        console.log('筛选结果API响应状态:', response.status)
         if (response.ok) {
           const result = await response.json()
-          console.log('API返回数据条数:', result.data?.length)
+          console.log('筛选结果返回条数:', result.data?.length)
           exportData = result.data || []
         } else {
           const errorText = await response.text()
-          console.error('API错误:', errorText)
+          console.error('筛选结果API错误:', errorText)
+          ElMessage.error(`获取筛选数据失败: ${response.status} ${errorText || '未知错误'}`)
+          exporting.value = false
+          return
         }
         break
     }
@@ -1366,6 +1441,28 @@ const handleFilter = () => {
   showFilter.value = !showFilter.value
 }
 
+// 添加筛选条件
+const addFilterCondition = () => {
+  filterConditions.value.push({
+    field: '',
+    operator: 'contains',
+    value: ''
+  })
+}
+
+// 删除筛选条件
+const removeFilterCondition = (index: number) => {
+  filterConditions.value.splice(index, 1)
+}
+
+// 筛选字段变化时，自动设置默认操作符
+const onFilterFieldChange = (index: number) => {
+  const condition = filterConditions.value[index]
+  if (condition && !condition.operator) {
+    condition.operator = 'contains'
+  }
+}
+
 // 筛选操作
 const applyFilter = () => {
   currentPage.value = 1
@@ -1373,7 +1470,7 @@ const applyFilter = () => {
 }
 
 const resetFilter = () => {
-  filterForm.value = {}
+  filterConditions.value = []
   applyFilter()
 }
 
@@ -1754,7 +1851,7 @@ watch(searchKeyword, (newValue) => {
 })
 
 // 监听筛选条件变化，实现即时筛选
-watch(filterForm, (newValue) => {
+watch(filterConditions, (newValue) => {
   currentPage.value = 1 // 重置到第一页
   loadData()
 }, { deep: true })
@@ -1830,6 +1927,41 @@ const checkPrefillParams = () => {
       highlightTeacherRow(teacherId, teacherName)
     }, 500)
   }
+  
+  // 应用默认筛选参数（从 navigation.json 的 path query 传递）
+  applyDefaultFilters(query)
+}
+
+// 应用默认筛选参数
+const applyDefaultFilters = (query: any) => {
+  const knownParams = ['mode', 'prefill', 'teacher_id', 'teacher_name']
+  
+  Object.entries(query).forEach(([key, value]) => {
+    if (!knownParams.includes(key) && value && typeof value === 'string') {
+      // 检查是否已有同字段的条件，避免重复
+      const existing = filterConditions.value.find(c => c.field === key)
+      if (!existing) {
+        // 支持逗号分隔的多值（如"退休,离休"），使用 in 操作符
+        if (value.includes(',')) {
+          filterConditions.value.push({
+            field: key,
+            operator: 'in',
+            value: value
+          })
+        } else {
+          filterConditions.value.push({
+            field: key,
+            operator: 'contains',
+            value: value
+          })
+        }
+      }
+    }
+  })
+  
+  if (filterConditions.value.length > 0) {
+    console.log('应用默认筛选条件:', filterConditions.value)
+  }
 }
 
 // 高亮并滚动到指定教师行
@@ -1893,6 +2025,26 @@ const highlightTeacherRow = (teacherId?: string, teacherName?: string) => {
   padding: 15px;
   background-color: #f5f7fa;
   border-radius: 4px;
+}
+
+.filter-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-condition-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  align-items: center;
 }
 
 .table-section {

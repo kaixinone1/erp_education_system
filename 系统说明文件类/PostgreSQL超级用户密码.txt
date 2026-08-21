@@ -1,0 +1,6 @@
+PostgreSQL 超级用户信息
+========================
+用户名：postgres
+密码：taiping_password
+主机：localhost
+端口：5432

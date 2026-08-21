@@ -27,24 +27,6 @@
     "category": "基础信息",
     "is_active": true
   },
-  "post_appointment_info": {
-    "name": "岗位聘任信息",
-    "description": "教师岗位聘任信息表",
-    "fields": {
-      "id": "主键ID",
-      "id_card": "身份证号码",
-      "post": "岗位名称",
-      "post_level": "岗位级别",
-      "post_date": "聘任日期",
-      "post_end_date": "聘任结束日期",
-      "post_status": "聘任状态",
-      "salary_level": "工资级别",
-      "created_at": "创建时间",
-      "updated_at": "更新时间"
-    },
-    "category": "岗位信息",
-    "is_active": true
-  },
   "teacher_personal_identity": {
     "name": "教师个人身份",
     "description": "教师个人身份信息表",
@@ -1365,24 +1347,6 @@
       "field_7": "field_7",
       "field_8": "field_8",
       "remark": "remark",
-      "created_at": "created_at",
-      "updated_at": "updated_at"
-    },
-    "category": "其他",
-    "is_active": true
-  },
-  "teacher_title_info": {
-    "name": "teacher_title_info",
-    "description": "teacher_title_info表",
-    "fields": {
-      "id": "id",
-      "name": "name",
-      "id_card_1": "id_card_1",
-      "professional_title_1": "professional_title_1",
-      "unit_2": "unit_2",
-      "field_70": "field_70",
-      "time": "time",
-      "unit_3": "unit_3",
       "created_at": "created_at",
       "updated_at": "updated_at"
     },

@@ -1,0 +1,25 @@
+{
+  "templates": {},
+  "template_categories": {
+    "人事管理": {
+      "description": "教师基础信息、资格信息、学历信息等",
+      "icon": "user"
+    },
+    "工资管理": {
+      "description": "绩效工资、工资标准、工资审批等",
+      "icon": "money"
+    },
+    "退休管理": {
+      "description": "退休呈报、退休审批、退休统计等",
+      "icon": "retirement"
+    },
+    "党建管理": {
+      "description": "党员信息、党费缴纳、组织关系等",
+      "icon": "party"
+    }
+  },
+  "template_version": "1.0",
+  "created_at": "2026-05-03",
+  "updated_at": "2026-05-03",
+  "description": "统一模板配置文件 - 实现导入模板=网页呈现=导出模板"
+}

@@ -1,0 +1,758 @@
+{
+  "modules": [
+    {
+      "id": "system",
+      "title": "系统管理",
+      "icon": "Setting",
+      "path": "/system",
+      "type": "module",
+      "children": [
+        {
+          "id": "system-users",
+          "title": "用户管理",
+          "icon": "User",
+          "path": "/system/users",
+          "type": "component",
+          "component": "UserManagement",
+          "requireAdmin": true
+        },
+        {
+          "id": "system-backup",
+          "title": "系统自动备份",
+          "icon": "Upload",
+          "path": "/system/backup",
+          "type": "component",
+          "component": "SystemBackup",
+          "requireAdmin": true
+        },
+        {
+          "id": "system-modules",
+          "title": "模块管理",
+          "icon": "Grid",
+          "path": "/system/module-mgt",
+          "type": "component",
+          "component": "Modules",
+          "api_endpoint": "/api/data/modules"
+        },
+        {
+          "id": "system-table-mgt",
+          "title": "数据表管理",
+          "icon": "Document",
+          "path": "/system/table-mgt",
+          "type": "component",
+          "component": "TableManagement",
+          "api_endpoint": "/api/data/tables"
+        },
+        {
+          "id": "system-data-migration",
+          "title": "数据迁移",
+          "icon": "Upload",
+          "path": "/system/data-migration",
+          "type": "component",
+          "component": "DataMigration"
+        },
+        {
+          "id": "system-table-export",
+          "title": "数据表导出导入",
+          "icon": "Download",
+          "path": "/system/table-export",
+          "type": "component",
+          "component": "SystemTableExport"
+        },
+        {
+          "id": "system-tag-relations",
+          "title": "标签关系管理",
+          "icon": "PriceTag",
+          "path": "/system/tag-relations",
+          "type": "component",
+          "component": "TagRelations"
+        },
+        {
+          "id": "system-universal-template",
+          "title": "通用模板系统",
+          "icon": "Files",
+          "path": "/system/universal-template",
+          "type": "component",
+          "component": "UniversalTemplate"
+        },
+        {
+          "id": "system-file-manager",
+          "title": "文件管理",
+          "icon": "FolderOpened",
+          "path": "/system/file-manager",
+          "type": "component",
+          "component": "FileManager"
+        },
+        {
+          "id": "system-dictionaries",
+          "title": "字典管理",
+          "icon": "Folder",
+          "path": "/system/dictionaries",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-dict_education_type_dictionary",
+              "title": "学历类型字典",
+              "name": "学历类型字典",
+              "icon": "Document",
+              "path": "/data/dict_education_type_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_education_type_dictionary",
+              "table_name": "dict_education_type_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_unit_dictionary",
+              "title": "单位名称字典",
+              "name": "单位名称字典",
+              "icon": "Document",
+              "path": "/data/dict_unit_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_unit_dictionary",
+              "table_name": "dict_unit_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-personal_dict_dictionary",
+              "title": "标签字典",
+              "name": "标签字典",
+              "icon": "Document",
+              "path": "/data/personal_dict_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/personal_dict_dictionary",
+              "table_name": "personal_dict_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_salary_dictionary",
+              "title": "绩效工资标准字典",
+              "name": "绩效工资标准字典",
+              "icon": "Document",
+              "path": "/data/dict_salary_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_salary_dictionary",
+              "table_name": "dict_salary_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_subsidy_dictionary",
+              "title": "乡镇补贴标准字典",
+              "name": "乡镇补贴标准字典",
+              "icon": "Document",
+              "path": "/data/dict_subsidy_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_subsidy_dictionary",
+              "table_name": "dict_subsidy_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_personal_identity_dictionary",
+              "title": "个人身份字典",
+              "name": "个人身份字典",
+              "icon": "Document",
+              "path": "/data/dict_personal_identity_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_personal_identity_dictionary",
+              "table_name": "dict_personal_identity_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_teacher_dictionary",
+              "title": "教师资格字典",
+              "name": "教师资格字典",
+              "icon": "Document",
+              "path": "/data/dict_teacher_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_teacher_dictionary",
+              "table_name": "dict_teacher_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_dictionary",
+              "title": "任职状态字典",
+              "name": "任职状态字典",
+              "icon": "Document",
+              "path": "/data/dict_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_dictionary",
+              "table_name": "dict_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_education_level_dictionary",
+              "title": "学历层次字典",
+              "name": "学历层次字典",
+              "icon": "Document",
+              "path": "/data/dict_education_level_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_education_level_dictionary",
+              "table_name": "dict_education_level_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_dictionary_personal",
+              "title": "岗位名称字典",
+              "name": "岗位名称字典",
+              "icon": "Document",
+              "path": "/data/dict_dictionary_personal",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_dictionary_personal",
+              "table_name": "dict_dictionary_personal",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_grade_dictionary",
+              "title": "岗位等级字典",
+              "name": "岗位等级字典",
+              "icon": "Document",
+              "path": "/data/dict_grade_dictionary",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_grade_dictionary",
+              "table_name": "dict_grade_dictionary",
+              "table_type": "dictionary"
+            }
+          ]
+        },
+        {
+          "id": "system-snapshot-history",
+          "title": "历史快照",
+          "icon": "Timer",
+          "path": "/system/snapshot-history",
+          "type": "component",
+          "component": "SnapshotHistory"
+        }
+      ]
+    },
+    {
+      "id": "todo-management",
+      "title": "预警督办",
+      "icon": "Warning",
+      "path": "/todo",
+      "type": "module",
+      "children": [
+        {
+          "id": "todo-business",
+          "title": "待办业务管理",
+          "icon": "List",
+          "path": "/todo/business",
+          "type": "component",
+          "component": "TodoBusiness"
+        },
+        {
+          "id": "todo-checklist-template",
+          "title": "清单模板管理",
+          "icon": "DocumentCopy",
+          "path": "/todo/checklist-template",
+          "type": "component",
+          "component": "ChecklistTemplateView"
+        },
+        {
+          "id": "todo-work",
+          "title": "待办工作",
+          "icon": "Bell",
+          "path": "/todo/work",
+          "type": "component",
+          "component": "TodoWork"
+        },
+        {
+          "id": "todo-history",
+          "title": "待办历史",
+          "icon": "Clock",
+          "path": "/todo/history",
+          "type": "component",
+          "component": "TodoHistory"
+        },
+        {
+          "id": "todo-octogenarian-reminder",
+          "title": "高龄到龄提醒",
+          "icon": "AlarmClock",
+          "path": "/todo/octogenarian-reminder",
+          "type": "component",
+          "component": "OctogenarianReminder"
+        }
+      ]
+    },
+    {
+      "id": "data-center",
+      "title": "数据中心",
+      "icon": "DataLine",
+      "path": "/data-center",
+      "type": "module",
+      "children": [
+        {
+          "id": "aggregate-query",
+          "title": "聚合查询",
+          "icon": "Search",
+          "path": "/performance/aggregate-query",
+          "type": "component",
+          "component": "AggregateQuery"
+        },
+        {
+          "id": "data-import",
+          "title": "数据导入",
+          "icon": "Upload",
+          "path": "/import/workbench",
+          "type": "component",
+          "component": "DataImportWorkbench"
+        },
+        {
+          "id": "table-structure",
+          "title": "表结构管理",
+          "icon": "Setting",
+          "path": "/data/table-structure",
+          "type": "component",
+          "component": "TableStructure"
+        },
+        {
+          "id": "data-cleanup-tool",
+          "title": "数据清理工具",
+          "icon": "Delete",
+          "path": "/admin/data-cleanup",
+          "type": "component",
+          "component": "DataCleanupView"
+        }
+      ]
+    },
+    {
+      "id": "personnel",
+      "title": "人事管理",
+      "icon": "User",
+      "path": "/personnel",
+      "type": "module",
+      "children": [
+        {
+          "id": "personnel-active-teachers",
+          "title": "在职教师管理",
+          "icon": "User",
+          "path": "/personnel/active",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-teacher_basic_info",
+              "title": "教师基础信息",
+              "name": "教师基础信息",
+              "icon": "Document",
+              "path": "/data/teacher_basic_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_basic_info",
+              "table_name": "teacher_basic_info",
+              "table_type": "master"
+            },
+            {
+              "id": "personnel-title-post",
+              "title": "职称岗位管理",
+              "icon": "Medal",
+              "path": "/personnel/active/title-post",
+              "type": "module",
+              "description": "教师职称信息与岗位聘任信息统一维护",
+              "children": [
+                {
+                  "id": "table-teacher_title_info",
+                  "title": "教师职称信息",
+                  "name": "教师职称信息",
+                  "icon": "Document",
+                  "path": "/data/teacher_title_info",
+                  "type": "component",
+                  "component": "DynamicDataView",
+                  "api_endpoint": "/api/data/teacher_title_info",
+                  "table_name": "teacher_title_info",
+                  "table_type": "master"
+                },
+                {
+                  "id": "table-post_appointment_info",
+                  "title": "岗位聘任信息",
+                  "name": "岗位聘任信息",
+                  "icon": "Document",
+                  "path": "/data/post_appointment_info",
+                  "type": "component",
+                  "component": "DynamicDataView",
+                  "api_endpoint": "/api/data/post_appointment_info",
+                  "table_name": "post_appointment_info",
+                  "table_type": "child"
+                }
+              ]
+            },
+            {
+              "id": "table-teacher_education_record",
+              "title": "教师学历记录",
+              "name": "教师学历记录",
+              "icon": "Document",
+              "path": "/data/teacher_education_record",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_education_record",
+              "table_name": "teacher_education_record",
+              "table_type": "master"
+            },
+            {
+              "id": "table-teacher_personal_identity",
+              "title": "教师个人身份",
+              "name": "教师个人身份",
+              "icon": "Document",
+              "path": "/data/teacher_personal_identity",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_personal_identity",
+              "table_name": "teacher_personal_identity",
+              "table_type": "master"
+            },
+            {
+              "id": "table-teacher_training_records",
+              "title": "教师培训记录",
+              "name": "教师培训记录",
+              "icon": "Document",
+              "path": "/data/teacher_training_records",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_training_records",
+              "table_name": "teacher_training_records",
+              "table_type": "master"
+            },
+            {
+              "id": "table-teacher_unit",
+              "title": "教师所在单位",
+              "name": "教师所在单位",
+              "icon": "Document",
+              "path": "/data/teacher_unit",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_unit",
+              "table_name": "teacher_unit",
+              "table_type": "master"
+            },
+            {
+              "id": "table-id_card",
+              "title": "身份证属性",
+              "name": "身份证属性",
+              "icon": "Document",
+              "path": "/data/id_card",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/id_card",
+              "table_name": "id_card",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-teacher_certificate_info",
+              "title": "教师资格证信息",
+              "name": "教师资格证信息",
+              "icon": "Document",
+              "path": "/data/teacher_certificate_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_certificate_info",
+              "table_name": "teacher_certificate_info",
+              "table_type": "child"
+            }
+          ]
+        },
+        {
+          "id": "personnel-retired-teachers",
+          "title": "退休教师管理",
+          "icon": "Clock",
+          "path": "/personnel/retired",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-teacher_basic_info_retired",
+              "title": "退休教师列表",
+              "name": "退休教师列表",
+              "icon": "User",
+              "path": "/data/teacher_basic_info?任职状态=退休",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_basic_info",
+              "table_name": "teacher_basic_info",
+              "table_type": "master",
+              "defaultFilter": {
+                "任职状态": "退休"
+              }
+            },
+            {
+              "id": "table-shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "title": "离退休费变动明细表",
+              "name": "离退休费变动明细表",
+              "icon": "Document",
+              "path": "/data/shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "table_name": "shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
+              "table_type": "child"
+            },
+            {
+              "id": "table-tui_xiu_bu_chong_xin_xi",
+              "title": "退休补充信息",
+              "name": "退休补充信息",
+              "icon": "Document",
+              "path": "/data/tui_xiu_bu_chong_xin_xi",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/tui_xiu_bu_chong_xin_xi",
+              "table_name": "tui_xiu_bu_chong_xin_xi",
+              "table_type": "master"
+            }
+          ]
+        },
+        {
+          "id": "personnel-deceased",
+          "title": "离世教师关怀",
+          "icon": "Present",
+          "path": "/personnel/deceased",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-teacher_basic_info_deceased",
+              "title": "离世教师列表",
+              "name": "离世教师列表",
+              "icon": "User",
+              "path": "/data/teacher_basic_info?任职状态=去世",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_basic_info",
+              "table_name": "teacher_basic_info",
+              "table_type": "master",
+              "defaultFilter": {
+                "任职状态": "去世"
+              }
+            },
+            {
+              "id": "table-教师死亡待办处理记录",
+              "title": "教师死亡待办处理记录",
+              "name": "教师死亡待办处理记录",
+              "icon": "Document",
+              "path": "/data/教师死亡待办处理记录",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/教师死亡待办处理记录",
+              "table_name": "教师死亡待办处理记录",
+              "table_type": "business"
+            },
+            {
+              "id": "table-教师死亡待办工作",
+              "title": "教师死亡待办工作",
+              "name": "教师死亡待办工作",
+              "icon": "Document",
+              "path": "/data/教师死亡待办工作",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/教师死亡待办工作",
+              "table_name": "教师死亡待办工作",
+              "table_type": "business"
+            },
+            {
+              "id": "table-死亡登记信息",
+              "title": "死亡登记信息",
+              "name": "死亡登记信息",
+              "icon": "Document",
+              "path": "/data/死亡登记信息",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/死亡登记信息",
+              "table_name": "死亡登记信息",
+              "table_type": "business"
+            }
+          ]
+        },
+        {
+          "id": "personnel-octogenarian",
+          "title": "高龄补贴管理",
+          "icon": "FirstAidKit",
+          "path": "/personnel/octogenarian",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-高龄老人补贴信息",
+              "title": "高龄老人补贴信息",
+              "name": "高龄老人补贴信息",
+              "icon": "Document",
+              "path": "/data/高龄老人补贴信息",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/高龄老人补贴信息",
+              "table_name": "高龄老人补贴信息",
+              "table_type": "business"
+            },
+            {
+              "id": "octogenarian-subsidy",
+              "title": "补贴发放管理",
+              "icon": "Money",
+              "path": "/system/octogenarian/subsidy",
+              "type": "component",
+              "component": "SubsidyManagement"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "salary",
+      "title": "薪酬管理",
+      "icon": "Money",
+      "path": "/salary",
+      "type": "module",
+      "children": [
+        {
+          "id": "salary-performance",
+          "title": "绩效工资管理",
+          "icon": "Money",
+          "path": "/salary/performance",
+          "type": "module",
+          "children": [
+            {
+              "id": "performance-pay-approval",
+              "title": "绩效工资审批",
+              "icon": "Document",
+              "path": "/performance/pay-approval",
+              "type": "component",
+              "component": "PerformancePayApproval"
+            },
+            {
+              "id": "performance-pay-history",
+              "title": "绩效工资历史",
+              "icon": "Clock",
+              "path": "/performance/pay-history",
+              "type": "component",
+              "component": "PerformancePayHistory"
+            },
+            {
+              "id": "performance-pay-statistics",
+              "title": "绩效工资统计",
+              "icon": "TrendCharts",
+              "path": "/performance/pay-statistics",
+              "type": "component",
+              "component": "PerformancePayStatistics"
+            },
+            {
+              "id": "performance-pay-upload",
+              "title": "绩效工资上传",
+              "icon": "Upload",
+              "path": "/performance/pay-upload",
+              "type": "component",
+              "component": "PerformancePayUpload"
+            },
+            {
+              "id": "performance-standards",
+              "title": "绩效标准设置",
+              "icon": "Setting",
+              "path": "/performance/standards",
+              "type": "component",
+              "component": "PerformanceStandards"
+            }
+          ]
+        },
+        {
+          "id": "table-personal_statistics",
+          "title": "岗位设置遗留绩效统计表",
+          "name": "岗位设置遗留绩效统计表",
+          "icon": "Document",
+          "path": "/data/personal_statistics",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/personal_statistics",
+          "table_name": "personal_statistics",
+          "table_type": "master"
+        },
+        {
+          "id": "table-salary_data",
+          "title": "最新工资包数据",
+          "name": "最新工资包数据",
+          "icon": "Document",
+          "path": "/data/salary_info",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/salary_info",
+          "table_name": "salary_info",
+          "table_type": "child"
+        }
+      ]
+    },
+    {
+      "id": "school",
+      "title": "学校管理",
+      "icon": "School",
+      "path": "/school",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-school_information_table",
+          "title": "学校信息表",
+          "name": "学校信息表",
+          "icon": "Document",
+          "path": "/data/school_information_table",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/school_information_table",
+          "table_name": "school_information_table",
+          "table_type": "master"
+        },
+        {
+          "id": "school-student",
+          "title": "学生管理",
+          "icon": "User",
+          "path": "/school/student",
+          "type": "module",
+          "children": []
+        },
+        {
+          "id": "school-attendance",
+          "title": "考勤管理",
+          "icon": "Calendar",
+          "path": "/school/attendance",
+          "type": "module",
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "party",
+      "title": "党组织管理",
+      "icon": "Flag",
+      "path": "/party",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "title": "枣阳市太平镇中心学校党员信息表",
+          "name": "枣阳市太平镇中心学校党员信息表",
+          "icon": "Document",
+          "path": "/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "table_name": "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "table_type": "master"
+        }
+      ]
+    },
+    {
+      "id": "report-management",
+      "title": "报表管理",
+      "icon": "DataAnalysis",
+      "path": "/report",
+      "type": "module",
+      "children": [
+        {
+          "id": "report-retirement-estimate",
+          "title": "退休测算",
+          "icon": "Calculator",
+          "path": "/report/retirement/estimate",
+          "type": "component",
+          "component": "RetirementEstimate"
+        }
+      ]
+    }
+  ]
+}

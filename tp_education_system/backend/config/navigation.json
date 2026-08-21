@@ -17,6 +17,15 @@
           "requireAdmin": true
         },
         {
+          "id": "system-backup",
+          "title": "系统自动备份",
+          "icon": "Upload",
+          "path": "/system/backup",
+          "type": "component",
+          "component": "SystemBackup",
+          "requireAdmin": true
+        },
+        {
           "id": "system-modules",
           "title": "模块管理",
           "icon": "Grid",
@@ -64,7 +73,7 @@
           "icon": "Files",
           "path": "/system/universal-template",
           "type": "component",
-          "component": "UniversalTemplate"
+          "component": "TemplateManager"
         },
         {
           "id": "system-file-manager",
@@ -178,6 +187,18 @@
               "table_type": "dictionary"
             },
             {
+              "id": "table-title_info",
+              "title": "职称字典",
+              "name": "职称字典",
+              "icon": "Document",
+              "path": "/data/title_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/title_info",
+              "table_name": "title_info",
+              "table_type": "dictionary"
+            },
+            {
               "id": "table-dict_education_level_dictionary",
               "title": "学历层次字典",
               "name": "学历层次字典",
@@ -216,33 +237,12 @@
           ]
         },
         {
-          "id": "system-octogenarian",
-          "title": "高龄补贴管理",
-          "icon": "FirstAidKit",
-          "path": "/system/octogenarian",
-          "type": "module",
-          "children": [
-            {
-              "id": "table-高龄老人补贴信息",
-              "title": "高龄老人补贴信息",
-              "name": "高龄老人补贴信息",
-              "icon": "Document",
-              "path": "/data/高龄老人补贴信息",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/高龄老人补贴信息",
-              "table_name": "高龄老人补贴信息",
-              "table_type": "business"
-            },
-            {
-              "id": "octogenarian-subsidy",
-              "title": "补贴发放管理",
-              "icon": "Money",
-              "path": "/system/octogenarian/subsidy",
-              "type": "component",
-              "component": "SubsidyManagement"
-            }
-          ]
+          "id": "system-snapshot-history",
+          "title": "历史快照",
+          "icon": "Timer",
+          "path": "/system/snapshot-history",
+          "type": "component",
+          "component": "SnapshotHistory"
         }
       ]
     },
@@ -284,6 +284,14 @@
           "path": "/todo/history",
           "type": "component",
           "component": "TodoHistory"
+        },
+        {
+          "id": "todo-octogenarian-reminder",
+          "title": "高龄到龄提醒",
+          "icon": "AlarmClock",
+          "path": "/todo/octogenarian-reminder",
+          "type": "component",
+          "component": "OctogenarianReminder"
         }
       ]
     },
@@ -319,21 +327,12 @@
           "component": "TableStructure"
         },
         {
-          "id": "module-1770217750775",
-          "title": "数据清理",
-          "icon": "Setting",
-          "path": "/data-center/sub-1770217750775",
-          "type": "module",
-          "children": [
-            {
-              "id": "data-cleanup-tool",
-              "title": "数据清理工具",
-              "icon": "Delete",
-              "path": "/admin/data-cleanup",
-              "type": "component",
-              "component": "DataCleanupView"
-            }
-          ]
+          "id": "data-cleanup-tool",
+          "title": "数据清理工具",
+          "icon": "Delete",
+          "path": "/admin/data-cleanup",
+          "type": "component",
+          "component": "DataCleanupView"
         }
       ]
     },
@@ -345,10 +344,10 @@
       "type": "module",
       "children": [
         {
-          "id": "module-1770355257523",
-          "title": "教师管理",
-          "icon": "Folder",
-          "path": "/personnel/sub-1770355257523",
+          "id": "personnel-active-teachers",
+          "title": "在职教师管理",
+          "icon": "User",
+          "path": "/personnel/active",
           "type": "module",
           "children": [
             {
@@ -362,6 +361,15 @@
               "api_endpoint": "/api/data/teacher_basic_info",
               "table_name": "teacher_basic_info",
               "table_type": "master"
+            },
+            {
+              "id": "personnel-title-post",
+              "title": "职称岗位管理",
+              "icon": "Medal",
+              "path": "/personnel/active/title-post",
+              "type": "module",
+              "description": "教师职称信息与岗位聘任信息统一维护",
+              "children": []
             },
             {
               "id": "table-teacher_education_record",
@@ -385,18 +393,6 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/teacher_personal_identity",
               "table_name": "teacher_personal_identity",
-              "table_type": "master"
-            },
-            {
-              "id": "table-teacher_title_info",
-              "title": "教师职称信息",
-              "name": "教师职称信息",
-              "icon": "Document",
-              "path": "/data/teacher_title_info",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/teacher_title_info",
-              "table_name": "teacher_title_info",
               "table_type": "master"
             },
             {
@@ -436,18 +432,6 @@
               "table_type": "dictionary"
             },
             {
-              "id": "table-personal_statistics",
-              "title": "岗位设置遗留绩效统计表",
-              "name": "岗位设置遗留绩效统计表",
-              "icon": "Document",
-              "path": "/data/personal_statistics",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/personal_statistics",
-              "table_name": "personal_statistics",
-              "table_type": "master"
-            },
-            {
               "id": "table-teacher_certificate_info",
               "title": "教师资格证信息",
               "name": "教师资格证信息",
@@ -458,42 +442,30 @@
               "api_endpoint": "/api/data/teacher_certificate_info",
               "table_name": "teacher_certificate_info",
               "table_type": "child"
-            },
+            }
+          ]
+        },
+        {
+          "id": "personnel-retired-teachers",
+          "title": "退休教师管理",
+          "icon": "Clock",
+          "path": "/personnel/retired",
+          "type": "module",
+          "children": [
             {
-              "id": "table-salary_data",
-              "title": "最新工资包数据",
-              "name": "最新工资包数据",
-              "icon": "Document",
-              "path": "/data/salary_info",
+              "id": "table-teacher_basic_info_retired",
+              "title": "退休教师列表",
+              "name": "退休教师列表",
+              "icon": "User",
+              "path": "/data/teacher_basic_info?任职状态=退休,离休",
               "type": "component",
               "component": "DynamicDataView",
-              "api_endpoint": "/api/data/salary_info",
-              "table_name": "salary_info",
-              "table_type": "child"
-            },
-            {
-              "id": "table-data",
-              "title": "学校信息表",
-              "name": "学校信息表",
-              "icon": "Document",
-              "path": "/data/school_information_table",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/school_information_table",
-              "table_name": "school_information_table",
-              "table_type": "master"
-            },
-            {
-              "id": "table-post_appointment_info",
-              "title": "岗位聘任信息",
-              "name": "岗位聘任信息",
-              "icon": "Document",
-              "path": "/data/post_appointment_info",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/post_appointment_info",
-              "table_name": "post_appointment_info",
-              "table_type": "child"
+              "api_endpoint": "/api/data/teacher_basic_info",
+              "table_name": "teacher_basic_info",
+              "table_type": "master",
+              "defaultFilter": {
+                "任职状态": "退休,离休"
+              }
             },
             {
               "id": "table-shi_ye_dan_wei_tui_xiu_ren_yuan_tui_xiu_fei_bian_dong_ming_xi_biao_20150819",
@@ -518,17 +490,128 @@
               "api_endpoint": "/api/data/tui_xiu_bu_chong_xin_xi",
               "table_name": "tui_xiu_bu_chong_xin_xi",
               "table_type": "master"
-            },
+            }
+          ]
+        },
+        {
+          "id": "personnel-deceased",
+          "title": "离世教师关怀",
+          "icon": "Present",
+          "path": "/personnel/deceased",
+          "type": "module",
+          "children": [
             {
-              "id": "table-zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
-              "title": "枣阳市太平镇中心学校党员信息表",
-              "name": "枣阳市太平镇中心学校党员信息表",
-              "icon": "Document",
-              "path": "/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+              "id": "table-teacher_basic_info_deceased",
+              "title": "离世教师列表",
+              "name": "离世教师列表",
+              "icon": "User",
+              "path": "/data/teacher_basic_info?任职状态=去世",
               "type": "component",
               "component": "DynamicDataView",
-              "api_endpoint": "/api/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
-              "table_name": "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+              "api_endpoint": "/api/data/teacher_basic_info",
+              "table_name": "teacher_basic_info",
+              "table_type": "master",
+              "defaultFilter": {
+                "任职状态": "去世"
+              }
+            },
+            {
+              "id": "table-教师死亡待办处理记录",
+              "title": "教师死亡待办处理记录",
+              "name": "教师死亡待办处理记录",
+              "icon": "Document",
+              "path": "/data/教师死亡待办处理记录",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/教师死亡待办处理记录",
+              "table_name": "教师死亡待办处理记录",
+              "table_type": "business"
+            },
+            {
+              "id": "table-教师死亡待办工作",
+              "title": "教师死亡待办工作",
+              "name": "教师死亡待办工作",
+              "icon": "Document",
+              "path": "/data/教师死亡待办工作",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/教师死亡待办工作",
+              "table_name": "教师死亡待办工作",
+              "table_type": "business"
+            },
+            {
+              "id": "table-死亡登记信息",
+              "title": "死亡登记信息",
+              "name": "死亡登记信息",
+              "icon": "Document",
+              "path": "/data/死亡登记信息",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/死亡登记信息",
+              "table_name": "死亡登记信息",
+              "table_type": "business"
+            }
+          ]
+        },
+        {
+          "id": "personnel-octogenarian",
+          "title": "高龄补贴管理",
+          "icon": "FirstAidKit",
+          "path": "/personnel/octogenarian",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-高龄老人补贴信息",
+              "title": "高龄老人补贴信息",
+              "name": "高龄老人补贴信息",
+              "icon": "Document",
+              "path": "/data/高龄老人补贴信息",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/高龄老人补贴信息",
+              "table_name": "高龄老人补贴信息",
+              "table_type": "business"
+            },
+            {
+              "id": "octogenarian-subsidy",
+              "title": "补贴发放管理",
+              "icon": "Money",
+              "path": "/system/octogenarian/subsidy",
+              "type": "component",
+              "component": "SubsidyManagement"
+            }
+          ]
+        },
+        {
+          "id": "personnel-title-post",
+          "title": "职称岗位管理",
+          "name": "职称岗位管理",
+          "icon": "Folder",
+          "path": "/personnel/sub-personnel-title-post",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-post_appointment_info",
+              "title": "岗位聘任信息",
+              "name": "岗位聘任信息",
+              "icon": "Document",
+              "path": "/data/post_appointment_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/post_appointment_info",
+              "table_name": "post_appointment_info",
+              "table_type": "child"
+            },
+            {
+              "id": "table-teacher_title_info",
+              "title": "职称评定信息",
+              "name": "职称评定信息",
+              "icon": "Document",
+              "path": "/data/teacher_title_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/teacher_title_info",
+              "table_name": "teacher_title_info",
               "table_type": "master"
             }
           ]
@@ -536,51 +619,187 @@
       ]
     },
     {
-      "id": "performance-management",
-      "title": "绩效管理",
+      "id": "salary",
+      "title": "薪酬管理",
       "icon": "Money",
-      "path": "/performance",
+      "path": "/salary",
       "type": "module",
       "children": [
         {
-          "id": "performance-pay-approval",
-          "title": "绩效工资审批",
+          "id": "salary-performance",
+          "title": "绩效工资管理",
+          "icon": "Money",
+          "path": "/salary/performance",
+          "type": "module",
+          "children": [
+            {
+              "id": "performance-pay-approval",
+              "title": "绩效工资审批",
+              "icon": "Document",
+              "path": "/salary/performance/approval",
+              "type": "component",
+              "component": "SalaryPerformanceApproval"
+            },
+            {
+              "id": "performance-pay-history",
+              "title": "绩效工资历史",
+              "icon": "Clock",
+              "path": "/performance/pay-history",
+              "type": "component",
+              "component": "PerformancePayHistory"
+            },
+            {
+              "id": "performance-pay-statistics",
+              "title": "绩效工资统计",
+              "icon": "TrendCharts",
+              "path": "/performance/pay-statistics",
+              "type": "component",
+              "component": "PerformancePayStatistics"
+            },
+            {
+              "id": "performance-pay-upload",
+              "title": "绩效工资上传",
+              "icon": "Upload",
+              "path": "/performance/pay-upload",
+              "type": "component",
+              "component": "PerformancePayUpload"
+            },
+            {
+              "id": "performance-standards",
+              "title": "绩效标准设置",
+              "icon": "Setting",
+              "path": "/performance/standards",
+              "type": "component",
+              "component": "PerformanceStandards"
+            }
+          ]
+        },
+        {
+          "id": "table-personal_statistics",
+          "title": "岗位设置遗留绩效统计表",
+          "name": "岗位设置遗留绩效统计表",
           "icon": "Document",
-          "path": "/performance/pay-approval",
+          "path": "/data/personal_statistics",
           "type": "component",
-          "component": "PerformancePayApproval"
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/personal_statistics",
+          "table_name": "personal_statistics",
+          "table_type": "master"
         },
         {
-          "id": "performance-pay-history",
-          "title": "绩效工资历史",
-          "icon": "Clock",
-          "path": "/performance/pay-history",
+          "id": "table-salary_data",
+          "title": "最新工资包数据",
+          "name": "最新工资包数据",
+          "icon": "Document",
+          "path": "/data/salary_info",
           "type": "component",
-          "component": "PerformancePayHistory"
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/salary_info",
+          "table_name": "salary_info",
+          "table_type": "child"
+        }
+      ]
+    },
+    {
+      "id": "school",
+      "title": "学校管理",
+      "icon": "School",
+      "path": "/school",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-school_information_table",
+          "title": "学校信息表",
+          "name": "学校信息表",
+          "icon": "Document",
+          "path": "/data/school_information_table",
+          "type": "component",
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/school_information_table",
+          "table_name": "school_information_table",
+          "table_type": "master"
         },
         {
-          "id": "performance-pay-statistics",
-          "title": "绩效工资统计",
-          "icon": "TrendCharts",
-          "path": "/performance/pay-statistics",
-          "type": "component",
-          "component": "PerformancePayStatistics"
+          "id": "school-student",
+          "title": "学生管理",
+          "icon": "User",
+          "path": "/school/student",
+          "type": "module",
+          "children": []
         },
         {
-          "id": "performance-pay-upload",
-          "title": "绩效工资上传",
-          "icon": "Upload",
-          "path": "/performance/pay-upload",
+          "id": "school-attendance",
+          "title": "考勤管理",
+          "icon": "Calendar",
+          "path": "/school/attendance",
+          "type": "module",
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "party",
+      "title": "党组织管理",
+      "icon": "Flag",
+      "path": "/party",
+      "type": "module",
+      "children": [
+        {
+          "id": "table-zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "title": "枣阳市太平镇中心学校党员信息表",
+          "name": "枣阳市太平镇中心学校党员信息表",
+          "icon": "Document",
+          "path": "/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
           "type": "component",
-          "component": "PerformancePayUpload"
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "table_name": "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
+          "table_type": "master"
         },
         {
-          "id": "performance-standards",
-          "title": "绩效标准设置",
-          "icon": "Setting",
-          "path": "/performance/standards",
+          "id": "table-party_member_info_summary",
+          "title": "枣阳市太平镇教育总支党员信息汇总表",
+          "name": "中国共产党枣阳市太平镇教育总支部委员会党员信息汇总表",
+          "icon": "Document",
+          "path": "/data/party_member_info_summary",
           "type": "component",
-          "component": "PerformanceStandards"
+          "component": "DynamicDataView",
+          "api_endpoint": "/api/data/party_member_info_summary",
+          "table_name": "party_member_info_summary",
+          "table_type": "master"
+        },
+        {
+          "id": "party-backup",
+          "title": "备份查询",
+          "name": "备份查询",
+          "icon": "FolderOpened",
+          "type": "module",
+          "children": [
+            {
+              "id": "table-party_member_info_summary_backup_2026_08",
+              "title": "枣阳市太平镇教育总支党员信息汇总表（2026年8月备份）",
+              "name": "枣阳市太平镇教育总支党员信息汇总表（2026年8月备份）",
+              "icon": "Document",
+              "path": "/data/party_member_info_summary_backup_2026_08",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/party_member_info_summary_backup_2026_08",
+              "table_name": "party_member_info_summary_backup_2026_08",
+              "table_type": "backup"
+            },
+            {
+              "id": "table-party_member_info_summary_backup_2026",
+              "title": "枣阳市太平镇教育总支党员信息汇总表（2026年备份）",
+              "name": "枣阳市太平镇教育总支党员信息汇总表（2026年备份）",
+              "icon": "Document",
+              "path": "/data/party_member_info_summary_backup_2026",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/party_member_info_summary_backup_2026",
+              "table_name": "party_member_info_summary_backup_2026",
+              "table_type": "backup"
+            }
+          ]
         }
       ]
     },
@@ -598,50 +817,6 @@
           "path": "/report/retirement/estimate",
           "type": "component",
           "component": "RetirementEstimate"
-        }
-      ]
-    },
-    {
-      "id": "test",
-      "title": "测试",
-      "name": "测试",
-      "icon": "Folder",
-      "path": "/test",
-      "type": "module",
-      "children": [
-        {
-          "id": "table-test_table_xyz",
-          "title": "测试表",
-          "name": "测试表",
-          "icon": "Document",
-          "path": "/data/test_table_xyz",
-          "type": "component",
-          "component": "DynamicDataView",
-          "api_endpoint": "/api/data/test_table_xyz",
-          "table_name": "test_table_xyz",
-          "table_type": "master"
-        }
-      ]
-    },
-    {
-      "id": "test_module",
-      "title": "测试模块",
-      "name": "测试模块",
-      "icon": "Folder",
-      "path": "/test_module",
-      "type": "module",
-      "children": [
-        {
-          "id": "table-test_slash_fields",
-          "title": "test_slash_fields",
-          "name": "test_slash_fields",
-          "icon": "Document",
-          "path": "/data/test_slash_fields",
-          "type": "component",
-          "component": "DynamicDataView",
-          "api_endpoint": "/api/data/test_slash_fields",
-          "table_name": "test_slash_fields",
-          "table_type": "master"
         }
       ]
     }

@@ -1,0 +1,30 @@
+{
+  "config_name": "测试表",
+  "display_name": "测试表",
+  "chinese_title": "测试表",
+  "table_name": "test_table_xyz",
+  "table_type": "master",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "source_field": "国家/地区",
+      "target_field": "guo_jia_/_di_qu",
+      "data_type": "VARCHAR",
+      "length": 255
+    },
+    {
+      "source_field": "前往地/出发地",
+      "target_field": "qian_wang_di_/_chu_fa_di",
+      "data_type": "VARCHAR",
+      "length": 255
+    },
+    {
+      "source_field": "姓名",
+      "target_field": "name",
+      "data_type": "VARCHAR",
+      "length": 255
+    }
+  ],
+  "created_at": "2026-06-17T08:19:31.424184",
+  "updated_at": "2026-06-17T08:19:31.424184"
+}

@@ -130,11 +130,6 @@
       "table_type": "dictionary",
       "created_at": "2026-05-07T11:17:35.094526"
     },
-    "岗位聘任信息": {
-      "english_name": "post_appointment_info",
-      "table_type": "child",
-      "updated_at": "2026-05-08T08:05:18.906849"
-    },
     "退休人员身份统计": {
       "english_name": "v_retirement_identity_stats",
       "table_type": "view",
@@ -275,6 +270,16 @@
       "english_name": "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
       "table_type": "master",
       "updated_at": "2026-07-20T20:30:35.960509"
+    },
+    "中国共产党枣阳市太平镇教育总支部委员会党员信息汇总表": {
+      "english_name": "party_member_info_summary",
+      "table_type": "master",
+      "updated_at": "2026-08-20T17:22:21.860051"
+    },
+    "岗位聘任信息": {
+      "english_name": "post_appointment_info",
+      "table_type": "child",
+      "updated_at": "2026-08-21T15:49:12.348353"
     }
   },
   "reverse_mappings": {
@@ -284,7 +289,7 @@
     "teacher_unit": "教师所在单位",
     "teacher_certificate_info": "教师资格证信息",
     "teacher_certificate_info_backup": "教师资格证信息备份",
-    "teacher_title_info": "教师职称信息",
+    "teacher_title_info": "职称评定信息",
     "teacher_training_records": "教师培训记录",
     "post_appointment_info": "岗位聘任信息",
     "retirement_info": "退休补充信息",
@@ -381,7 +386,7 @@
     "test_wage_fix": "测试工资表修复",
     "personnel_change_records": "人事变动记录",
     "position_legacy_issues": "岗位遗留问题",
-    "title_info": "职称信息",
+    "title_info": "职称字典",
     "statistics": "统计数据",
     "saved_exports": "已保存导出",
     "octogenarian_elderly_subsidy_info": "高龄老人补贴信息",
@@ -398,6 +403,9 @@
     "test_table_xyz": "测试表",
     "tui_xiu_bu_chong_xin_xi": "退休补充信息",
     "salary_info": "最新工资包数据",
-    "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao": "枣阳市太平镇中心学校党员信息表"
+    "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao": "枣阳市太平镇中心学校党员信息表",
+    "party_member_info_summary": "中国共产党枣阳市太平镇教育总支部委员会党员信息汇总表",
+    "party_member_info_summary_backup_2026_08": "枣阳市太平镇教育总支党员信息汇总表（2026年8月备份）",
+    "party_member_info_summary_backup_2026": "枣阳市太平镇教育总支党员信息汇总表（2026年备份）"
   }
 }

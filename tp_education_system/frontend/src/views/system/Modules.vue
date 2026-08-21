@@ -133,13 +133,37 @@ const modulesList = ref([
     status: true,
     description: '档案信息管理模块',
     createdAt: '2024-01-30 00:00:00'
+  },
+  {
+    id: 6,
+    name: '薪酬管理',
+    path: '/salary',
+    status: true,
+    description: '薪酬与绩效工资管理模块',
+    createdAt: '2026-07-27 00:00:00'
+  },
+  {
+    id: 7,
+    name: '学校管理',
+    path: '/school',
+    status: true,
+    description: '学校信息、学生及考勤管理模块',
+    createdAt: '2026-07-27 00:00:00'
+  },
+  {
+    id: 8,
+    name: '党组织管理',
+    path: '/party',
+    status: true,
+    description: '党组织与党员信息管理模块',
+    createdAt: '2026-07-27 00:00:00'
   }
 ])
 
 // 分页数据
 const currentPage = ref(1)
 const pageSize = ref(10)
-const total = ref(5)
+const total = ref(8)
 
 // 分页处理
 const handleSizeChange = (size: number) => {

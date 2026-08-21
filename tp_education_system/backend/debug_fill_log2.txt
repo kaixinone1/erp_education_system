@@ -1,498 +1,12 @@
-[DEBUG] retired_cadre=441 worker=1 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部441人
-[DEBUG] 填充后 行25列2 = 
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人1人
-[DEBUG] 填充后 行26列2 = 
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部1人
-[DEBUG] 填充后 行27列2 = 
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=441 worker=1 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部441人
-[DEBUG] 填充后 行25列2 = 
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人1人
-[DEBUG] 填充后 行26列2 = 
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部1人
-[DEBUG] 填充后 行27列2 = 
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=441 worker=1 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部441人
-[DEBUG] 填充后 行25列2 = 
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人1人
-[DEBUG] 填充后 行26列2 = 
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部1人
-[DEBUG] 填充后 行27列2 = 
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=441 worker=1 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 441
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 1
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=441 worker=1 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 441
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 1
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=443 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 443
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=444 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 444
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=445 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 445
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461793.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461793.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
 [DEBUG] retired_cadre=446 worker=2 office=1
 [DEBUG] subsidy_count=355 standard=350 total=124250
-[DEBUG] perf_count=356 perf_total=460270.0
+[DEBUG] perf_count=356 perf_total=461579.0
 [DEBUG] 填充后 行20列1 = 绩效工资合计
 [DEBUG] 填充后 行20列2 = 356
-[DEBUG] 填充后 行20列4 = 460270.0
+[DEBUG] 填充后 行20列4 = 461579
 [DEBUG] 填充后 行21列1 = 乡镇补贴合计
 [DEBUG] 填充后 行21列2 = 355
 [DEBUG] 填充后 行21列4 = 124250
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=355 standard=350 total=124250
-[DEBUG] perf_count=356 perf_total=460270.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 356
-[DEBUG] 填充后 行20列4 = 460270.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 355
-[DEBUG] 填充后 行21列4 = 124250
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=352 standard=350 total=123200
-[DEBUG] perf_count=353 perf_total=456615.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 353
-[DEBUG] 填充后 行20列4 = 456615.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 352
-[DEBUG] 填充后 行21列4 = 123200
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=352 standard=350 total=123200
-[DEBUG] perf_count=353 perf_total=456615.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 353
-[DEBUG] 填充后 行20列4 = 456615.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 352
-[DEBUG] 填充后 行21列4 = 123200
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=352 standard=350 total=123200
-[DEBUG] perf_count=353 perf_total=456615.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 353
-[DEBUG] 填充后 行20列4 = 456615.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 352
-[DEBUG] 填充后 行21列4 = 123200
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=352 standard=350 total=123200
-[DEBUG] perf_count=353 perf_total=456615.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 353
-[DEBUG] 填充后 行20列4 = 456615.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 352
-[DEBUG] 填充后 行21列4 = 123200
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461579.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461579.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
-[DEBUG] 填充后 行25列1 = 退休干部
-[DEBUG] 填充后 行25列2 = 446
-[DEBUG] 填充后 行25列4 = 
-[DEBUG] 填充后 行26列1 = 退休工人
-[DEBUG] 填充后 行26列2 = 2
-[DEBUG] 填充后 行26列4 = 
-[DEBUG] 填充后 行27列1 = 离休干部
-[DEBUG] 填充后 行27列2 = 1
-[DEBUG] 填充后 行27列4 = 
-[DEBUG] retired_cadre=446 worker=2 office=1
-[DEBUG] subsidy_count=356 standard=350 total=124600
-[DEBUG] perf_count=357 perf_total=461579.0
-[DEBUG] 填充后 行20列1 = 绩效工资合计
-[DEBUG] 填充后 行20列2 = 357
-[DEBUG] 填充后 行20列4 = 461579.0
-[DEBUG] 填充后 行21列1 = 乡镇补贴合计
-[DEBUG] 填充后 行21列2 = 356
-[DEBUG] 填充后 行21列4 = 124600
 [DEBUG] 填充后 行25列1 = 退休干部
 [DEBUG] 填充后 行25列2 = 446
 [DEBUG] 填充后 行25列4 = 
@@ -507,7 +21,133 @@
 [DEBUG] perf_count=356 perf_total=461579.0
 [DEBUG] 填充后 行20列1 = 绩效工资合计
 [DEBUG] 填充后 行20列2 = 356
-[DEBUG] 填充后 行20列4 = 461579.0
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 355
+[DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=355 standard=350 total=124250
+[DEBUG] perf_count=356 perf_total=461579.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 356
+[DEBUG] 填充后 行20列4 = 461579
 [DEBUG] 填充后 行21列1 = 乡镇补贴合计
 [DEBUG] 填充后 行21列2 = 355
 [DEBUG] 填充后 行21列4 = 124250
@@ -817,6 +457,330 @@
 [DEBUG] 填充后 行21列1 = 乡镇补贴合计
 [DEBUG] 填充后 行21列2 = 355
 [DEBUG] 填充后 行21列4 = 124250
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=354 standard=350 total=123900
+[DEBUG] perf_count=355 perf_total=460270.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 355
+[DEBUG] 填充后 行20列4 = 460270
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 354
+[DEBUG] 填充后 行21列4 = 123900
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=353 standard=350 total=123550
+[DEBUG] perf_count=354 perf_total=458747.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 354
+[DEBUG] 填充后 行20列4 = 458747
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 353
+[DEBUG] 填充后 行21列4 = 123550
 [DEBUG] 填充后 行25列1 = 退休干部
 [DEBUG] 填充后 行25列2 = 446
 [DEBUG] 填充后 行25列4 = 

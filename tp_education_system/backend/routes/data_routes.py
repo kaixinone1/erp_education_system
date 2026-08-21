@@ -520,14 +520,75 @@ async def get_table_data(
             # 处理筛选条件
             if filter:
                 try:
-                    filter_dict = json.loads(filter)
-                    for field, value in filter_dict.items():
-                        if field in columns and value:
-                            param_name = f"filter_{field}"
-                            # 如果使用表别名，列名需要加 t. 前缀
+                    filter_data = json.loads(filter)
+                    # 新格式：条件数组 [{field, operator, value}, ...]
+                    if isinstance(filter_data, list):
+                        for cond in filter_data:
+                            field = cond.get('field', '')
+                            operator = cond.get('operator', 'contains')
+                            value = cond.get('value', '')
+                            
+                            if not field:
+                                continue
+                            if field not in columns:
+                                continue
+                            
+                            param_name = f"filter_{field}_{len(params)}"
                             col_ref = f"t.{field}" if use_table_alias else field
-                            where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
-                            params[param_name] = f"%{value}%"
+                            
+                            if operator == 'is_null':
+                                where_conditions.append(f"{col_ref} IS NULL")
+                            elif operator == 'is_not_null':
+                                where_conditions.append(f"{col_ref} IS NOT NULL")
+                            elif operator == 'eq':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) = :{param_name}")
+                                params[param_name] = str(value)
+                            elif operator == 'neq':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) != :{param_name}")
+                                params[param_name] = str(value)
+                            elif operator == 'gt':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) > :{param_name}")
+                                params[param_name] = str(value)
+                            elif operator == 'gte':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) >= :{param_name}")
+                                params[param_name] = str(value)
+                            elif operator == 'lt':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) < :{param_name}")
+                                params[param_name] = str(value)
+                            elif operator == 'lte':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) <= :{param_name}")
+                                params[param_name] = str(value)
+                            elif operator == 'not_contains':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) NOT ILIKE :{param_name}")
+                                params[param_name] = f"%{value}%"
+                            elif operator == 'in':
+                                # 支持逗号分隔的多值，如 "退休,离休"
+                                values = [v.strip() for v in str(value).split(',') if v.strip()]
+                                if values:
+                                    in_params = []
+                                    for i, v in enumerate(values):
+                                        pname = f"{param_name}_{i}"
+                                        in_params.append(f":{pname}")
+                                        params[pname] = v
+                                    where_conditions.append(f"CAST({col_ref} AS TEXT) IN ({', '.join(in_params)})")
+                            elif operator == 'starts_with':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                params[param_name] = f"{value}%"
+                            elif operator == 'ends_with':
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                params[param_name] = f"%{value}"
+                            else:  # contains (默认)
+                                if value:
+                                    where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                    params[param_name] = f"%{value}%"
+                    # 旧格式兼容：字典 {field: value, ...}
+                    elif isinstance(filter_data, dict):
+                        for field, value in filter_data.items():
+                            if field in columns and value:
+                                param_name = f"filter_{field}"
+                                col_ref = f"t.{field}" if use_table_alias else field
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                params[param_name] = f"%{value}%"
                 except json.JSONDecodeError:
                     pass
 

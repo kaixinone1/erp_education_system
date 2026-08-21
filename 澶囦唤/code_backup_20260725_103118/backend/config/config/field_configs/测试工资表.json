@@ -1,0 +1,24 @@
+{
+  "config_name": "测试工资表",
+  "display_name": "测试工资表",
+  "chinese_title": "测试工资表",
+  "table_name": "test_wage",
+  "table_type": "master",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "source_field": "单位名称",
+      "target_field": "unit_name"
+    },
+    {
+      "source_field": "姓名",
+      "target_field": "name"
+    },
+    {
+      "source_field": "身份证号",
+      "target_field": "id_card"
+    }
+  ],
+  "created_at": "2026-05-03T12:13:05.504510",
+  "updated_at": "2026-05-03T12:13:05.504510"
+}

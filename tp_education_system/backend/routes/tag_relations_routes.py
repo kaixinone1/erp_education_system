@@ -3,6 +3,7 @@
 """
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
+import json
 import psycopg2
 
 router = APIRouter(prefix="/api/tag-relations", tags=["tag-relations"])
@@ -15,6 +16,15 @@ DATABASE_CONFIG = {
     "password": "taiping_password"
 }
 
+# 标签关系表可筛选字段映射（前端字段名 → SQL列引用）
+TAG_FILTER_FIELD_MAP = {
+    "teacher_name": 't."姓名"',
+    "id_card": 't."身份证号码"',
+    "tag_name": "d.biao_qian",
+    "tag_id": "r.tag_id",
+    "employee_id": "r.employee_id",
+}
+
 
 def get_db_connection():
     return psycopg2.connect(**DATABASE_CONFIG)
@@ -23,13 +33,14 @@ def get_db_connection():
 @router.get("/list")
 async def get_tag_relations_list(
     page: int = Query(1, ge=1),
-    size: int = Query(20, ge=1, le=200),
+    size: int = Query(20, ge=1, le=10000),
     teacher_name: Optional[str] = None,
     id_card: Optional[str] = None,
     tag_id: Optional[int] = None,
-    keyword: Optional[str] = None
+    keyword: Optional[str] = None,
+    filter: Optional[str] = None
 ):
-    """获取标签关系列表"""
+    """获取标签关系列表（支持新旧两种筛选格式）"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -37,6 +48,60 @@ async def get_tag_relations_list(
         conditions = []
         params = []
         
+        # 新格式：条件数组 [{field, operator, value}, ...]（优先处理）
+        if filter:
+            try:
+                filter_data = json.loads(filter)
+                if isinstance(filter_data, list):
+                    for cond in filter_data:
+                        field = cond.get('field', '')
+                        operator = cond.get('operator', 'contains')
+                        value = cond.get('value', '')
+                        
+                        if not field or field not in TAG_FILTER_FIELD_MAP:
+                            continue
+                        
+                        col_ref = TAG_FILTER_FIELD_MAP[field]
+                        param_name = f"filter_{field}_{len(params)}"
+                        
+                        if operator == 'is_null':
+                            conditions.append(f"{col_ref} IS NULL")
+                        elif operator == 'is_not_null':
+                            conditions.append(f"{col_ref} IS NOT NULL")
+                        elif operator == 'eq':
+                            conditions.append(f"CAST({col_ref} AS TEXT) = %s")
+                            params.append(str(value))
+                        elif operator == 'neq':
+                            conditions.append(f"CAST({col_ref} AS TEXT) != %s")
+                            params.append(str(value))
+                        elif operator == 'contains':
+                            conditions.append(f"CAST({col_ref} AS TEXT) ILIKE %s")
+                            params.append(f"%{value}%")
+                        elif operator == 'not_contains':
+                            conditions.append(f"CAST({col_ref} AS TEXT) NOT ILIKE %s")
+                            params.append(f"%{value}%")
+                        elif operator == 'starts_with':
+                            conditions.append(f"CAST({col_ref} AS TEXT) ILIKE %s")
+                            params.append(f"{value}%")
+                        elif operator == 'ends_with':
+                            conditions.append(f"CAST({col_ref} AS TEXT) ILIKE %s")
+                            params.append(f"%{value}")
+                        elif operator == 'gt':
+                            conditions.append(f"CAST({col_ref} AS TEXT) > %s")
+                            params.append(str(value))
+                        elif operator == 'gte':
+                            conditions.append(f"CAST({col_ref} AS TEXT) >= %s")
+                            params.append(str(value))
+                        elif operator == 'lt':
+                            conditions.append(f"CAST({col_ref} AS TEXT) < %s")
+                            params.append(str(value))
+                        elif operator == 'lte':
+                            conditions.append(f"CAST({col_ref} AS TEXT) <= %s")
+                            params.append(str(value))
+            except json.JSONDecodeError:
+                pass
+        
+        # 旧格式兼容：独立参数
         if teacher_name:
             conditions.append('t."姓名" LIKE %s')
             params.append(f"%{teacher_name}%")

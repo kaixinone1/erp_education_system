@@ -1,0 +1,1236 @@
+(['d:\\erp_fifteen\\start_servers.py'],
+ ['d:\\erp_fifteen'],
+ [],
+ [('C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\Lib\\site-packages\\numpy\\_pyinstaller',
+   0),
+  ('C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks',
+   -1000),
+  ('C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\lib\\site-packages\\_pyinstaller_hooks_contrib',
+   -1000)],
+ {},
+ [],
+ [],
+ False,
+ {},
+ 0,
+ [],
+ [],
+ '3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit '
+ '(AMD64)]',
+ [('pyi_rth_inspect',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
+   'PYSOURCE'),
+  ('start_servers', 'D:\\erp_fifteen\\start_servers.py', 'PYSOURCE')],
+ [('zipfile',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\zipfile.pyc',
+   'PYMODULE'),
+  ('argparse',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\argparse.pyc',
+   'PYMODULE'),
+  ('textwrap',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\textwrap.pyc',
+   'PYMODULE'),
+  ('copy',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\copy.pyc',
+   'PYMODULE'),
+  ('gettext',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\gettext.pyc',
+   'PYMODULE'),
+  ('py_compile',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\py_compile.pyc',
+   'PYMODULE'),
+  ('importlib.machinery',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\machinery.pyc',
+   'PYMODULE'),
+  ('importlib',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\__init__.pyc',
+   'PYMODULE'),
+  ('importlib.abc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\abc.pyc',
+   'PYMODULE'),
+  ('typing',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\typing.pyc',
+   'PYMODULE'),
+  ('importlib._abc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\_abc.pyc',
+   'PYMODULE'),
+  ('importlib._bootstrap',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\_bootstrap.pyc',
+   'PYMODULE'),
+  ('importlib._bootstrap_external',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\_bootstrap_external.pyc',
+   'PYMODULE'),
+  ('importlib.metadata',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\__init__.pyc',
+   'PYMODULE'),
+  ('importlib.metadata._itertools',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\_itertools.pyc',
+   'PYMODULE'),
+  ('importlib.metadata._functools',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\_functools.pyc',
+   'PYMODULE'),
+  ('importlib.metadata._collections',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\_collections.pyc',
+   'PYMODULE'),
+  ('importlib.metadata._meta',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\_meta.pyc',
+   'PYMODULE'),
+  ('importlib.metadata._adapters',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\_adapters.pyc',
+   'PYMODULE'),
+  ('importlib.metadata._text',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\metadata\\_text.pyc',
+   'PYMODULE'),
+  ('email.message',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\message.pyc',
+   'PYMODULE'),
+  ('email.policy',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\policy.pyc',
+   'PYMODULE'),
+  ('email.contentmanager',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\contentmanager.pyc',
+   'PYMODULE'),
+  ('email.quoprimime',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\quoprimime.pyc',
+   'PYMODULE'),
+  ('string',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\string.pyc',
+   'PYMODULE'),
+  ('email.headerregistry',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\headerregistry.pyc',
+   'PYMODULE'),
+  ('email._header_value_parser',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\_header_value_parser.pyc',
+   'PYMODULE'),
+  ('urllib',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\urllib\\__init__.pyc',
+   'PYMODULE'),
+  ('email.generator',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\generator.pyc',
+   'PYMODULE'),
+  ('random',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\random.pyc',
+   'PYMODULE'),
+  ('statistics',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\statistics.pyc',
+   'PYMODULE'),
+  ('decimal',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\decimal.pyc',
+   'PYMODULE'),
+  ('_pydecimal',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_pydecimal.pyc',
+   'PYMODULE'),
+  ('contextvars',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\contextvars.pyc',
+   'PYMODULE'),
+  ('fractions',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\fractions.pyc',
+   'PYMODULE'),
+  ('numbers',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\numbers.pyc',
+   'PYMODULE'),
+  ('hashlib',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\hashlib.pyc',
+   'PYMODULE'),
+  ('bisect',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\bisect.pyc',
+   'PYMODULE'),
+  ('email.iterators',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\iterators.pyc',
+   'PYMODULE'),
+  ('email._encoded_words',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\_encoded_words.pyc',
+   'PYMODULE'),
+  ('base64',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\base64.pyc',
+   'PYMODULE'),
+  ('getopt',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\getopt.pyc',
+   'PYMODULE'),
+  ('email.charset',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\charset.pyc',
+   'PYMODULE'),
+  ('email.encoders',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\encoders.pyc',
+   'PYMODULE'),
+  ('email.base64mime',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\base64mime.pyc',
+   'PYMODULE'),
+  ('email._policybase',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\_policybase.pyc',
+   'PYMODULE'),
+  ('email.header',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\header.pyc',
+   'PYMODULE'),
+  ('email.errors',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\errors.pyc',
+   'PYMODULE'),
+  ('email.utils',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\utils.pyc',
+   'PYMODULE'),
+  ('email._parseaddr',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\_parseaddr.pyc',
+   'PYMODULE'),
+  ('calendar',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\calendar.pyc',
+   'PYMODULE'),
+  ('urllib.parse',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\urllib\\parse.pyc',
+   'PYMODULE'),
+  ('datetime',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\datetime.pyc',
+   'PYMODULE'),
+  ('_strptime',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_strptime.pyc',
+   'PYMODULE'),
+  ('quopri',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\quopri.pyc',
+   'PYMODULE'),
+  ('uu',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\uu.pyc',
+   'PYMODULE'),
+  ('optparse',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\optparse.pyc',
+   'PYMODULE'),
+  ('email',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\__init__.pyc',
+   'PYMODULE'),
+  ('email.parser',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\parser.pyc',
+   'PYMODULE'),
+  ('email.feedparser',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\email\\feedparser.pyc',
+   'PYMODULE'),
+  ('csv',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\csv.pyc',
+   'PYMODULE'),
+  ('importlib.readers',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\readers.pyc',
+   'PYMODULE'),
+  ('tokenize',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\tokenize.pyc',
+   'PYMODULE'),
+  ('token',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\token.pyc',
+   'PYMODULE'),
+  ('lzma',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\lzma.pyc',
+   'PYMODULE'),
+  ('_compression',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_compression.pyc',
+   'PYMODULE'),
+  ('bz2',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\bz2.pyc',
+   'PYMODULE'),
+  ('contextlib',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\contextlib.pyc',
+   'PYMODULE'),
+  ('threading',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\threading.pyc',
+   'PYMODULE'),
+  ('_threading_local',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_threading_local.pyc',
+   'PYMODULE'),
+  ('struct',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\struct.pyc',
+   'PYMODULE'),
+  ('importlib.util',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\importlib\\util.pyc',
+   'PYMODULE'),
+  ('inspect',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\inspect.pyc',
+   'PYMODULE'),
+  ('dis',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\dis.pyc',
+   'PYMODULE'),
+  ('opcode',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\opcode.pyc',
+   'PYMODULE'),
+  ('ast',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\ast.pyc',
+   'PYMODULE'),
+  ('stringprep',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\stringprep.pyc',
+   'PYMODULE'),
+  ('tracemalloc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\tracemalloc.pyc',
+   'PYMODULE'),
+  ('pickle',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\pickle.pyc',
+   'PYMODULE'),
+  ('pprint',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\pprint.pyc',
+   'PYMODULE'),
+  ('dataclasses',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\dataclasses.pyc',
+   'PYMODULE'),
+  ('_compat_pickle',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_compat_pickle.pyc',
+   'PYMODULE'),
+  ('fnmatch',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\fnmatch.pyc',
+   'PYMODULE'),
+  ('_py_abc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_py_abc.pyc',
+   'PYMODULE'),
+  ('pathlib',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\pathlib.pyc',
+   'PYMODULE'),
+  ('shutil',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\shutil.pyc',
+   'PYMODULE'),
+  ('tarfile',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\tarfile.pyc',
+   'PYMODULE'),
+  ('gzip',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\gzip.pyc',
+   'PYMODULE'),
+  ('logging',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\logging\\__init__.pyc',
+   'PYMODULE'),
+  ('json',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\json\\__init__.pyc',
+   'PYMODULE'),
+  ('json.encoder',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\json\\encoder.pyc',
+   'PYMODULE'),
+  ('json.decoder',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\json\\decoder.pyc',
+   'PYMODULE'),
+  ('json.scanner',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\json\\scanner.pyc',
+   'PYMODULE'),
+  ('socket',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\socket.pyc',
+   'PYMODULE'),
+  ('selectors',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\selectors.pyc',
+   'PYMODULE'),
+  ('subprocess',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\subprocess.pyc',
+   'PYMODULE'),
+  ('signal',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\signal.pyc',
+   'PYMODULE')],
+ [('python310.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.dll',
+   'BINARY'),
+  ('_decimal.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\_decimal.pyd',
+   'EXTENSION'),
+  ('_hashlib.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\_hashlib.pyd',
+   'EXTENSION'),
+  ('unicodedata.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\unicodedata.pyd',
+   'EXTENSION'),
+  ('_lzma.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\_lzma.pyd',
+   'EXTENSION'),
+  ('_bz2.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\_bz2.pyd',
+   'EXTENSION'),
+  ('select.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\select.pyd',
+   'EXTENSION'),
+  ('_socket.pyd',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\_socket.pyd',
+   'EXTENSION'),
+  ('api-ms-win-crt-math-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-math-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-time-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-time-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-stdio-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-stdio-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-filesystem-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-filesystem-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-string-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-string-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-locale-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-locale-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-runtime-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-runtime-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-environment-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-environment-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-convert-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-convert-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-heap-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-heap-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-process-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-process-l1-1-0.dll',
+   'BINARY'),
+  ('VCRUNTIME140.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\VCRUNTIME140.dll',
+   'BINARY'),
+  ('api-ms-win-crt-conio-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-conio-l1-1-0.dll',
+   'BINARY'),
+  ('libcrypto-1_1.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\libcrypto-1_1.dll',
+   'BINARY'),
+  ('ucrtbase.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\ucrtbase.dll',
+   'BINARY'),
+  ('api-ms-win-crt-utility-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-crt-utility-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-profile-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-profile-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processthreads-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-processthreads-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-synch-l1-2-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-synch-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l1-2-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-file-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processenvironment-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-processenvironment-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-libraryloader-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-libraryloader-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-console-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-console-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-string-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-string-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-heap-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-heap-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-datetime-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-datetime-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-rtlsupport-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-rtlsupport-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-util-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-util-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-localization-l1-2-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-localization-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-namedpipe-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-namedpipe-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-debug-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-debug-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-sysinfo-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-sysinfo-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-synch-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-synch-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-file-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-fibers-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-fibers-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-errorhandling-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-errorhandling-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-fibers-l1-1-1.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-fibers-l1-1-1.dll',
+   'BINARY'),
+  ('api-ms-win-core-timezone-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-timezone-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-memory-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-memory-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l2-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-file-l2-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processthreads-l1-1-1.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-processthreads-l1-1-1.dll',
+   'BINARY'),
+  ('api-ms-win-core-kernel32-legacy-l1-1-1.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-kernel32-legacy-l1-1-1.dll',
+   'BINARY'),
+  ('api-ms-win-core-interlocked-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-interlocked-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-handle-l1-1-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-handle-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-sysinfo-l1-2-0.dll',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\app\\jre\\bin\\api-ms-win-core-sysinfo-l1-2-0.dll',
+   'BINARY')],
+ [],
+ [],
+ [('base_library.zip',
+   'D:\\erp_fifteen\\build\\启动服务器\\base_library.zip',
+   'DATA')],
+ [('traceback',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\traceback.pyc',
+   'PYMODULE'),
+  ('copyreg',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\copyreg.pyc',
+   'PYMODULE'),
+  ('sre_constants',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\sre_constants.pyc',
+   'PYMODULE'),
+  ('encodings.zlib_codec',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\zlib_codec.pyc',
+   'PYMODULE'),
+  ('encodings.uu_codec',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\uu_codec.pyc',
+   'PYMODULE'),
+  ('encodings.utf_8_sig',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_8_sig.pyc',
+   'PYMODULE'),
+  ('encodings.utf_8',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_8.pyc',
+   'PYMODULE'),
+  ('encodings.utf_7',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_7.pyc',
+   'PYMODULE'),
+  ('encodings.utf_32_le',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_32_le.pyc',
+   'PYMODULE'),
+  ('encodings.utf_32_be',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_32_be.pyc',
+   'PYMODULE'),
+  ('encodings.utf_32',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_32.pyc',
+   'PYMODULE'),
+  ('encodings.utf_16_le',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_16_le.pyc',
+   'PYMODULE'),
+  ('encodings.utf_16_be',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_16_be.pyc',
+   'PYMODULE'),
+  ('encodings.utf_16',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\utf_16.pyc',
+   'PYMODULE'),
+  ('encodings.unicode_escape',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\unicode_escape.pyc',
+   'PYMODULE'),
+  ('encodings.undefined',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\undefined.pyc',
+   'PYMODULE'),
+  ('encodings.tis_620',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\tis_620.pyc',
+   'PYMODULE'),
+  ('encodings.shift_jisx0213',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\shift_jisx0213.pyc',
+   'PYMODULE'),
+  ('encodings.shift_jis_2004',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\shift_jis_2004.pyc',
+   'PYMODULE'),
+  ('encodings.shift_jis',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\shift_jis.pyc',
+   'PYMODULE'),
+  ('encodings.rot_13',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\rot_13.pyc',
+   'PYMODULE'),
+  ('encodings.raw_unicode_escape',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\raw_unicode_escape.pyc',
+   'PYMODULE'),
+  ('encodings.quopri_codec',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\quopri_codec.pyc',
+   'PYMODULE'),
+  ('encodings.punycode',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\punycode.pyc',
+   'PYMODULE'),
+  ('encodings.ptcp154',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\ptcp154.pyc',
+   'PYMODULE'),
+  ('encodings.palmos',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\palmos.pyc',
+   'PYMODULE'),
+  ('encodings.oem',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\oem.pyc',
+   'PYMODULE'),
+  ('encodings.mbcs',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mbcs.pyc',
+   'PYMODULE'),
+  ('encodings.mac_turkish',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_turkish.pyc',
+   'PYMODULE'),
+  ('encodings.mac_romanian',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_romanian.pyc',
+   'PYMODULE'),
+  ('encodings.mac_roman',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_roman.pyc',
+   'PYMODULE'),
+  ('encodings.mac_latin2',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_latin2.pyc',
+   'PYMODULE'),
+  ('encodings.mac_iceland',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_iceland.pyc',
+   'PYMODULE'),
+  ('encodings.mac_greek',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_greek.pyc',
+   'PYMODULE'),
+  ('encodings.mac_farsi',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_farsi.pyc',
+   'PYMODULE'),
+  ('encodings.mac_cyrillic',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_cyrillic.pyc',
+   'PYMODULE'),
+  ('encodings.mac_croatian',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_croatian.pyc',
+   'PYMODULE'),
+  ('encodings.mac_arabic',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\mac_arabic.pyc',
+   'PYMODULE'),
+  ('encodings.latin_1',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\latin_1.pyc',
+   'PYMODULE'),
+  ('encodings.kz1048',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\kz1048.pyc',
+   'PYMODULE'),
+  ('encodings.koi8_u',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\koi8_u.pyc',
+   'PYMODULE'),
+  ('encodings.koi8_t',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\koi8_t.pyc',
+   'PYMODULE'),
+  ('encodings.koi8_r',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\koi8_r.pyc',
+   'PYMODULE'),
+  ('encodings.johab',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\johab.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_9',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_9.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_8',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_8.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_7',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_7.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_6',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_6.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_5',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_5.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_4',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_4.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_3',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_3.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_2',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_2.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_16',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_16.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_15',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_15.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_14',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_14.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_13',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_13.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_11',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_11.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_10',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_10.pyc',
+   'PYMODULE'),
+  ('encodings.iso8859_1',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso8859_1.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_kr',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_kr.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_jp_ext',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_jp_ext.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_jp_3',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_jp_3.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_jp_2004',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_jp_2004.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_jp_2',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_jp_2.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_jp_1',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_jp_1.pyc',
+   'PYMODULE'),
+  ('encodings.iso2022_jp',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\iso2022_jp.pyc',
+   'PYMODULE'),
+  ('encodings.idna',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\idna.pyc',
+   'PYMODULE'),
+  ('encodings.hz',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\hz.pyc',
+   'PYMODULE'),
+  ('encodings.hp_roman8',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\hp_roman8.pyc',
+   'PYMODULE'),
+  ('encodings.hex_codec',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\hex_codec.pyc',
+   'PYMODULE'),
+  ('encodings.gbk',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\gbk.pyc',
+   'PYMODULE'),
+  ('encodings.gb2312',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\gb2312.pyc',
+   'PYMODULE'),
+  ('encodings.gb18030',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\gb18030.pyc',
+   'PYMODULE'),
+  ('encodings.euc_kr',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\euc_kr.pyc',
+   'PYMODULE'),
+  ('encodings.euc_jp',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\euc_jp.pyc',
+   'PYMODULE'),
+  ('encodings.euc_jisx0213',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\euc_jisx0213.pyc',
+   'PYMODULE'),
+  ('encodings.euc_jis_2004',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\euc_jis_2004.pyc',
+   'PYMODULE'),
+  ('encodings.cp950',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp950.pyc',
+   'PYMODULE'),
+  ('encodings.cp949',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp949.pyc',
+   'PYMODULE'),
+  ('encodings.cp932',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp932.pyc',
+   'PYMODULE'),
+  ('encodings.cp875',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp875.pyc',
+   'PYMODULE'),
+  ('encodings.cp874',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp874.pyc',
+   'PYMODULE'),
+  ('encodings.cp869',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp869.pyc',
+   'PYMODULE'),
+  ('encodings.cp866',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp866.pyc',
+   'PYMODULE'),
+  ('encodings.cp865',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp865.pyc',
+   'PYMODULE'),
+  ('encodings.cp864',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp864.pyc',
+   'PYMODULE'),
+  ('encodings.cp863',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp863.pyc',
+   'PYMODULE'),
+  ('encodings.cp862',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp862.pyc',
+   'PYMODULE'),
+  ('encodings.cp861',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp861.pyc',
+   'PYMODULE'),
+  ('encodings.cp860',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp860.pyc',
+   'PYMODULE'),
+  ('encodings.cp858',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp858.pyc',
+   'PYMODULE'),
+  ('encodings.cp857',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp857.pyc',
+   'PYMODULE'),
+  ('encodings.cp856',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp856.pyc',
+   'PYMODULE'),
+  ('encodings.cp855',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp855.pyc',
+   'PYMODULE'),
+  ('encodings.cp852',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp852.pyc',
+   'PYMODULE'),
+  ('encodings.cp850',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp850.pyc',
+   'PYMODULE'),
+  ('encodings.cp775',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp775.pyc',
+   'PYMODULE'),
+  ('encodings.cp737',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp737.pyc',
+   'PYMODULE'),
+  ('encodings.cp720',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp720.pyc',
+   'PYMODULE'),
+  ('encodings.cp500',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp500.pyc',
+   'PYMODULE'),
+  ('encodings.cp437',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp437.pyc',
+   'PYMODULE'),
+  ('encodings.cp424',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp424.pyc',
+   'PYMODULE'),
+  ('encodings.cp273',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp273.pyc',
+   'PYMODULE'),
+  ('encodings.cp1258',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1258.pyc',
+   'PYMODULE'),
+  ('encodings.cp1257',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1257.pyc',
+   'PYMODULE'),
+  ('encodings.cp1256',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1256.pyc',
+   'PYMODULE'),
+  ('encodings.cp1255',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1255.pyc',
+   'PYMODULE'),
+  ('encodings.cp1254',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1254.pyc',
+   'PYMODULE'),
+  ('encodings.cp1253',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1253.pyc',
+   'PYMODULE'),
+  ('encodings.cp1252',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1252.pyc',
+   'PYMODULE'),
+  ('encodings.cp1251',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1251.pyc',
+   'PYMODULE'),
+  ('encodings.cp1250',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1250.pyc',
+   'PYMODULE'),
+  ('encodings.cp1140',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1140.pyc',
+   'PYMODULE'),
+  ('encodings.cp1125',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1125.pyc',
+   'PYMODULE'),
+  ('encodings.cp1026',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1026.pyc',
+   'PYMODULE'),
+  ('encodings.cp1006',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp1006.pyc',
+   'PYMODULE'),
+  ('encodings.cp037',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\cp037.pyc',
+   'PYMODULE'),
+  ('encodings.charmap',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\charmap.pyc',
+   'PYMODULE'),
+  ('encodings.bz2_codec',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\bz2_codec.pyc',
+   'PYMODULE'),
+  ('encodings.big5hkscs',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\big5hkscs.pyc',
+   'PYMODULE'),
+  ('encodings.big5',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\big5.pyc',
+   'PYMODULE'),
+  ('encodings.base64_codec',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\base64_codec.pyc',
+   'PYMODULE'),
+  ('encodings.ascii',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\ascii.pyc',
+   'PYMODULE'),
+  ('encodings.aliases',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\aliases.pyc',
+   'PYMODULE'),
+  ('encodings',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\encodings\\__init__.pyc',
+   'PYMODULE'),
+  ('codecs',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\codecs.pyc',
+   'PYMODULE'),
+  ('warnings',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\warnings.pyc',
+   'PYMODULE'),
+  ('_collections_abc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_collections_abc.pyc',
+   'PYMODULE'),
+  ('reprlib',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\reprlib.pyc',
+   'PYMODULE'),
+  ('_weakrefset',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\_weakrefset.pyc',
+   'PYMODULE'),
+  ('io',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\io.pyc',
+   'PYMODULE'),
+  ('abc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\abc.pyc',
+   'PYMODULE'),
+  ('re',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\re.pyc',
+   'PYMODULE'),
+  ('functools',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\functools.pyc',
+   'PYMODULE'),
+  ('linecache',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\linecache.pyc',
+   'PYMODULE'),
+  ('posixpath',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\posixpath.pyc',
+   'PYMODULE'),
+  ('stat',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\stat.pyc',
+   'PYMODULE'),
+  ('genericpath',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\genericpath.pyc',
+   'PYMODULE'),
+  ('sre_parse',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\sre_parse.pyc',
+   'PYMODULE'),
+  ('enum',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\enum.pyc',
+   'PYMODULE'),
+  ('sre_compile',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\sre_compile.pyc',
+   'PYMODULE'),
+  ('locale',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\locale.pyc',
+   'PYMODULE'),
+  ('operator',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\operator.pyc',
+   'PYMODULE'),
+  ('collections.abc',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\collections\\abc.pyc',
+   'PYMODULE'),
+  ('collections',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\collections\\__init__.pyc',
+   'PYMODULE'),
+  ('heapq',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\heapq.pyc',
+   'PYMODULE'),
+  ('ntpath',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\ntpath.pyc',
+   'PYMODULE'),
+  ('weakref',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\weakref.pyc',
+   'PYMODULE'),
+  ('keyword',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\keyword.pyc',
+   'PYMODULE'),
+  ('types',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\types.pyc',
+   'PYMODULE'),
+  ('os',
+   'C:\\Users\\lmmwg\\AppData\\Roaming\\TRAE SOLO '
+   'CN\\ModularData\\ai-agent\\vm\\tools\\python\\python310.zip\\os.pyc',
+   'PYMODULE')])

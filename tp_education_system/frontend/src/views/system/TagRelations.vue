@@ -32,9 +32,9 @@
         @edit="handleEdit"
         @delete="handleBatchDelete"
         @import="handleImport"
-        @export="handleExport"
+        @export="handleOpenExport"
         @refresh="handleRefresh"
-        @filter="handleFilter"
+        @filter="filterUtil.toggleFilter"
       />
 
       <!-- 第二行：专用按钮栏 -->
@@ -44,48 +44,94 @@
         @action="handleDynamicAction"
       />
 
-      <!-- 筛选区域 -->
+      <!-- 筛选区域 - 多条件筛选面板 -->
       <div v-if="showFilter" class="filter-section">
-        <el-form :model="filterForm" inline>
-          <el-form-item label="教师姓名">
-            <el-input
-              v-model="filterForm.teacher_name"
-              placeholder="请输入教师姓名"
-              clearable
-              @input="handleFilterInput"
-            />
-          </el-form-item>
-          <el-form-item label="身份证号">
-            <el-input
-              v-model="filterForm.id_card"
-              placeholder="请输入身份证号"
-              clearable
-              @input="handleFilterInput"
-            />
-          </el-form-item>
-          <el-form-item label="标签">
-            <el-select 
-              v-model="filterForm.tag_id" 
-              placeholder="请选择标签" 
-              clearable
-              @change="applyFilter"
-              style="width: 200px"
+        <!-- 快捷筛选：标签下拉 -->
+        <div class="quick-filter-row">
+          <span class="quick-filter-label">快捷筛选：</span>
+          <el-select 
+            v-model="quickTagFilter" 
+            placeholder="按标签筛选" 
+            clearable
+            @change="onQuickTagFilterChange"
+            style="width: 200px"
+          >
+            <el-option 
+              v-for="tag in tagList" 
+              :key="tag.id" 
+              :label="tag.biao_qian" 
+              :value="tag.id"
             >
-              <el-option 
-                v-for="tag in tagList" 
-                :key="tag.id" 
-                :label="tag.biao_qian" 
-                :value="tag.id"
-              >
-                <el-tag size="small" type="info">{{ tag.biao_qian }}</el-tag>
-              </el-option>
+              <el-tag size="small" type="info">{{ tag.biao_qian }}</el-tag>
+            </el-option>
+          </el-select>
+          <el-divider direction="vertical" />
+          <span class="quick-filter-label">高级筛选：</span>
+        </div>
+
+        <!-- 多条件筛选 -->
+        <div class="filter-conditions">
+          <div 
+            v-for="(condition, index) in filterConditions" 
+            :key="index" 
+            class="filter-condition-row"
+          >
+            <el-select
+              v-model="condition.field"
+              placeholder="选择字段"
+              style="width: 160px"
+              clearable
+              @change="filterUtil.onFilterFieldChange(index)"
+            >
+              <el-option
+                v-for="field in filterableFields"
+                :key="field.name"
+                :label="field.label"
+                :value="field.name"
+              />
             </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="applyFilter">筛选</el-button>
-            <el-button @click="resetFilter">重置</el-button>
-          </el-form-item>
-        </el-form>
+            <el-select
+              v-model="condition.operator"
+              placeholder="操作符"
+              style="width: 130px"
+            >
+              <el-option label="包含" value="contains" />
+              <el-option label="不包含" value="not_contains" />
+              <el-option label="等于" value="eq" />
+              <el-option label="不等于" value="neq" />
+              <el-option label="大于" value="gt" />
+              <el-option label="大于等于" value="gte" />
+              <el-option label="小于" value="lt" />
+              <el-option label="小于等于" value="lte" />
+              <el-option label="开头是" value="starts_with" />
+              <el-option label="结尾是" value="ends_with" />
+              <el-option label="为空" value="is_null" />
+              <el-option label="不为空" value="is_not_null" />
+            </el-select>
+            <el-input
+              v-if="!['is_null', 'is_not_null'].includes(condition.operator)"
+              v-model="condition.value"
+              placeholder="请输入值"
+              style="width: 200px"
+              clearable
+            />
+            <el-button 
+              type="danger" 
+              size="small" 
+              circle 
+              @click="filterUtil.removeFilterCondition(index)"
+              :icon="Delete"
+            />
+          </div>
+        </div>
+        <div class="filter-actions">
+          <el-button type="primary" size="small" @click="filterUtil.addFilterCondition">
+            <el-icon><Plus /></el-icon>
+            添加条件
+          </el-button>
+          <el-button type="success" size="small" @click="applyFilter">筛选</el-button>
+          <el-button size="small" @click="resetFilter">重置</el-button>
+        </div>
       </div>
 
       <!-- 数据表格 -->
@@ -195,7 +241,7 @@
       </template>
     </el-dialog>
 
-    <!-- 导出对话框 -->
+    <!-- 导出对话框 - 统一组件 -->
     <el-dialog
       v-model="exportDialogVisible"
       title="导出数据"
@@ -211,8 +257,9 @@
         </el-form-item>
 
         <el-form-item label="导出范围">
-          <el-radio-group v-model="exportForm.scope">
+          <el-radio-group v-model="exportScope">
             <el-radio label="all">全部数据</el-radio>
+            <el-radio label="filtered">筛选结果</el-radio>
             <el-radio label="current">当前页</el-radio>
             <el-radio label="selected">选中行</el-radio>
           </el-radio-group>
@@ -228,18 +275,20 @@
 
       <template #footer>
         <el-button @click="exportDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="executeExport" :loading="exporting">导出</el-button>
+        <el-button type="primary" @click="handleExecuteExport" :loading="exporting">导出</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Refresh } from '@element-plus/icons-vue'
+import { Search, Refresh, Plus, Delete } from '@element-plus/icons-vue'
 import CommonActionBar from '@/components/data/CommonActionBar.vue'
 import DynamicActionBar from '@/components/data/DynamicActionBar.vue'
+import { useFilter } from '@/composables/useFilter'
+import { useExport } from '@/composables/useExport'
 
 const loading = ref(false)
 const tableData = ref<any[]>([])
@@ -251,16 +300,67 @@ const selectedRows = ref<any[]>([])
 // 搜索关键词
 const searchKeyword = ref('')
 
-// 筛选
-const showFilter = ref(false)
-const filterForm = ref({
-  teacher_name: '',
-  id_card: '',
-  tag_id: null as number | null
-})
-
 // 标签列表
 const tagList = ref<any[]>([])
+
+// 快捷筛选：标签下拉
+const quickTagFilter = ref<number | null>(null)
+
+// 可筛选字段列表（标签关系表专用）
+const filterableFields = [
+  { name: 'teacher_name', label: '教师姓名' },
+  { name: 'id_card', label: '身份证号' },
+  { name: 'tag_name', label: '标签名称' },
+  { name: 'employee_id', label: '职工ID' },
+]
+
+// 统一筛选
+const filterUtil = useFilter({
+  onFilterChange: () => {
+    currentPage.value = 1
+    fetchData()
+  }
+})
+
+// 将筛选相关ref解构到顶层，方便模板绑定
+const { showFilter, filterConditions } = filterUtil
+
+// 统一导出
+const exportUtil = useExport({
+  tableName: 'tag_relations',
+  tableTitle: '标签关系管理',
+  fetchAllData: async (params) => {
+    const urlParams = new URLSearchParams({
+      page: params.page.toString(),
+      size: params.size.toString()
+    })
+    if (params.filter) {
+      urlParams.append('filter', params.filter)
+    }
+    if (params.keyword) {
+      urlParams.append('keyword', params.keyword)
+    }
+    const response = await fetch(`/api/tag-relations/list?${urlParams}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return { data: [], total: 0 }
+  },
+  getCurrentPageData: () => tableData.value,
+  getSelectedRows: () => selectedRows.value,
+  filterConditions: () => filterUtil.activeConditions.value,
+  searchKeyword: () => searchKeyword.value
+})
+
+// 将导出相关ref解构到顶层，方便模板绑定
+const { exportDialogVisible, exporting, exportForm } = exportUtil
+
+// 导出范围单独使用ref，确保v-model响应式绑定可靠
+const exportScope = ref('filtered')
+// 同步到exportForm，确保executeExport使用正确的值
+watch(exportScope, (val) => {
+  exportForm.value.scope = val
+})
 
 // 对话框
 const dialogVisible = ref(false)
@@ -272,15 +372,6 @@ const selectedTags = ref<number[]>([])
 const saveLoading = ref(false)
 const currentRow = ref<any>(null)
 const selectedTeacherInfo = ref<{name: string, id_card: string} | null>(null)
-
-// 导出相关
-const exportDialogVisible = ref(false)
-const exporting = ref(false)
-const exportForm = ref({
-  format: 'excel',
-  scope: 'all',
-  filename: ''
-})
 
 // 对话框标题
 const dialogTitle = computed(() => {
@@ -313,25 +404,20 @@ const searchTeachers = async (query: string) => {
       params.append('keyword', query.trim())
     }
     const url = `/api/data/teacher_basic_info?${params}`
-    console.log('[TagRelations] 搜索教师, URL:', url)
     const response = await fetch(url)
-    console.log('[TagRelations] 响应状态:', response.status, 'ok:', response.ok)
     if (response.ok) {
       const result = await response.json()
-      console.log('[TagRelations] 返回数据:', result.total, '条, data:', Array.isArray(result.data) ? result.data.length : typeof result.data)
       teacherList.value = result.data || []
-      console.log('[TagRelations] teacherList 已设置:', teacherList.value.length, '条')
     } else {
-      console.error('[TagRelations] 响应失败:', response.status)
       teacherList.value = []
     }
   } catch (error) {
-    console.error('[TagRelations] 获取教师列表失败:', error)
+    console.error('获取教师列表失败:', error)
     teacherList.value = []
   }
 }
 
-// 教师搜索
+// 教师搜索防抖
 let searchTimer: number | null = null
 const handleTeacherSearch = () => {
   if (searchTimer) {
@@ -347,7 +433,6 @@ const handleSelectTeacher = (teacher: any) => {
   selectedTeacherId.value = teacher.id
   teacherList.value = []
   teacherSearchKeyword.value = ''
-  // 存储教师信息
   selectedTeacherInfo.value = {
     name: teacher['姓名'] || '',
     id_card: teacher['身份证号码'] || ''
@@ -379,14 +464,12 @@ const handleCreate = () => {
   selectedTags.value = []
   currentRow.value = null
   dialogVisible.value = true
-  // 自动加载教师列表，方便选择
   searchTeachers('')
 }
 
 // 编辑（从表格行点击或从选中行）
 const handleEdit = (row?: any) => {
   if (row) {
-    // 从表格行点击编辑
     isEditing.value = true
     currentRow.value = row
     selectedTeacherId.value = row.employee_id
@@ -397,7 +480,6 @@ const handleEdit = (row?: any) => {
     fetchTeacherTags(row.employee_id)
     dialogVisible.value = true
   } else if (selectedRows.value.length === 1) {
-    // 从选中行编辑
     const selectedRow = selectedRows.value[0]
     handleEdit(selectedRow)
   } else {
@@ -459,190 +541,24 @@ const handleBatchDelete = async () => {
 
 // 导入
 const handleImport = () => {
-  // 跳转到导入页面
   window.location.href = '/import/workbench'
 }
 
-// 导出
-const handleExport = () => {
-  exportForm.value.filename = `标签关系管理_${getCurrentDate()}`
-  exportDialogVisible.value = true
+// 打开导出对话框（包装函数，确保 exportScope 同步）
+const handleOpenExport = () => {
+  exportScope.value = 'filtered'
+  exportUtil.openExport()
 }
 
-// 获取当前日期
-const getCurrentDate = () => {
-  const now = new Date()
-  return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
-}
-
-// 执行导出
-const executeExport = async () => {
-  exporting.value = true
-
-  try {
-    let exportData: any[] = []
-    const scope = exportForm.value.scope
-    
-    console.log('导出范围:', scope)
-    console.log('当前选中行:', selectedRows.value.length)
-    console.log('当前页数据:', tableData.value.length)
-
-    if (scope === 'selected') {
-      exportData = selectedRows.value
-      console.log('使用选中行数据:', exportData.length)
-    } else if (scope === 'current') {
-      exportData = tableData.value
-      console.log('使用当前页数据:', exportData.length)
-    } else if (scope === 'all') {
-      // 获取所有数据（分页获取，每页200条）
-      console.log('开始获取全部数据...')
-      try {
-        let page = 1
-        const pageSize = 200
-        let hasMore = true
-        exportData = []
-        
-        while (hasMore) {
-          const response = await fetch(`/api/tag-relations/list?page=${page}&size=${pageSize}`)
-          console.log(`获取第${page}页数据响应状态:`, response.status)
-          
-          if (response.ok) {
-            const result = await response.json()
-            console.log(`获取第${page}页数据结果:`, result)
-            
-            if (result.data && Array.isArray(result.data)) {
-              exportData = exportData.concat(result.data)
-              console.log(`已获取${exportData.length}条数据`)
-              
-              // 如果返回的数据少于pageSize，说明没有更多数据了
-              if (result.data.length < pageSize) {
-                hasMore = false
-              } else {
-                page++
-              }
-            } else {
-              console.error('返回数据格式不正确:', result)
-              hasMore = false
-            }
-          } else {
-            const errorText = await response.text()
-            console.error('获取全部数据失败:', errorText)
-            ElMessage.error('获取数据失败')
-            exporting.value = false
-            return
-          }
-        }
-        
-        console.log('导出数据总条数:', exportData.length)
-      } catch (error) {
-        console.error('获取全部数据异常:', error)
-        ElMessage.error('获取数据异常')
-        exporting.value = false
-        return
-      }
-    } else {
-      console.error('未知的导出范围:', scope)
-      ElMessage.error('未知的导出范围')
-      exporting.value = false
-      return
-    }
-
-    console.log('最终导出数据条数:', exportData.length)
-
-    if (!exportData || exportData.length === 0) {
-      ElMessage.warning('没有数据可导出')
-      exporting.value = false
-      return
-    }
-
-    // 调用后端导出API
-    const exportResponse = await fetch('/api/data/export', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        table_name: 'tag_relations',
-        data: exportData,
-        format: exportForm.value.format,
-        filename: exportForm.value.filename
-      })
-    })
-
-    if (exportResponse.ok) {
-      const blob = await exportResponse.blob()
-      let downloadFilename = exportForm.value.filename || '标签关系管理'
-      const ext = exportForm.value.format === 'pdf' ? 'pdf' : 'xlsx'
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = downloadFilename + '.' + ext
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-      ElMessage.success('导出成功')
-      exportDialogVisible.value = false
-    } else {
-      const error = await exportResponse.json()
-      ElMessage.error(error.detail || '导出失败')
-    }
-  } catch (error: any) {
-    console.error('导出失败:', error)
-    ElMessage.error(error.message || '导出失败')
-  } finally {
-    exporting.value = false
-  }
+// 执行导出（包装函数，传递 exportScope 避免 watcher 同步时序问题）
+const handleExecuteExport = () => {
+  exportUtil.executeExport(exportScope.value)
 }
 
 // 刷新
 const handleRefresh = () => {
   fetchData()
   ElMessage.success('刷新成功')
-}
-
-// 筛选
-const handleFilter = () => {
-  showFilter.value = !showFilter.value
-}
-
-// 搜索输入防抖
-let headerSearchTimer: number | null = null
-const handleSearchInput = () => {
-  console.log('搜索输入:', searchKeyword.value)
-  if (headerSearchTimer) {
-    clearTimeout(headerSearchTimer)
-  }
-  headerSearchTimer = window.setTimeout(() => {
-    console.log('执行搜索:', searchKeyword.value)
-    currentPage.value = 1
-    fetchData()
-  }, 500)
-}
-
-// 筛选输入防抖
-let filterTimer: number | null = null
-const handleFilterInput = () => {
-  if (filterTimer) {
-    clearTimeout(filterTimer)
-  }
-  filterTimer = window.setTimeout(() => {
-    applyFilter()
-  }, 500)
-}
-
-// 应用筛选
-const applyFilter = () => {
-  currentPage.value = 1
-  fetchData()
-}
-
-// 重置筛选
-const resetFilter = () => {
-  filterForm.value = {
-    teacher_name: '',
-    id_card: '',
-    tag_id: null
-  }
-  applyFilter()
 }
 
 // 专用按钮事件
@@ -658,11 +574,52 @@ const handleDynamicAction = (action: string, data?: any) => {
       ElMessage.info('生成报表功能')
       break
     case 'batchExport':
-      handleExport()
+      exportUtil.openExport()
       break
     default:
       console.log('未知操作:', action, data)
   }
+}
+
+// 快捷标签筛选
+const onQuickTagFilterChange = (tagId: number | null) => {
+  // 移除旧的 tag_id 筛选条件
+  filterConditions.value = filterConditions.value.filter(
+    c => c.field !== 'tag_id'
+  )
+  // 添加新的标签筛选
+  if (tagId) {
+    filterConditions.value.push({
+      field: 'tag_id',
+      operator: 'eq',
+      value: String(tagId)
+    })
+  }
+  applyFilter()
+}
+
+// 应用筛选
+const applyFilter = () => {
+  currentPage.value = 1
+  fetchData()
+}
+
+// 重置筛选
+const resetFilter = () => {
+  quickTagFilter.value = null
+  filterUtil.resetFilter()
+}
+
+// 搜索输入防抖
+let headerSearchTimer: number | null = null
+const handleSearchInput = () => {
+  if (headerSearchTimer) {
+    clearTimeout(headerSearchTimer)
+  }
+  headerSearchTimer = window.setTimeout(() => {
+    currentPage.value = 1
+    fetchData()
+  }, 500)
 }
 
 // 选择变化
@@ -716,20 +673,12 @@ const fetchData = async () => {
     // 添加搜索关键词
     if (searchKeyword.value) {
       params.append('keyword', searchKeyword.value)
-      console.log('添加搜索关键词:', searchKeyword.value)
     }
-    
-    console.log('请求URL:', `/api/tag-relations/list?${params}`)
 
-    // 添加筛选条件
-    if (filterForm.value.teacher_name) {
-      params.append('teacher_name', filterForm.value.teacher_name)
-    }
-    if (filterForm.value.id_card) {
-      params.append('id_card', filterForm.value.id_card)
-    }
-    if (filterForm.value.tag_id) {
-      params.append('tag_id', filterForm.value.tag_id.toString())
+    // 添加多条件筛选（新格式）
+    const filterJson = filterUtil.getFilterJson()
+    if (filterJson) {
+      params.append('filter', filterJson)
     }
 
     const response = await fetch(`/api/tag-relations/list?${params}`)
@@ -776,6 +725,10 @@ onMounted(() => {
   padding: 20px;
 }
 
+.tag-relations-container :deep(.el-card__body) {
+  overflow: visible;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -792,6 +745,42 @@ onMounted(() => {
   background-color: #f5f7fa;
   border-radius: 4px;
   margin-top: 10px;
+  overflow: visible;
+}
+
+.quick-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #dcdfe6;
+}
+
+.quick-filter-label {
+  font-size: 13px;
+  color: #606266;
+  white-space: nowrap;
+}
+
+.filter-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-condition-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  align-items: center;
 }
 
 .pagination-container {
@@ -856,4 +845,3 @@ onMounted(() => {
   background-color: #f5f7fa;
 }
 </style>
-

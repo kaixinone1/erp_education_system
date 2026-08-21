@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # 数据库连接信息
-DATABASE_URL = "postgresql://taiping_user:taiping_password@localhost:5432/taiping_education"
+DATABASE_URL = "postgresql://taiping_user:taiping_password@localhost:5432/taiping_education_fifteen"
 
 # 创建数据库引擎
 engine = create_engine(DATABASE_URL)

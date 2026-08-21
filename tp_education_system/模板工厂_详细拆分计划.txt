@@ -1,0 +1,656 @@
+================================================================================
+  模板工厂模式 - 详细拆分计划
+  创建日期：2026年7月27日
+  项目文件夹：d:\erp_fifteen\tp_education_system
+  前端端口：5174  |  后端端口：8001
+  目标：统一所有模板操作为通用模板引擎，按模块分配专属模板，废弃重复代码
+================================================================================
+
+【核心思路】
+──────────────────────────────────────────────────────────────────────────────
+  通用模板引擎（后端公共服务层）
+      ↓ 所有模块统一调用
+  各业务模块（薪酬管理、人事管理、报表管理等）
+      ↓ 嵌入 TemplateOperator 组件
+  每个模块拥有自己的专属模板，操作界面统一，互不干扰
+
+  系统管理 > 通用模板系统 → 精简为"模板管理中心"（只做模板导入、配置、管理）
+  各业务模块 → 嵌入"模板操作组件"（只做填报、预览、导出）
+
+================================================================================
+一、现状分析
+================================================================================
+
+  当前问题：
+  1. UniversalTemplateSystem.vue（2151行）是一个"大而全"的单体组件
+     - 模板列表 + 导入 + 删除 + 字段映射 + 填报 + 预览 + 导出 全在一个文件
+     - 无法被其他模块复用
+  2. PerformancePayApproval.vue（744行）是另一套独立代码
+     - 调用 /api/performance-pay-approval/ 专用API
+     - 后端 performance_pay_routes.py（1023行）有硬编码的数据模型
+     - 功能与通用模板系统重复
+  3. 两套代码都在处理"义务教育学校教职工绩效工资审批表"
+     - 维护成本高，界面不统一，不符合配置驱动原则
+
+================================================================================
+二、目标架构
+================================================================================
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │              通用模板引擎（后端公共服务，不需改动）              │
+  │  universal_template_service.py + universal_template_routes.py │
+  │  API: /fill  /export  /preview  /save  /field-mappings 等    │
+  └────────────────────────┬─────────────────────────────────────┘
+                           │ 所有模块统一调用
+            ┌──────────────┼──────────────┐
+            ▼              ▼              ▼
+  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+  │ 薪酬管理        │ │ 人事管理        │ │ 报表管理        │
+  │ ┌────────────┐ │ │ ┌────────────┐ │ │ ┌────────────┐ │
+  │ │绩效工资审批  │ │ │ │退休呈报     │ │ │ │退休测算     │ │
+  │ │<TemplateOp │ │ │ │<TemplateOp │ │ │ │<TemplateOp │ │
+  │ │ erator     │ │ │ │ erator>    │ │ │ │ erator>    │ │
+  │ │ templateId=│ │ │ │ templateId=│ │ │ │ templateId=│ │
+  │ │ perf_pay   │ │ │ │ retire_rpt │ │ │ │ retire_est │ │
+  │ └────────────┘ │ │ └────────────┘ │ │ └────────────┘ │
+  └────────────────┘ └────────────────┘ └────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │ 系统管理 > 通用模板系统 → 精简为 TemplateManager（模板管理中心） │
+  │ 功能：模板列表、导入、删除、字段映射配置、历史记录              │
+  │ 不再包含：填报、导出（那是各业务模块的事）                      │
+  └──────────────────────────────────────────────────────────────┘
+
+================================================================================
+三、文件变更清单
+================================================================================
+
+  【新建文件】（3个）
+  ┌──────┬──────────────────────────────────────────────────┬──────────┐
+  │ 序号  │ 文件路径                                          │ 说明      │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  1   │ frontend/src/components/template/TemplateOperator.vue │ 可复用  │
+  │      │                                                  │ 模板操作  │
+  │      │                                                  │ 组件      │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  2   │ frontend/src/views/template/TemplateManager.vue   │ 模板管理  │
+  │      │                                                  │ 中心      │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  3   │ frontend/src/views/salary/SalaryPerformanceApproval.vue│ 薪酬管理│
+  │      │                                                  │ 下的绩效  │
+  │      │                                                  │ 工资审批  │
+  │      │                                                  │ 包装页面  │
+  └──────┴──────────────────────────────────────────────────┴──────────┘
+
+  【修改文件】（3个）
+  ┌──────┬──────────────────────────────────────────────────┬──────────┐
+  │ 序号  │ 文件路径                                          │ 修改内容  │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  4   │ backend/config/navigation.json                    │ 绩效工资  │
+  │      │                                                  │ 审批组件  │
+  │      │                                                  │ 改为新组件│
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  5   │ frontend/src/router/index.ts                      │ 新增      │
+  │      │                                                  │ /salary/  │
+  │      │                                                  │ performance│
+  │      │                                                  │ /approval │
+  │      │                                                  │ 路由      │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  6   │ backend/main.py                                   │ 移除      │
+  │      │                                                  │ performance│
+  │      │                                                  │ _pay_     │
+  │      │                                                  │ routes    │
+  │      │                                                  │ 导入      │
+  └──────┴──────────────────────────────────────────────────┴──────────┘
+
+  【删除文件】（1个）
+  ┌──────┬──────────────────────────────────────────────────┬──────────┐
+  │ 序号  │ 文件路径                                          │ 原因      │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  7   │ frontend/src/views/performance/PerformancePayApproval.vue│ 被      │
+  │      │                                                  │ TemplateOp│
+  │      │                                                  │ erator    │
+  │      │                                                  │ 替代      │
+  └──────┴──────────────────────────────────────────────────┴──────────┘
+
+  【部分删除文件】（1个）
+  ┌──────┬──────────────────────────────────────────────────┬──────────┐
+  │ 序号  │ 文件路径                                          │ 说明      │
+  ├──────┼──────────────────────────────────────────────────┼──────────┤
+  │  8   │ backend/routes/performance_pay_routes.py          │ 仅删除6个│
+  │      │ （1023行）                                         │ 重复端点，│
+  │      │                                                  │ 保留8个被│
+  │      │                                                  │ 其他模块  │
+  │      │                                                  │ 依赖的端点│
+  │      │                                                  │ （详见第七│
+  │      │                                                  │ 节）      │
+  └──────┴──────────────────────────────────────────────────┴──────────┘
+
+  【不变文件说明】
+  - UniversalTemplateSystem.vue（2151行）→ 拆分后保留，改名为 TemplateManager.vue
+    实际上是将现有代码拆分为两个文件，不是新建完再删
+  - performance_pay_history_routes.py → 第一阶段保留，第二阶段改造
+  - performance_pay_template.py → 保留（性能审批模板上传功能）
+  - performance_pay_standards_routes.py → 保留（绩效标准设置功能独立，读数据库，不受影响）
+
+================================================================================
+四、组件拆分详细设计
+================================================================================
+
+  【4.1 TemplateOperator.vue —— 可复用模板操作组件】
+  ───────────────────────────────────────────────────────────────
+  位置：frontend/src/components/template/TemplateOperator.vue
+
+  功能定位：被各业务模块嵌入使用，提供模板的"填报、预览、导出"操作
+  不包含：模板列表、导入、删除、字段映射配置（这些归 TemplateManager）
+
+  Props 接口：
+    templateId: string      // 必填，模板标识（如 "performance_pay_approval"）
+    moduleName: string      // 可选，模块名称（用于页面标题和保存路径区分）
+    showTitle: boolean      // 可选，是否显示标题栏，默认 true
+
+  包含的功能模块（从 UniversalTemplateSystem.vue 中提取）：
+    □ 模板预览（点击预览按钮 → 弹出预览对话框，用 Luckysheet 渲染）
+    □ 填报对话框（fillDialogVisible）
+      - 年月选择（单位汇总表类型）
+      - 职工查询（个人表类型，支持身份证号/姓名搜索）
+      - 统计范围设置（scopeDialog）
+      - 填报口径设置（criteriaDialog）
+      - 确认填报 → 调用 /api/universal-template/fill
+      - 填报结果展示（HTML 渲染）
+      - 备注编辑
+    □ 导出功能
+      - 导出 Excel 格式
+      - 导出 Word 格式（docx 模板）
+      - 导出 PDF 格式
+      - 打印功能
+    □ 保存功能
+      - 保存已填报数据
+      - 查看已保存文件列表
+      - 从已保存文件加载
+
+  调用的 API（全部走通用模板引擎）：
+    GET  /api/universal-template/config/{templateId}       → 获取模板配置
+    GET  /api/universal-template/preview/{templateId}      → 预览模板
+    POST /api/universal-template/fill                       → 填报数据
+    POST /api/universal-template/save                       → 保存
+    POST /api/universal-template/export                     → 导出
+    GET  /api/universal-template/saved-files/{templateId}  → 已保存文件
+    GET  /api/universal-template/search-employee            → 搜索职工
+    GET  /api/universal-template/tags                       → 标签列表
+    GET  /api/universal-template/remarks                    → 备注信息
+
+  【4.2 TemplateManager.vue —— 模板管理中心】
+  ───────────────────────────────────────────────────────────────
+  位置：frontend/src/views/template/TemplateManager.vue
+
+  功能定位：系统管理 > 通用模板系统下的模板管理页面
+  替代现有的 UniversalTemplateSystem.vue
+
+  包含的功能模块（从 UniversalTemplateSystem.vue 中保留）：
+    □ 模板列表（el-table，显示所有已导入模板）
+    □ 导入新模板（importDialogVisible）
+    □ 删除模板
+    □ 字段映射配置（fieldMappingDialogVisible）
+      - 模板预览（点击单元格配置映射）
+      - 数据源表选择
+      - 数据源字段选择
+      - 字典值筛选
+      - 统计方法选择
+      - 公式计算
+      - 已配置映射列表
+    □ 模板下载
+    □ 历史记录查看
+
+  移除的功能模块（移交 TemplateOperator）：
+    ✗ 填报对话框 → 移到 TemplateOperator
+    ✗ 导出功能 → 移到 TemplateOperator
+    ✗ 保存功能 → 移到 TemplateOperator
+    ✗ 职工搜索 → 移到 TemplateOperator
+
+  【4.3 SalaryPerformanceApproval.vue —— 薪酬管理下的绩效工资审批】
+  ───────────────────────────────────────────────────────────────
+  位置：frontend/src/views/salary/SalaryPerformanceApproval.vue
+
+  功能定位：极简包装页面，只做一件事：嵌入 TemplateOperator
+
+  伪代码结构：
+    <template>
+      <div class="salary-performance-approval">
+        <TemplateOperator
+          template-id="performance_pay_approval"
+          module-name="薪酬管理"
+        />
+      </div>
+    </template>
+
+    <script setup>
+    import TemplateOperator from '@/components/template/TemplateOperator.vue'
+    </script>
+
+  说明：这个页面非常薄，只有十几行代码。所有逻辑都在 TemplateOperator 中。
+  后续如果需要在绩效工资审批页面上加额外的业务逻辑（如特定的数据校验），
+  可以在这个包装页面中添加，不会影响 TemplateOperator 的通用性。
+
+================================================================================
+五、代码拆分策略（从 UniversalTemplateSystem.vue 拆出 TemplateOperator.vue）
+================================================================================
+
+  拆分原则：最小化改动，最大化复用
+  不重写逻辑，而是从现有 2151 行代码中"搬"出可复用部分
+
+  【步骤】
+  1. 从 UniversalTemplateSystem.vue 的 <template> 中提取以下对话框：
+     - fillDialogVisible 对应的填报对话框（含参数设置、职工搜索、填报结果）
+     - 导出下拉菜单相关逻辑
+     - 保存/已保存文件相关逻辑
+     - 预览对话框（previewDialogVisible）
+
+  2. 提取对应的 <script setup> 中的变量和方法：
+     fillDialogVisible, fillForm, fillScope, fillCriteriaTags, fillParamsConfirmed,
+     fillResultHtml, fillScopeSummary, fillCriteriaSummary, currentFillTemplate,
+     allTags, employeeSearchLoading, employeeSearchResults, selectedEmployeeName,
+     scopeDialogVisible, criteriaDialogVisible, saving, remarkEditable, editedRemark,
+     filledConfigFromFill, fillLevelKeys, makeFillEmptyScope, fillUnitLevels,
+     tempCriteriaTags, isWordTemplate, blankTemplateHtml, previewContainerRef,
+     fileSelectDialogVisible, fileSelectTitle, fileSelectActionLabel,
+     fileSelectRecords, fileSelectMode, fileSelectRow, fileSelectYearMonth,
+     以及对应的函数：showFillDialog, confirmFillParams, handleFill, handleSave,
+     handleExport, exportExcel, exportWord, exportPdf, handlePrint, previewTemplate,
+     showScopeDialog, showCriteriaDialog, searchEmployee, onEmployeeSelect,
+     showFileSelectDialog, loadSavedFile, onFillDialogClose, 等
+
+  3. 把 templateId 从响应式变量改为 props 传入
+
+  4. TemplateManager.vue 保留剩余部分（模板列表、导入、删除、字段映射、历史）
+
+  5. TemplateManager.vue 中"预览"和"填报"按钮改为跳转到各业务模块页面
+     （或者也可以保留快速预览，但填报操作统一在业务模块中进行）
+
+================================================================================
+六、导航和路由变更
+================================================================================
+
+  【6.1 navigation.json 修改】
+  ───────────────────────────────────────────────────────────────
+  修改位置：薪酬管理 > 绩效工资管理 > 绩效工资审批
+
+  修改前：
+    {
+      "id": "performance-pay-approval",
+      "title": "绩效工资审批",
+      "icon": "Document",
+      "path": "/performance/pay-approval",
+      "type": "component",
+      "component": "PerformancePayApproval"
+    }
+
+  修改后：
+    {
+      "id": "performance-pay-approval",
+      "title": "绩效工资审批",
+      "icon": "Document",
+      "path": "/salary/performance/approval",
+      "type": "component",
+      "component": "SalaryPerformanceApproval"
+    }
+
+  说明：路径从 /performance/pay-approval 改为 /salary/performance/approval
+        这样路径层级更清晰：薪酬管理 > 绩效工资管理 > 绩效工资审批
+
+  系统管理 > 通用模板系统：
+    component 从 "UniversalTemplate" 改为 "TemplateManager"
+    （文件名变了，但功能是管理功能）
+
+  【6.2 router/index.ts 修改】
+  ───────────────────────────────────────────────────────────────
+  ① 新增路由：
+    // 薪酬管理 - 绩效工资审批（使用模板工厂）
+    {
+      path: "/salary/performance/approval",
+      name: "salaryPerformanceApproval",
+      component: () => import("../views/salary/SalaryPerformanceApproval.vue"),
+      meta: {
+        title: "绩效工资审批",
+        icon: "Document"
+      }
+    }
+
+  ② 修改通用模板系统路由：
+    修改前：
+      component: () => import("../views/template/UniversalTemplateSystem.vue")
+    修改后：
+      component: () => import("../views/template/TemplateManager.vue")
+
+  ③ 移除旧的绩效工资审批路由：
+    删除以下内容：
+    {
+      path: "/performance",
+      name: "performance",
+      redirect: "/performance/pay-approval",
+      children: [{
+        path: "pay-approval",
+        name: "performancePayApproval",
+        component: () => import("../views/performance/PerformancePayApproval.vue"),
+        ...
+      }]
+    }
+
+  ④ 薪酬管理模块的 redirect 从 /performance/pay-approval 改为 /salary/performance/approval
+
+  【6.3 backend/main.py 修改】
+  ───────────────────────────────────────────────────────────────
+  移除以下行：
+    from routes.performance_pay_routes import router as performance_pay_router
+    app.include_router(performance_pay_router)
+
+  保留以下行（其他功能不受影响）：
+    from routes.performance_pay_history_routes import router as performance_pay_history_router
+    from routes.performance_pay_template import router as performance_pay_template_router
+    from routes.performance_pay_standards_routes import router as performance_pay_standards_router
+
+================================================================================
+七、数据依赖分析 —— 决定不能全删 performance_pay_routes.py
+================================================================================
+
+  旧 performance_pay_routes.py 共有 15 个端点，按依赖关系分为两类：
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ A 类：与"填报/保存/导出"重复的端点（6个）→ 可删除                    │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ GET  /template-metadata       → 只有 PerformancePayApproval 用       │
+  │ GET  /current                 → 只有 PerformancePayApproval 用       │
+  │ GET  /data/{year}/{month}     → 只有 PerformancePayApproval 用       │
+  │ POST /save                    → 只有 PerformancePayApproval 用       │
+  │ POST /load-from-database      → 只有 PerformancePayApproval 用       │
+  │ POST /export /export-v2       → 只有 PerformancePayApproval 用       │
+  └─────────────────────────────────────────────────────────────────────┘
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ B 类：被其他模块依赖的端点（8个）→ 不能删！                          │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ GET  /list                    → PerformancePayUpload 用              │
+  │ GET  /download/{id}           → PerformancePayHistory 用             │
+  │ GET  /download-pdf/{id}       → PerformancePayHistory 用             │
+  │ POST /upload-scan             → PerformancePayUpload 用              │
+  │ GET  /scans                   → PerformancePayUpload 用              │
+  │ GET  /history                 → PerformancePayHistory 用             │
+  │ GET  /yearly-summary          → PerformancePayStatistics 用          │
+  │ GET  /statistics              → PerformancePayStatistics 用          │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  另外，performance_pay_history_routes.py 独立读取数据：
+    - 数据来源：data/performance_pay_approval/performance_pay_{year}_{month}.json
+    - 读取字段：绩效人数合计、绩效工资合计、乡镇补贴合计 等（硬编码）
+    - 存储路径与通用模板系统完全不同
+
+  【两个系统的数据存储对比】
+  ┌──────────────┬──────────────────────────────┬────────────────────────┐
+  │              │ 旧系统                        │ 通用模板系统            │
+  ├──────────────┼──────────────────────────────┼────────────────────────┤
+  │ 存储路径      │ data/performance_pay_approval/│ exports/templates/     │
+  │              │                              │ 已保存/                │
+  │ 数据格式      │ JSON（硬编码字段名）           │ Excel + HTML 文件       │
+  │ 文件命名      │ performance_pay_{年}_{月}.json│ {单位}{年月}义务教育... │
+  │              │                              │ 校教职工绩效工资审批表  │
+  │              │                              │ (...).xlsx             │
+  │ 字段结构      │ 副处级人数、正科级人数...      │ 配置驱动（由模板决定）   │
+  └──────────────┴──────────────────────────────┴────────────────────────┘
+
+  结论：切换模板引擎后，历史/统计/上传模块读不到数据。必须分两阶段解决。
+
+================================================================================
+八、实施策略：两阶段方案
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │ 第一阶段：组件拆分 + 数据兼容（方案A）                             │
+  │ 目标：完成模板组件拆分，切换到通用模板引擎，同时保持旧模块可用      │
+  │ 策略：通用模板系统保存时，额外写一份 JSON 到旧目录，兼容旧代码      │
+  │ 工作量：中等（约10步）                                            │
+  └─────────────────────────────────────────────────────────────────┘
+        ↓ 测试通过，确认稳定后
+  ┌─────────────────────────────────────────────────────────────────┐
+  │ 第二阶段：数据源统一（方案B）                                     │
+  │ 目标：废弃旧数据目录，历史/统计/上传模块全部改为读通用模板系统数据  │
+  │ 策略：改造 performance_pay_history_routes.py，统一数据源          │
+  │ 工作量：较小（约4步）                                             │
+  └─────────────────────────────────────────────────────────────────┘
+
+================================================================================
+九、第一阶段详细步骤（组件拆分 + 数据兼容）
+================================================================================
+
+  第1步：备份关键文件
+  ───────────────────────────────────────────────────────────────
+    备份文件：
+    - backend/config/navigation.json
+    - frontend/src/router/index.ts
+    - backend/main.py
+    - frontend/src/views/template/UniversalTemplateSystem.vue
+    - frontend/src/views/performance/PerformancePayApproval.vue
+    - backend/routes/performance_pay_routes.py
+
+  第2步：确认模板存在于通用模板系统中
+  ───────────────────────────────────────────────────────────────
+    调用 GET /api/universal-template/list 确认"义务教育学校教职工绩效工资审批表"
+    模板已存在，且 template_id 为 "performance_pay_approval"
+    如果不存在，先导入模板并配置字段映射
+
+  第3步：创建 TemplateOperator.vue
+  ───────────────────────────────────────────────────────────────
+    从 UniversalTemplateSystem.vue 中提取填报、预览、导出相关代码
+    新建 frontend/src/components/template/TemplateOperator.vue
+    将 templateId 改为 props 传入
+    测试：前端编译通过
+
+  第4步：创建 TemplateManager.vue
+  ───────────────────────────────────────────────────────────────
+    从 UniversalTemplateSystem.vue 中保留模板管理相关代码
+    新建 frontend/src/views/template/TemplateManager.vue
+    移除填报、导出等已移到 TemplateOperator 的功能
+    测试：系统管理 > 通用模板系统 正常显示模板列表
+
+  第5步：创建 SalaryPerformanceApproval.vue
+  ───────────────────────────────────────────────────────────────
+    新建 frontend/src/views/salary/SalaryPerformanceApproval.vue
+    极简包装，嵌入 TemplateOperator
+    测试：前端编译通过
+
+  第6步：在通用模板 /save 接口中增加兼容写入（方案A核心）
+  ───────────────────────────────────────────────────────────────
+    修改文件：backend/routes/universal_template_routes.py
+    在 save_filled_template 函数末尾增加以下逻辑：
+
+    当保存的模板是 "performance_pay_approval" 时，额外执行：
+      ① 从 filled_config 中提取关键统计字段（绩效人数合计、绩效工资合计等）
+      ② 组装为旧系统兼容的 JSON 格式
+      ③ 写入 data/performance_pay_approval/performance_pay_{year}_{month}.json
+      ④ 同时生成教师快照 JSON（data/performance_pay_approval/{year}_{month}_teachers.json）
+
+    这样旧的历史/统计/上传模块无需改动，继续读旧目录即可。
+
+    测试：保存后，检查 data/performance_pay_approval/ 目录是否有新文件生成
+
+  第7步：修改 navigation.json
+  ───────────────────────────────────────────────────────────────
+    绩效工资审批组件改为 "SalaryPerformanceApproval"
+    路径改为 "/salary/performance/approval"
+    通用模板系统组件改为 "TemplateManager"
+    测试：JSON 格式验证通过
+
+  第8步：修改 router/index.ts
+  ───────────────────────────────────────────────────────────────
+    新增 /salary/performance/approval 路由
+    通用模板系统路由指向 TemplateManager.vue
+    移除旧的 /performance 路由（仅删除 PerformancePayApproval 相关）
+    测试：前端编译通过
+
+  第9步：修改 backend/main.py 和 performance_pay_routes.py
+  ───────────────────────────────────────────────────────────────
+    main.py 中：保留 performance_pay_routes 的导入和注册（不变）
+    performance_pay_routes.py 中：删除 6 个 A 类端点（/template-metadata、
+    /current、/data、/save、/load-from-database、/export、/export-v2）
+    保留 8 个 B 类端点（/list、/download、/download-pdf、/upload-scan、
+    /scans、/history、/yearly-summary、/statistics）
+    测试：后端启动正常，无报错
+
+  第10步：删除旧前端文件
+  ───────────────────────────────────────────────────────────────
+    删除 PerformancePayApproval.vue
+    删除 UniversalTemplateSystem.vue（已被 TemplateManager.vue 替代）
+
+  第11步：重启服务器，全面测试
+  ───────────────────────────────────────────────────────────────
+    测试清单见第十一节"第一阶段测试清单"
+
+================================================================================
+十、第二阶段详细步骤（数据源统一）
+================================================================================
+
+  前置条件：第一阶段已测试通过，系统稳定运行
+
+  第12步：改造 performance_pay_history_routes.py
+  ───────────────────────────────────────────────────────────────
+    当前：读取 data/performance_pay_approval/ 下的 JSON 文件
+    改造为：调用通用模板系统的 /saved-files/{templateId} 接口
+    或者：直接读取 exports/templates/已保存/ 目录下的文件
+
+    具体做法：
+      ① 将 DATA_DIR 从 data/performance_pay_approval/
+         改为 exports/templates/已保存/
+      ② 文件匹配规则从 performance_pay_*.json
+         改为 "*义务教育学校教职工绩效工资审批表*.xlsx"
+      ③ 从 Excel 文件名解析年月（正则提取）
+      ④ 从通用模板系统的 saved-files API 获取汇总数据
+      ⑤ 保持接口签名不变（GET /api/performance-pay/list 等），
+         前端无需改动
+
+  第13步：改造统计数据读取
+  ───────────────────────────────────────────────────────────────
+    修改 performance_pay_routes.py 中保留的 B 类端点：
+      /statistics → 改为从 exports/templates/已保存/ 读取数据
+      /yearly-summary → 同上
+
+  第14步：清理兼容代码
+  ───────────────────────────────────────────────────────────────
+    删除第一阶段在 universal_template_routes.py 中添加的兼容写入代码
+    （不再往 data/performance_pay_approval/ 写 JSON）
+
+    删除旧数据目录（可选，建议先备份）：
+      data/performance_pay_approval/
+
+  第15步：最终测试
+  ───────────────────────────────────────────────────────────────
+    测试清单见第十二节"第二阶段测试清单"
+
+================================================================================
+十一、第一阶段测试清单
+================================================================================
+
+  □ 1. 后端启动正常（端口 8001），控制台无报错
+  □ 2. 前端启动正常（端口 5174），编译无报错
+  □ 3. 系统管理 > 通用模板系统
+        - 模板列表正常显示
+        - 导入模板功能正常
+        - 删除模板功能正常
+        - 字段映射配置功能正常
+  □ 4. 薪酬管理 > 绩效工资管理 > 绩效工资审批（新 TemplateOperator）
+        - 页面正常加载
+        - 模板预览正常显示
+        - 填报功能正常（选择年月 → 确认 → 数据填充）
+        - 备注编辑和保存正常
+        - 导出 Excel 正常
+        - 导出 PDF 正常
+        - 保存功能正常
+        - 查看已保存文件正常
+  □ 5. 兼容写入验证
+        - 保存后，检查 data/performance_pay_approval/ 目录
+        - 确认生成了 performance_pay_{year}_{month}.json
+        - 确认文件内容包含正确的统计字段
+  □ 6. 薪酬管理 > 绩效工资管理 > 绩效工资历史
+        - 列表正常显示（读取兼容 JSON）
+        - 详情查看正常
+        - 文件下载正常
+  □ 7. 薪酬管理 > 绩效工资管理 > 绩效工资统计
+        - 统计数据正常显示
+        - 导出统计表正常
+  □ 8. 薪酬管理 > 绩效工资管理 > 绩效工资上传
+        - 列表正常显示
+        - 扫描件上传正常
+  □ 9. 薪酬管理 > 绩效工资管理 > 绩效标准设置
+        - 功能正常（读数据库，不受影响）
+  □ 10. 其他模块（人事管理、预警督办、数据中心等）功能不受影响
+  □ 11. 浏览器控制台无报错
+  □ 12. 后端控制台无报错
+
+================================================================================
+十二、第二阶段测试清单
+================================================================================
+
+  □ 1. 历史记录列表正常显示（从新数据源读取）
+  □ 2. 历史记录详情正常（Excel/PDF 下载可用）
+  □ 3. 统计数据正常显示（从新数据源读取）
+  □ 4. 上传模块列表正常显示
+  □ 5. 旧数据目录 data/performance_pay_approval/ 已清理（或备份）
+  □ 6. universal_template_routes.py 中兼容写入代码已删除
+  □ 7. 浏览器控制台无报错
+  □ 8. 后端控制台无报错
+  □ 9. 第一阶段全部测试项仍然通过（回归测试）
+
+================================================================================
+十三、风险评估与回滚方案
+================================================================================
+
+  【风险点】
+  1. TemplateOperator 从 UniversalTemplateSystem 拆分时可能遗漏依赖
+     → 缓解：保留 UniversalTemplateSystem.vue 备份，逐步拆分
+  2. 模板在通用模板系统中可能配置不完整
+     → 缓解：在第2步中确认模板配置
+  3. 旧路由 /performance/pay-approval 可能被其他地方硬编码引用
+     → 缓解：全局搜索确认无残留引用
+  4. 兼容写入的 JSON 字段名与旧系统不完全一致
+     → 缓解：从 filled_config 中提取时做好字段映射
+  5. 第二阶段改造后历史数据丢失
+     → 缓解：先备份旧数据目录，确认新系统正常后再删除
+
+  【回滚方案】
+  第一阶段回滚：
+  1. 恢复所有备份文件
+  2. 删除新增的 TemplateOperator.vue、TemplateManager.vue、
+     SalaryPerformanceApproval.vue
+  3. 恢复 UniversalTemplateSystem.vue
+  4. 恢复 navigation.json、router/index.ts、main.py
+  5. 恢复 performance_pay_routes.py（全量，非精简版）
+  6. 重启服务器
+
+  第二阶段回滚：
+  1. 恢复 performance_pay_history_routes.py 备份
+  2. 恢复 performance_pay_routes.py 中 B 类端点的原始逻辑
+  3. 恢复 universal_template_routes.py 中的兼容写入代码
+  4. 从备份恢复 data/performance_pay_approval/ 目录
+  5. 重启服务器
+
+================================================================================
+十四、与其他模块的潜在扩展
+================================================================================
+
+  完成本次拆分后，其他模块接入模板只需：
+
+  1. 在通用模板系统中导入该模块所需的 Excel 模板
+  2. 配置好字段映射
+  3. 在业务模块页面中写一行代码：
+     <TemplateOperator template-id="xxx" module-name="xxx" />
+
+  例如：
+  - 人事管理 > 退休呈报：
+    <TemplateOperator template-id="retirement_report" module-name="人事管理" />
+
+  - 报表管理 > 退休测算：
+    <TemplateOperator template-id="retirement_estimate" module-name="报表管理" />
+
+  未来新增任何需要模板的业务模块，零后端代码，只需配置模板 + 一行组件引用。
+
+================================================================================
+  文档结束
+  状态：待讨论确认
+================================================================================

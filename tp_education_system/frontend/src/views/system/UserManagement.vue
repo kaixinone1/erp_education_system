@@ -201,6 +201,9 @@ const 权限选项 = [
   { label: '预警督办', value: 'todo' },
   { label: '数据中心', value: 'data' },
   { label: '人事管理', value: 'personnel' },
+  { label: '薪酬管理', value: 'salary' },
+  { label: '学校管理', value: 'school' },
+  { label: '党组织管理', value: 'party' },
   { label: '绩效管理', value: 'performance' },
   { label: '报表管理', value: 'report' }
 ]
@@ -224,6 +227,9 @@ const 权限标签映射 = {
   'todo': '预警督办',
   'data': '数据中心',
   'personnel': '人事管理',
+  'salary': '薪酬管理',
+  'school': '学校管理',
+  'party': '党组织管理',
   'performance': '绩效管理',
   'report': '报表管理'
 }
