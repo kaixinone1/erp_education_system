@@ -3752,6 +3752,28 @@
       "is_latest": true,
       "created_at": "2026-08-20T17:22:21.752839",
       "updated_at": "2026-08-20T17:22:21.752839"
+    },
+    {
+      "id": "config_33ec5b91",
+      "config_name": "职称字典",
+      "table_name": "title_info",
+      "table_type": "dictionary",
+      "parent_table": "",
+      "source_file_pattern": "*职称字典*",
+      "field_mappings": [
+        {
+          "sourceField": "职称",
+          "targetField": "professional_title",
+          "dataType": "VARCHAR",
+          "length": 50,
+          "required": false,
+          "english_name": "professional_title"
+        }
+      ],
+      "version": 1,
+      "is_latest": true,
+      "created_at": "2026-08-21T16:51:31.652254",
+      "updated_at": "2026-08-21T16:51:31.652254"
     }
   ],
   "global_mappings": {
@@ -3916,6 +3938,7 @@
     "拟聘用岗位等级": "拟聘用岗位等级",
     "拟聘用日期": "拟聘用日期",
     "已评日期": "已评日期",
-    "是否待聘": "是否待聘"
+    "是否待聘": "是否待聘",
+    "职称": "professional_title"
   }
 }

@@ -497,17 +497,279 @@ def _write_remark(teacher_id, teacher_name, old_status, target_status):
             remark_conn.close()
 
 
+# ==================== 标签同步常量 ====================
+
+# 标签ID常量（与 personal_dict_dictionary 表对应）
+TAG_IDS = {
+    '基础工资': 1, '绩效工资': 2, '乡镇补贴': 3, '岗位聘用': 4,
+    '新机制': 5, '年度考核': 6, '人事年报': 7, '工资年报': 8,
+    '乡村定向': 9, '延迟退休': 10, 'gcdy': 11, 'dj': 12,
+    '组织关系挂靠': 26, 'gqty': 13, 'tj': 14, '群众': 15,
+    '在职': 16, '调出': 17, '调离': 18, '辞职': 19,
+    '借调': 20, '离休': 21, '退休': 22, '去世': 23,
+    '病休': 24, '病假': 25,
+}
+
+# 政治面貌标签（退休/调离时保留，包含共产党员、党籍、共青团员、团籍、群众）
+POLITICAL_TAG_IDS = {11, 12, 13, 14, 15}  # gcdy, dj, gqty, tj, 群众
+
+# 调离时保留至次年自然年的标签
+TRANSFER_AWAY_KEEP_TAGS = {6, 7, 8}  # 年度考核, 人事年报, 工资年报
+
+
+def _sync_tags_on_status_change(cursor, teacher_id, teacher_name, old_status, target_status, transfer_direction=None):
+    """
+    根据任职状态变更同步标签关系
+    
+    参数:
+        cursor: 数据库游标
+        teacher_id: 教师ID
+        teacher_name: 教师姓名
+        old_status: 变更前状态
+        target_status: 变更后状态
+        transfer_direction: 调出去向（'外乡镇' 或 '市直单位'），仅调出时需要
+    
+    返回:
+        {"synced": bool, "actions": [str], "needs_manual": bool}
+    """
+    actions = []
+    needs_manual = False
+
+    # 获取当前标签
+    cursor.execute(
+        "SELECT tag_id FROM employee_tag_relations WHERE employee_id = %s",
+        (teacher_id,)
+    )
+    current_tags = {row[0] for row in cursor.fetchall()}
+
+    tags_to_remove = set()
+    tags_to_add = set()
+
+    if target_status == '退休':
+        # 检查参加工作日期：1949年9月30日之前参加革命工作的，确定为离休
+        cursor.execute('SELECT "参加工作日期" FROM teacher_basic_info WHERE id = %s', (teacher_id,))
+        work_row = cursor.fetchone()
+        work_date = work_row[0] if work_row else None
+        
+        is_retire_from_work = False
+        if work_date:
+            try:
+                from datetime import datetime as dt
+                d = dt.strptime(str(work_date)[:10], '%Y-%m-%d')
+                if d < dt(1949, 10, 1):
+                    is_retire_from_work = True
+            except:
+                pass
+        
+        if is_retire_from_work:
+            # 离休
+            tags_to_remove.add(TAG_IDS['在职'])
+            tags_to_add.add(TAG_IDS['离休'])
+            actions.append(f"离休（1949年9月30日前参加革命工作）：取消在职标签，添加离休标签")
+        else:
+            # 正常退休
+            tags_to_remove.add(TAG_IDS['在职'])
+            tags_to_add.add(TAG_IDS['退休'])
+            actions.append(f"退休：取消在职标签，添加退休标签，保留党团标签")
+
+    elif target_status == '去世':
+        tags_to_remove = current_tags.copy()
+        tags_to_add.add(TAG_IDS['去世'])
+        actions.append(f"去世：取消全部标签，添加去世标签")
+
+    elif target_status == '调出':
+        tags_to_remove.add(TAG_IDS['在职'])
+        tags_to_add.add(TAG_IDS['调出'])
+
+        if transfer_direction == '外乡镇':
+            tags_to_remove.add(TAG_IDS['绩效工资'])
+            actions.append(f"调出（外乡镇）：取消在职、绩效工资标签")
+        elif transfer_direction == '市直单位':
+            tags_to_remove.add(TAG_IDS['绩效工资'])
+            tags_to_remove.add(TAG_IDS['乡镇补贴'])
+            actions.append(f"调出（市直单位）：取消在职、绩效工资、乡镇补贴标签")
+        else:
+            actions.append(f"调出：取消在职标签，其他标签待确认")
+        needs_manual = True
+
+    elif target_status == '调离':
+        immediate_remove = {
+            TAG_IDS['基础工资'], TAG_IDS['绩效工资'], TAG_IDS['乡镇补贴'],
+            TAG_IDS['岗位聘用'], TAG_IDS['新机制'], TAG_IDS['乡村定向'],
+            TAG_IDS['延迟退休'], TAG_IDS['在职'],
+        }
+        tags_to_remove.update(immediate_remove)
+        tags_to_add.add(TAG_IDS['调离'])
+        actions.append(f"调离：取消基础工资、绩效工资、乡镇补贴、岗位聘用、新机制、乡村定向、延迟退休、在职标签")
+        actions.append(f"调离：保留年度考核、人事年报、工资年报至次年自然年，保留党团标签")
+        needs_manual = True
+
+    elif target_status == '离休':
+        tags_to_remove.add(TAG_IDS['在职'])
+        tags_to_add.add(TAG_IDS['离休'])
+        actions.append(f"离休：取消在职标签，添加离休标签，保留党团标签")
+
+    elif target_status == '在职':
+        # 恢复为在职状态，清除所有非在职状态标签
+        non_active_tags = {
+            TAG_IDS['调出'], TAG_IDS['调离'], TAG_IDS['辞职'],
+            TAG_IDS['借调'], TAG_IDS['离休'], TAG_IDS['退休'],
+            TAG_IDS['去世'], TAG_IDS['病休'], TAG_IDS['病假'],
+        }
+        tags_to_remove.update(non_active_tags)
+        tags_to_add.add(TAG_IDS['在职'])
+        actions.append(f"恢复在职：清除非在职状态标签，添加在职标签")
+
+    # 执行标签变更
+    removed_count = 0
+    for tag_id in tags_to_remove:
+        if tag_id in current_tags:
+            cursor.execute(
+                "DELETE FROM employee_tag_relations WHERE employee_id = %s AND tag_id = %s",
+                (teacher_id, tag_id)
+            )
+            removed_count += 1
+
+    added_count = 0
+    for tag_id in tags_to_add:
+        if tag_id not in current_tags or tag_id in tags_to_remove:
+            cursor.execute("""
+                INSERT INTO employee_tag_relations (employee_id, tag_id)
+                VALUES (%s, %s)
+                ON CONFLICT (employee_id, tag_id) DO NOTHING
+            """, (teacher_id, tag_id))
+            added_count += 1
+
+    result = {
+        "synced": True,
+        "actions": actions,
+        "needs_manual": needs_manual,
+        "removed_count": removed_count,
+        "added_count": added_count,
+    }
+
+    logger.info(f"标签同步完成: {teacher_name}, 状态={target_status}, "
+                f"移除{removed_count}个, 添加{added_count}个")
+
+    return result
+
+
+def _sync_political_tags(cursor, teacher_id, id_card):
+    """
+    根据 id_card 表中的政治面貌数据同步政治标签（共青团员、团籍、群众）
+    
+    数据源：id_card 表（通过身份证号关联）
+    判定规则：
+      - 共青团员 (tag_id=13): id_card.league_member = '是'
+      - 团籍 (tag_id=14): id_card.league_member = '是'
+      - 群众 (tag_id=15): id_card.party_member != '是' AND id_card.league_member != '是'
+      - 共产党员 (tag_id=11) 和 党籍 (tag_id=12) 由党员信息表独立判定，此处不覆盖
+    
+    参数:
+        cursor: 数据库游标
+        teacher_id: 教师ID
+        id_card: 教师身份证号码
+    
+    返回:
+        {"synced": bool, "added": [int], "removed": [int]}
+    """
+    if not id_card:
+        return {"synced": False, "added": [], "removed": [], "reason": "无身份证号"}
+
+    # 查询 id_card 表中的政治面貌数据
+    cursor.execute(
+        'SELECT party_member, league_member, tuan_ji, masses FROM id_card WHERE id_card = %s',
+        (id_card,)
+    )
+    row = cursor.fetchone()
+    if not row:
+        return {"synced": False, "added": [], "removed": [], "reason": "id_card表中无记录"}
+
+    party_member = row[0]   # 共产党员
+    league_member = row[1]  # 共青团员
+    tuan_ji = row[2]        # 团籍
+    masses = row[3]         # 群众
+
+    def _is_yes(val):
+        """判断字段值是否为'是'"""
+        if val is None:
+            return False
+        return str(val).strip() == '是'
+
+    is_party = _is_yes(party_member)
+    is_league = _is_yes(league_member)
+    is_tuan_ji = _is_yes(tuan_ji)
+    is_masses = _is_yes(masses)
+
+    # 获取当前政治标签（11-15）
+    cursor.execute(
+        "SELECT tag_id FROM employee_tag_relations WHERE employee_id = %s AND tag_id IN (13, 14, 15)",
+        (teacher_id,)
+    )
+    current_political = {row[0] for row in cursor.fetchall()}
+
+    tags_to_add = set()
+    tags_to_remove = set()
+
+    # 共青团员判定
+    if is_league:
+        tags_to_add.add(TAG_IDS['gqty'])  # 13
+    else:
+        tags_to_remove.add(TAG_IDS['gqty'])
+
+    # 团籍判定（优先使用 tuan_ji 字段，若为空则与共青团员一致）
+    if is_tuan_ji or is_league:
+        tags_to_add.add(TAG_IDS['tj'])  # 14
+    else:
+        tags_to_remove.add(TAG_IDS['tj'])
+
+    # 群众判定：非党员且非团员
+    if not is_party and not is_league:
+        tags_to_add.add(TAG_IDS['群众'])  # 15
+    else:
+        tags_to_remove.add(TAG_IDS['群众'])
+
+    # 执行删除
+    removed_ids = []
+    for tag_id in tags_to_remove:
+        if tag_id in current_political:
+            cursor.execute(
+                "DELETE FROM employee_tag_relations WHERE employee_id = %s AND tag_id = %s",
+                (teacher_id, tag_id)
+            )
+            removed_ids.append(tag_id)
+
+    # 执行添加
+    added_ids = []
+    for tag_id in tags_to_add:
+        if tag_id not in current_political:
+            cursor.execute("""
+                INSERT INTO employee_tag_relations (employee_id, tag_id)
+                VALUES (%s, %s)
+                ON CONFLICT (employee_id, tag_id) DO NOTHING
+            """, (teacher_id, tag_id))
+            added_ids.append(tag_id)
+
+    return {
+        "synced": True,
+        "added": added_ids,
+        "removed": removed_ids,
+    }
+
+
 @router.post("/process")
 async def process_status_change(data: dict[str, Any]):
     """
     处理教师状态变更
     当状态变更为退休时，自动汇集退休呈报表数据并创建待办工作清单
+    同时自动同步标签关系管理表
     """
     try:
         teacher_id = data.get("teacher_id")
         teacher_name = data.get("teacher_name")
         source_status = data.get("source_status")
         target_status = data.get("target_status")
+        transfer_direction = data.get("transfer_direction")  # 调出去向
         
         if not teacher_id or not target_status:
             raise HTTPException(status_code=400, detail="缺少必要参数")
@@ -515,29 +777,127 @@ async def process_status_change(data: dict[str, Any]):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 获取变更前的状态和教师姓名
+        # 获取变更前的状态、教师姓名和身份证号码
         cursor.execute("""
-            SELECT "任职状态", "姓名" FROM teacher_basic_info WHERE id = %s
+            SELECT "任职状态", "姓名", "身份证号码" FROM teacher_basic_info WHERE id = %s
         """, (teacher_id,))
         row = cursor.fetchone()
         old_status = row[0] if row else None
         teacher_name = data.get("teacher_name") or (row[1] if row else "未知")
+        teacher_id_card = row[2] if row else None
         
-        # 更新教师状态
-        cursor.execute("""
-            UPDATE teacher_basic_info 
-            SET "任职状态" = %s
-            WHERE id = %s
-        """, (target_status, teacher_id))
-
+        # 更新教师状态，同时更新对应日期字段
+        from datetime import date as dt_date
+        today = dt_date.today()
+        
+        # 退休/离休判定：1949年9月30日前参加革命工作的为离休
+        actual_target_status = target_status
+        if target_status == '退休':
+            cursor.execute(
+                'SELECT "参加工作日期" FROM teacher_basic_info WHERE id = %s',
+                (teacher_id,)
+            )
+            work_row = cursor.fetchone()
+            if work_row and work_row[0]:
+                try:
+                    from datetime import datetime as dt
+                    d = dt.strptime(str(work_row[0])[:10], '%Y-%m-%d')
+                    if d < dt(1949, 10, 1):
+                        actual_target_status = '离休'
+                        logger.info(
+                            f"教师 {teacher_name}(ID={teacher_id}) 参加工作日期 {work_row[0]} "
+                            f"在1949年9月30日前，自动判定为离休"
+                        )
+                except:
+                    pass
+        
+        update_sql = 'UPDATE teacher_basic_info SET "任职状态" = %s'
+        update_params = [actual_target_status]
+        
+        if target_status == '调出' and transfer_direction:
+            update_sql += ', "调出去向" = %s, "调出日期" = %s'
+            update_params.extend([transfer_direction, today])
+        elif target_status == '调离':
+            update_sql += ', "调离日期" = %s'
+            update_params.append(today)
+        elif actual_target_status == '退休':
+            update_sql += ', "退休日期" = %s'
+            update_params.append(today)
+        elif actual_target_status == '离休':
+            update_sql += ', "退休日期" = %s'
+            update_params.append(today)
+        
+        update_sql += ' WHERE id = %s'
+        update_params.append(teacher_id)
+        
+        cursor.execute(update_sql, update_params)
         conn.commit()
 
         # 自动写入备注信息表
-        if old_status and old_status != target_status:
-            _write_remark(teacher_id, teacher_name, old_status, target_status)
+        if old_status and old_status != actual_target_status:
+            _write_remark(teacher_id, teacher_name, old_status, actual_target_status)
+
+        # 自动同步标签关系
+        tag_sync_result = None
+        if old_status and old_status != actual_target_status:
+            try:
+                tag_sync_result = _sync_tags_on_status_change(
+                    cursor, teacher_id, teacher_name,
+                    old_status, actual_target_status, transfer_direction
+                )
+                conn.commit()
+            except Exception as e:
+                logger.error(f"标签同步失败: {e}")
+                try:
+                    conn.rollback()
+                except:
+                    pass
+
+        # 自动同步政治标签（共青团员、团籍、群众）
+        political_tag_result = None
+        if teacher_id_card:
+            try:
+                political_tag_result = _sync_political_tags(
+                    cursor, teacher_id, teacher_id_card
+                )
+                conn.commit()
+                if political_tag_result.get('added') or political_tag_result.get('removed'):
+                    logger.info(
+                        f"政治标签同步完成: {teacher_name}, "
+                        f"新增={political_tag_result.get('added')}, "
+                        f"移除={political_tag_result.get('removed')}"
+                    )
+            except Exception as e:
+                logger.error(f"政治标签同步失败: {e}")
+                try:
+                    conn.rollback()
+                except:
+                    pass
 
         # 实时触发提醒已经在下面的循环中处理了
         # 后续主流程会正确匹配并创建待办，这里不需要重复处理
+        
+        # 检查是否需要党组织关系状态变更（调出、调离、去世、辞职）
+        party_relation_result = None
+        party_relation_trigger_statuses = ['调出', '调离', '去世', '辞职']
+        if actual_target_status in party_relation_trigger_statuses and teacher_id_card:
+            try:
+                cursor.execute(
+                    'SELECT id, name FROM "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao" WHERE id_card = %s',
+                    (teacher_id_card,)
+                )
+                party_member = cursor.fetchone()
+                if party_member:
+                    party_relation_result = {
+                        "requires_party_relation_update": True,
+                        "teacher_name": teacher_name,
+                        "teacher_id_card": teacher_id_card,
+                        "party_member_id": party_member[0],
+                        "party_member_name": party_member[1],
+                        "new_employment_status": actual_target_status
+                    }
+            except Exception as e:
+                logger.error(f"党员信息查询失败: {e}")
         
         # 如果状态变更为退休，自动汇集退休呈报表数据
         data_collection_error = None
@@ -685,7 +1045,7 @@ async def process_status_change(data: dict[str, Any]):
         """)
         
         all_checklists = cursor.fetchall()
-        logger.info(f"找到 {len(all_checklists)} 个有效清单模板, 目标状态: {target_status}")
+        logger.info(f"找到 {len(all_checklists)} 个有效清单模板, 目标状态: {actual_target_status}")
         
         # 筛选匹配的清单
         matched_checklists = []
@@ -718,8 +1078,8 @@ async def process_status_change(data: dict[str, Any]):
                 target_statuses = [target_statuses]
             
             # 如果当前状态在触发列表中，添加到匹配列表
-            logger.debug(f"  检查 {target_status} 是否在 {target_statuses}: {target_status in target_statuses}")
-            if target_status in target_statuses:
+            logger.debug(f"  检查 {actual_target_status} 是否在 {target_statuses}: {actual_target_status in target_statuses}")
+            if actual_target_status in target_statuses:
                 matched_checklists.append({
                     "id": checklist_id,
                     "name": checklist_name,
@@ -733,13 +1093,18 @@ async def process_status_change(data: dict[str, Any]):
             cursor.close()
             conn.close()
             
-            return {
+            response_data = {
                 "status": "no_checklist",
-                "message": f"当前任职状态 '{target_status}' 下没有待办任务清单",
+                "message": f"当前任职状态 '{actual_target_status}' 下没有待办任务清单",
                 "teacher_id": teacher_id,
-                "new_status": target_status,
+                "new_status": actual_target_status,
                 "created_checklists": []
             }
+            if tag_sync_result:
+                response_data["tag_sync"] = tag_sync_result
+            if party_relation_result:
+                response_data.update(party_relation_result)
+            return response_data
         
         # 创建待办工作
         for checklist in matched_checklists:
@@ -790,7 +1155,7 @@ async def process_status_change(data: dict[str, Any]):
                     'RETIREMENT',
                     teacher_name,
                     f"{teacher_name}{checklist_name}",
-                    f"状态变更触发: {target_status}",
+                    f"状态变更触发: {actual_target_status}",
                     json.dumps(processed_task_items),
                     "pending",
                     "system"
@@ -812,9 +1177,17 @@ async def process_status_change(data: dict[str, Any]):
             "status": "success",
             "message": f"状态变更处理成功",
             "teacher_id": teacher_id,
-            "new_status": target_status,
+            "new_status": actual_target_status,
             "created_checklists": created_checklists
         }
+        
+        # 添加标签同步结果
+        if tag_sync_result:
+            response_data["tag_sync"] = tag_sync_result
+        
+        # 添加党组织关系状态变更信息
+        if party_relation_result:
+            response_data.update(party_relation_result)
         
         # 如果数据汇集有错误，添加警告信息
         if data_collection_error:

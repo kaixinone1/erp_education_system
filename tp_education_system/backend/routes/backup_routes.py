@@ -14,8 +14,21 @@ from typing import Optional
 
 router = APIRouter(prefix="/api/system/backup", tags=["系统备份与更新"])
 
-# 项目根目录
-PROJECT_ROOT = r"d:\erp_thirteen"
+# 项目根目录（自动检测Git仓库根目录）
+def _get_project_root():
+    """自动检测项目根目录（Git仓库根目录）"""
+    current = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(10):
+        if os.path.isdir(os.path.join(current, ".git")):
+            return current
+        parent = os.path.dirname(current)
+        if parent == current:
+            break
+        current = parent
+    # 回退
+    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+PROJECT_ROOT = _get_project_root()
 BACKUP_DIR = os.path.join(PROJECT_ROOT, "备份")
 DB_NAME = "taiping_education"
 DB_USER = "taiping_user"

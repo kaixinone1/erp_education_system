@@ -8,6 +8,67 @@ import psycopg2
 
 router = APIRouter(prefix="/api/tag-relations", tags=["tag-relations"])
 
+# ==================== 标签分类规则配置 ====================
+# 五类标签定义：每类标签有不同的选择规则（多选/单选/互斥/条件）
+TAG_CATEGORIES = [
+    {
+        "category": "工资类",
+        "description": "工资构成标签，可多选",
+        "selection_type": "multi",  # 多选
+        "tag_ids": [1, 2, 3, 4],  # 基础工资、绩效工资、乡镇补贴、岗位聘用
+    },
+    {
+        "category": "编制类",
+        "description": "编制类型，仅新机制教师可勾选",
+        "selection_type": "conditional",  # 条件勾选
+        "tag_ids": [5],  # 新机制
+        "condition": "新机制教师专用，非新机制教师禁止勾选",
+    },
+    {
+        "category": "政治面貌类",
+        "description": "政治面貌标签，分为党员侧、团员侧、群众，三组互斥",
+        "selection_type": "mutual_exclusive_groups",  # 分组互斥
+        "groups": [
+            {
+                "group_name": "党员侧",
+                "tag_ids": [11, 12, 13],  # gcdy、dj、组织关系挂靠
+                "selection_type": "multi",  # 组内可多选
+            },
+            {
+                "group_name": "团员侧",
+                "tag_ids": [14, 15],  # gqty、tj
+                "selection_type": "multi",  # 组内可多选
+            },
+            {
+                "group_name": "群众",
+                "tag_ids": [16],  # 群众
+                "selection_type": "single",  # 组内单选
+            },
+        ],
+        "mutual_exclusive": True,  # 三组之间互斥
+    },
+    {
+        "category": "任职状态类",
+        "description": "任职状态标签，互斥单选",
+        "selection_type": "single",  # 单选互斥
+        "tag_ids": [17, 18, 19, 20, 21, 22, 23, 24, 25],  # 在职、调出、调离、辞职、借调、离休、退休、去世、病休
+        "mutual_exclusive": True,
+    },
+    {
+        "category": "请长假类",
+        "description": "因病请长假可勾选",
+        "selection_type": "conditional",  # 条件勾选
+        "tag_ids": [26],  # 病假
+        "condition": "因病请长假可勾选",
+    },
+    {
+        "category": "其他业务类",
+        "description": "其他业务相关标签",
+        "selection_type": "multi",  # 多选
+        "tag_ids": [6, 7, 8, 9, 10],  # 年度考核、人事年报、工资年报、乡村定向、延迟退休
+    },
+]
+
 DATABASE_CONFIG = {
     "host": "localhost",
     "port": "5432",
@@ -363,13 +424,18 @@ async def get_teacher_tags(teacher_id: int):
 
 @router.post("/save-tags")
 async def save_teacher_tags(data: dict):
-    """保存教师标签（全量更新）"""
+    """保存教师标签（全量更新，含互斥规则校验）"""
     try:
         employee_id = data.get("employee_id")
         tag_ids = data.get("tag_ids", [])
         
         if not employee_id:
             raise HTTPException(status_code=400, detail="缺少教师ID")
+        
+        # 验证互斥规则
+        validation_error = _validate_tag_mutual_exclusion(tag_ids)
+        if validation_error:
+            raise HTTPException(status_code=400, detail=validation_error)
         
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -441,3 +507,101 @@ async def batch_delete_tag_relations(data: dict):
     except Exception as e:
         print(f"批量删除标签关系失败: {e}")
         raise HTTPException(status_code=500, detail=f"删除失败: {str(e)}")
+
+
+@router.get("/categories")
+async def get_tag_categories():
+    """获取标签分类规则（供前端标签选择区域使用）"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 获取所有标签的名称
+        cursor.execute("SELECT id, biao_qian FROM personal_dict_dictionary ORDER BY id")
+        all_tags = {row[0]: row[1] for row in cursor.fetchall()}
+        cursor.close()
+        conn.close()
+        
+        # 构建分类数据，填充标签名称
+        categories = []
+        for cat in TAG_CATEGORIES:
+            cat_data = {
+                "category": cat["category"],
+                "description": cat.get("description", ""),
+                "selection_type": cat["selection_type"],
+                "condition": cat.get("condition", ""),
+            }
+            
+            if cat["selection_type"] == "mutual_exclusive_groups":
+                # 分组互斥类型
+                groups = []
+                for g in cat["groups"]:
+                    group_data = {
+                        "group_name": g["group_name"],
+                        "selection_type": g["selection_type"],
+                        "tags": [{"id": tid, "name": all_tags.get(tid, f"未知标签{tid}")} for tid in g["tag_ids"]],
+                    }
+                    groups.append(group_data)
+                cat_data["groups"] = groups
+                cat_data["mutual_exclusive"] = cat.get("mutual_exclusive", False)
+            else:
+                # 普通类型
+                cat_data["tags"] = [{"id": tid, "name": all_tags.get(tid, f"未知标签{tid}")} for tid in cat["tag_ids"]]
+                cat_data["mutual_exclusive"] = cat.get("mutual_exclusive", False)
+            
+            categories.append(cat_data)
+        
+        return {
+            "status": "success",
+            "data": categories
+        }
+    except Exception as e:
+        print(f"获取标签分类失败: {e}")
+        raise HTTPException(status_code=500, detail=f"获取失败: {str(e)}")
+
+
+def _validate_tag_mutual_exclusion(tag_ids: list) -> Optional[str]:
+    """验证标签互斥规则，返回错误信息或None（验证通过）"""
+    
+    # 构建 tag_id -> category 的映射
+    tag_category_map = {}
+    for cat in TAG_CATEGORIES:
+        if cat["selection_type"] == "mutual_exclusive_groups":
+            for g in cat["groups"]:
+                for tid in g["tag_ids"]:
+                    tag_category_map[tid] = (cat["category"], g["group_name"])
+        else:
+            for tid in cat.get("tag_ids", []):
+                tag_category_map[tid] = (cat["category"], None)
+    
+    # 检查任职状态类互斥（单选）
+    status_tag_ids = {17, 18, 19, 20, 21, 22, 23, 24, 25}
+    selected_status = [tid for tid in tag_ids if tid in status_tag_ids]
+    if len(selected_status) > 1:
+        return "任职状态类标签只能选择一个"
+    
+    # 检查政治面貌类互斥
+    # 党员侧: 11, 12, 13
+    # 团员侧: 14, 15
+    # 群众: 16
+    party_side = {11, 12, 13}
+    league_side = {14, 15}
+    masses = {16}
+    
+    has_party = bool(set(tag_ids) & party_side)
+    has_league = bool(set(tag_ids) & league_side)
+    has_masses = bool(set(tag_ids) & masses)
+    
+    # 检查是否选择了多个互斥组
+    exclusive_count = sum([has_party, has_league, has_masses])
+    if exclusive_count > 1:
+        conflicts = []
+        if has_party:
+            conflicts.append("党员侧")
+        if has_league:
+            conflicts.append("团员侧")
+        if has_masses:
+            conflicts.append("群众")
+        return f"政治面貌类标签互斥，不能同时选择：{'、'.join(conflicts)}"
+    
+    return None

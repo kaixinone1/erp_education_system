@@ -1,0 +1,17 @@
+{
+  "backup_paths": [
+    "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份",
+    "E:/教育人事管理系统数据库备份",
+    "D:/教育人事管理系统数据库备份"
+  ],
+  "backup_time": "01:00",
+  "keep_days": 30,
+  "enabled": true,
+  "git_config": {
+    "enabled": true,
+    "repo_path": "",
+    "remote_name": "origin",
+    "branch": "main",
+    "backup_subdir": "数据库备份"
+  }
+}

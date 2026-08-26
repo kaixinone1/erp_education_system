@@ -280,6 +280,11 @@
       "english_name": "post_appointment_info",
       "table_type": "child",
       "updated_at": "2026-08-21T15:49:12.348353"
+    },
+    "职称字典": {
+      "english_name": "title_info",
+      "table_type": "dictionary",
+      "updated_at": "2026-08-21T16:51:31.735591"
     }
   },
   "reverse_mappings": {
@@ -406,6 +411,7 @@
     "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao": "枣阳市太平镇中心学校党员信息表",
     "party_member_info_summary": "中国共产党枣阳市太平镇教育总支部委员会党员信息汇总表",
     "party_member_info_summary_backup_2026_08": "枣阳市太平镇教育总支党员信息汇总表（2026年8月备份）",
-    "party_member_info_summary_backup_2026": "枣阳市太平镇教育总支党员信息汇总表（2026年备份）"
+    "party_member_info_summary_backup_2026": "枣阳市太平镇教育总支党员信息汇总表（2026年备份）",
+    "dict_party_relation_status": "组织关系状态字典"
   }
 }

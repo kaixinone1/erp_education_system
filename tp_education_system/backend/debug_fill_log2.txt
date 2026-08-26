@@ -790,3 +790,75 @@
 [DEBUG] 填充后 行27列1 = 离休干部
 [DEBUG] 填充后 行27列2 = 1
 [DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=345 standard=350 total=120750
+[DEBUG] perf_count=346 perf_total=447396.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 346
+[DEBUG] 填充后 行20列4 = 447396
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 345
+[DEBUG] 填充后 行21列4 = 120750
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=446 worker=2 office=1
+[DEBUG] subsidy_count=345 standard=350 total=120750
+[DEBUG] perf_count=346 perf_total=447396.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 346
+[DEBUG] 填充后 行20列4 = 447396
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 345
+[DEBUG] 填充后 行21列4 = 120750
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 446
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=445 worker=2 office=1
+[DEBUG] subsidy_count=332 standard=350 total=116200
+[DEBUG] perf_count=333 perf_total=431240.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 333
+[DEBUG] 填充后 行20列4 = 431240
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 332
+[DEBUG] 填充后 行21列4 = 116200
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 445
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=445 worker=2 office=1
+[DEBUG] subsidy_count=332 standard=350 total=116200
+[DEBUG] perf_count=333 perf_total=431240.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 333
+[DEBUG] 填充后 行20列4 = 431240
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 332
+[DEBUG] 填充后 行21列4 = 116200
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 445
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 

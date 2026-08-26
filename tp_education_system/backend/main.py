@@ -196,8 +196,10 @@ print("[OK] 文件管理路由已注册")
 # 注册系统备份与更新路由
 from routes.backup_routes import router as backup_router
 from routes.snapshot_routes import router as snapshot_router
+from routes.backup_config_routes import router as backup_config_router
 app.include_router(backup_router)
 app.include_router(snapshot_router)
+app.include_router(backup_config_router)
 print("[OK] 系统备份与更新路由已注册")
 
 # 注册自动表管理框架（新框架 - 零配置）

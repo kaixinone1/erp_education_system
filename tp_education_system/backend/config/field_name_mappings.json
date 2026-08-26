@@ -156,7 +156,8 @@
     "取得时间": "time_2",
     "发证机构": "field_155",
     "职称系列": "professional_title_1",
-    "聘用信息": "field_157"
+    "聘用信息": "field_157",
+    "职称": "professional_title_2"
   },
   "reverse_mappings": {
     "name": "姓名",
@@ -315,6 +316,7 @@
     "time_2": "取得时间",
     "field_155": "发证机构",
     "professional_title_1": "职称系列",
-    "field_157": "聘用信息"
+    "field_157": "聘用信息",
+    "professional_title_2": "职称"
   }
 }

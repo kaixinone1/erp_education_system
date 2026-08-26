@@ -315,7 +315,8 @@ async def generate_statistics():
         school_core_names = get_school_core_names()
         print(f"[党员统计] 学校白名单: {school_core_names}")
 
-        # 3. 从信息表聚合统计（所有支部，不做过滤）
+        # 3. 从信息表聚合统计（只统计正常和组织关系挂靠的党员）
+        #    排除：去世(2)、组织关系转出(3)、开除党籍(5)、退党/自行脱党(6)
         cur.execute(f"""
             WITH stats AS (
                 SELECT
@@ -328,6 +329,8 @@ async def generate_statistics():
                     COUNT(CASE WHEN education IN ('大专', '大学', '研究生', '硕士', '博士') THEN 1 END) AS 大专以上人数,
                     COUNT(CASE WHEN shi_fou_ru_ku = '未入库' THEN 1 END) AS 未入库人数
                 FROM "{SOURCE_TABLE}"
+                WHERE organizational_relationship_status IS NULL
+                   OR organizational_relationship_status IN ('1', '正常', '4', '组织关系挂靠')
                 GROUP BY suo_zai_dang_zhi_bu
             )
             SELECT "支部", "总人数", "入库人数", "预备人数", "女性人数", "少数民族人数", "大专以上人数", "未入库人数"
@@ -413,6 +416,120 @@ async def generate_statistics():
         if conn:
             conn.rollback()
         raise HTTPException(status_code=500, detail=f"生成汇总数据失败: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
+
+
+def do_refresh_party_summary() -> dict:
+    """
+    从党员信息表聚合数据，生成汇总表（同步版本，可被其他模块调用）
+    返回: {"success": bool, "message": str, "inserted_rows": int}
+    """
+    conn = None
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        field_map = get_summary_field_mapping()
+        if not field_map:
+            return {"success": False, "message": "无法读取汇总表字段映射"}
+
+        col_name = field_map.get('党组织名称', '党组织名称')
+        col_heji = field_map.get('合计', '合计')
+        col_ruku = field_map.get('入库党员', '入库党员')
+        col_yubei = field_map.get('预备党员', '预备党员')
+        col_nv = field_map.get('女党员', '女党员')
+        col_shaoshu = field_map.get('少数民族党员', '少数民族党员')
+        col_dazhuan = field_map.get('大专及以上学历党员', '大专及以上学历党员')
+        col_weiruku = field_map.get('未入库党员', '未入库党员')
+
+        school_core_names = get_school_core_names()
+        print(f"[党员统计-自动刷新] 学校白名单: {school_core_names}")
+
+        cur.execute(f"""
+            WITH stats AS (
+                SELECT
+                    suo_zai_dang_zhi_bu AS 支部,
+                    COUNT(*) AS 总人数,
+                    COUNT(CASE WHEN shi_fou_ru_ku = '已入库' THEN 1 END) AS 入库人数,
+                    COUNT(CASE WHEN personnel_category = '预备党员' THEN 1 END) AS 预备人数,
+                    COUNT(CASE WHEN gender = '女' THEN 1 END) AS 女性人数,
+                    COUNT(CASE WHEN ethnicity != '汉族' THEN 1 END) AS 少数民族人数,
+                    COUNT(CASE WHEN education IN ('大专', '大学', '研究生', '硕士', '博士') THEN 1 END) AS 大专以上人数,
+                    COUNT(CASE WHEN shi_fou_ru_ku = '未入库' THEN 1 END) AS 未入库人数
+                FROM "{SOURCE_TABLE}"
+                WHERE organizational_relationship_status IS NULL
+                   OR organizational_relationship_status IN ('1', '正常', '4', '组织关系挂靠')
+                GROUP BY suo_zai_dang_zhi_bu
+            )
+            SELECT "支部", "总人数", "入库人数", "预备人数", "女性人数", "少数民族人数", "大专以上人数", "未入库人数"
+            FROM stats ORDER BY "总人数" DESC
+        """)
+
+        all_rows = cur.fetchall()
+
+        if school_core_names:
+            matched_rows = []
+            skipped_branches = []
+            for row in all_rows:
+                branch_name = row[0] or ''
+                matched = any(core in branch_name for core in school_core_names)
+                if matched:
+                    matched_rows.append(row)
+                else:
+                    skipped_branches.append(branch_name)
+            if skipped_branches:
+                print(f"[党员统计-自动刷新] 跳过支部: {skipped_branches}")
+        else:
+            matched_rows = all_rows
+
+        cur.execute(f'DROP TABLE IF EXISTS "{SUMMARY_TABLE}"')
+        cur.execute(f"""
+            CREATE TABLE "{SUMMARY_TABLE}" (
+                id SERIAL PRIMARY KEY,
+                "{col_name}" VARCHAR(255),
+                "{col_heji}" VARCHAR(255),
+                "{col_ruku}" VARCHAR(255),
+                "{col_yubei}" VARCHAR(255),
+                "{col_nv}" VARCHAR(255),
+                "{col_shaoshu}" VARCHAR(255),
+                "{col_dazhuan}" VARCHAR(255),
+                "{col_weiruku}" VARCHAR(255)
+            )
+        """)
+
+        total = [0, 0, 0, 0, 0, 0, 0]
+        for row in matched_rows:
+            for i in range(7):
+                val = row[i + 1]
+                total[i] += int(val) if val is not None else 0
+
+        cur.execute(f"""
+            INSERT INTO "{SUMMARY_TABLE}" 
+            ("{col_name}", "{col_heji}", "{col_ruku}", "{col_yubei}", "{col_nv}", "{col_shaoshu}", "{col_dazhuan}", "{col_weiruku}")
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, ("总支合计", str(total[0]), str(total[1]), str(total[2]), str(total[3]), str(total[4]), str(total[5]), str(total[6])))
+
+        for row in matched_rows:
+            cur.execute(f"""
+                INSERT INTO "{SUMMARY_TABLE}" 
+                ("{col_name}", "{col_heji}", "{col_ruku}", "{col_yubei}", "{col_nv}", "{col_shaoshu}", "{col_dazhuan}", "{col_weiruku}")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (row[0], str(row[1]), str(row[2]), str(row[3]), str(row[4]), str(row[5]), str(row[6]), str(row[7])))
+
+        inserted = len(matched_rows) + 1
+        conn.commit()
+        cur.close()
+
+        print(f"[党员统计-自动刷新] 成功，共 {len(matched_rows)} 个支部 + 1个总支合计")
+        return {"success": True, "message": f"汇总数据生成成功，共 {len(matched_rows)} 个支部", "inserted_rows": inserted}
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(f"[党员统计-自动刷新] 失败: {e}")
+        return {"success": False, "message": f"刷新失败: {str(e)}"}
     finally:
         if conn:
             conn.close()

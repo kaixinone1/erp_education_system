@@ -1,0 +1,39 @@
+{
+  "last_backup_time": "2026-08-26 09:19:06",
+  "last_backup_success": false,
+  "backup_results": [
+    {
+      "path": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份",
+      "label": "位置1",
+      "success": true,
+      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260826_091842.sql",
+      "size": 6834149
+    },
+    {
+      "path": "E:/教育人事管理系统数据库备份",
+      "label": "位置2",
+      "success": false,
+      "error": "权限不足，无法写入"
+    },
+    {
+      "path": "D:/教育人事管理系统数据库备份",
+      "label": "位置3",
+      "success": false,
+      "error": "权限不足，无法写入"
+    },
+    {
+      "path": "D:\\erp_fifteen\\tp_education_system",
+      "label": "Git仓库",
+      "success": false,
+      "error": "git push 失败: fatal: unable to access 'https://github.com/kaixinone1/erp_education_system/': Recv failure: Connection was reset",
+      "skipped": false,
+      "type": "git"
+    }
+  ],
+  "failed_paths": [
+    "E:/教育人事管理系统数据库备份",
+    "D:/教育人事管理系统数据库备份",
+    "Git: git push 失败: fatal: unable to access 'https://github.com/kaixinone1/erp_education_system/': Recv failure: Connection was reset"
+  ],
+  "consecutive_failures": 1
+}

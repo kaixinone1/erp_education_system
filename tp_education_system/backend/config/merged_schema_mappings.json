@@ -951,6 +951,82 @@
           "relation_display_field": "name",
           "value_mapping": {},
           "english_name": "employment_status"
+        },
+        {
+          "sourceField": "调出去向",
+          "targetField": "transfer_direction",
+          "dataType": "VARCHAR",
+          "length": 50,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "调出去向：外乡镇/市直单位",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "transfer_direction"
+        },
+        {
+          "sourceField": "调出日期",
+          "targetField": "transfer_out_date",
+          "dataType": "DATE",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "调出日期",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "transfer_out_date"
+        },
+        {
+          "sourceField": "调离日期",
+          "targetField": "transfer_away_date",
+          "dataType": "DATE",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "调离日期",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "transfer_away_date"
+        },
+        {
+          "sourceField": "退休日期",
+          "targetField": "retirement_date",
+          "dataType": "DATE",
+          "length": 255,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "退休日期",
+          "confidence": "low",
+          "relation_type": "none",
+          "relation_table": "",
+          "relation_display_field": "name",
+          "value_mapping": {},
+          "english_name": "retirement_date"
         }
       ],
       "updated_at": "2026-03-05T09:51:07.912814"
@@ -6044,6 +6120,26 @@
           "relation_display_field": "name",
           "value_mapping": {},
           "english_name": "shi_fou_ru_ku"
+        },
+        {
+          "sourceField": "组织关系状态",
+          "targetField": "organizational_relationship_status",
+          "dataType": "VARCHAR",
+          "length": 50,
+          "precision": "",
+          "scale": "",
+          "required": false,
+          "unique": false,
+          "indexed": false,
+          "defaultValue": "",
+          "description": "党员组织关系当前状态",
+          "confidence": "low",
+          "relation_type": "to_dict",
+          "relation_table": "dict_party_relation_status",
+          "relation_display_field": "name",
+          "relation_value_field": "id",
+          "value_mapping": {},
+          "english_name": "organizational_relationship_status"
         }
       ],
       "updated_at": "2026-07-20T20:30:36.960873"
@@ -6294,15 +6390,20 @@
           "english_name": "xue_duan"
         },
         {
-          "sourceField": "已评职称",
+          "sourceField": "专业技术资格",
           "targetField": "professional_title",
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "professional_title"
+          "english_name": "professional_title",
+          "relation_type": "to_dict",
+          "relation_table": "title_info",
+          "relation_display_field": "professional_title_2",
+          "relation_value_field": "id",
+          "description": "关联职称字典"
         },
         {
-          "sourceField": "已评日期",
+          "sourceField": "取得时间",
           "targetField": "date_5",
           "dataType": "VARCHAR",
           "length": 255,
@@ -6367,11 +6468,16 @@
         },
         {
           "sourceField": "专业技术资格",
-          "targetField": "major_1",
+          "targetField": "professional_title_1",
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "major_1"
+          "english_name": "professional_title_1",
+          "relation_type": "to_dict",
+          "relation_table": "title_info",
+          "relation_display_field": "professional_title_2",
+          "relation_value_field": "id",
+          "description": "关联职称字典"
         },
         {
           "sourceField": "取得时间",
@@ -6399,11 +6505,11 @@
         },
         {
           "sourceField": "职称系列",
-          "targetField": "professional_title_1",
+          "targetField": "major_1",
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "professional_title_1"
+          "english_name": "major_1"
         },
         {
           "sourceField": "聘用信息",
@@ -6423,6 +6529,22 @@
         }
       ],
       "updated_at": "2026-08-21T15:49:16.637894"
+    },
+    "title_info": {
+      "chinese_name": "职称字典",
+      "type": "dictionary",
+      "parent_table": null,
+      "fields": [
+        {
+          "sourceField": "职称",
+          "targetField": "professional_title_2",
+          "dataType": "VARCHAR",
+          "length": 50,
+          "required": false,
+          "english_name": "professional_title_2"
+        }
+      ],
+      "updated_at": "2026-08-21T16:51:32.600730"
     }
   },
   "dictionaries": {},
@@ -6704,11 +6826,6 @@
     },
     "是否已评未聘": {
       "target": "shi_fou_yi_ping_wei_pin",
-      "table": "post_appointment_info",
-      "data_type": "VARCHAR"
-    },
-    "已评职称": {
-      "target": "professional_title",
       "table": "post_appointment_info",
       "data_type": "VARCHAR"
     },
@@ -7187,18 +7304,13 @@
       "table": "post_appointment_info",
       "data_type": "VARCHAR"
     },
-    "已评日期": {
-      "target": "date_5",
-      "table": "post_appointment_info",
-      "data_type": "VARCHAR"
-    },
     "是否待聘": {
       "target": "field_152",
       "table": "post_appointment_info",
       "data_type": "VARCHAR"
     },
     "专业技术资格": {
-      "target": "major_1",
+      "target": "professional_title_1",
       "table": "teacher_title_info",
       "data_type": "VARCHAR"
     },
@@ -7213,13 +7325,23 @@
       "data_type": "VARCHAR"
     },
     "职称系列": {
-      "target": "professional_title_1",
+      "target": "major_1",
       "table": "teacher_title_info",
       "data_type": "VARCHAR"
     },
     "聘用信息": {
       "target": "field_157",
       "table": "teacher_title_info",
+      "data_type": "VARCHAR"
+    },
+    "职称": {
+      "target": "professional_title_2",
+      "table": "title_info",
+      "data_type": "VARCHAR"
+    },
+    "组织关系状态": {
+      "target": "organizational_relationship_status",
+      "table": "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao",
       "data_type": "VARCHAR"
     }
   }

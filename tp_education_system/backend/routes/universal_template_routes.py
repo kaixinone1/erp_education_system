@@ -143,9 +143,14 @@ def _build_export_filename(config, request, include_seconds=False):
     unit_name = _get_fill_unit_name(request)
     template_category = config.get('模板分类', '')
     
-    # 个人表：使用教师姓名
-    if template_category == '个人表' and unit_name:
-        return f"{unit_name}_{name}({date_str})"
+    # 个人表：使用"{封面单位}_{模板名称}_{教师姓名}_{日期}"格式
+    if template_category == '个人表':
+        teacher_name = _get_teacher_name(request)
+        if unit_name and teacher_name:
+            return f"{unit_name}_{name}_{teacher_name}_{date_str}"
+        elif unit_name:
+            return f"{unit_name}_{name}({date_str})"
+        return f"{name}({date_str})"
     # 单位表：使用单位名称+年月
     if unit_name:
         return f"{unit_name}{month_str}{name}({date_str})"
@@ -205,6 +210,50 @@ def _get_fill_unit_name(request):
                     return row[0]  # 返回教师姓名
             except Exception:
                 pass
+    return None
+
+
+def _get_teacher_name(request):
+    """获取个人表中的教师姓名（用于文件名）
+    
+    通过身份证号或职工ID查询教师姓名，不受封面单位影响
+    """
+    if not request.查询条件:
+        return None
+    # 通过身份证号查询
+    id_card = request.查询条件.get('身份证号', '')
+    if id_card:
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT \"姓名\" FROM teacher_basic_info WHERE \"身份证号码\" = %s LIMIT 1",
+                (id_card.strip(),)
+            )
+            row = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            if row and row[0]:
+                return row[0]
+        except Exception:
+            pass
+    # 通过职工ID查询
+    employee_id = request.查询条件.get('职工ID')
+    if employee_id:
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT \"姓名\" FROM teacher_basic_info WHERE id = %s",
+                (int(employee_id),)
+            )
+            row = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            if row and row[0]:
+                return row[0]
+        except Exception:
+            pass
     return None
 
 
@@ -2978,11 +3027,18 @@ async def get_saved_files(template_id: str, 年月: Optional[str] = None):
             if excel_path:
                 html_candidate = os.path.splitext(excel_path)[0] + '.html'
                 has_html = os.path.exists(html_candidate)
+            # 提取文件名（不含扩展名），优先使用Excel路径，其次PDF路径
+            file_name = ""
+            if excel_path and os.path.exists(excel_path):
+                file_name = os.path.splitext(os.path.basename(excel_path))[0]
+            elif pdf_path and os.path.exists(pdf_path):
+                file_name = os.path.splitext(os.path.basename(pdf_path))[0]
             results.append({
                 "ID": row[0],
                 "模板名称": row[1],
                 "单位名称": row[2],
                 "年月": row[3],
+                "文件名": file_name,
                 "有Excel": has_excel,
                 "有PDF": bool(pdf_path and os.path.exists(pdf_path)),
                 "有HTML": has_html,

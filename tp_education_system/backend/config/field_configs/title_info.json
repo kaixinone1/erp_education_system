@@ -1,0 +1,20 @@
+{
+  "config_name": "职称字典",
+  "display_name": "职称字典",
+  "chinese_title": "职称字典",
+  "table_name": "title_info",
+  "table_type": "dictionary",
+  "parent_table": "",
+  "field_configs": [
+    {
+      "sourceField": "职称",
+      "targetField": "professional_title",
+      "dataType": "VARCHAR",
+      "length": 50,
+      "required": false,
+      "english_name": "professional_title"
+    }
+  ],
+  "created_at": "2026-08-21T16:51:31.652254",
+  "updated_at": "2026-08-21T16:51:31.652254"
+}

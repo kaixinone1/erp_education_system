@@ -26,6 +26,15 @@
           "requireAdmin": true
         },
         {
+          "id": "system-db-backup",
+          "title": "数据库自动备份",
+          "icon": "Coin",
+          "path": "/system/db-backup",
+          "type": "component",
+          "component": "BackupSettings",
+          "requireAdmin": true
+        },
+        {
           "id": "system-modules",
           "title": "模块管理",
           "icon": "Grid",
@@ -187,18 +196,6 @@
               "table_type": "dictionary"
             },
             {
-              "id": "table-title_info",
-              "title": "职称字典",
-              "name": "职称字典",
-              "icon": "Document",
-              "path": "/data/title_info",
-              "type": "component",
-              "component": "DynamicDataView",
-              "api_endpoint": "/api/data/title_info",
-              "table_name": "title_info",
-              "table_type": "dictionary"
-            },
-            {
               "id": "table-dict_education_level_dictionary",
               "title": "学历层次字典",
               "name": "学历层次字典",
@@ -232,6 +229,30 @@
               "component": "DynamicDataView",
               "api_endpoint": "/api/data/dict_grade_dictionary",
               "table_name": "dict_grade_dictionary",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-title_info",
+              "title": "职称字典",
+              "name": "职称字典",
+              "icon": "Document",
+              "path": "/data/title_info",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/title_info",
+              "table_name": "title_info",
+              "table_type": "dictionary"
+            },
+            {
+              "id": "table-dict_party_relation_status",
+              "title": "组织关系状态字典",
+              "name": "组织关系状态字典",
+              "icon": "Document",
+              "path": "/data/dict_party_relation_status",
+              "type": "component",
+              "component": "DynamicDataView",
+              "api_endpoint": "/api/data/dict_party_relation_status",
+              "table_name": "dict_party_relation_status",
               "table_type": "dictionary"
             }
           ]
@@ -490,6 +511,22 @@
               "api_endpoint": "/api/data/tui_xiu_bu_chong_xin_xi",
               "table_name": "tui_xiu_bu_chong_xin_xi",
               "table_type": "master"
+            },
+            {
+              "id": "retired-post-change-report",
+              "title": "职务升降退休人员信息申报表",
+              "icon": "Document",
+              "path": "/personnel/retired/post-change-report",
+              "type": "component",
+              "component": "RetirementPostChangeReport"
+            },
+            {
+              "id": "retired-retirement-report",
+              "title": "职工退休呈报表",
+              "icon": "Document",
+              "path": "/personnel/retired/retirement-report",
+              "type": "component",
+              "component": "RetirementReportForm"
             }
           ]
         },

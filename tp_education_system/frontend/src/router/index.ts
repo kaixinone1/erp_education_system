@@ -110,6 +110,15 @@ const router = createRouter({
           }
         },
         {
+          path: "db-backup",
+          name: "dbBackupSettings",
+          component: () => import("../views/system/BackupSettings.vue"),
+          meta: {
+            title: "数据库自动备份",
+            icon: "Coin"
+          }
+        },
+        {
           path: "snapshot-history",
           name: "snapshotHistory",
           component: () => import("../views/system/SnapshotHistory.vue"),
@@ -408,6 +417,25 @@ const router = createRouter({
       meta: {
         title: "退休测算",
         icon: "Calculator"
+      }
+    },
+    // 退休教师管理 - 模板
+    {
+      path: "/personnel/retired/post-change-report",
+      name: "retirementPostChangeReport",
+      component: () => import("../views/retirement/RetirementPostChangeReport.vue"),
+      meta: {
+        title: "职务升降退休人员信息申报表",
+        icon: "Document"
+      }
+    },
+    {
+      path: "/personnel/retired/retirement-report",
+      name: "retirementReportForm",
+      component: () => import("../views/retirement/RetirementReportForm.vue"),
+      meta: {
+        title: "职工退休呈报表",
+        icon: "Document"
       }
     },
     // 表结构管理

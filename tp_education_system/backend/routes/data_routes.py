@@ -4,7 +4,9 @@ from typing import List, Dict, Any, Optional
 import json
 import os
 import glob
+import psycopg2
 from sqlalchemy import create_engine, text
+from .party_statistics_routes import do_refresh_party_summary
 
 router = APIRouter(prefix="/api/data", tags=["data"])
 
@@ -138,8 +140,17 @@ def get_dict_mappings_for_table(table_name: str, columns: List[str]) -> List[Dic
         if relation_type == "to_dict" and relation_table:
             # 检查字典表是否存在
             if check_dict_table_exists(relation_table):
-                # 获取字典表的字段（code_field用于关联，name_field用于显示）
-                code_field, name_field = get_dict_fields(relation_table)
+                # 优先使用配置中指定的 relation_value_field 和 relation_display_field
+                relation_value_field = field_config.get("relation_value_field")
+                relation_display_field = field_config.get("relation_display_field")
+                
+                if relation_value_field and relation_display_field:
+                    code_field = relation_value_field
+                    name_field = relation_display_field
+                else:
+                    # 获取字典表的字段（code_field用于关联，name_field用于显示）
+                    code_field, name_field = get_dict_fields(relation_table)
+                
                 mapping = {
                     'field': target_field,
                     'table': relation_table,
@@ -349,6 +360,15 @@ async def get_table_schema(table_name: str):
                             "unique": field.get("unique", False),
                             "length": field.get("length", 255),
                         }
+                        
+                        # 传递关联信息，让前端渲染为下拉选择框
+                        rt = field.get("relation_type", "")
+                        if rt and rt != "none":
+                            converted_field["relation_type"] = rt
+                            converted_field["relation_table"] = field.get("relation_table", "")
+                            converted_field["relation_value_field"] = field.get("relation_value_field", "")
+                            converted_field["relation_display_field"] = field.get("relation_display_field", "")
+                        
                         fields.append(converted_field)
                     
                     return {
@@ -658,6 +678,77 @@ async def get_table_data(
                         row_dict[key] = value
                 data.append(row_dict)
 
+            # 职称评定信息表：自动从岗位聘任信息表获取聘用信息
+            if table_name == 'teacher_title_info' and data:
+                try:
+                    # 收集所有身份证号
+                    id_cards = [row.get('id_card_1', '') for row in data if row.get('id_card_1')]
+                    if id_cards:
+                        # 批量查询岗位聘任信息（使用实际列名 post_1, post_level_1）
+                        placeholders = ','.join([f':id_{i}' for i in range(len(id_cards))])
+                        post_params = {f'id_{i}': id_cards[i] for i in range(len(id_cards))}
+                        post_sql = f"""
+                            SELECT t.id_card, t.post_date, t.post_1, t.post_level_1
+                            FROM post_appointment_info t
+                            WHERE t.id_card IN ({placeholders})
+                        """
+                        post_result = conn.execute(text(post_sql), post_params)
+                        
+                        # 构建身份证号->聘用信息的映射
+                        post_info_map = {}
+                        for row in post_result:
+                            id_card = row.id_card
+                            post_date = row.post_date or ''
+                            post_1_code = row.post_1
+                            post_level_1_code = row.post_level_1
+                            
+                            # 格式化日期：2025.04 -> 2025年4月
+                            formatted_date = post_date
+                            if '.' in str(post_date):
+                                parts = str(post_date).split('.')
+                                if len(parts) == 2:
+                                    formatted_date = f"{parts[0]}年{int(parts[1])}月"
+                            
+                            # 查询岗位名称字典
+                            post_name = ''
+                            if post_1_code:
+                                post_name_result = conn.execute(
+                                    text("SELECT post FROM dict_dictionary_personal WHERE id = :code"),
+                                    {"code": post_1_code}
+                                )
+                                post_name_row = post_name_result.fetchone()
+                                post_name = post_name_row[0] if post_name_row else ''
+                            
+                            # 查询岗位等级字典
+                            post_level = ''
+                            if post_level_1_code:
+                                post_level_result = conn.execute(
+                                    text("SELECT post_level FROM dict_grade_dictionary WHERE id = :code"),
+                                    {"code": post_level_1_code}
+                                )
+                                post_level_row = post_level_result.fetchone()
+                                post_level = post_level_row[0] if post_level_row else ''
+                            
+                            # 拼接聘用信息
+                            info_parts = []
+                            if formatted_date:
+                                info_parts.append(formatted_date)
+                            if post_name:
+                                info_parts.append(f"受聘{post_name}")
+                            if post_level:
+                                info_parts.append(post_level)
+                            post_info_map[id_card] = ''.join(info_parts)
+                        
+                        # 填充聘用信息到数据中
+                        for row_data in data:
+                            id_card = row_data.get('id_card_1', '')
+                            if id_card in post_info_map:
+                                row_data['field_157'] = post_info_map[id_card]
+                except Exception as e:
+                    print(f"获取聘用信息失败: {e}")
+                    import traceback
+                    traceback.print_exc()
+
             return {
                 "data": data,
                 "total": total,
@@ -843,6 +934,10 @@ async def create_record(table_name: str, data: Dict[str, Any]):
             if table_name == 'teacher_basic_info':
                 await handle_new_teacher_remarks(original_data, new_id)
             
+            # 如果是党员信息表，自动刷新汇总表
+            if table_name == 'zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao':
+                do_refresh_party_summary()
+            
             return {
                 "status": "success",
                 "message": "创建成功",
@@ -850,6 +945,274 @@ async def create_record(table_name: str, data: Dict[str, Any]):
             }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"创建失败: {str(e)}")
+
+
+def get_next_grade_level(current_level_name: str) -> str:
+    """
+    获取升一级后的岗位等级名称。
+    等级规则：数字越小等级越高。
+    专技系列：四级>五级>六级>七级>八级>九级>十级>11级>12级>13级
+    技工系列：技工一级>技工二级>技工三级>技工四级>技工五级
+    管理系列：八级管理>九级管理
+    """
+    import re
+    
+    if not current_level_name:
+        return None
+    
+    # 中文数字映射
+    chinese_num_map = {
+        '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
+        '六': 6, '七': 7, '八': 8, '九': 9, '十': 10
+    }
+    # 反向映射
+    num_chinese_map = {v: k for k, v in chinese_num_map.items()}
+    
+    def parse_level(name):
+        """解析等级名称为(系列, 数字)"""
+        # 阿拉伯数字: "11级专技", "12级专技", "13级专技"
+        match = re.match(r'(\d+)级(.+)', name)
+        if match:
+            return (match.group(2), int(match.group(1)))
+        # 技工: "技工一级", "技工二级"
+        match = re.match(r'技工(.)级', name)
+        if match:
+            num = chinese_num_map.get(match.group(1))
+            return ('技工', num) if num else (name, 0)
+        # 管理: "八级管理", "九级管理"
+        match = re.match(r'(.)级(.+)', name)
+        if match:
+            num = chinese_num_map.get(match.group(1))
+            series = match.group(2)
+            return (series, num) if num else (name, 0)
+        return (name, 0)
+    
+    def format_level(series, num):
+        """根据系列和数字格式化等级名称"""
+        if series == '技工':
+            chinese = num_chinese_map.get(num, str(num))
+            return f"技工{chinese}级"
+        elif series in ('管理',):
+            chinese = num_chinese_map.get(num, str(num))
+            return f"{chinese}级{series}"
+        else:
+            # 专技系列
+            if num <= 10:
+                chinese = num_chinese_map.get(num, str(num))
+                return f"{chinese}级{series}"
+            else:
+                return f"{num}级{series}"
+    
+    current_series, current_num = parse_level(current_level_name)
+    if current_num == 0:
+        return None
+    
+    # 升一级：数字减1
+    next_num = current_num - 1
+    if next_num < 1:
+        return None  # 已经是最高的了
+    
+    return format_level(current_series, next_num)
+
+
+async def handle_title_change_sync(record_id: int, new_professional_title: str, new_obtain_date: str, new_pi_zhun_wen_hao: str = None):
+    """
+    职称评定信息表更新后，联动岗位聘任信息表。
+    1. 始终同步：专业技术资格、取得时间、批准文号 → 岗位聘任信息表
+    2. 条件触发：如果取得时间 > 现岗位聘用日期，则更新拟聘岗位
+    """
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 1. 获取职称评定信息表中的身份证号和取得时间
+        cursor.execute(
+            "SELECT id_card_1, name, time_2 FROM teacher_title_info WHERE id = %s",
+            (record_id,)
+        )
+        title_row = cursor.fetchone()
+        if not title_row:
+            print(f"[职称联动] 未找到职称评定记录 id={record_id}")
+            return
+        
+        id_card = title_row[0]
+        teacher_name = title_row[1]
+        obtain_date = new_obtain_date if new_obtain_date else title_row[2]
+        
+        if not id_card:
+            print(f"[职称联动] 教师 {teacher_name} 无身份证号，跳过联动")
+            return
+        
+        # 2. 在岗位聘任信息表中查找该教师
+        cursor.execute(
+            "SELECT id, post_date, post_level_1 FROM post_appointment_info WHERE id_card = %s",
+            (id_card,)
+        )
+        post_row = cursor.fetchone()
+        if not post_row:
+            print(f"[职称联动] 教师 {teacher_name}({id_card}) 在岗位聘任信息表中无记录，跳过联动")
+            return
+        
+        post_id = post_row[0]
+        post_date = post_row[1]
+        post_level_1_code = post_row[2]
+        
+        # ====== 始终同步：三个基本字段（专业技术资格、取得时间、批准文号） ======
+        basic_update_fields = []
+        basic_update_params = []
+        
+        if new_professional_title:
+            basic_update_fields.append("professional_title = %s")
+            basic_update_params.append(new_professional_title)
+        
+        if new_obtain_date:
+            basic_update_fields.append("date_5 = %s")
+            basic_update_params.append(new_obtain_date)
+        
+        if new_pi_zhun_wen_hao:
+            basic_update_fields.append("pi_zhun_wen_hao = %s")
+            basic_update_params.append(new_pi_zhun_wen_hao)
+        
+        if basic_update_fields:
+            basic_update_params.append(post_id)
+            basic_sql = f"UPDATE post_appointment_info SET {', '.join(basic_update_fields)} WHERE id = %s"
+            cursor.execute(basic_sql, basic_update_params)
+            conn.commit()
+            print(f"[职称联动] 已同步基本字段到岗位聘任信息表: 教师={teacher_name}")
+        
+        # ====== 条件触发：拟聘逻辑（仅在取得时间 > 聘用日期时触发） ======
+        if not post_date:
+            print(f"[职称联动] 教师 {teacher_name} 无现岗位聘用日期，跳过拟聘逻辑")
+            return
+        
+        if not obtain_date:
+            print(f"[职称联动] 教师 {teacher_name} 无取得时间，跳过拟聘逻辑")
+            return
+        
+        # 3. 比对取得时间与现岗位聘用日期
+        # 日期格式可能是 "2025.04" 或 "2025年4月" 或 "2025-04"
+        # 统一转换为可比较的格式
+        def normalize_date(date_str):
+            """将日期字符串标准化为 (year, month) 元组用于比较"""
+            import re
+            if not date_str:
+                return (0, 0)
+            date_str = str(date_str).strip()
+            # 匹配 YYYY.MM 格式
+            match = re.match(r'(\d{4})\.(\d{1,2})', date_str)
+            if match:
+                return (int(match.group(1)), int(match.group(2)))
+            # 匹配 YYYY年MM月 格式
+            match = re.match(r'(\d{4})年(\d{1,2})月', date_str)
+            if match:
+                return (int(match.group(1)), int(match.group(2)))
+            # 匹配 YYYY-MM 格式
+            match = re.match(r'(\d{4})-(\d{1,2})', date_str)
+            if match:
+                return (int(match.group(1)), int(match.group(2)))
+            # 匹配 YYYY/MM 格式
+            match = re.match(r'(\d{4})/(\d{1,2})', date_str)
+            if match:
+                return (int(match.group(1)), int(match.group(2)))
+            return (0, 0)
+        
+        obtain_tuple = normalize_date(obtain_date)
+        post_tuple = normalize_date(post_date)
+        
+        print(f"[职称联动] 教师 {teacher_name}: 取得时间={obtain_date}({obtain_tuple}), 聘用日期={post_date}({post_tuple})")
+        
+        if obtain_tuple <= post_tuple:
+            print(f"[职称联动] 取得时间({obtain_date})不晚于聘用日期({post_date})，不更新拟聘岗位")
+            return
+        
+        # 4. 取得时间在聘用日期之后，更新拟聘岗位
+        # 获取现受聘岗位等级名称
+        post_level_name = None
+        if post_level_1_code:
+            cursor.execute(
+                "SELECT post_level FROM dict_grade_dictionary WHERE id = %s",
+                (post_level_1_code,)
+            )
+            level_row = cursor.fetchone()
+            if level_row:
+                post_level_name = level_row[0]
+        
+        # 计算升一级后的等级
+        next_level_name = get_next_grade_level(post_level_name) if post_level_name else None
+        
+        print(f"[职称联动] 教师 {teacher_name}: 现等级={post_level_name}, 升一级={next_level_name}, 新职称={new_professional_title}")
+        
+        # 查询升一级后的等级在字典中的ID
+        next_level_code = None
+        if next_level_name:
+            cursor.execute(
+                "SELECT id FROM dict_grade_dictionary WHERE post_level = %s",
+                (next_level_name,)
+            )
+            level_row = cursor.fetchone()
+            if level_row:
+                next_level_code = str(level_row[0])
+        
+        # 5. 更新岗位聘任信息表的拟聘字段
+        update_fields = []
+        update_params = []
+        
+        # 拟聘用岗位名称：从 title_info 字典查找名称
+        if new_professional_title:
+            # new_professional_title 是字典代码（如 "2"），需要查找对应的名称
+            cursor.execute(
+                "SELECT professional_title_2 FROM title_info WHERE CAST(id AS TEXT) = %s",
+                (str(new_professional_title),)
+            )
+            title_name_row = cursor.fetchone()
+            if title_name_row:
+                update_fields.append("post_3 = %s")
+                update_params.append(title_name_row[0])
+            else:
+                # 如果找不到，直接使用原值
+                update_fields.append("post_3 = %s")
+                update_params.append(new_professional_title)
+        
+        # 拟聘用岗位等级：升一级
+        if next_level_code:
+            update_fields.append("post_level_2 = %s")
+            update_params.append(next_level_code)
+        
+        # 拟聘用日期：现岗位聘用日期 + 3年
+        proposed_date = None
+        if post_date:
+            post_tuple = normalize_date(post_date)
+            if post_tuple[0] > 0:
+                # 年份+3，月份不变
+                proposed_date = f"{post_tuple[0] + 3}.{post_tuple[1]:02d}"
+                update_fields.append("date_4 = %s")
+                update_params.append(proposed_date)
+        
+        if update_fields:
+            update_params.append(post_id)
+            update_sql = f"UPDATE post_appointment_info SET {', '.join(update_fields)} WHERE id = %s"
+            cursor.execute(update_sql, update_params)
+            conn.commit()
+            print(f"[职称联动] 已更新教师 {teacher_name} 的拟聘岗位: 名称={new_professional_title}, 等级={next_level_name}({next_level_code}), 拟聘日期={proposed_date}(现聘日期{post_date}+3年)")
+        else:
+            print(f"[职称联动] 教师 {teacher_name} 无需更新的字段")
+    
+    except Exception as e:
+        print(f"[职称联动] 联动失败: {e}")
+        import traceback
+        traceback.print_exc()
+        if conn:
+            try:
+                conn.rollback()
+            except:
+                pass
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
 async def handle_post_change_remarks(record_id: int, new_post_id: int):
@@ -1248,6 +1611,15 @@ async def update_record(table_name: str, record_id: int, data: Dict[str, Any]):
         if table_name == 'teacher_basic_info' and '任职状态' in data:
             await handle_status_change_remarks(record_id, data.get('任职状态'))
         
+        # 如果是职称评定信息表(teacher_title_info)，更新时联动岗位聘任信息表
+        if table_name == 'teacher_title_info' and 'professional_title_1' in data:
+            await handle_title_change_sync(
+                record_id,
+                data.get('professional_title_1'),
+                data.get('time_2'),
+                data.get('pi_zhun_wen_hao')
+            )
+        
         with engine.connect() as conn:
             # 构建 UPDATE 语句
             set_clauses = []
@@ -1269,6 +1641,46 @@ async def update_record(table_name: str, record_id: int, data: Dict[str, Any]):
             conn.commit()
             
             if result.rowcount > 0:
+                # 如果是党员信息表，自动刷新汇总表
+                if table_name == 'zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao':
+                    do_refresh_party_summary()
+                
+                # 如果是教师基础信息表，检查任职状态变更是否涉及党组织关系变动
+                if table_name == 'teacher_basic_info' and '任职状态' in data:
+                    new_status = data.get('任职状态')
+                    # 触发党组织关系变动的状态列表
+                    party_relation_trigger_statuses = ['调出', '调离', '去世', '辞职']
+                    if new_status in party_relation_trigger_statuses:
+                        # 查询该教师是否在党员信息表中
+                        teacher_info = conn.execute(
+                            text('SELECT "姓名", "身份证号码" FROM teacher_basic_info WHERE id = :tid'),
+                            {"tid": record_id}
+                        ).fetchone()
+                        
+                        if teacher_info:
+                            teacher_name = teacher_info[0]
+                            teacher_id_card = teacher_info[1]
+                            
+                            # 查询党员信息表
+                            party_member = conn.execute(
+                                text('SELECT id, name FROM "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao" WHERE id_card = :id_card'),
+                                {"id_card": teacher_id_card}
+                            ).fetchone()
+                            
+                            if party_member:
+                                return {
+                                    "status": "success",
+                                    "message": "更新成功",
+                                    "updated_rows": result.rowcount,
+                                    "requires_party_relation_update": True,
+                                    "teacher_id": record_id,
+                                    "teacher_name": teacher_name,
+                                    "teacher_id_card": teacher_id_card,
+                                    "party_member_id": party_member[0],
+                                    "party_member_name": party_member[1],
+                                    "new_employment_status": new_status
+                                }
+                
                 return {
                     "status": "success",
                     "message": "更新成功",
@@ -1292,6 +1704,10 @@ async def delete_record(table_name: str, record_id: int):
             conn.commit()
             
             if result.rowcount > 0:
+                # 如果是党员信息表，自动刷新汇总表
+                if table_name == 'zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao':
+                    do_refresh_party_summary()
+                
                 return {
                     "status": "success",
                     "message": "删除成功",
@@ -1303,6 +1719,62 @@ async def delete_record(table_name: str, record_id: int):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"删除失败: {str(e)}")
+
+
+@router.post("/party-relation-status/update")
+async def update_party_relation_status(data: Dict[str, Any]):
+    """
+    更新党员的组织关系状态，并自动刷新汇总表
+    请求参数:
+        - party_member_id: 党员信息表中的记录ID
+        - new_status: 新的组织关系状态（如"组织关系转出"、"去世"等）
+        - teacher_id_card: 教师身份证号码（备用匹配方式）
+    """
+    try:
+        party_member_id = data.get('party_member_id')
+        new_status = data.get('new_status')
+        teacher_id_card = data.get('teacher_id_card')
+        
+        if not new_status:
+            raise HTTPException(status_code=400, detail="组织关系状态不能为空")
+        
+        with engine.connect() as conn:
+            # 如果有party_member_id，直接用ID更新
+            if party_member_id:
+                update_sql = text(
+                    'UPDATE "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao" '
+                    'SET organizational_relationship_status = :status WHERE id = :pid'
+                )
+                result = conn.execute(update_sql, {"status": new_status, "pid": party_member_id})
+            elif teacher_id_card:
+                # 通过身份证号码匹配
+                update_sql = text(
+                    'UPDATE "zao_yang_shi_tai_ping_zhen_zhong_xin_xue_xiao_dang_yuan_xin_xi_biao" '
+                    'SET organizational_relationship_status = :status WHERE id_card = :id_card'
+                )
+                result = conn.execute(update_sql, {"status": new_status, "id_card": teacher_id_card})
+            else:
+                raise HTTPException(status_code=400, detail="缺少party_member_id或teacher_id_card参数")
+            
+            conn.commit()
+            
+            if result.rowcount > 0:
+                # 自动刷新党员信息汇总表
+                refresh_result = do_refresh_party_summary()
+                return {
+                    "status": "success",
+                    "message": "组织关系状态更新成功，汇总表已自动刷新",
+                    "updated_rows": result.rowcount,
+                    "refresh_result": refresh_result
+                }
+            else:
+                raise HTTPException(status_code=404, detail="未找到对应的党员记录")
+                
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"更新组织关系状态失败: {e}")
+        raise HTTPException(status_code=500, detail=f"更新组织关系状态失败: {str(e)}")
 
 
 @router.get("/ui-components/{table_name}")

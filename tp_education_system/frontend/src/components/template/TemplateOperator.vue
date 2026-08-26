@@ -24,6 +24,7 @@
             <el-dropdown-item command="pdf">PDF格式</el-dropdown-item>
             <el-dropdown-item command="word">Word格式</el-dropdown-item>
             <el-dropdown-item command="template">模板</el-dropdown-item>
+            <el-dropdown-item command="print">打印</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -140,6 +141,7 @@
       </div>
       <el-table v-else :data="fileSelectRecords" style="width:100%" max-height="350">
         <el-table-column prop="保存时间" label="保存时间" width="160" />
+        <el-table-column prop="文件名" label="文件名" min-width="200" show-overflow-tooltip />
         <el-table-column prop="年月" label="年月" width="100" />
         <el-table-column prop="单位名称" label="单位" min-width="120" />
         <el-table-column label="操作" width="280">
@@ -152,6 +154,9 @@
             </el-button>
             <el-button v-if="fileSelectMode === 'excel' || fileSelectMode === 'pdf'" size="small" type="warning" @click="downloadSelectedFile(scope.row, 'PDF')" :disabled="!scope.row.有PDF">
               PDF下载
+            </el-button>
+            <el-button v-if="fileSelectMode === 'print'" size="small" type="danger" @click="printSelectedFile(scope.row)">
+              打印
             </el-button>
           </template>
         </el-table-column>
@@ -686,35 +691,39 @@ function printPreview() {
     ElMessage.warning('没有可打印的内容')
     return
   }
-  // 在新窗口中打开HTML预览并触发打印
-  const printWindow = window.open('', '_blank', 'width=900,height=700')
+  const fullHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>打印预览</title>
+  <style>
+    body { margin: 20px; }
+    @media print {
+      body { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  ${fillResultHtml.value}
+</body>
+</html>`
+
+  // iframe 的 contentDocument.write() 写入的内容，浏览器打印预览无法渲染
+  // 必须使用 window.open 创建顶层窗口，document.write 写入同源内容，打印预览才能正常显示
+  // 窗口定位到屏幕外，用户看不到，打印完成后自动关闭
+  const printWindow = window.open('about:blank', '_blank', 'left=-9999,top=-9999,width=800,height=600')
   if (!printWindow) {
     ElMessage.warning('请允许弹出窗口以使用打印功能')
     return
   }
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <title>打印预览</title>
-      <style>
-        body { margin: 20px; }
-        @media print {
-          body { margin: 0; }
-        }
-      </style>
-    </head>
-    <body>
-      ${fillResultHtml.value}
-    </body>
-    </html>
-  `)
+  printWindow.document.write(fullHtml)
   printWindow.document.close()
-  // 等待内容渲染后触发打印
-  setTimeout(() => {
-    printWindow.print()
-  }, 500)
+  printWindow.onload = () => {
+    setTimeout(() => {
+      printWindow.print()
+      printWindow.close()
+    }, 300)
+  }
 }
 
 function handleExportAction(command) {
@@ -735,6 +744,9 @@ function handleExportAction(command) {
       break
     case 'template':
       downloadTemplateFile(row)
+      break
+    case 'print':
+      openFileSelectDialog(row, 'print')
       break
   }
 }
@@ -795,6 +807,9 @@ async function openFileSelectDialog(row, mode) {
   } else if (mode === 'word') {
     fileSelectTitle.value = '选择要导出的Word文件'
     fileSelectActionLabel.value = '导出Word'
+  } else if (mode === 'print') {
+    fileSelectTitle.value = '选择要打印的文件'
+    fileSelectActionLabel.value = '打印'
   } else {
     fileSelectTitle.value = '选择要导出的Excel文件'
     fileSelectActionLabel.value = '导出Excel'
@@ -861,6 +876,72 @@ function downloadSelectedFile(record, format = 'Word') {
     link.click()
     document.body.removeChild(link)
     ElMessage.success('PDF下载成功')
+  }
+}
+
+async function printSelectedFile(record) {
+  fileSelectDialogVisible.value = false
+  try {
+    const response = await axios.get(`${API_BASE}/history-file/${record.ID}?format=HTML`, {
+      responseType: 'text'
+    })
+    const htmlContent = response.data
+    if (!htmlContent || htmlContent.trim().length === 0) {
+      ElMessage.warning('该记录无HTML文件，请先保存后重试')
+      return
+    }
+
+    // 提取 body 内容和样式，统一包裹在干净文档结构中
+    let bodyContent = htmlContent
+    let extraStyles = ''
+
+    const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*)<\/body>/i)
+    if (bodyMatch) {
+      bodyContent = bodyMatch[1]
+    }
+
+    const styleMatches = htmlContent.match(/<style[^>]*>[\s\S]*?<\/style>/gi)
+    if (styleMatches) {
+      extraStyles = styleMatches.join('\n')
+    }
+
+    const fullHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>打印预览</title>
+  ${extraStyles}
+  <style>
+    body { margin: 20px; }
+    @media print {
+      body { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  ${bodyContent}
+</body>
+</html>`
+
+    // iframe 的 contentDocument.write() 写入的内容，浏览器打印预览无法渲染
+    // 必须使用 window.open 创建顶层窗口，document.write 写入同源内容，打印预览才能正常显示
+    // 窗口定位到屏幕外，用户看不到，打印完成后自动关闭
+    const printWindow = window.open('about:blank', '_blank', 'left=-9999,top=-9999,width=800,height=600')
+    if (!printWindow) {
+      ElMessage.warning('请允许弹出窗口以使用打印功能')
+      return
+    }
+    printWindow.document.write(fullHtml)
+    printWindow.document.close()
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print()
+        printWindow.close()
+      }, 300)
+    }
+    ElMessage.success('正在打开打印对话框...')
+  } catch (error) {
+    ElMessage.error('获取打印内容失败: ' + (error.response?.data?.detail || error.message))
   }
 }
 

@@ -198,6 +198,22 @@
                   :disabled="isUpdating"
                   @update:model-value="(val) => handlePostTimeChange(row, val)"
                 />
+                <!-- 通用字典关联字段 - 下拉菜单（根据 relation_type 配置动态渲染） -->
+                <el-select
+                  v-else-if="field.relation_type === 'to_dict'"
+                  :model-value="row[field.name]"
+                  size="small"
+                  style="width: 100%"
+                  :disabled="isUpdating"
+                  @change="(val) => handleDictFieldChange(row, field.name, val)"
+                >
+                  <el-option
+                    v-for="option in (dictOptions[field.name] || [])"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
                 <!-- 通用字典关联显示 - 如果存在 {字段名}_name 则显示中文名称 -->
                 <span v-else-if="row[getDictAlias(field.name)]">
                   {{ row[getDictAlias(field.name)] }}
@@ -311,6 +327,20 @@
             placeholder="选择月份"
             style="width: 100%"
           />
+          <!-- 通用字典关联字段 - 下拉菜单（根据 relation_type 配置动态渲染） -->
+          <el-select
+            v-else-if="field.relation_type === 'to_dict'"
+            v-model="formData[field.name]"
+            :placeholder="`请选择${field.label || field.source_name || field.name}`"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="option in (dictOptions[field.name] || [])"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
+          </el-select>
           <el-input
             v-else-if="field.type === 'VARCHAR' || field.type === 'TEXT'"
             v-model="formData[field.name]"
@@ -500,6 +530,45 @@
       </template>
     </el-dialog>
 
+    <!-- 党组织关系状态变更弹窗 -->
+    <el-dialog
+      v-model="partyRelationDialogVisible"
+      title="党组织关系状态变更"
+      width="500px"
+      destroy-on-close
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-alert
+        :title="`教师「${partyRelationData.teacher_name}」的任职状态已变更为「${partyRelationData.new_employment_status}」，该教师为党员，请选择其组织关系变动：`"
+        type="warning"
+        :closable="false"
+        show-icon
+      />
+      <el-form style="margin-top: 20px;">
+        <el-form-item label="组织关系状态" required>
+          <el-select
+            v-model="partyRelationSelectedStatus"
+            placeholder="请选择组织关系状态"
+            style="width: 100%"
+          >
+            <el-option label="正常" value="正常" />
+            <el-option label="去世" value="去世" />
+            <el-option label="组织关系转出" value="组织关系转出" />
+            <el-option label="组织关系挂靠" value="组织关系挂靠" />
+            <el-option label="开除党籍" value="开除党籍" />
+            <el-option label="退党/自行脱党" value="退党/自行脱党" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="handlePartyRelationSkip">暂不处理</el-button>
+        <el-button type="primary" @click="handlePartyRelationConfirm" :disabled="!partyRelationSelectedStatus">
+          确定保存
+        </el-button>
+      </template>
+    </el-dialog>
+
     <!-- 退休计算弹窗 -->
     <RetirementCalculatorDialog
       v-model="calculatorDialogVisible"
@@ -643,6 +712,9 @@ const postNameOptions = ref<any[]>([])
 
 // 岗位等级选项（从字典动态加载）
 const postLevelOptions = ref<any[]>([])
+
+// 通用字典选项（key: 字段名, value: 选项列表，根据字段的 relation_type 配置动态加载）
+const dictOptions = ref<Record<string, any[]>>({})
 
 // 表格数据
 const tableData = ref<any[]>([])
@@ -833,6 +905,52 @@ const handleCalculateRetirement = (row: any) => {
 // 退休计算保存完成
 const handleCalculatorSaved = () => {
   handleRefresh() // 刷新数据
+}
+
+// 党组织关系状态变更相关
+const partyRelationDialogVisible = ref(false)
+const partyRelationData = ref<Record<string, any>>({})
+const partyRelationSelectedStatus = ref('')
+
+// 处理党组织关系状态确认保存
+const handlePartyRelationConfirm = async () => {
+  if (!partyRelationSelectedStatus.value) {
+    ElMessage.warning('请选择组织关系状态')
+    return
+  }
+
+  try {
+    const response = await fetch('/api/data/party-relation-status/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        party_member_id: partyRelationData.value.party_member_id,
+        teacher_id_card: partyRelationData.value.teacher_id_card,
+        new_status: partyRelationSelectedStatus.value
+      })
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      ElMessage.success(`组织关系状态已更新为「${partyRelationSelectedStatus.value}」，汇总表已自动刷新`)
+    } else {
+      const error = await response.json()
+      ElMessage.error(error.detail || '更新组织关系状态失败')
+    }
+  } catch (error) {
+    console.error('更新组织关系状态失败:', error)
+    ElMessage.error('更新组织关系状态失败')
+  } finally {
+    partyRelationDialogVisible.value = false
+    partyRelationSelectedStatus.value = ''
+  }
+}
+
+// 暂不处理党组织关系状态
+const handlePartyRelationSkip = () => {
+  partyRelationDialogVisible.value = false
+  partyRelationSelectedStatus.value = ''
+  ElMessage.info('已跳过党组织关系状态更新，可稍后在党员信息表中手动修改')
 }
 
 // 获取当前日期
@@ -1074,6 +1192,51 @@ const loadPostLevelOptions = async () => {
   } catch (error) {
     console.error('加载岗位等级字典失败:', error)
     postLevelOptions.value = []
+  }
+}
+
+// 加载通用字典选项（根据字段的 relation_type 配置动态加载字典数据）
+const loadDictOptions = async () => {
+  if (!tableSchema.value?.fields) return
+  
+  // 找出所有配置了 relation_type === 'to_dict' 的字段
+  const dictFields = tableSchema.value.fields.filter(
+    (f: any) => f.relation_type === 'to_dict' && f.relation_table
+  )
+  
+  if (dictFields.length === 0) return
+  
+  console.log(`发现 ${dictFields.length} 个字典关联字段，开始加载字典选项...`)
+  
+  for (const field of dictFields) {
+    const dictTable = field.relation_table
+    const displayField = field.relation_display_field || 'name'
+    const valueField = field.relation_value_field || 'code'
+    
+    try {
+      const response = await fetch(`/api/data/${dictTable}?size=10000`)
+      if (response.ok) {
+        const result = await response.json()
+        if (result.data && Array.isArray(result.data)) {
+          dictOptions.value[field.name] = result.data
+            .filter((item: any) => item[valueField] !== null && item[valueField] !== undefined)
+            .map((item: any) => ({
+            label: item[displayField] !== undefined ? item[displayField] : item[valueField],
+            value: String(item[valueField])
+          }))
+          console.log(`  ✓ 字典选项 [${field.label || field.name}] (${dictTable}): ${dictOptions.value[field.name].length} 条`)
+        } else {
+          dictOptions.value[field.name] = []
+          console.warn(`  ⚠ 字典表 [${dictTable}] 无数据`)
+        }
+      } else {
+        console.error(`  ✗ 加载字典表 [${dictTable}] 失败: HTTP ${response.status}`)
+        dictOptions.value[field.name] = []
+      }
+    } catch (error) {
+      console.error(`  ✗ 加载字典选项失败 [${field.name}]:`, error)
+      dictOptions.value[field.name] = []
+    }
   }
 }
 
@@ -1499,6 +1662,21 @@ const handleSubmit = async () => {
     })
 
     if (response.ok) {
+      const result = await response.json()
+
+      // 检查是否需要党组织关系状态变更
+      if (result.requires_party_relation_update) {
+        // 先关闭编辑对话框
+        dialogVisible.value = false
+        // 存储数据并打开党组织关系状态弹窗
+        partyRelationData.value = result
+        partyRelationSelectedStatus.value = ''
+        partyRelationDialogVisible.value = true
+        // 刷新数据
+        loadData()
+        return
+      }
+
       ElMessage.success(isEditing.value ? '更新成功' : '创建成功')
 
       // 如果状态变为退休，触发清单创建
@@ -1569,8 +1747,41 @@ const handleStatusChange = async (row: any, newStatus: string) => {
         }
       )
 
+      let transferDirection = null
+
+      // 如果是调出，需要选择调出去向
+      if (newStatus === '调出') {
+        try {
+          transferDirection = await new Promise<string>((resolve, reject) => {
+            ElMessageBox.confirm(
+              `请选择 ${teacherName} 的调出去向：`,
+              '选择调出去向',
+              {
+                confirmButtonText: '市直单位',
+                cancelButtonText: '外乡镇',
+                distinguishCancelAndClose: true,
+                type: 'info',
+                closeOnClickModal: false,
+                showClose: false
+              }
+            ).then(() => {
+              resolve('市直单位')
+            }).catch((action: string) => {
+              if (action === 'cancel') {
+                resolve('外乡镇')
+              } else {
+                reject('cancel')
+              }
+            })
+          })
+        } catch {
+          // 用户取消选择
+          return
+        }
+      }
+
       // 先调用API更新状态并触发清单
-      await updateTeacherStatus(teacherId, teacherName, oldStatus, newStatus, row)
+      await updateTeacherStatus(teacherId, teacherName, oldStatus, newStatus, row, transferDirection)
     } catch (error: any) {
       // 用户取消，不做任何操作
       if (error !== 'cancel') {
@@ -1582,19 +1793,25 @@ const handleStatusChange = async (row: any, newStatus: string) => {
 }
 
 // 更新教师状态
-const updateTeacherStatus = async (teacherId: number, teacherName: string, oldStatus: string, newStatus: string, row: any) => {
+const updateTeacherStatus = async (teacherId: number, teacherName: string, oldStatus: string, newStatus: string, row: any, transferDirection: string | null = null) => {
   try {
-    console.log('调用状态变更API:', { teacherId, teacherName, oldStatus, newStatus })
+    console.log('调用状态变更API:', { teacherId, teacherName, oldStatus, newStatus, transferDirection })
+    
+    const body: any = {
+      teacher_id: teacherId,
+      teacher_name: teacherName,
+      source_status: oldStatus,
+      target_status: newStatus
+    }
+    
+    if (transferDirection) {
+      body.transfer_direction = transferDirection
+    }
     
     const response = await fetch('/api/status-change/process', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        teacher_id: teacherId,
-        teacher_name: teacherName,
-        source_status: oldStatus,
-        target_status: newStatus
-      })
+      body: JSON.stringify(body)
     })
 
     console.log('API响应状态:', response.status)
@@ -1613,9 +1830,29 @@ const updateTeacherStatus = async (teacherId: number, teacherName: string, oldSt
         ElMessage.success('状态更新成功')
       }
 
+      // 显示标签同步结果
+      if (result.tag_sync) {
+        const sync = result.tag_sync
+        if (sync.actions && sync.actions.length > 0) {
+          sync.actions.forEach((action: string) => {
+            ElMessage.info(action)
+          })
+        }
+        if (sync.needs_manual) {
+          ElMessage.warning('部分标签需要手动逐步清理，请关注后续提示')
+        }
+      }
+
       // 如果创建了清单，显示提示
       if (result.created_checklists && result.created_checklists.length > 0) {
         ElMessage.success(`已生成业务清单，共${result.created_checklists[0].total_tasks}项任务`)
+      }
+
+      // 检查是否需要党组织关系状态变更
+      if (result.requires_party_relation_update) {
+        partyRelationData.value = result
+        partyRelationSelectedStatus.value = ''
+        partyRelationDialogVisible.value = true
       }
 
       // 刷新数据
@@ -1816,6 +2053,73 @@ const handlePostChange = async (row: any, fieldName: string, newValue: string) =
   }, 100)
 }
 
+// 处理通用字典字段变更（表格内联编辑）
+const handleDictFieldChange = async (row: any, fieldName: string, newValue: string) => {
+  if (isUpdating.value) return
+  isUpdating.value = true
+  
+  const oldValue = row[fieldName]
+  const recordId = row.id
+  const teacherName = row['name'] || row['姓名'] || recordId
+  
+  if (newValue === oldValue) {
+    isUpdating.value = false
+    return
+  }
+  
+  const field = tableSchema.value?.fields?.find((f: any) => f.name === fieldName)
+  const fieldLabel = field?.label || field?.source_name || fieldName
+  
+  let oldValueDisplay = oldValue || '空'
+  let newValueDisplay = newValue || '空'
+  
+  const options = dictOptions.value[fieldName] || []
+  const oldOption = options.find((opt: any) => String(opt.value) === String(oldValue))
+  const newOption = options.find((opt: any) => String(opt.value) === String(newValue))
+  if (oldOption) oldValueDisplay = oldOption.label
+  if (newOption) newValueDisplay = newOption.label
+  
+  setTimeout(async () => {
+    try {
+      await ElMessageBox.confirm(
+        `确定要将 ${teacherName} 的"${fieldLabel}"从 "${oldValueDisplay}" 变更为 "${newValueDisplay}" 吗？`,
+        '确认修改',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+      
+      const response = await fetch(`/api/data/${tableName.value}/${recordId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [fieldName]: newValue })
+      })
+      
+      if (response.ok) {
+        ElMessage.success('修改成功')
+        await loadData()
+        await nextTick()
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || '更新失败')
+      }
+    } catch (error: any) {
+      if (error !== 'cancel') {
+        console.error('字段变更失败:', error)
+        ElMessage.error(`修改失败: ${error.message || '未知错误'}`)
+        await loadData()
+        await nextTick()
+      }
+    } finally {
+      setTimeout(() => {
+        isUpdating.value = false
+      }, 1000)
+    }
+  }, 100)
+}
+
 // 专用按钮事件
 const handleDynamicAction = (action: string, data?: any) => {
   switch (action) {
@@ -1870,6 +2174,7 @@ onMounted(async () => {
   await loadStatusOptions()  // 加载任职状态字典
   await loadPostNameOptions()  // 加载岗位名称字典
   await loadPostLevelOptions()  // 加载岗位等级字典
+  await loadDictOptions()  // 加载通用字典选项（根据 relation_type 配置）
   await loadData()  // 然后加载数据
   
   // 检查是否有预填充参数（从清单跳转过来）
