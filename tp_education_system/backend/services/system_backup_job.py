@@ -190,7 +190,16 @@ def system_backup_job():
         errors.append(f"Git status 失败: {git_status['stderr']}")
 
     # 3. Git 推送到远程
-    push_result = _run_git(["push", "origin", "main"], project_root)
+    github_token = _get_github_token()
+    if github_token:
+        # 使用token认证推送：将token嵌入remote URL
+        push_result = _run_git([
+            "push",
+            f"https://{github_token}@github.com/kaixinone1/erp_education_system",
+            "main"
+        ], project_root)
+    else:
+        push_result = _run_git(["push", "origin", "main"], project_root)
     if push_result["success"]:
         logger.info("Git 推送成功")
     else:
