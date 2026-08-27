@@ -18,14 +18,14 @@
       "table_name": "dict_education_level_dictionary",
       "chinese_name": "学历字典",
       "description": "学历层次字典表",
-      "value_field": "education",
+      "value_field": "id",
       "label_field": "education"
     },
     {
       "table_name": "dict_education_type_dictionary",
       "chinese_name": "学历类型字典",
       "description": "学历类型字典表",
-      "value_field": "education_type",
+      "value_field": "id",
       "label_field": "education_type"
     },
     {

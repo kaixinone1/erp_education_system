@@ -1,0 +1,19 @@
+{
+  "应用名称": "ERP系统通知",
+  "App ID": "cli_aa040a65ee78dbc3",
+  "App Secret": "UMcqx0Cc6c2NpsDGuUhWwgbpKFHaukP6",
+  "通知用户": [
+    {
+      "姓名": "高书兵",
+      "邮箱": "kaixinone1@163.com",
+      "open_id": "ou_7ed63ccff0c699d4af034b4892be1b0b"
+    }
+  ],
+  "启用通知": true,
+  "通知场景": {
+    "备份成功": true,
+    "备份失败": true,
+    "Git推送失败": true
+  },
+  "描述": "用于ERP系统备份状态通知，数据库备份成功或失败时向管理员发送飞书消息提醒"
+}

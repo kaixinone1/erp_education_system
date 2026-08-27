@@ -56,7 +56,7 @@
       "description": "",
       "confidence": "low",
       "relation_type": "to_dict",
-      "relation_table": "dict_education_dictionary",
+      "relation_table": "dict_education_type_dictionary",
       "relation_display_field": "education_type",
       "value_mapping": {}
     },

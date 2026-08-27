@@ -231,87 +231,58 @@
         <div v-for="cat in tagCategories" :key="cat.category" class="tag-category">
           <div class="category-header">
             <span class="category-name">{{ cat.category }}</span>
-            <el-tag size="small" :type="cat.selection_type === 'single' ? 'warning' : cat.selection_type === 'mutual_exclusive_groups' ? 'danger' : 'info'">
-              {{ cat.selection_type === 'single' ? '单选' : cat.selection_type === 'mutual_exclusive_groups' ? '分组互斥' : cat.selection_type === 'conditional' ? '条件' : '多选' }}
+            <el-tag size="small" :type="cat.selection_type === 'single' ? 'warning' : cat.mutual_exclusive ? 'danger' : 'info'">
+              {{ cat.selection_type === 'single' ? '单选' : cat.mutual_exclusive ? '互斥' : cat.selection_type === 'conditional' ? '条件' : '多选' }}
             </el-tag>
             <span class="category-desc">{{ cat.description }}</span>
           </div>
 
           <!-- 普通类型（多选/单选/条件） -->
-          <template v-if="cat.selection_type !== 'mutual_exclusive_groups'">
-            <template v-if="cat.selection_type === 'single'">
-              <!-- 单选：使用 el-radio-group -->
-              <el-radio-group 
-                :model-value="getSelectedInCategory(cat)"
-                @update:model-value="(val: number) => handleSingleSelect(cat, val)"
-                class="tag-group"
+          <template v-if="cat.selection_type === 'single'">
+            <!-- 单选：使用 el-radio-group -->
+            <el-radio-group 
+              :model-value="getSingleSelected(cat)"
+              @update:model-value="(val: number) => handleSingleSelect(cat, val)"
+              class="tag-group"
+            >
+              <el-radio 
+                v-for="tag in cat.tags" 
+                :key="tag.id" 
+                :value="tag.id"
+                border
+                class="tag-radio"
               >
-                <el-radio 
-                  v-for="tag in cat.tags" 
-                  :key="tag.id" 
-                  :value="tag.id"
-                  border
-                  class="tag-radio"
-                >
-                  {{ tag.name }}
-                </el-radio>
-              </el-radio-group>
-              <el-button 
-                v-if="getSelectedInCategory(cat).length > 0"
-                size="small" 
-                type="danger" 
-                text
-                @click="clearCategory(cat)"
-                style="margin-top: 4px;"
-              >
-                清除选择
-              </el-button>
-            </template>
-            <template v-else>
-              <!-- 多选/条件：使用 el-checkbox-group -->
-              <el-checkbox-group 
-                :model-value="getSelectedInCategory(cat)"
-                @update:model-value="(vals: number[]) => handleMultiSelect(cat, vals)"
-                class="tag-group"
-              >
-                <el-checkbox
-                  v-for="tag in cat.tags"
-                  :key="tag.id"
-                  :label="tag.id"
-                  border
-                  class="tag-checkbox"
-                >
-                  {{ tag.name }}
-                </el-checkbox>
-              </el-checkbox-group>
-            </template>
+                {{ tag.name }}
+              </el-radio>
+            </el-radio-group>
+            <el-button 
+              v-if="getSelectedInCategory(cat).length > 0"
+              size="small" 
+              type="danger" 
+              text
+              @click="clearCategory(cat)"
+              style="margin-top: 4px;"
+            >
+              清除选择
+            </el-button>
           </template>
-
-          <!-- 分组互斥类型（政治面貌类） -->
           <template v-else>
-            <div class="mutual-exclusive-groups">
-              <div v-for="group in cat.groups" :key="group.group_name" class="exclusive-group">
-                <div class="group-label">
-                  <el-tag size="small" :type="getGroupActiveType(cat, group)">{{ group.group_name }}</el-tag>
-                </div>
-                <el-checkbox-group
-                  :model-value="getSelectedInGroup(group)"
-                  @update:model-value="(vals: number[]) => handleGroupSelect(cat, group, vals)"
-                  class="tag-group"
-                >
-                  <el-checkbox
-                    v-for="tag in group.tags"
-                    :key="tag.id"
-                    :label="tag.id"
-                    :disabled="isGroupDisabled(cat, group)"
-                    border
-                    class="tag-checkbox"
-                  >
-                    {{ tag.name }}
-                  </el-checkbox>
-                </el-checkbox-group>
-              </div>
-            </div>
+            <!-- 多选/条件：使用 el-checkbox-group -->
+            <el-checkbox-group 
+              :model-value="getSelectedInCategory(cat)"
+              @update:model-value="(vals: number[]) => handleMultiSelect(cat, vals)"
+              class="tag-group"
+            >
+              <el-checkbox
+                v-for="tag in cat.tags"
+                :key="tag.id"
+                :label="tag.id"
+                border
+                class="tag-checkbox"
+              >
+                {{ tag.name }}
+              </el-checkbox>
+            </el-checkbox-group>
           </template>
           
           <el-divider v-if="cat.category !== tagCategories[tagCategories.length - 1]?.category" />
@@ -561,53 +532,23 @@ const fetchTeacherTags = async (teacherId: number) => {
 
 // 获取某个分类中已选中的标签ID
 const getSelectedInCategory = (cat: any): number[] => {
-  if (cat.selection_type === 'mutual_exclusive_groups') {
-    // 分组互斥类型：返回所有组中已选中的标签
-    const allIds: number[] = []
-    for (const group of cat.groups) {
-      allIds.push(...getSelectedInGroup(group))
-    }
-    return allIds
-  }
   const catTagIds = new Set(cat.tags.map((t: any) => t.id))
   return selectedTags.value.filter((id: number) => catTagIds.has(id))
 }
 
-// 获取某个组中已选中的标签ID
-const getSelectedInGroup = (group: any): number[] => {
-  const groupTagIds = new Set(group.tags.map((t: any) => t.id))
-  return selectedTags.value.filter((id: number) => groupTagIds.has(id))
-}
-
-// 判断某个组是否被禁用（其他互斥组已有选择）
-const isGroupDisabled = (cat: any, group: any): boolean => {
-  if (!cat.mutual_exclusive) return false
-  // 检查其他组是否有选择
-  for (const g of cat.groups) {
-    if (g.group_name !== group.group_name) {
-      if (getSelectedInGroup(g).length > 0) {
-        return true
-      }
-    }
-  }
-  return false
-}
-
-// 获取组的激活状态类型（用于显示）
-const getGroupActiveType = (cat: any, group: any): string => {
-  const selected = getSelectedInGroup(group)
-  if (selected.length > 0) return 'success'
-  if (isGroupDisabled(cat, group)) return 'info'
-  return ''
+// 获取单选类型分类的选中值（返回单个ID或null）
+const getSingleSelected = (cat: any): number | null => {
+  const selected = getSelectedInCategory(cat)
+  return selected.length > 0 ? selected[0] : null
 }
 
 // 处理单选类型的选择
 const handleSingleSelect = (cat: any, val: number) => {
-  // 移除该分类中所有已选标签
   const catTagIds = new Set(cat.tags.map((t: any) => t.id))
   selectedTags.value = selectedTags.value.filter((id: number) => !catTagIds.has(id))
-  // 添加新选中的标签
-  selectedTags.value.push(val)
+  if (val !== null && val !== undefined) {
+    selectedTags.value.push(val)
+  }
 }
 
 // 清除某个分类的选择
@@ -619,29 +560,19 @@ const clearCategory = (cat: any) => {
 // 处理多选/条件类型的选择
 const handleMultiSelect = (cat: any, vals: number[]) => {
   const catTagIds = new Set(cat.tags.map((t: any) => t.id))
-  // 保留其他分类的标签
   const otherTags = selectedTags.value.filter((id: number) => !catTagIds.has(id))
-  selectedTags.value = [...otherTags, ...vals]
-}
-
-// 处理分组互斥类型的选择
-const handleGroupSelect = (cat: any, group: any, vals: number[]) => {
-  // 如果该组有选择，清除其他所有组的选择
-  if (vals.length > 0) {
-    // 移除所有互斥组中的标签
-    const allMutualTagIds = new Set<number>()
-    for (const g of cat.groups) {
-      for (const t of g.tags) {
-        allMutualTagIds.add(t.id)
-      }
+  
+  if (cat.mutual_exclusive) {
+    // 互斥多选：找到新增的标签，只保留它
+    const prevSelected = getSelectedInCategory(cat)
+    const newlyAdded = vals.filter((id: number) => !prevSelected.includes(id))
+    if (newlyAdded.length > 0) {
+      selectedTags.value = [...otherTags, ...newlyAdded]
+    } else {
+      selectedTags.value = otherTags
     }
-    selectedTags.value = selectedTags.value.filter((id: number) => !allMutualTagIds.has(id))
-    // 添加当前组的选择
-    selectedTags.value.push(...vals)
   } else {
-    // 取消选择：只移除该组的标签
-    const groupTagIds = new Set(group.tags.map((t: any) => t.id))
-    selectedTags.value = selectedTags.value.filter((id: number) => !groupTagIds.has(id))
+    selectedTags.value = [...otherTags, ...vals]
   }
 }
 
@@ -1076,23 +1007,5 @@ onMounted(() => {
 .tag-radio {
   margin-right: 0 !important;
   margin-bottom: 0 !important;
-}
-
-.mutual-exclusive-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 8px;
-  background: #fafafa;
-  border-radius: 6px;
-  border: 1px dashed #e4e7ed;
-}
-
-.exclusive-group {
-  padding: 6px;
-}
-
-.group-label {
-  margin-bottom: 6px;
 }
 </style>

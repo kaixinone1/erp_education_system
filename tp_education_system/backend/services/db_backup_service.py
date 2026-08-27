@@ -4,14 +4,18 @@
 - 一式三份，备份到三个独立位置
 - 支持 Git 仓库备份 + 自动推送到远程仓库
 - 备份失败时记录状态，供前端弹窗提示
+- Git推送支持重试机制（处理网络不稳定）
+- 备份前检测路径写入权限
 """
 import subprocess
 import os
 import json
 import logging
 import shutil
+import time
 from datetime import datetime
 from pathlib import Path
+from .feishu_notification_service import send_backup_notification
 
 logger = logging.getLogger(__name__)
 
@@ -189,10 +193,36 @@ def find_git():
     return None
 
 
+def _get_git_env():
+    """
+    获取Git操作的环境变量，禁止交互式提示
+    确保无人值守时不会弹出任何对话框（包括GitHub OAuth弹窗）
+    """
+    env = os.environ.copy()
+    # 禁止Git终端交互提示（如凭据输入弹窗）
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    # 禁止Git使用askpass弹窗
+    env["GIT_ASKPASS"] = "echo"
+    # 禁止Git使用SSH_ASKPASS
+    env["SSH_ASKPASS"] = "echo"
+    # 禁止Git Credential Manager的GUI交互（如GitHub OAuth浏览器弹窗）
+    env["GCM_INTERACTIVE"] = "Never"
+    env["GCM_MODAL_PROMPT"] = "Never"
+    # 设置Git用户（如果全局未配置，使用默认值）
+    env.setdefault("GIT_AUTHOR_NAME", "ERP系统自动备份")
+    env.setdefault("GIT_AUTHOR_EMAIL", "backup@erp.local")
+    env.setdefault("GIT_COMMITTER_NAME", "ERP系统自动备份")
+    env.setdefault("GIT_COMMITTER_EMAIL", "backup@erp.local")
+    return env
+
+
 def git_backup(temp_file, filename, git_config):
     """
     将备份文件提交到 Git 仓库并推送到远程
     自动检测项目Git仓库路径，无需手动配置
+    - Git推送支持重试机制：最多重试3次，每次间隔递增（10s/20s/30s）
+    - 推送前先测试远程仓库网络连通性
+    - 自动设置环境变量禁止交互式提示，确保无人值守运行
     返回: {"success": bool, "message": str}
     """
     if not git_config.get("enabled"):
@@ -207,9 +237,22 @@ def git_backup(temp_file, filename, git_config):
     if not git_exe:
         return {"success": False, "message": "找不到git.exe"}
     
+    git_env = _get_git_env()
+    
+    # 如果配置了GitHub Token，注入环境变量用于无人值守认证
+    github_token = git_config.get("github_token", "")
+    if github_token:
+        git_env["GITHUB_TOKEN"] = github_token
+        git_env["GH_TOKEN"] = github_token
+        logger.info("Git备份: 已加载GitHub Token用于认证")
+    
     backup_subdir = git_config.get("backup_subdir", "数据库备份")
     remote_name = git_config.get("remote_name", "origin")
     branch = git_config.get("branch", "main")
+    
+    # 重试配置
+    max_retries = 3
+    retry_delays = [10, 20, 30]  # 递增间隔（秒）
     
     try:
         # 确保备份子目录存在
@@ -222,7 +265,7 @@ def git_backup(temp_file, filename, git_config):
         # git add
         result = subprocess.run(
             [git_exe, "add", os.path.join(backup_subdir, filename)],
-            cwd=repo_path, capture_output=True, text=True, timeout=30
+            cwd=repo_path, capture_output=True, text=True, timeout=30, env=git_env
         )
         if result.returncode != 0:
             return {"success": False, "message": f"git add 失败: {result.stderr.strip()}"}
@@ -231,7 +274,7 @@ def git_backup(temp_file, filename, git_config):
         commit_msg = f"数据库自动备份 {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         result = subprocess.run(
             [git_exe, "commit", "-m", commit_msg],
-            cwd=repo_path, capture_output=True, text=True, timeout=30
+            cwd=repo_path, capture_output=True, text=True, timeout=30, env=git_env
         )
         if result.returncode != 0:
             # "nothing to commit" 也算成功
@@ -240,13 +283,61 @@ def git_backup(temp_file, filename, git_config):
             else:
                 return {"success": False, "message": f"git commit 失败: {result.stderr.strip()}"}
         
-        # git push
-        result = subprocess.run(
-            [git_exe, "push", remote_name, branch],
-            cwd=repo_path, capture_output=True, text=True, timeout=120
-        )
-        if result.returncode != 0:
-            return {"success": False, "message": f"git push 失败: {result.stderr.strip()}"}
+        # ========== Git Push 带重试机制 ==========
+        push_success = False
+        last_error = ""
+        
+        for attempt in range(max_retries + 1):  # 1次初始 + 3次重试 = 共4次
+            attempt_label = "初始" if attempt == 0 else f"第{attempt}次重试"
+            
+            if attempt > 0:
+                delay = retry_delays[attempt - 1]
+                logger.info(f"Git推送{attempt_label}: 等待 {delay} 秒后重试...")
+                time.sleep(delay)
+                
+                # 重试前先测试网络连通性（尝试fetch检测远程仓库可达性）
+                try:
+                    fetch_result = subprocess.run(
+                        [git_exe, "fetch", remote_name, "--dry-run"],
+                        cwd=repo_path, capture_output=True, text=True, timeout=30, env=git_env
+                    )
+                    if fetch_result.returncode != 0:
+                        logger.warning(f"Git推送{attempt_label}: 远程仓库仍不可达，继续尝试推送...")
+                    else:
+                        logger.info(f"Git推送{attempt_label}: 远程仓库可达，开始推送")
+                except subprocess.TimeoutExpired:
+                    logger.warning(f"Git推送{attempt_label}: 网络检测超时，继续尝试推送...")
+                except Exception as e:
+                    logger.warning(f"Git推送{attempt_label}: 网络检测异常: {e}")
+            
+            try:
+                result = subprocess.run(
+                    [git_exe, "push", remote_name, branch],
+                    cwd=repo_path, capture_output=True, text=True, timeout=120, env=git_env
+                )
+                if result.returncode == 0:
+                    push_success = True
+                    logger.info(f"Git推送成功 ({attempt_label}): {dest_file} → {remote_name}/{branch}")
+                    break
+                else:
+                    last_error = result.stderr.strip() or result.stdout.strip()
+                    logger.warning(f"Git推送{attempt_label}失败: {last_error}")
+            except subprocess.TimeoutExpired:
+                last_error = "Git推送超时（网络连接不稳定）"
+                logger.warning(f"Git推送{attempt_label}: {last_error}")
+            except Exception as e:
+                last_error = str(e)
+                logger.warning(f"Git推送{attempt_label}异常: {last_error}")
+        
+        if not push_success:
+            # 所有重试都失败，但本地提交已完成，不算完全失败
+            logger.error(f"Git推送失败（已重试{max_retries}次）: {last_error}。本地提交已完成，待网络恢复后自动推送。")
+            return {
+                "success": False,
+                "message": f"Git推送失败（已重试{max_retries}次）: {last_error}。备份文件已提交到本地仓库，待网络恢复后可手动推送。",
+                "file": dest_file,
+                "local_committed": True,
+            }
         
         logger.info(f"Git备份成功: {dest_file} → {remote_name}/{branch}")
         return {"success": True, "message": f"已推送至 {remote_name}/{branch}", "file": dest_file}
@@ -301,6 +392,44 @@ def verify_git_repo(repo_path=None):
             return {"success": False, "message": "不是有效的Git仓库"}
     except Exception as e:
         return {"success": False, "message": str(e)}
+
+
+def check_path_writable(target_path):
+    """
+    检测路径是否可写入
+    在Windows上，磁盘根目录（如 D:/、E:/）需要管理员权限
+    此函数尝试创建目录并写入测试文件来验证权限
+    返回: (is_writable: bool, error_message: str)
+    """
+    if not target_path or not target_path.strip():
+        return False, "路径为空"
+    
+    try:
+        # 尝试创建目录
+        os.makedirs(target_path, exist_ok=True)
+        
+        # 尝试写入测试文件
+        test_file = os.path.join(target_path, ".write_test")
+        with open(test_file, 'w') as f:
+            f.write("test")
+        os.remove(test_file)
+        
+        return True, ""
+    except PermissionError:
+        # 分析权限不足的原因
+        drive_letter = os.path.splitdrive(target_path)[0]
+        parent_dir = os.path.dirname(target_path.rstrip('/\\'))
+        # 标准化路径比较（处理正斜杠和反斜杠差异）
+        parent_norm = os.path.normpath(parent_dir)
+        drive_norm = os.path.normpath(drive_letter + os.sep)
+        if drive_letter and parent_norm == drive_norm:
+            # 路径在磁盘根目录
+            return False, f"权限不足：无法在磁盘根目录（{drive_letter}\\）创建文件夹。请将备份路径改为有写入权限的目录，例如 {drive_letter}\\备份\\数据库备份"
+        return False, f"权限不足：无法写入 {target_path}。请检查文件夹权限设置，确保当前用户有写入权限"
+    except OSError as e:
+        return False, f"路径不可用: {str(e)}"
+    except Exception as e:
+        return False, f"路径检测异常: {str(e)}"
 
 
 def run_backup() -> dict:
@@ -377,8 +506,20 @@ def run_backup() -> dict:
                 })
                 continue
             
+            # 先检测路径写入权限（避免 PermissionError 导致的不明确错误）
+            is_writable, perm_error = check_path_writable(backup_path)
+            if not is_writable:
+                failed_paths.append(backup_path)
+                results.append({
+                    "path": backup_path,
+                    "label": path_label,
+                    "success": False,
+                    "error": perm_error,
+                })
+                logger.error(f"备份失败 [{path_label}]: {perm_error}")
+                continue
+            
             try:
-                os.makedirs(backup_path, exist_ok=True)
                 dest_file = os.path.join(backup_path, filename)
                 shutil.copy2(temp_file, dest_file)
                 
@@ -434,13 +575,22 @@ def run_backup() -> dict:
         success = len(failed_paths) == 0
         update_status(status, success, results, failed_paths)
         
-        return {
+        backup_result = {
             "success": success,
             "results": results,
             "failed_paths": failed_paths,
             "filename": filename,
             "size": file_size,
         }
+        
+        # 发送飞书通知
+        try:
+            notify_result = send_backup_notification(backup_result)
+            backup_result["飞书通知"] = notify_result
+        except Exception as e:
+            logger.warning(f"飞书通知发送异常: {e}")
+        
+        return backup_result
         
     except subprocess.TimeoutExpired:
         logger.error("pg_dump 执行超时")

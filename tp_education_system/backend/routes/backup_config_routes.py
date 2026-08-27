@@ -178,6 +178,27 @@ def get_available_drives():
     return {"success": True, "data": drives}
 
 
+@router.post("/validate-path")
+def validate_backup_path(data: dict):
+    """
+    验证备份路径是否可写入
+    前端在保存配置前调用此接口，提前检测权限问题
+    请求: {"path": "D:/备份路径"}
+    返回: {"success": bool, "writable": bool, "message": str}
+    """
+    from services.db_backup_service import check_path_writable
+    target_path = data.get("path", "")
+    if not target_path or not target_path.strip():
+        return {"success": False, "writable": False, "message": "路径不能为空"}
+    
+    is_writable, error_msg = check_path_writable(target_path)
+    return {
+        "success": True,
+        "writable": is_writable,
+        "message": "" if is_writable else error_msg,
+    }
+
+
 @router.post("/git/verify")
 def verify_git_repo_api():
     """验证当前项目是否为有效的 Git 仓库（自动检测，无需传入路径）"""
@@ -219,6 +240,56 @@ def update_git_config(data: dict):
         "remote_name": data.get("remote_name", "origin"),
         "branch": data.get("branch", "main"),
         "backup_subdir": data.get("backup_subdir", "数据库备份"),
+        "github_token": data.get("github_token", ""),
     }
     _save_config(config)
     return {"success": True, "message": "Git备份配置已保存"}
+
+
+# ==================== 飞书通知配置 ====================
+
+FEISHU_CONFIG_FILE = os.path.join(CONFIG_DIR, 'feishu_config.json')
+
+
+def _get_feishu_config():
+    """读取飞书配置"""
+    if os.path.exists(FEISHU_CONFIG_FILE):
+        with open(FEISHU_CONFIG_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {
+        "启用通知": False,
+        "通知场景": {
+            "备份成功": True,
+            "备份失败": True,
+            "Git推送失败": True,
+        },
+        "通知用户": [],
+        "应用名称": "",
+        "App ID": "",
+    }
+
+
+def _save_feishu_config(config):
+    """保存飞书配置"""
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    with open(FEISHU_CONFIG_FILE, 'w', encoding='utf-8') as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+
+
+@router.get("/feishu")
+def get_feishu_config():
+    """获取飞书通知配置"""
+    config = _get_feishu_config()
+    return {"success": True, "data": config}
+
+
+@router.put("/feishu")
+def update_feishu_config(data: dict):
+    """更新飞书通知配置（仅更新启用通知和通知场景，不覆盖凭证信息）"""
+    config = _get_feishu_config()
+    if "启用通知" in data:
+        config["启用通知"] = data["启用通知"]
+    if "通知场景" in data:
+        config["通知场景"] = data["通知场景"]
+    _save_feishu_config(config)
+    return {"success": True, "message": "飞书通知配置已保存"}

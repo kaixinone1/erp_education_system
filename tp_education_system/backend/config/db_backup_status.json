@@ -1,22 +1,23 @@
 {
-  "last_backup_time": "2026-08-26 09:19:06",
+  "last_backup_time": "2026-08-27 15:57:03",
   "last_backup_success": false,
   "backup_results": [
     {
       "path": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份",
       "label": "位置1",
       "success": true,
-      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260826_091842.sql",
-      "size": 6834149
+      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260827_155347.sql",
+      "size": 6834524
     },
     {
-      "path": "E:/教育人事管理系统数据库备份",
+      "path": "D:/erp_fifteen/备份/数据库备份_位置2",
       "label": "位置2",
-      "success": false,
-      "error": "权限不足，无法写入"
+      "success": true,
+      "file": "D:/erp_fifteen/备份/数据库备份_位置2\\taiping_education_20260827_155347.sql",
+      "size": 6834524
     },
     {
-      "path": "D:/教育人事管理系统数据库备份",
+      "path": "E:/备份/数据库备份",
       "label": "位置3",
       "success": false,
       "error": "权限不足，无法写入"
@@ -25,15 +26,11 @@
       "path": "D:\\erp_fifteen\\tp_education_system",
       "label": "Git仓库",
       "success": false,
-      "error": "git push 失败: fatal: unable to access 'https://github.com/kaixinone1/erp_education_system/': Recv failure: Connection was reset",
+      "error": "Git推送失败（已重试3次）: fatal: unable to access 'https://github.com/kaixinone1/erp_education_system/': Failed to connect to github.com port 443 after 21123 ms: Could not connect to server。备份文件已提交到本地仓库，待网络恢复后可手动推送。",
       "skipped": false,
       "type": "git"
     }
   ],
-  "failed_paths": [
-    "E:/教育人事管理系统数据库备份",
-    "D:/教育人事管理系统数据库备份",
-    "Git: git push 失败: fatal: unable to access 'https://github.com/kaixinone1/erp_education_system/': Recv failure: Connection was reset"
-  ],
-  "consecutive_failures": 1
+  "failed_paths": [],
+  "consecutive_failures": 0
 }

@@ -3,10 +3,12 @@
 - 数据库备份（pg_dump）
 - Git 提交变更
 - 推送到远程仓库
+- 飞书通知备份结果
 """
 import subprocess
 import os
 import glob as glob_m
+import json
 import logging
 from datetime import datetime
 
@@ -17,6 +19,40 @@ DB_USER = "taiping_user"
 DB_PASSWORD = "taiping_password"
 DB_HOST = "localhost"
 DB_PORT = "5432"
+
+
+def _get_git_env():
+    """获取Git操作的环境变量，禁止交互式提示"""
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    env["GIT_ASKPASS"] = "echo"
+    env["SSH_ASKPASS"] = "echo"
+    env["GCM_INTERACTIVE"] = "Never"
+    env["GCM_MODAL_PROMPT"] = "Never"
+    env.setdefault("GIT_AUTHOR_NAME", "ERP系统自动备份")
+    env.setdefault("GIT_AUTHOR_EMAIL", "backup@erp.local")
+    env.setdefault("GIT_COMMITTER_NAME", "ERP系统自动备份")
+    env.setdefault("GIT_COMMITTER_EMAIL", "backup@erp.local")
+    # 加载GitHub Token
+    github_token = _get_github_token()
+    if github_token:
+        env["GITHUB_TOKEN"] = github_token
+        env["GH_TOKEN"] = github_token
+    return env
+
+
+def _get_github_token():
+    """从数据库备份配置中读取GitHub Token"""
+    try:
+        config_dir = os.path.join(os.path.dirname(__file__), '..', 'config')
+        config_file = os.path.join(config_dir, 'db_backup_config.json')
+        if os.path.exists(config_file):
+            with open(config_file, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+                return config.get("git_config", {}).get("github_token", "")
+    except Exception:
+        pass
+    return ""
 
 
 def _get_project_root():
@@ -42,7 +78,8 @@ def _run_git(cmd: list, cwd: str) -> dict:
             text=True,
             timeout=120,
             encoding="utf-8",
-            errors="replace"
+            errors="replace",
+            env=_get_git_env()
         )
         return {
             "success": result.returncode == 0,
@@ -64,6 +101,31 @@ def _find_pg_dump():
     return None
 
 
+def _send_notification(success: bool, errors: list, backup_file: str = "", file_size: int = 0):
+    """发送飞书通知"""
+    try:
+        from .feishu_notification_service import send_backup_notification
+        result = {
+            "success": success,
+            "results": [],
+            "failed_paths": errors if errors else [],
+            "filename": backup_file or f"系统自动备份_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            "size": file_size,
+            "error": "; ".join(errors) if errors else "",
+        }
+        notify_result = send_backup_notification(result)
+        if notify_result.get("skipped"):
+            logger.info(f"飞书通知已跳过: {notify_result.get('reason')}")
+        else:
+            for r in notify_result.get("results", []):
+                if r.get("success"):
+                    logger.info(f"飞书通知已发送: {r.get('用户')}")
+                else:
+                    logger.warning(f"飞书通知发送失败: {r.get('用户')} - {r.get('error')}")
+    except Exception as e:
+        logger.warning(f"飞书通知发送异常: {e}")
+
+
 def system_backup_job():
     """系统自动备份任务（由调度器调用）"""
     logger.info("=" * 50)
@@ -74,12 +136,15 @@ def system_backup_job():
     errors = []
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_file = ""
+    file_size = 0
 
     # 1. 数据库备份
     pg_dump_path = _find_pg_dump()
     if pg_dump_path:
         os.makedirs(backup_dir, exist_ok=True)
         sql_file = os.path.join(backup_dir, f"taiping_education_{timestamp}.sql")
+        backup_file = sql_file
         
         cmd = [
             pg_dump_path,
@@ -92,7 +157,8 @@ def system_backup_job():
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
             if result.returncode == 0:
-                size_mb = os.path.getsize(sql_file) / (1024 * 1024)
+                file_size = os.path.getsize(sql_file)
+                size_mb = file_size / (1024 * 1024)
                 logger.info(f"数据库备份成功 ({size_mb:.2f} MB): {sql_file}")
             else:
                 errors.append(f"数据库备份失败: {result.stderr}")
@@ -135,6 +201,9 @@ def system_backup_job():
         logger.error(f"系统自动备份完成，有 {len(errors)} 个错误: {errors}")
     else:
         logger.info("系统自动备份完成，全部成功")
+
+    # 4. 发送飞书通知
+    _send_notification(len(errors) == 0, errors, backup_file, file_size)
     
     logger.info("=" * 50)
     return {"success": len(errors) == 0, "errors": errors}

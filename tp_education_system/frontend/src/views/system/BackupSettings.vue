@@ -105,6 +105,40 @@
       </el-form>
     </el-card>
 
+    <!-- 飞书通知设置 -->
+    <el-card class="config-card">
+      <template #header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>飞书通知设置</span>
+          <el-switch v-model="feishuConfig.启用通知" active-text="启用" inactive-text="禁用" @change="saveFeishuConfig" />
+        </div>
+      </template>
+      <template v-if="feishuConfig.启用通知">
+        <el-form label-width="120px">
+          <el-form-item label="通知场景">
+            <el-checkbox-group v-model="feishuNotifyScenes" @change="onSceneChange">
+              <el-checkbox label="备份成功">备份成功时通知</el-checkbox>
+              <el-checkbox label="备份失败">备份失败时通知</el-checkbox>
+              <el-checkbox label="Git推送失败">Git推送失败时通知</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="通知用户">
+            <div v-for="(user, i) in feishuConfig.通知用户" :key="i" style="margin-bottom: 4px;">
+              <el-tag type="info">{{ user.姓名 }} ({{ user.open_id }})</el-tag>
+            </div>
+            <span style="color: #909399; font-size: 12px;">通知用户由飞书应用配置决定，如需修改请联系管理员</span>
+          </el-form-item>
+          <el-form-item label="应用状态">
+            <el-tag v-if="feishuConfig['App ID']" type="success">已配置</el-tag>
+            <el-tag v-else type="danger">未配置</el-tag>
+            <span style="margin-left: 8px; color: #909399; font-size: 12px;">
+              应用名称：{{ feishuConfig['应用名称'] || '未配置' }}
+            </span>
+          </el-form-item>
+        </el-form>
+      </template>
+    </el-card>
+
     <!-- Git 仓库备份 -->
     <el-card class="config-card">
       <template #header>
@@ -243,6 +277,20 @@ const verifyingGit = ref(false)
 const gitRepoStatus = ref('unknown')  // 'unknown' | 'checking' | 'valid' | 'invalid'
 const gitRepoInfo = ref({})
 const gitRepoMessage = ref('')
+
+// 飞书通知配置
+const feishuConfig = reactive({
+  '启用通知': false,
+  '通知场景': {
+    '备份成功': true,
+    '备份失败': true,
+    'Git推送失败': true,
+  },
+  '通知用户': [],
+  '应用名称': '',
+  'App ID': '',
+})
+const feishuNotifyScenes = ref([])
 
 let statusTimer = null
 
@@ -439,10 +487,47 @@ async function verifyGitRepo() {
   }
 }
 
+// 飞书通知相关方法
+async function loadFeishuConfig() {
+  try {
+    const res = await API.get('/api/backup-config/feishu')
+    if (res.data.success && res.data.data) {
+      Object.assign(feishuConfig, res.data.data)
+      // 同步通知场景到checkbox
+      const scenes = feishuConfig['通知场景'] || {}
+      feishuNotifyScenes.value = Object.keys(scenes).filter(k => scenes[k])
+    }
+  } catch (e) {
+    console.error('加载飞书配置失败:', e)
+  }
+}
+
+async function saveFeishuConfig() {
+  try {
+    await API.put('/api/backup-config/feishu', {
+      '启用通知': feishuConfig['启用通知'],
+      '通知场景': feishuConfig['通知场景'],
+    })
+    ElMessage.success('飞书通知配置已保存')
+  } catch (e) {
+    ElMessage.error('保存飞书配置失败: ' + (e.response?.data?.detail || e.message))
+  }
+}
+
+function onSceneChange(val) {
+  // 更新场景配置
+  const allScenes = ['备份成功', '备份失败', 'Git推送失败']
+  allScenes.forEach(s => {
+    feishuConfig['通知场景'][s] = val.includes(s)
+  })
+  saveFeishuConfig()
+}
+
 onMounted(async () => {
   await loadConfig()
   await loadStatus()
   await loadGitStatus()
+  await loadFeishuConfig()
   // 每30秒轮询备份状态
   statusTimer = setInterval(loadStatus, 30000)
 })
