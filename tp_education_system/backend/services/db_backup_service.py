@@ -297,8 +297,12 @@ def git_backup(temp_file, filename, git_config):
                 
                 # 重试前先测试网络连通性（尝试fetch检测远程仓库可达性）
                 try:
+                    if github_token:
+                        fetch_cmd = [git_exe, "fetch", f"https://{github_token}@github.com/kaixinone1/erp_education_system", "--dry-run"]
+                    else:
+                        fetch_cmd = [git_exe, "fetch", remote_name, "--dry-run"]
                     fetch_result = subprocess.run(
-                        [git_exe, "fetch", remote_name, "--dry-run"],
+                        fetch_cmd,
                         cwd=repo_path, capture_output=True, text=True, timeout=30, env=git_env
                     )
                     if fetch_result.returncode != 0:
@@ -311,8 +315,13 @@ def git_backup(temp_file, filename, git_config):
                     logger.warning(f"Git推送{attempt_label}: 网络检测异常: {e}")
             
             try:
+                # 如果配置了GitHub Token，使用token嵌入URL的方式推送
+                if github_token:
+                    push_cmd = [git_exe, "push", f"https://{github_token}@github.com/kaixinone1/erp_education_system", branch]
+                else:
+                    push_cmd = [git_exe, "push", remote_name, branch]
                 result = subprocess.run(
-                    [git_exe, "push", remote_name, branch],
+                    push_cmd,
                     cwd=repo_path, capture_output=True, text=True, timeout=120, env=git_env
                 )
                 if result.returncode == 0:
@@ -437,6 +446,9 @@ def run_backup() -> dict:
     执行数据库备份（一式三份 + Git）
     返回: {"success": bool, "results": [...], "failed_paths": [...]}
     """
+    import time as time_module
+    start_time = time_module.time()
+    
     config = get_config()
     status = get_status()
     
@@ -536,7 +548,7 @@ def run_backup() -> dict:
                 })
                 logger.info(f"备份成功 [{path_label}]: {dest_file} ({dest_size} bytes)")
                 
-                clean_old_backups(backup_path, config.get("keep_days", 30))
+                archive_old_backups(backup_path)
                 
             except PermissionError:
                 failed_paths.append(backup_path)
@@ -572,7 +584,17 @@ def run_backup() -> dict:
         if not git_result["success"] and not git_result.get("skipped"):
             failed_paths.append(f"Git: {git_result.get('message', '')}")
         
+        # Git仓库备份子目录也应用归档策略
+        if not git_result.get("skipped"):
+            git_backup_subdir = os.path.join(repo_path, git_config.get("backup_subdir", "数据库备份"))
+            if os.path.isdir(git_backup_subdir):
+                try:
+                    archive_old_backups(git_backup_subdir)
+                except Exception as e:
+                    logger.warning(f"Git仓库备份归档清理失败: {e}")
+        
         success = len(failed_paths) == 0
+        elapsed_seconds = time_module.time() - start_time
         update_status(status, success, results, failed_paths)
         
         backup_result = {
@@ -581,6 +603,7 @@ def run_backup() -> dict:
             "failed_paths": failed_paths,
             "filename": filename,
             "size": file_size,
+            "elapsed_seconds": round(elapsed_seconds, 1),
         }
         
         # 发送飞书通知
@@ -621,21 +644,87 @@ def update_status(status, success, results=None, failed_paths=None):
             status["consecutive_failures"] = status.get("consecutive_failures", 0) + 1
         else:
             status["consecutive_failures"] = 0
+    if success:
+        status["last_success_time"] = now
     save_status(status)
 
 
-def clean_old_backups(backup_path, keep_days):
-    """清理超过保留天数的备份文件"""
-    try:
-        cutoff = datetime.now().timestamp() - (keep_days * 86400)
-        for f in os.listdir(backup_path):
-            if f.startswith("taiping_education_") and f.endswith(".sql"):
-                fpath = os.path.join(backup_path, f)
-                if os.path.getmtime(fpath) < cutoff:
-                    os.remove(fpath)
-                    logger.info(f"已清理过期备份: {f}")
-    except Exception as e:
-        logger.warning(f"清理过期备份时出错: {e}")
+def archive_old_backups(backup_path):
+    """
+    多级归档策略：
+    - 最近30天：保留全部备份
+    - 30天 ~ 3年：每月保留1份（保留每月最早的备份，最接近月初）
+    - 3年以上：每年保留1份（保留每年最晚的备份，最接近年末12月31日）
+    """
+    import re
+    from datetime import datetime, timedelta
+    
+    pattern = re.compile(r'taiping_education_(\d{8})_\d{6}\.sql')
+    backup_files = []
+    for f in os.listdir(backup_path):
+        match = pattern.match(f)
+        if match:
+            try:
+                file_date = datetime.strptime(match.group(1), '%Y%m%d')
+                backup_files.append((f, file_date, os.path.join(backup_path, f)))
+            except ValueError:
+                continue
+    
+    if not backup_files:
+        return
+    
+    now = datetime.now()
+    today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    cutoff_30d = today - timedelta(days=30)
+    cutoff_3y = today - timedelta(days=3 * 365)
+    
+    # 按日期范围分组
+    monthly = {}   # 30天 ~ 3年：按月份分组
+    yearly = {}    # 3年以上：按年份分组
+    to_delete = []
+    
+    for fname, file_date, fpath in backup_files:
+        if file_date >= cutoff_30d:
+            # 最近30天：全部保留
+            continue
+        elif file_date >= cutoff_3y:
+            # 30天 ~ 3年：按月份分组，保留每月最早的
+            month_key = file_date.strftime('%Y-%m')
+            if month_key not in monthly:
+                monthly[month_key] = []
+            monthly[month_key].append((fname, file_date, fpath))
+        else:
+            # 3年以上：按年份分组，保留每年最晚的（最接近12月31日）
+            year_key = file_date.year
+            if year_key not in yearly:
+                yearly[year_key] = []
+            yearly[year_key].append((fname, file_date, fpath))
+    
+    # 月度组：保留最早的一份（最接近月初），删除其余
+    for month_key, files in monthly.items():
+        files.sort(key=lambda x: x[1])  # 按日期升序
+        for fname, file_date, fpath in files[1:]:  # 保留第一个，删除其余
+            to_delete.append((fname, file_date, fpath))
+    
+    # 年度组：保留最晚的一份（最接近年末），删除其余
+    for year_key, files in yearly.items():
+        files.sort(key=lambda x: x[1])  # 按日期升序
+        for fname, file_date, fpath in files[:-1]:  # 保留最后一个，删除其余
+            to_delete.append((fname, file_date, fpath))
+    
+    # 执行删除
+    deleted_count = 0
+    for fname, file_date, fpath in to_delete:
+        try:
+            os.remove(fpath)
+            deleted_count += 1
+            logger.info(f"归档清理: {fname} ({file_date.strftime('%Y-%m-%d')})")
+        except Exception as e:
+            logger.warning(f"归档清理失败: {fname} - {e}")
+    
+    if deleted_count > 0:
+        logger.info(f"归档清理完成: 共删除 {deleted_count} 个过期备份文件，"
+                    f"月度保留 {len(monthly)} 份，年度保留 {len(yearly)} 份")
 
 
 def daily_backup_job():

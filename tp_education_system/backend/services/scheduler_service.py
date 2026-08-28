@@ -8,7 +8,31 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+# 容错时间：2小时（秒），任务错过精确触发时间后在此窗口内仍可补执行
+MISFIRE_GRACE_SECONDS = 7200
+
 scheduler = BackgroundScheduler()
+
+
+def _check_and_compensate_backup():
+    """第2层兜底：服务启动时检查今天是否已备份，未备份则立即补偿执行"""
+    try:
+        from services.db_backup_service import get_status, daily_backup_job
+        
+        status = get_status()
+        last_time = status.get("last_backup_time")
+        if last_time:
+            last_date = last_time[:10]
+            today = datetime.now().strftime("%Y-%m-%d")
+            if last_date == today:
+                logger.info(f"[补偿检查] 今天已有备份记录 ({last_time})，跳过补偿")
+                return
+        
+        logger.info("[补偿检查] 今天尚未备份，立即执行补偿备份...")
+        daily_backup_job()
+        logger.info("[补偿检查] 补偿备份完成")
+    except Exception as e:
+        logger.error(f"[补偿检查] 补偿备份失败: {e}")
 
 
 def setup_scheduled_tasks():
@@ -38,6 +62,7 @@ def setup_scheduled_tasks():
             trigger='cron',
             hour=2,
             minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='todo_deadline_check',
             name='待办到期检查',
             replace_existing=True
@@ -55,6 +80,7 @@ def setup_scheduled_tasks():
             trigger='cron',
             hour=3,
             minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='todo_archive',
             name='待办历史归档',
             replace_existing=True
@@ -72,6 +98,7 @@ def setup_scheduled_tasks():
             trigger='cron',
             hour=2,
             minute=30,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='retirement_reminder_scan',
             name='到龄退休提醒扫描',
             replace_existing=True
@@ -89,6 +116,7 @@ def setup_scheduled_tasks():
             trigger='cron',
             hour=2,
             minute=30,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='octogenarian_scan',
             name='80周岁高龄补贴扫描',
             replace_existing=True
@@ -107,6 +135,7 @@ def setup_scheduled_tasks():
             day=1,
             hour=8,
             minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='transfer_out_reminder',
             name='调出教师标签清理提醒',
             replace_existing=True
@@ -126,6 +155,7 @@ def setup_scheduled_tasks():
             day=1,
             hour=8,
             minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='expired_tag_cleanup',
             name='到期标签自动清理',
             replace_existing=True
@@ -143,6 +173,7 @@ def setup_scheduled_tasks():
             trigger='cron',
             hour=1,
             minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='db_auto_backup',
             name='数据库自动备份',
             replace_existing=True
@@ -150,6 +181,24 @@ def setup_scheduled_tasks():
         logger.info("[OK] 数据库自动备份任务已注册 (每天1:00)")
     except Exception as e:
         logger.error(f"[ERROR] 注册数据库自动备份任务失败: {e}")
+
+    # 按单位备份 - 每天凌晨1:15执行（全量备份完成后按单位拆分）
+    try:
+        from services.unit_backup_service import backup_all_units as unit_backup_all
+        
+        scheduler.add_job(
+            unit_backup_all,
+            trigger='cron',
+            hour=1,
+            minute=15,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
+            id='unit_backup_daily',
+            name='按单位数据备份',
+            replace_existing=True
+        )
+        logger.info("[OK] 按单位备份任务已注册 (每天1:15)")
+    except Exception as e:
+        logger.error(f"[ERROR] 注册按单位备份任务失败: {e}")
 
     # 系统自动备份 - 每天凌晨2点执行（数据库+Git提交+推送远程）
     try:
@@ -160,6 +209,7 @@ def setup_scheduled_tasks():
             trigger='cron',
             hour=2,
             minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='system_auto_backup',
             name='系统自动备份',
             replace_existing=True
@@ -175,6 +225,8 @@ def start_scheduler():
         setup_scheduled_tasks()
         scheduler.start()
         logger.info("[OK] 定时任务调度器已启动")
+        # 第2层兜底：启动后检查今天是否已备份，未备份则立即补偿
+        _check_and_compensate_backup()
     else:
         logger.info("[INFO] 定时任务调度器已在运行中")
 

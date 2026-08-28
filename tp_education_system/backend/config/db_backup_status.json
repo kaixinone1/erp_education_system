@@ -1,36 +1,38 @@
 {
-  "last_backup_time": "2026-08-27 15:57:03",
+  "last_backup_time": "2026-08-29 01:00:11",
   "last_backup_success": false,
   "backup_results": [
     {
       "path": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份",
       "label": "位置1",
       "success": true,
-      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260827_155347.sql",
-      "size": 6834524
+      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260829_010000.sql",
+      "size": 6825451
     },
     {
       "path": "D:/erp_fifteen/备份/数据库备份_位置2",
       "label": "位置2",
       "success": true,
-      "file": "D:/erp_fifteen/备份/数据库备份_位置2\\taiping_education_20260827_155347.sql",
-      "size": 6834524
+      "file": "D:/erp_fifteen/备份/数据库备份_位置2\\taiping_education_20260829_010000.sql",
+      "size": 6825451
     },
     {
-      "path": "E:/备份/数据库备份",
+      "path": "D:/备份/数据库备份",
       "label": "位置3",
       "success": false,
-      "error": "权限不足，无法写入"
+      "error": "权限不足：无法写入 D:/备份/数据库备份。请检查文件夹权限设置，确保当前用户有写入权限"
     },
     {
       "path": "D:\\erp_fifteen\\tp_education_system",
       "label": "Git仓库",
-      "success": false,
-      "error": "Git推送失败（已重试3次）: fatal: unable to access 'https://github.com/kaixinone1/erp_education_system/': Failed to connect to github.com port 443 after 21123 ms: Could not connect to server。备份文件已提交到本地仓库，待网络恢复后可手动推送。",
+      "success": true,
+      "error": "已推送至 origin/main",
       "skipped": false,
       "type": "git"
     }
   ],
-  "failed_paths": [],
-  "consecutive_failures": 0
+  "failed_paths": [
+    "D:/备份/数据库备份"
+  ],
+  "consecutive_failures": 2
 }

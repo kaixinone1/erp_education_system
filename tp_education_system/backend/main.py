@@ -202,6 +202,11 @@ app.include_router(snapshot_router)
 app.include_router(backup_config_router)
 print("[OK] 系统备份与更新路由已注册")
 
+# 注册按单位备份与恢复路由
+from routes.unit_backup_routes import router as unit_backup_router
+app.include_router(unit_backup_router)
+print("[OK] 按单位备份与恢复路由已注册")
+
 # 注册自动表管理框架（新框架 - 零配置）
 from utils.auto_table_framework import create_auto_table_routes, create_dynamic_auto_table_router
 

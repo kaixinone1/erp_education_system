@@ -26,10 +26,26 @@ TAG_CATEGORIES = [
     },
     {
         "category": "政治面貌类",
-        "description": "政治面貌标签，互斥选择",
-        "selection_type": "multi",  # 平铺展示，互斥
-        "tag_ids": [11, 12, 13, 14, 15, 16],  # gcdy、dj、组织关系挂靠、gqty、tj、群众
-        "mutual_exclusive": True,  # 互斥：勾选一个自动取消其他
+        "description": "政治面貌标签，子分组间互斥，组内可多选",
+        "selection_type": "sub_groups",  # 子分组模式：组间互斥，组内按各自规则
+        "sub_groups": [
+            {
+                "name": "党员",
+                "tag_ids": [11, 12, 13],  # gcdy、dj、组织关系挂靠
+                "selection_type": "multi",  # 组内多选
+            },
+            {
+                "name": "团员",
+                "tag_ids": [14, 15],  # gqty、tj
+                "selection_type": "multi",  # 组内多选
+            },
+            {
+                "name": "群众",
+                "tag_ids": [16],  # 群众
+                "selection_type": "single",  # 组内单选（仅一个选项）
+            },
+        ],
+        "mutual_exclusive": True,  # 子分组之间互斥
     },
     {
         "category": "任职状态类",
@@ -516,7 +532,19 @@ async def get_tag_categories():
                 "condition": cat.get("condition", ""),
             }
             
-            if cat["selection_type"] == "mutual_exclusive_groups":
+            if cat["selection_type"] == "sub_groups":
+                # 子分组互斥类型
+                sub_groups_data = []
+                for sg in cat.get("sub_groups", []):
+                    sg_data = {
+                        "name": sg["name"],
+                        "selection_type": sg.get("selection_type", "multi"),
+                        "tags": [{"id": tid, "name": all_tags.get(tid, f"未知标签{tid}")} for tid in sg["tag_ids"]],
+                    }
+                    sub_groups_data.append(sg_data)
+                cat_data["sub_groups"] = sub_groups_data
+                cat_data["mutual_exclusive"] = cat.get("mutual_exclusive", False)
+            elif cat["selection_type"] == "mutual_exclusive_groups":
                 # 分组互斥类型（已废弃，保留兼容）
                 groups = []
                 for g in cat["groups"]:
@@ -559,10 +587,22 @@ def _validate_tag_mutual_exclusion(tag_ids: list) -> Optional[str]:
     if len(selected_status) > 1:
         return "任职状态类标签只能选择一个"
     
-    # 检查政治面貌类互斥（平铺，勾选一个自动取消其他）
-    political_tag_ids = {11, 12, 13, 14, 15, 16}
-    selected_political = [tid for tid in tag_ids if tid in political_tag_ids]
-    if len(selected_political) > 1:
-        return "政治面貌类标签互斥，只能选择一个"
+    # 检查政治面貌类子分组互斥
+    # 党员组: gcdy(11), dj(12), 组织关系挂靠(13) — 组内可多选
+    # 团员组: gqty(14), tj(15) — 组内可多选
+    # 群众组: 群众(16) — 组内单选
+    # 规则：不同子分组之间互斥，不能同时选择
+    party_sub_groups = {
+        "党员": {11, 12, 13},
+        "团员": {14, 15},
+        "群众": {16},
+    }
+    used_sub_groups = []
+    for group_name, group_ids in party_sub_groups.items():
+        selected = [tid for tid in tag_ids if tid in group_ids]
+        if selected:
+            used_sub_groups.append(group_name)
+    if len(used_sub_groups) > 1:
+        return f"政治面貌类子分组互斥，不能同时选择{'、'.join(used_sub_groups)}"
     
     return None

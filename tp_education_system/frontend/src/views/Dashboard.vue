@@ -2,6 +2,22 @@
   <div class="dashboard-container">
     <h2 class="page-title">工作台</h2>
 
+    <!-- 第3层兜底：数据库备份告警 -->
+    <el-alert
+      v-if="backupAlert.show"
+      :title="backupAlert.message"
+      :type="backupAlert.type"
+      :closable="false"
+      show-icon
+      style="margin-bottom: 16px"
+    >
+      <template #default>
+        <el-button type="primary" size="small" @click="navigateTo('/system/backup-settings')">
+          前往检查
+        </el-button>
+      </template>
+    </el-alert>
+
     <div class="dashboard-grid">
       <!-- 待办工作区域 -->
       <el-card class="todo-card" shadow="hover">
@@ -150,6 +166,13 @@ const stats = ref({
   tableCount: 0
 })
 
+// 备份告警状态
+const backupAlert = ref({
+  show: false,
+  type: 'warning' as 'warning' | 'danger',
+  message: ''
+})
+
 // 待办工作列表（只显示未完成的）
 const pendingTodos = computed(() => {
   return todoList.value.filter(todo => todo.status === 'pending')
@@ -217,6 +240,26 @@ const navigateTo = (path: string) => {
   router.push(path)
 }
 
+// 加载备份状态（第3层兜底告警）
+const loadBackupStatus = async () => {
+  try {
+    const response = await fetch('/api/backup-config/dashboard-status')
+    if (response.ok) {
+      const result = await response.json()
+      const data = result.data || {}
+      if (!data.backup_today && data.alert_message) {
+        backupAlert.value.show = true
+        backupAlert.value.type = data.alert_level === 'danger' ? 'danger' : 'warning'
+        backupAlert.value.message = data.alert_message
+      } else {
+        backupAlert.value.show = false
+      }
+    }
+  } catch (error) {
+    console.error('加载备份状态失败:', error)
+  }
+}
+
 // 格式化日期
 const formatDate = (dateStr: string): string => {
   if (!dateStr) return ''
@@ -232,6 +275,7 @@ const formatDate = (dateStr: string): string => {
 onMounted(() => {
   loadTodoList()
   loadStats()
+  loadBackupStatus()
 })
 </script>
 

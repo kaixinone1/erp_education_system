@@ -119,6 +119,15 @@ const router = createRouter({
           }
         },
         {
+          path: "unit-backup",
+          name: "unitBackup",
+          component: () => import("../views/system/UnitBackup.vue"),
+          meta: {
+            title: "按单位备份恢复",
+            icon: "FolderOpened"
+          }
+        },
+        {
           path: "snapshot-history",
           name: "snapshotHistory",
           component: () => import("../views/system/SnapshotHistory.vue"),

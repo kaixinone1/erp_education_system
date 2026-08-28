@@ -144,6 +144,32 @@ def get_backup_status():
     }
 
 
+@router.get("/dashboard-status")
+def get_dashboard_backup_status():
+    """第3层兜底：仪表盘备份状态检查（未备份时告警）"""
+    from datetime import datetime
+    status = _get_status()
+    last_time = status.get("last_backup_time")
+    last_success = status.get("last_backup_success")
+    
+    today = datetime.now().strftime("%Y-%m-%d")
+    backup_today = False
+    if last_time and last_time[:10] == today:
+        backup_today = True
+    
+    return {
+        "success": True,
+        "data": {
+            "backup_today": backup_today,
+            "last_backup_time": last_time,
+            "last_backup_success": last_success,
+            "consecutive_failures": status.get("consecutive_failures", 0),
+            "alert_level": "danger" if not backup_today and datetime.now().hour >= 3 else "warning",
+            "alert_message": "今日尚未备份数据库，请检查备份服务状态！" if not backup_today and datetime.now().hour >= 3 else None,
+        }
+    }
+
+
 @router.post("/run")
 def run_backup_now():
     """手动触发备份"""

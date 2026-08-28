@@ -1211,7 +1211,7 @@ const loadDictOptions = async () => {
   for (const field of dictFields) {
     const dictTable = field.relation_table
     const displayField = field.relation_display_field || 'name'
-    const valueField = field.relation_value_field || 'code'
+    const valueField = field.relation_value_field || 'id'
     
     try {
       const response = await fetch(`/api/data/${dictTable}?size=10000`)

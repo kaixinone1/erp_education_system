@@ -231,8 +231,8 @@
         <div v-for="cat in tagCategories" :key="cat.category" class="tag-category">
           <div class="category-header">
             <span class="category-name">{{ cat.category }}</span>
-            <el-tag size="small" :type="cat.selection_type === 'single' ? 'warning' : cat.mutual_exclusive ? 'danger' : 'info'">
-              {{ cat.selection_type === 'single' ? '单选' : cat.mutual_exclusive ? '互斥' : cat.selection_type === 'conditional' ? '条件' : '多选' }}
+            <el-tag size="small" :type="cat.selection_type === 'single' ? 'warning' : cat.selection_type === 'sub_groups' ? 'danger' : cat.mutual_exclusive ? 'danger' : 'info'">
+              {{ cat.selection_type === 'single' ? '单选' : cat.selection_type === 'sub_groups' ? '子分组互斥' : cat.mutual_exclusive ? '互斥' : cat.selection_type === 'conditional' ? '条件' : '多选' }}
             </el-tag>
             <span class="category-desc">{{ cat.description }}</span>
           </div>
@@ -265,6 +265,24 @@
             >
               清除选择
             </el-button>
+          </template>
+          <template v-else-if="cat.selection_type === 'sub_groups'">
+            <!-- 子分组互斥：所有标签平铺显示，组间互斥，组内多选 -->
+            <el-checkbox-group 
+              :model-value="getSelectedInCategory(cat)"
+              @update:model-value="(vals: number[]) => handleSubGroupSelect(cat, vals)"
+              class="tag-group"
+            >
+              <el-checkbox
+                v-for="tag in getAllSubGroupTags(cat)"
+                :key="tag.id"
+                :label="tag.id"
+                border
+                class="tag-checkbox"
+              >
+                {{ tag.name }}
+              </el-checkbox>
+            </el-checkbox-group>
           </template>
           <template v-else>
             <!-- 多选/条件：使用 el-checkbox-group -->
@@ -532,7 +550,18 @@ const fetchTeacherTags = async (teacherId: number) => {
 
 // 获取某个分类中已选中的标签ID
 const getSelectedInCategory = (cat: any): number[] => {
-  const catTagIds = new Set(cat.tags.map((t: any) => t.id))
+  let catTagIds: Set<number>
+  if (cat.selection_type === 'sub_groups') {
+    // 子分组类型：收集所有子分组中的标签ID
+    catTagIds = new Set<number>()
+    for (const sg of cat.sub_groups) {
+      for (const t of sg.tags) {
+        catTagIds.add(t.id)
+      }
+    }
+  } else {
+    catTagIds = new Set(cat.tags.map((t: any) => t.id))
+  }
   return selectedTags.value.filter((id: number) => catTagIds.has(id))
 }
 
@@ -553,7 +582,17 @@ const handleSingleSelect = (cat: any, val: number) => {
 
 // 清除某个分类的选择
 const clearCategory = (cat: any) => {
-  const catTagIds = new Set(cat.tags.map((t: any) => t.id))
+  let catTagIds: Set<number>
+  if (cat.selection_type === 'sub_groups') {
+    catTagIds = new Set<number>()
+    for (const sg of cat.sub_groups) {
+      for (const t of sg.tags) {
+        catTagIds.add(t.id)
+      }
+    }
+  } else {
+    catTagIds = new Set(cat.tags.map((t: any) => t.id))
+  }
   selectedTags.value = selectedTags.value.filter((id: number) => !catTagIds.has(id))
 }
 
@@ -572,6 +611,68 @@ const handleMultiSelect = (cat: any, vals: number[]) => {
       selectedTags.value = otherTags
     }
   } else {
+    selectedTags.value = [...otherTags, ...vals]
+  }
+}
+
+// 获取子分组中已选中的标签ID（保留用于兼容）
+const getSelectedInSubGroup = (cat: any, sg: any): number[] => {
+  const sgTagIds = new Set(sg.tags.map((t: any) => t.id))
+  return selectedTags.value.filter((id: number) => sgTagIds.has(id))
+}
+
+// 获取所有子分组的标签（平铺为一个数组）
+const getAllSubGroupTags = (cat: any): any[] => {
+  const allTags: any[] = []
+  for (const sg of cat.sub_groups) {
+    for (const t of sg.tags) {
+      allTags.push(t)
+    }
+  }
+  return allTags
+}
+
+// 判断标签属于哪个子分组
+const getTagSubGroup = (cat: any, tagId: number): any | null => {
+  for (const sg of cat.sub_groups) {
+    if (sg.tags.some((t: any) => t.id === tagId)) {
+      return sg
+    }
+  }
+  return null
+}
+
+// 处理子分组选择（所有标签平铺，组间互斥，组内多选）
+const handleSubGroupSelect = (cat: any, vals: number[]) => {
+  // 收集该分类所有子分组的所有标签ID
+  const allSubGroupTagIds = new Set<number>()
+  const subGroupTagMap = new Map<number, any>() // tagId -> subGroup
+  for (const g of cat.sub_groups) {
+    for (const t of g.tags) {
+      allSubGroupTagIds.add(t.id)
+      subGroupTagMap.set(t.id, g)
+    }
+  }
+  // 移除所有子分组的标签，保留其他分类的标签
+  const otherTags = selectedTags.value.filter((id: number) => !allSubGroupTagIds.has(id))
+  
+  // 找出新增的标签（vals 中有但之前 selectedTags 中没有的）
+  const oldSubGroupTags = selectedTags.value.filter((id: number) => allSubGroupTagIds.has(id))
+  const newlyAdded = vals.filter((id: number) => !oldSubGroupTags.includes(id))
+  
+  if (newlyAdded.length > 0) {
+    // 有新标签被选中，确定它属于哪个子分组
+    const targetSubGroup = getTagSubGroup(cat, newlyAdded[0])
+    if (targetSubGroup) {
+      // 只保留该子分组中的标签
+      const targetGroupTagIds = new Set(targetSubGroup.tags.map((t: any) => t.id))
+      const filteredVals = vals.filter((id: number) => targetGroupTagIds.has(id))
+      selectedTags.value = [...otherTags, ...filteredVals]
+    } else {
+      selectedTags.value = [...otherTags, ...vals]
+    }
+  } else {
+    // 只是取消选中，直接更新
     selectedTags.value = [...otherTags, ...vals]
   }
 }
@@ -1007,5 +1108,31 @@ onMounted(() => {
 .tag-radio {
   margin-right: 0 !important;
   margin-bottom: 0 !important;
+}
+
+/* 子分组样式 */
+.sub-group {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.sub-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.sub-group-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #606266;
+}
+
+.sub-group .tag-group {
+  margin-left: 10px;
 }
 </style>
