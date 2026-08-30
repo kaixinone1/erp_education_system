@@ -1,19 +1,19 @@
 {
-  "last_backup_time": "2026-08-30 01:01:33",
+  "last_backup_time": "2026-08-31 01:01:29",
   "last_backup_success": false,
   "backup_results": [
     {
       "path": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份",
       "label": "位置1",
       "success": true,
-      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260830_010000.sql",
+      "file": "D:\\erp_fifteen\\tp_education_system\\备份\\数据库自动备份\\taiping_education_20260831_010000.sql",
       "size": 6825451
     },
     {
       "path": "D:/erp_fifteen/备份/数据库备份_位置2",
       "label": "位置2",
       "success": true,
-      "file": "D:/erp_fifteen/备份/数据库备份_位置2\\taiping_education_20260830_010000.sql",
+      "file": "D:/erp_fifteen/备份/数据库备份_位置2\\taiping_education_20260831_010000.sql",
       "size": 6825451
     },
     {
@@ -26,14 +26,14 @@
       "path": "D:\\erp_fifteen\\tp_education_system",
       "label": "Git仓库",
       "success": false,
-      "error": "Git推送失败（已重试3次）: remote: error: GH013: Repository rule violations found for refs/heads/main.        \nremote: \nremote: - GITHUB PUSH PROTECTION        \nremote:   —————————————————————————————————————————        \nremote:     Resolve the following violations before pushing again        \nremote: \nremote:     - Push cannot contain secrets        \nremote: \nremote:             \nremote:      (?) Learn how to resolve a blocked push        \nremote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        \nremote:             \nremote:             \nremote:       —— GitHub Personal Access Token ——————————————————————        \nremote:        locations:        \nremote:          - commit: 16e9557b36b7598ab5b8212553a9290d80083d27        \nremote:            path: tp_education_system/backend/config/db_backup_config.json:16        \nremote:             \nremote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        \nremote:        https://github.com/kaixinone1/erp_education_system/security/secret-scanning/unblock-secret/3IYSSPa8CU0fl6REJAL6hyuujtn        \nremote:             \nremote: \nremote: \nTo https://github.com/kaixinone1/erp_education_system\n ! [remote rejected] main -> main (push declined due to repository rule violations)\nerror: failed to push some refs to 'https://github.com/kaixinone1/erp_education_system'。备份文件已提交到本地仓库，待网络恢复后可手动推送。",
+      "error": "Git推送失败（已重试3次）: remote: error: GH013: Repository rule violations found for refs/heads/main.        \nremote: \nremote: - GITHUB PUSH PROTECTION        \nremote:   —————————————————————————————————————————        \nremote:     Resolve the following violations before pushing again        \nremote: \nremote:     - Push cannot contain secrets        \nremote: \nremote:             \nremote:      (?) Learn how to resolve a blocked push        \nremote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        \nremote:             \nremote:             \nremote:       —— GitHub Personal Access Token ——————————————————————        \nremote:        locations:        \nremote:          - commit: 16e9557b36b7598ab5b8212553a9290d80083d27        \nremote:            path: tp_education_system/backend/config/db_backup_config.json:16        \nremote:             \nremote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        \nremote:        https://github.com/kaixinone1/erp_education_system/security/secret-scanning/unblock-secret/3IdzPjHrtKWpxumLW3PAMieBiZY        \nremote:             \nremote: \nremote: \nTo https://github.com/kaixinone1/erp_education_system\n ! [remote rejected] main -> main (push declined due to repository rule violations)\nerror: failed to push some refs to 'https://github.com/kaixinone1/erp_education_system'。备份文件已提交到本地仓库，待网络恢复后可手动推送。",
       "skipped": false,
       "type": "git"
     }
   ],
   "failed_paths": [
     "D:/备份/数据库备份",
-    "Git: Git推送失败（已重试3次）: remote: error: GH013: Repository rule violations found for refs/heads/main.        \nremote: \nremote: - GITHUB PUSH PROTECTION        \nremote:   —————————————————————————————————————————        \nremote:     Resolve the following violations before pushing again        \nremote: \nremote:     - Push cannot contain secrets        \nremote: \nremote:             \nremote:      (?) Learn how to resolve a blocked push        \nremote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        \nremote:             \nremote:             \nremote:       —— GitHub Personal Access Token ——————————————————————        \nremote:        locations:        \nremote:          - commit: 16e9557b36b7598ab5b8212553a9290d80083d27        \nremote:            path: tp_education_system/backend/config/db_backup_config.json:16        \nremote:             \nremote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        \nremote:        https://github.com/kaixinone1/erp_education_system/security/secret-scanning/unblock-secret/3IYSSPa8CU0fl6REJAL6hyuujtn        \nremote:             \nremote: \nremote: \nTo https://github.com/kaixinone1/erp_education_system\n ! [remote rejected] main -> main (push declined due to repository rule violations)\nerror: failed to push some refs to 'https://github.com/kaixinone1/erp_education_system'。备份文件已提交到本地仓库，待网络恢复后可手动推送。"
+    "Git: Git推送失败（已重试3次）: remote: error: GH013: Repository rule violations found for refs/heads/main.        \nremote: \nremote: - GITHUB PUSH PROTECTION        \nremote:   —————————————————————————————————————————        \nremote:     Resolve the following violations before pushing again        \nremote: \nremote:     - Push cannot contain secrets        \nremote: \nremote:             \nremote:      (?) Learn how to resolve a blocked push        \nremote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        \nremote:             \nremote:             \nremote:       —— GitHub Personal Access Token ——————————————————————        \nremote:        locations:        \nremote:          - commit: 16e9557b36b7598ab5b8212553a9290d80083d27        \nremote:            path: tp_education_system/backend/config/db_backup_config.json:16        \nremote:             \nremote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        \nremote:        https://github.com/kaixinone1/erp_education_system/security/secret-scanning/unblock-secret/3IdzPjHrtKWpxumLW3PAMieBiZY        \nremote:             \nremote: \nremote: \nTo https://github.com/kaixinone1/erp_education_system\n ! [remote rejected] main -> main (push declined due to repository rule violations)\nerror: failed to push some refs to 'https://github.com/kaixinone1/erp_education_system'。备份文件已提交到本地仓库，待网络恢复后可手动推送。"
   ],
-  "consecutive_failures": 3
+  "consecutive_failures": 4
 }
