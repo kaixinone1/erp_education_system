@@ -239,8 +239,10 @@ def git_backup(temp_file, filename, git_config):
     
     git_env = _get_git_env()
     
-    # 如果配置了GitHub Token，注入环境变量用于无人值守认证
-    github_token = git_config.get("github_token", "")
+    # 读取GitHub Token：优先环境变量，其次配置文件
+    github_token = os.environ.get("GITHUB_TOKEN", "").strip()
+    if not github_token:
+        github_token = git_config.get("github_token", "")
     if github_token:
         git_env["GITHUB_TOKEN"] = github_token
         git_env["GH_TOKEN"] = github_token

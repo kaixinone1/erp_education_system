@@ -316,21 +316,31 @@ def send_backup_notification(backup_result):
         success = False
         error_msg = None
 
+        # 优先使用 API 直接发送（已有 open_id 时无需再查询）
+        if open_id:
+            success, error_msg = send_text_message(token, open_id, message)
+            if success:
+                logger.info(f"飞书通知已发送给 {name} (API)")
+                notify_results.append({"用户": name, "success": True, "方式": "API"})
+                continue
+            else:
+                logger.warning(f"API发送失败 [{name}]: {error_msg}，尝试lark-cli方式")
+
+        # API 失败时，尝试 lark-cli
         if open_id:
             success, error_msg = send_text_via_lark_cli(open_id, message)
             if success:
                 logger.info(f"飞书通知已发送给 {name} (lark-cli)")
                 notify_results.append({"用户": name, "success": True, "方式": "lark-cli"})
                 continue
-            else:
-                logger.warning(f"lark-cli发送失败 [{name}]: {error_msg}，尝试API方式")
 
-        if email:
+        # 如果没有 open_id 但有邮箱，通过邮箱查 open_id 后用 API 发送
+        if not open_id and email:
             api_open_id, lookup_error = get_open_id_by_email(token, email)
             if api_open_id:
                 success, error_msg = send_text_message(token, api_open_id, message)
                 if success:
-                    logger.info(f"飞书通知已发送给 {name} (API)")
+                    logger.info(f"飞书通知已发送给 {name} (API+邮箱查询)")
                     notify_results.append({"用户": name, "success": True, "方式": "API"})
                     continue
 

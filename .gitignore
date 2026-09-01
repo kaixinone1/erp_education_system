@@ -65,6 +65,11 @@ _test_*.py
 *.bak
 *.tmp
 
+# 敏感配置文件（含Token等密钥，禁止提交到Git）
+tp_education_system/backend/config/db_backup_config.json
+tp_education_system/backend/config/feishu_config.json
+tp_education_system/backend/config/db_backup_status.json
+
 # Chinese temp files
 *相关资料*/
 *备份*/
