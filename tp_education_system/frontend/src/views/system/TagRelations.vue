@@ -574,6 +574,30 @@ const getSingleSelected = (cat: any): number | null => {
 // 处理单选类型的选择
 const handleSingleSelect = (cat: any, val: number) => {
   const catTagIds = new Set(cat.tags.map((t: any) => t.id))
+
+  // 调离(19)、辞职(20)、去世(24)：勾选后清除该人员所有其他标签
+  const clearAllTags = [19, 20, 24]
+  if (val !== null && val !== undefined && clearAllTags.includes(val)) {
+    selectedTags.value = [val]
+    return
+  }
+
+  // 退休(23)、离休(22)：勾选后如果有gcdy(11)，保留gcdy(11)和dj(12)，清除其他
+  const preserveGcdyTags = [23, 22]
+  if (val !== null && val !== undefined && preserveGcdyTags.includes(val)) {
+    const hasGcdy = selectedTags.value.includes(11)
+    if (hasGcdy) {
+      // 保留gcdy(11)和dj(12)，清除其他
+      selectedTags.value = selectedTags.value.filter((id: number) => [11, 12].includes(id))
+      selectedTags.value.push(val)
+    } else {
+      // 没有gcdy，只保留当前选择
+      selectedTags.value = [val]
+    }
+    return
+  }
+
+  // 默认行为：清除该分类的标签，添加新选择
   selectedTags.value = selectedTags.value.filter((id: number) => !catTagIds.has(id))
   if (val !== null && val !== undefined) {
     selectedTags.value.push(val)

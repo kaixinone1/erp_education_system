@@ -6339,12 +6339,7 @@
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "post_1",
-          "relation_type": "to_dict",
-          "relation_table": "dict_dictionary_personal",
-          "relation_value_field": "id",
-          "relation_display_field": "post",
-          "description": "关联岗位名称字典"
+          "english_name": "post_1"
         },
         {
           "sourceField": "现受聘岗位等级",
@@ -6352,12 +6347,7 @@
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "post_level_1",
-          "relation_type": "to_dict",
-          "relation_table": "dict_grade_dictionary",
-          "relation_value_field": "id",
-          "relation_display_field": "post_level",
-          "description": "关联岗位等级字典"
+          "english_name": "post_level_1"
         },
         {
           "sourceField": "现岗位聘用日期",
@@ -6373,12 +6363,7 @@
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "post_3",
-          "relation_type": "to_dict",
-          "relation_table": "dict_dictionary_personal",
-          "relation_value_field": "id",
-          "relation_display_field": "post",
-          "description": "关联拟聘岗位名称字典"
+          "english_name": "post_3"
         },
         {
           "sourceField": "拟聘用岗位等级",
@@ -6386,12 +6371,7 @@
           "dataType": "VARCHAR",
           "length": 255,
           "required": false,
-          "english_name": "post_level_2",
-          "relation_type": "to_dict",
-          "relation_table": "dict_grade_dictionary",
-          "relation_value_field": "id",
-          "relation_display_field": "post_level",
-          "description": "关联拟聘岗位等级字典"
+          "english_name": "post_level_2"
         },
         {
           "sourceField": "拟聘用日期",

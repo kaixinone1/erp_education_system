@@ -574,19 +574,38 @@ async def get_tag_categories():
 
 def _validate_tag_mutual_exclusion(tag_ids: list) -> Optional[str]:
     """验证标签互斥规则，返回错误信息或None（验证通过）"""
-    
+
     # 构建 tag_id -> category 的映射
     tag_category_map = {}
     for cat in TAG_CATEGORIES:
         for tid in cat.get("tag_ids", []):
             tag_category_map[tid] = (cat["category"], None)
-    
+
     # 检查任职状态类互斥（单选）
     status_tag_ids = {17, 18, 19, 20, 21, 22, 23, 24, 25}
     selected_status = [tid for tid in tag_ids if tid in status_tag_ids]
     if len(selected_status) > 1:
         return "任职状态类标签只能选择一个"
-    
+
+    # 调离(19)、辞职(20)、去世(24)：选中后不能有其他任何标签
+    clear_all_tags = {19, 20, 24}
+    selected_clear_all = [tid for tid in tag_ids if tid in clear_all_tags]
+    if selected_clear_all:
+        other_tags = [tid for tid in tag_ids if tid not in clear_all_tags]
+        if other_tags:
+            tag_names = _get_tag_names(other_tags)
+            return f"选择了调离/辞职/去世状态时，不能同时选择其他标签：{tag_names}"
+
+    # 退休(23)、离休(22)：选中后只能保留gcdy(11)和dj(12)
+    preserve_tags = {23, 22}
+    selected_preserve = [tid for tid in tag_ids if tid in preserve_tags]
+    if selected_preserve:
+        allowed_with_preserve = {11, 12} | preserve_tags
+        not_allowed = [tid for tid in tag_ids if tid not in allowed_with_preserve]
+        if not_allowed:
+            tag_names = _get_tag_names(not_allowed)
+            return f"选择了退休/离休状态时，只能保留gcdy和dj，不能同时选择：{tag_names}"
+
     # 检查政治面貌类子分组互斥
     # 党员组: gcdy(11), dj(12), 组织关系挂靠(13) — 组内可多选
     # 团员组: gqty(14), tj(15) — 组内可多选
@@ -604,5 +623,20 @@ def _validate_tag_mutual_exclusion(tag_ids: list) -> Optional[str]:
             used_sub_groups.append(group_name)
     if len(used_sub_groups) > 1:
         return f"政治面貌类子分组互斥，不能同时选择{'、'.join(used_sub_groups)}"
-    
+
     return None
+
+
+def _get_tag_names(tag_ids: list) -> str:
+    """根据tag_id列表获取标签名称"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        placeholders = ','.join(['%s'] * len(tag_ids))
+        cursor.execute(f"SELECT biao_qian FROM personal_dict_dictionary WHERE id IN ({placeholders})", tuple(tag_ids))
+        names = [row[0] for row in cursor.fetchall()]
+        cursor.close()
+        conn.close()
+        return '、'.join(names)
+    except:
+        return '未知'

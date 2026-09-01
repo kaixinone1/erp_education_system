@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+; ============================================================
+; Windows 11 家庭版 - 恢复 Windows Defender 默认设置
+; 使用方法：右键 → 合并 → 点"是"确认 → 重启电脑
+; ============================================================
+
+; 删除 Real-Time Protection 下的策略项，恢复默认
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection]
+
+; 删除 Spynet 下的策略项
+[-HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet]
+
+; 恢复主开关（允许 Defender 运行）
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender]
+"DisableAntiSpyware"=dword:00000000

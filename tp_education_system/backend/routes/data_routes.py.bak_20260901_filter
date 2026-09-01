@@ -541,43 +541,30 @@ async def get_table_data(
             if filter:
                 try:
                     filter_data = json.loads(filter)
-                    # 构建字段->字典关联的映射，用于在筛选时同时匹配原始代码和字典显示字段
-                    dict_mapping_map = {m['field']: m for m in dict_mappings}
                     # 新格式：条件数组 [{field, operator, value}, ...]
                     if isinstance(filter_data, list):
                         for cond in filter_data:
                             field = cond.get('field', '')
                             operator = cond.get('operator', 'contains')
                             value = cond.get('value', '')
-
+                            
                             if not field:
                                 continue
                             if field not in columns:
                                 continue
-
+                            
                             param_name = f"filter_{field}_{len(params)}"
                             col_ref = f"t.{field}" if use_table_alias else field
-                            # 检查该字段是否有字典关联，若有则同时匹配字典显示字段（中文名称）
-                            dict_mapping = dict_mapping_map.get(field) if use_table_alias else None
-                            dict_alias_name = f"dict_{field}" if dict_mapping else None
-                            dict_col_ref = f"{dict_alias_name}.{dict_mapping['name_field']}" if dict_mapping else None
-
+                            
                             if operator == 'is_null':
                                 where_conditions.append(f"{col_ref} IS NULL")
                             elif operator == 'is_not_null':
                                 where_conditions.append(f"{col_ref} IS NOT NULL")
                             elif operator == 'eq':
-                                # 等于：同时匹配原始字段或字典显示字段
-                                if dict_col_ref:
-                                    where_conditions.append(f"(CAST({col_ref} AS TEXT) = :{param_name} OR CAST({dict_col_ref} AS TEXT) = :{param_name})")
-                                else:
-                                    where_conditions.append(f"CAST({col_ref} AS TEXT) = :{param_name}")
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) = :{param_name}")
                                 params[param_name] = str(value)
                             elif operator == 'neq':
-                                if dict_col_ref:
-                                    where_conditions.append(f"(CAST({col_ref} AS TEXT) != :{param_name} AND CAST({dict_col_ref} AS TEXT) != :{param_name})")
-                                else:
-                                    where_conditions.append(f"CAST({col_ref} AS TEXT) != :{param_name}")
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) != :{param_name}")
                                 params[param_name] = str(value)
                             elif operator == 'gt':
                                 where_conditions.append(f"CAST({col_ref} AS TEXT) > :{param_name}")
@@ -592,11 +579,7 @@ async def get_table_data(
                                 where_conditions.append(f"CAST({col_ref} AS TEXT) <= :{param_name}")
                                 params[param_name] = str(value)
                             elif operator == 'not_contains':
-                                # 不包含：对字典关联字段，字典显示字段也不包含
-                                if dict_col_ref:
-                                    where_conditions.append(f"(CAST({col_ref} AS TEXT) NOT ILIKE :{param_name} AND CAST({dict_col_ref} AS TEXT) NOT ILIKE :{param_name})")
-                                else:
-                                    where_conditions.append(f"CAST({col_ref} AS TEXT) NOT ILIKE :{param_name}")
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) NOT ILIKE :{param_name}")
                                 params[param_name] = f"%{value}%"
                             elif operator == 'in':
                                 # 支持逗号分隔的多值，如 "退休,离休"
@@ -607,30 +590,16 @@ async def get_table_data(
                                         pname = f"{param_name}_{i}"
                                         in_params.append(f":{pname}")
                                         params[pname] = v
-                                    if dict_col_ref:
-                                        # 字典关联字段：同时支持原始代码或字典显示字段的IN查询
-                                        where_conditions.append(f"(CAST({col_ref} AS TEXT) IN ({', '.join(in_params)}) OR CAST({dict_col_ref} AS TEXT) IN ({', '.join(in_params)})")
-                                    else:
-                                        where_conditions.append(f"CAST({col_ref} AS TEXT) IN ({', '.join(in_params)})")
+                                    where_conditions.append(f"CAST({col_ref} AS TEXT) IN ({', '.join(in_params)})")
                             elif operator == 'starts_with':
-                                if dict_col_ref:
-                                    where_conditions.append(f"(CAST({col_ref} AS TEXT) ILIKE :{param_name} OR CAST({dict_col_ref} AS TEXT) ILIKE :{param_name})")
-                                else:
-                                    where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
                                 params[param_name] = f"{value}%"
                             elif operator == 'ends_with':
-                                if dict_col_ref:
-                                    where_conditions.append(f"(CAST({col_ref} AS TEXT) ILIKE :{param_name} OR CAST({dict_col_ref} AS TEXT) ILIKE :{param_name})")
-                                else:
-                                    where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
                                 params[param_name] = f"%{value}"
                             else:  # contains (默认)
                                 if value:
-                                    # 包含：对字典关联字段，同时匹配原始代码或字典显示字段（中文名称）
-                                    if dict_col_ref:
-                                        where_conditions.append(f"(CAST({col_ref} AS TEXT) ILIKE :{param_name} OR CAST({dict_col_ref} AS TEXT) ILIKE :{param_name})")
-                                    else:
-                                        where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
+                                    where_conditions.append(f"CAST({col_ref} AS TEXT) ILIKE :{param_name}")
                                     params[param_name] = f"%{value}%"
                     # 旧格式兼容：字典 {field: value, ...}
                     elif isinstance(filter_data, dict):

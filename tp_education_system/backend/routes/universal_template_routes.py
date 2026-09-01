@@ -1767,10 +1767,15 @@ def _write_compatibility_json(request, filled_config, template_config):
     # 从 filled_config 的单元格数据中提取关键统计字段
     cells = filled_config.get('单元格数据', [])
     cell_by_field = {}
+    cell_by_pos = {}  # (行号, 列号) -> cell
     for cell in cells:
         field_name = cell.get('字段名称', '')
         if field_name:
             cell_by_field[field_name] = cell
+        r = cell.get('行号')
+        c = cell.get('列号')
+        if r is not None and c is not None:
+            cell_by_pos[(r, c)] = cell
 
     def _get_cell_value(field_name, default=0):
         """从填充配置中获取指定字段的值"""
@@ -1791,6 +1796,26 @@ def _write_compatibility_json(request, filled_config, template_config):
             return str(cell.get('显示值', '') or '')
         return default
 
+    def _get_val_by_pos(row, col, default=0):
+        """通过行号+列号获取单元格值（绩效工资审批表单元格未配置字段名称时的兜底方案）"""
+        cell = cell_by_pos.get((row, col))
+        if cell:
+            val = cell.get('值', cell.get('显示值'))
+            if val is not None and val != '':
+                try:
+                    s = str(val)
+                    return float(s) if '.' in s else int(float(s))
+                except (ValueError, TypeError):
+                    return str(val)
+        return default
+
+    def _get_disp_by_pos(row, col, default=''):
+        """通过行号+列号获取单元格显示值"""
+        cell = cell_by_pos.get((row, col))
+        if cell:
+            return str(cell.get('显示值', '') or '')
+        return default
+
     # 构建兼容JSON
     unit_name = ''
     if request.统计范围 and request.统计范围.get('单位范围'):
@@ -1806,60 +1831,60 @@ def _write_compatibility_json(request, filled_config, template_config):
         '填报单位': unit_name,
         '年月': f"{year}年{month}月",
         '填报时间': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        # 行政管理人员
+        # 行政管理人员（当前表格R7=科员级, R8=办事员级; 副处/正科/副科在当前表格中不存在, 保持0）
         '副处级人数': _get_cell_value('副处级人数', 0),
         '副处级标准': _get_cell_value('副处级标准', 0),
         '正科级人数': _get_cell_value('正科级人数', 0),
         '正科级标准': _get_cell_value('正科级标准', 0),
         '副科级人数': _get_cell_value('副科级人数', 0),
         '副科级标准': _get_cell_value('副科级标准', 0),
-        '科员级人数': _get_cell_value('科员级人数', 0),
-        '科员级标准': _get_cell_value('科员级标准', 1185),
-        '办事员级人数': _get_cell_value('办事员级人数', 0),
-        '办事员级标准': _get_cell_value('办事员级标准', 0),
-        # 专业技术人员
-        '正高级教师人数': _get_cell_value('正高级教师人数', 0),
-        '正高级教师标准': _get_cell_value('正高级教师标准', 1862),
-        '高级教师人数': _get_cell_value('高级教师人数', 0),
-        '高级教师标准': _get_cell_value('高级教师标准', 1523),
-        '一级教师人数': _get_cell_value('一级教师人数', 0),
-        '一级教师标准': _get_cell_value('一级教师标准', 1309),
-        '二级教师人数': _get_cell_value('二级教师人数', 0),
-        '二级教师标准': _get_cell_value('二级教师标准', 1241),
-        '三级教师人数': _get_cell_value('三级教师人数', 0),
-        '三级教师标准': _get_cell_value('三级教师标准', 1128),
-        # 工人
-        '高级技师人数': _get_cell_value('高级技师人数', 0),
-        '高级技师标准': _get_cell_value('高级技师标准', 0),
-        '技师人数': _get_cell_value('技师人数', 0),
-        '技师标准': _get_cell_value('技师标准', 1331),
-        '高级工人数': _get_cell_value('高级工人数', 0),
-        '高级工标准': _get_cell_value('高级工标准', 1219),
-        '中级工人数': _get_cell_value('中级工人数', 0),
-        '中级工标准': _get_cell_value('中级工标准', 1185),
-        '初级工人数': _get_cell_value('初级工人数', 0),
-        '初级工标准': _get_cell_value('初级工标准', 1106),
-        '普工人数': _get_cell_value('普工人数', 0),
-        '普工标准': _get_cell_value('普工标准', 1106),
-        # 汇总
-        '绩效人数合计': _get_cell_value('绩效人数合计', 0),
-        '绩效工资合计': _get_cell_value('绩效工资合计', 0),
-        # 乡镇补贴
-        '在职人数': _get_cell_value('在职人数', 0),
-        '乡镇补贴标准': _get_cell_value('乡镇补贴标准', 350),
-        '乡镇补贴合计': _get_cell_value('乡镇补贴合计', 0),
-        # 退休人员
-        '退休干部': _get_cell_value('退休干部', 0),
-        '退休职工': _get_cell_value('退休职工', 0),
-        '离休干部人数': _get_cell_value('离休干部人数', 0),
-        # 遗留问题
-        '遗留问题详情': _get_cell_display('遗留问题详情', ''),
-        '遗留问题人数': _get_cell_value('遗留问题人数', 0),
-        '遗留问题金额': _get_cell_value('遗留问题金额', 0),
+        '科员级人数': _get_val_by_pos(7, 2, _get_cell_value('科员级人数', 0)),
+        '科员级标准': _get_val_by_pos(7, 3, _get_cell_value('科员级标准', 1185)),
+        '办事员级人数': _get_val_by_pos(8, 2, _get_cell_value('办事员级人数', 0)),
+        '办事员级标准': _get_val_by_pos(8, 3, _get_cell_value('办事员级标准', 0)),
+        # 专业技术人员（R9=正高级, R10=高级教师, R11=一级教师, R12=二级教师, R13=三级教师）
+        '正高级教师人数': _get_val_by_pos(9, 2, _get_cell_value('正高级教师人数', 0)),
+        '正高级教师标准': _get_val_by_pos(9, 3, _get_cell_value('正高级教师标准', 1862)),
+        '高级教师人数': _get_val_by_pos(10, 2, _get_cell_value('高级教师人数', 0)),
+        '高级教师标准': _get_val_by_pos(10, 3, _get_cell_value('高级教师标准', 1523)),
+        '一级教师人数': _get_val_by_pos(11, 2, _get_cell_value('一级教师人数', 0)),
+        '一级教师标准': _get_val_by_pos(11, 3, _get_cell_value('一级教师标准', 1309)),
+        '二级教师人数': _get_val_by_pos(12, 2, _get_cell_value('二级教师人数', 0)),
+        '二级教师标准': _get_val_by_pos(12, 3, _get_cell_value('二级教师标准', 1241)),
+        '三级教师人数': _get_val_by_pos(13, 2, _get_cell_value('三级教师人数', 0)),
+        '三级教师标准': _get_val_by_pos(13, 3, _get_cell_value('三级教师标准', 1128)),
+        # 工人（R14=高级技师, R15=技师, R16=高级工, R17=中级工, R18=初级工, R19=普工）
+        '高级技师人数': _get_val_by_pos(14, 2, _get_cell_value('高级技师人数', 0)),
+        '高级技师标准': _get_val_by_pos(14, 3, _get_cell_value('高级技师标准', 0)),
+        '技师人数': _get_val_by_pos(15, 2, _get_cell_value('技师人数', 0)),
+        '技师标准': _get_val_by_pos(15, 3, _get_cell_value('技师标准', 1331)),
+        '高级工人数': _get_val_by_pos(16, 2, _get_cell_value('高级工人数', 0)),
+        '高级工标准': _get_val_by_pos(16, 3, _get_cell_value('高级工标准', 1219)),
+        '中级工人数': _get_val_by_pos(17, 2, _get_cell_value('中级工人数', 0)),
+        '中级工标准': _get_val_by_pos(17, 3, _get_cell_value('中级工标准', 1185)),
+        '初级工人数': _get_val_by_pos(18, 2, _get_cell_value('初级工人数', 0)),
+        '初级工标准': _get_val_by_pos(18, 3, _get_cell_value('初级工标准', 1106)),
+        '普工人数': _get_val_by_pos(19, 2, _get_cell_value('普工人数', 0)),
+        '普工标准': _get_val_by_pos(19, 3, _get_cell_value('普工标准', 1106)),
+        # 汇总（R20=绩效工资合计: C2=人数, C4=金额）
+        '绩效人数合计': _get_val_by_pos(20, 2, _get_cell_value('绩效人数合计', 0)),
+        '绩效工资合计': _get_val_by_pos(20, 4, _get_cell_value('绩效工资合计', 0)),
+        # 乡镇补贴（R21=乡镇补贴合计: C2=人数, C4=金额）
+        '在职人数': _get_val_by_pos(21, 2, _get_cell_value('在职人数', 0)),
+        '乡镇补贴标准': _get_val_by_pos(21, 3, _get_cell_value('乡镇补贴标准', 350)),
+        '乡镇补贴合计': _get_val_by_pos(21, 4, _get_cell_value('乡镇补贴合计', 0)),
+        # 退休人员（R25=退休干部, R26=退休工人, R27=离休干部: C2=人数）
+        '退休干部': _get_val_by_pos(25, 2, _get_cell_value('退休干部', 0)),
+        '退休职工': _get_val_by_pos(26, 2, _get_cell_value('退休职工', 0)),
+        '离休干部人数': _get_val_by_pos(27, 2, _get_cell_value('离休干部人数', 0)),
+        # 遗留问题（R24=岗位设置遗留问题合计: C2=人数, C4=金额）
+        '遗留问题详情': _get_disp_by_pos(24, 1, _get_cell_display('遗留问题详情', '')),
+        '遗留问题人数': _get_val_by_pos(24, 2, _get_cell_value('遗留问题人数', 0)),
+        '遗留问题金额': _get_val_by_pos(24, 4, _get_cell_value('遗留问题金额', 0)),
         '无补贴人数': _get_cell_value('无补贴人数', 0),
         '无补贴名单': _get_cell_display('无补贴名单', ''),
-        # 备注
-        '备注': request.备注 or _get_cell_display('备注', ''),
+        # 备注（R28C1=备注单元格，优先前端传入，其次行号+列号，最后字段名称）
+        '备注': request.备注 or _get_disp_by_pos(28, 1, _get_cell_display('备注', '')),
     }
 
     # 写入旧系统JSON文件

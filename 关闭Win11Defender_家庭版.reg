@@ -1,0 +1,31 @@
+Windows Registry Editor Version 5.00
+
+; ============================================================
+; Windows 11 家庭版 - 永久关闭 Windows Defender 实时保护
+; 导入方法：右键此文件 → 合并 → 点"是"确认 → 重启电脑生效
+; 如需恢复，把下方所有 dword:00000001 改成 dword:00000000 后重新导入即可
+; ============================================================
+
+; 1. 关闭实时保护
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection]
+"DisableRealtimeMonitoring"=dword:00000001
+
+; 2. 关闭行为监控
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection]
+"DisableBehaviorMonitoring"=dword:00000001
+
+; 3. 关闭首次看到即阻止（云保护）
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection]
+"DisableBlockAtFirstSeen"=dword:00000001
+
+; 4. 关闭扫描时启用的实时保护
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection]
+"DisableOnAccessProtection"=dword:00000001
+
+; 5. 主开关：关闭 Windows Defender（可选，更彻底）
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender]
+"DisableAntiSpyware"=dword:00000001
+
+; 6. 防止 Windows 自动篡改篡改保护（关闭自动提交样本）
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet]
+"SubmitSamplesConsent"=dword:00000002
