@@ -19,6 +19,19 @@ from .feishu_notification_service import send_backup_notification
 
 logger = logging.getLogger(__name__)
 
+# 配置日志文件持久化（确保备份相关日志可追溯）
+_LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+os.makedirs(_LOG_DIR, exist_ok=True)
+_FILE_HANDLER = logging.FileHandler(
+    os.path.join(_LOG_DIR, 'db_backup.log'),
+    encoding='utf-8'
+)
+_FILE_HANDLER.setLevel(logging.INFO)
+_FILE_HANDLER.setFormatter(logging.Formatter(
+    '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+))
+logger.addHandler(_FILE_HANDLER)
+
 # 配置文件路径
 CONFIG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config')
 BACKUP_CONFIG_FILE = os.path.join(CONFIG_DIR, 'db_backup_config.json')
@@ -612,8 +625,17 @@ def run_backup() -> dict:
         try:
             notify_result = send_backup_notification(backup_result)
             backup_result["飞书通知"] = notify_result
+            # 持久化通知结果到状态文件，便于排查
+            update_notification_status(notify_result)
+            if notify_result.get("success") and not notify_result.get("skipped"):
+                logger.info("飞书通知发送成功")
+            elif notify_result.get("skipped"):
+                logger.info(f"飞书通知跳过: {notify_result.get('reason', '')}")
+            else:
+                logger.error(f"飞书通知发送失败: {notify_result.get('error', '未知错误')}")
         except Exception as e:
-            logger.warning(f"飞书通知发送异常: {e}")
+            logger.error(f"飞书通知发送异常: {e}")
+            update_notification_status({"success": False, "error": str(e), "results": []})
         
         return backup_result
         
@@ -649,6 +671,23 @@ def update_status(status, success, results=None, failed_paths=None):
     if success:
         status["last_success_time"] = now
     save_status(status)
+
+
+def update_notification_status(notify_result):
+    """将通知结果持久化到状态文件，便于排查通知问题"""
+    try:
+        status = get_status()
+        status["last_notification"] = {
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "success": notify_result.get("success", False),
+            "skipped": notify_result.get("skipped", False),
+            "reason": notify_result.get("reason", ""),
+            "results": notify_result.get("results", []),
+            "error": notify_result.get("error", ""),
+        }
+        save_status(status)
+    except Exception as e:
+        logger.warning(f"保存通知结果到状态文件失败: {e}")
 
 
 def archive_old_backups(backup_path):

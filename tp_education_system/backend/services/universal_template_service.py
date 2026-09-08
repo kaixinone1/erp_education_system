@@ -1999,11 +1999,21 @@ table {{
                     all_descendant_ids.update(r[0] for r in cursor.fetchall())
             
             if all_descendant_ids:
-                conditions.append(
-                    "t.id IN (SELECT DISTINCT t2.id FROM teacher_basic_info t2 "
-                    "JOIN teacher_unit tu ON t2.\"身份证号码\" = tu.id_card "
-                    "WHERE CAST(tu.unit_1 AS integer) = ANY(%s))"
-                )
+                if tag_ids:
+                    # 有标签过滤时，用LEFT JOIN容错：缺失teacher_unit记录的人员默认包含
+                    # 标签已限定人员范围，避免不属于该单位的人被误包含
+                    conditions.append(
+                        "t.id IN (SELECT DISTINCT t2.id FROM teacher_basic_info t2 "
+                        "LEFT JOIN teacher_unit tu ON t2.\"身份证号码\" = tu.id_card "
+                        "WHERE tu.id IS NULL OR CAST(tu.unit_1 AS integer) = ANY(%s))"
+                    )
+                else:
+                    # 只有单位过滤时，用INNER JOIN确保只统计该单位的人
+                    conditions.append(
+                        "t.id IN (SELECT DISTINCT t2.id FROM teacher_basic_info t2 "
+                        "JOIN teacher_unit tu ON t2.\"身份证号码\" = tu.id_card "
+                        "WHERE CAST(tu.unit_1 AS integer) = ANY(%s))"
+                    )
                 params.append(list(all_descendant_ids))
             else:
                 return None, []

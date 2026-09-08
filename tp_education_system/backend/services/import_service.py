@@ -134,7 +134,17 @@ class ImportService:
                 total_count = inserted_count
                 updated_count = 0
                 message = f"成功导入 {inserted_count} 条数据"
-            
+
+            # 步骤2.5: 同步teacher_unit记录（仅当导入teacher_basic_info表时）
+            # 确保任何方式新增的人员都有teacher_unit记录，避免统计遗漏
+            if actual_table_name == 'teacher_basic_info':
+                try:
+                    synced = self._sync_teacher_unit_records()
+                    if synced > 0:
+                        print(f"[同步] 自动创建 {synced} 条teacher_unit记录")
+                except Exception as e:
+                    print(f"[警告] 同步teacher_unit失败: {e}")
+
             # 步骤3: 更新配置文件
             self._update_schema_config(
                 table_name=actual_table_name,
@@ -1019,3 +1029,37 @@ class ImportService:
             print(f"[导航配置] 更新失败: {e}")
             import traceback
             traceback.print_exc()
+
+    def _sync_teacher_unit_records(self) -> int:
+        """
+        同步teacher_unit记录：检查teacher_basic_info中缺失teacher_unit记录的人员并自动创建
+        确保任何方式新增的人员都有teacher_unit记录，避免统计遗漏
+        缺失记录的人员默认归属unit_1=1（最顶层单位）
+        """
+        from sqlalchemy import text
+        synced = 0
+        with self.engine.connect() as conn:
+            # 查找缺失teacher_unit记录的人员
+            result = conn.execute(text("""
+                SELECT tbi."身份证号码", tbi."姓名"
+                FROM teacher_basic_info tbi
+                LEFT JOIN teacher_unit tu ON tbi."身份证号码" = tu.id_card
+                WHERE tu.id IS NULL
+            """))
+            missing_rows = result.fetchall()
+
+            if not missing_rows:
+                return 0
+
+            # 为每个缺失记录的人员创建teacher_unit记录
+            for row in missing_rows:
+                id_card = row[0]
+                name = row[1]
+                conn.execute(text(
+                    "INSERT INTO teacher_unit (name, id_card, unit_1) VALUES (:name, :id_card, '1')"
+                ), {"name": name, "id_card": id_card})
+                synced += 1
+
+            conn.commit()
+            print(f"[同步] 为 {synced} 名缺失teacher_unit记录的人员自动创建记录")
+        return synced

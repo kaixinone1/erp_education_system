@@ -33,6 +33,17 @@ import os
 
 app = FastAPI()
 
+# 启动事件：确保调度器在任何启动方式下都能启动（包括 uvicorn 模块方式）
+@app.on_event("startup")
+async def _startup_event():
+    """应用启动时自动注册定时任务"""
+    try:
+        from services.scheduler_service import start_scheduler
+        start_scheduler()
+        print("[OK] 定时任务调度器已通过startup事件启动")
+    except Exception as e:
+        print(f"[WARN] 定时任务启动失败(startup事件): {e}")
+
 # CORS配置
 app.add_middleware(
     CORSMiddleware,
