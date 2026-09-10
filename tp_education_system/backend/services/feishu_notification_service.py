@@ -20,7 +20,31 @@ FEISHU_CONFIG_FILE = os.path.join(CONFIG_DIR, 'feishu_config.json')
 # 飞书 API 地址
 FEISHU_TOKEN_URL = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
 FEISHU_SEND_MSG_URL = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=open_id"
+FEISHU_SEND_MSG_BY_EMAIL_URL = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=email"
 FEISHU_USER_BY_EMAIL_URL = "https://open.feishu.cn/open-apis/contact/v3/users/batch_get"
+
+
+def send_text_via_webhook(webhook_url, text):
+    """
+    通过飞书群机器人 webhook 发送文本消息
+    不需要任何认证，永不过期
+    返回: (success: bool, error: str|None)
+    """
+    try:
+        body = {
+            "msg_type": "text",
+            "content": {"text": text}
+        }
+        resp = requests.post(webhook_url, json=body, timeout=10)
+        data = resp.json()
+        if data.get("code") == 0 or data.get("StatusCode") == 0:
+            return True, None
+        else:
+            return False, f"webhook发送失败: code={data.get('code')}, msg={data.get('msg') or data.get('errmsg', '')}"
+    except requests.exceptions.Timeout:
+        return False, "webhook发送超时"
+    except Exception as e:
+        return False, f"webhook发送异常: {str(e)}"
 
 
 def get_feishu_config():
@@ -55,7 +79,7 @@ def get_tenant_access_token(app_id, app_secret):
 
 def send_text_message(token, open_id, text):
     """
-    发送飞书文本消息（通过 API）
+    发送飞书文本消息（通过 API，使用 open_id）
     返回: (success: bool, error: str|None)
     """
     try:
@@ -70,6 +94,39 @@ def send_text_message(token, open_id, text):
         }
         resp = requests.post(
             FEISHU_SEND_MSG_URL,
+            headers=headers,
+            json=body,
+            timeout=10
+        )
+        data = resp.json()
+        if data.get("code") == 0:
+            return True, None
+        else:
+            return False, f"发送消息失败: code={data.get('code')}, msg={data.get('msg')}"
+    except requests.exceptions.Timeout:
+        return False, "发送飞书消息超时"
+    except Exception as e:
+        return False, f"发送飞书消息异常: {str(e)}"
+
+
+def send_text_message_by_email(token, email, text):
+    """
+    发送飞书文本消息（通过 API，使用邮箱作为 receive_id）
+    不需要 open_id，不依赖通讯录权限
+    返回: (success: bool, error: str|None)
+    """
+    try:
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        body = {
+            "receive_id": email,
+            "msg_type": "text",
+            "content": json.dumps({"text": text})
+        }
+        resp = requests.post(
+            FEISHU_SEND_MSG_BY_EMAIL_URL,
             headers=headers,
             json=body,
             timeout=10
@@ -115,6 +172,77 @@ def send_text_via_lark_cli(open_id, text):
         return False, "找不到lark-cli命令"
     except Exception as e:
         return False, f"lark-cli发送异常: {str(e)}"
+
+
+def send_text_to_chat_via_lark_cli(chat_id, text):
+    """
+    通过 lark-cli 命令行发送飞书群消息（需要lark-cli user认证，token会过期）
+    返回: (success: bool, error: str|None)
+    """
+    try:
+        cmd = [
+            "lark-cli", "im", "+messages-send",
+            "--chat-id", chat_id,
+            "--text", text,
+            "--as", "user"
+        ]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=os.path.dirname(os.path.dirname(__file__))
+        )
+        if result.returncode == 0:
+            return True, None
+        else:
+            return False, f"lark-cli群消息发送失败: {result.stderr.strip() or result.stdout.strip()}"
+    except subprocess.TimeoutExpired:
+        return False, "lark-cli群消息发送超时"
+    except FileNotFoundError:
+        return False, "找不到lark-cli命令"
+    except Exception as e:
+        return False, f"lark-cli群消息发送异常: {str(e)}"
+
+
+def send_text_to_chat_via_api(app_id, app_secret, chat_id, text):
+    """
+    通过飞书应用API发送群消息（使用chat_id，token可随时重新获取，永不过期）
+    这是全天候可靠的通知方式，不依赖lark-cli认证状态
+    返回: (success: bool, error: str|None)
+    """
+    try:
+        # 1. 获取 tenant_access_token
+        token, token_error = get_tenant_access_token(app_id, app_secret)
+        if token_error:
+            return False, f"获取token失败: {token_error}"
+
+        # 2. 通过 chat_id 发送群消息
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        body = {
+            "receive_id": chat_id,
+            "msg_type": "text",
+            "content": json.dumps({"text": text})
+        }
+        # 使用 chat_id 作为 receive_id_type
+        resp = requests.post(
+            "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=chat_id",
+            headers=headers,
+            json=body,
+            timeout=10
+        )
+        data = resp.json()
+        if data.get("code") == 0:
+            return True, None
+        else:
+            return False, f"应用API群消息发送失败: code={data.get('code')}, msg={data.get('msg')}"
+    except requests.exceptions.Timeout:
+        return False, "应用API群消息发送超时"
+    except Exception as e:
+        return False, f"应用API群消息发送异常: {str(e)}"
 
 
 def get_open_id_by_email(token, email):
@@ -179,6 +307,79 @@ def resolve_user_open_ids(token, users):
     return resolved
 
 
+def _build_backup_message(backup_result, is_success, now):
+    """构建备份通知消息文本"""
+    filename = backup_result.get("filename", "未知")
+    file_size = backup_result.get("size", 0)
+    size_mb = file_size / (1024 * 1024) if file_size else 0
+    elapsed = backup_result.get("elapsed_seconds", 0)
+    results = backup_result.get("results", [])
+
+    # 统计连续成功/失败次数
+    try:
+        from services.db_backup_service import get_status
+        status = get_status()
+        consecutive_failures = status.get("consecutive_failures", 0)
+        last_success_time = status.get("last_success_time", "无记录")
+    except Exception:
+        consecutive_failures = 0
+        last_success_time = "无记录"
+
+    # 构建各位置状态行
+    location_rows = []
+    for r in results:
+        label = r.get("label", "未知位置")
+        if r.get("success"):
+            location_rows.append(f"  ✅ {label}  — 成功")
+        elif r.get("skipped"):
+            location_rows.append(f"  ⏭️ {label}  — 已跳过")
+        else:
+            error = r.get("error", "未知错误")
+            location_rows.append(f"  ❌ {label}  — {error}")
+
+    if is_success:
+        msg_lines = [
+            f"【数据库备份成功】",
+            f"时间：{now}",
+            f"备份文件：{filename}",
+            f"文件大小：{size_mb:.2f} MB",
+        ]
+        if elapsed:
+            msg_lines.append(f"耗时：{elapsed:.1f} 秒")
+        msg_lines.append(f"────────────────────")
+        msg_lines.append(f"备份结果：")
+        msg_lines.extend(location_rows)
+        msg_lines.append(f"────────────────────")
+
+        archive_info = backup_result.get("archive_info")
+        if archive_info:
+            msg_lines.append(f"归档清理：{archive_info}")
+
+        msg_lines.append(f"连续成功：{consecutive_failures} 天无失败")
+        msg_lines.append(f"")
+        msg_lines.append(f"—— ERP系统自动通知")
+    else:
+        msg_lines = [
+            f"【数据库备份失败】",
+            f"时间：{now}",
+            f"备份文件：{filename}",
+        ]
+        if size_mb > 0:
+            msg_lines.append(f"文件大小：{size_mb:.2f} MB")
+        msg_lines.append(f"────────────────────")
+        msg_lines.append(f"备份结果：")
+        msg_lines.extend(location_rows)
+        msg_lines.append(f"────────────────────")
+        msg_lines.append(f"上次成功：{last_success_time}")
+        if consecutive_failures > 0:
+            msg_lines.append(f"连续失败：{consecutive_failures} 次")
+        msg_lines.append(f"")
+        msg_lines.append(f"请及时检查备份配置，确保数据安全！")
+        msg_lines.append(f"—— ERP系统自动通知")
+
+    return "\n".join(msg_lines)
+
+
 def send_backup_notification(backup_result):
     """
     向所有配置的通知用户发送备份状态通知
@@ -214,8 +415,48 @@ def send_backup_notification(backup_result):
         logger.info("当前通知场景未启用，跳过通知")
         return {"success": True, "results": [], "skipped": True, "reason": "场景未启用"}
 
+    # 构建消息内容（webhook和API方式共用）
+    now = datetime.now().strftime("%Y年%m月%d日 %H:%M:%S")
+
+    # 方式0（首选）：通过群机器人 webhook 发送，不需要认证，永不过期
+    webhook_url = config.get("群机器人Webhook", "").strip()
+    if webhook_url:
+        logger.info("使用群机器人webhook方式发送通知")
+        # 构建消息内容
+        message = _build_backup_message(backup_result, is_success, now)
+        success, error = send_text_via_webhook(webhook_url, message)
+        if success:
+            logger.info("飞书通知已通过webhook发送成功")
+            return {"success": True, "results": [{"方式": "webhook", "success": True}], "message": message}
+        else:
+            logger.error(f"webhook发送失败: {error}，尝试其他方式")
+
+    # 方式0.5（次选）：通过应用API群消息发送（token可随时重新获取，全天候可靠）
+    chat_id = config.get("群聊ID", "").strip()
     app_id = config.get("App ID")
     app_secret = config.get("App Secret")
+    if chat_id and app_id and app_secret:
+        logger.info("使用应用API群消息方式发送通知")
+        message = _build_backup_message(backup_result, is_success, now)
+        success, error = send_text_to_chat_via_api(app_id, app_secret, chat_id, message)
+        if success:
+            logger.info("飞书通知已通过应用API群消息发送成功")
+            return {"success": True, "results": [{"方式": "应用API群消息", "success": True}], "message": message}
+        else:
+            logger.error(f"应用API群消息发送失败: {error}，尝试其他方式")
+
+    # 方式0.6（备选）：通过 lark-cli 群消息发送（依赖lark-cli user认证，白天有效）
+    if chat_id:
+        logger.info("使用lark-cli群消息方式发送通知")
+        message = _build_backup_message(backup_result, is_success, now)
+        success, error = send_text_to_chat_via_lark_cli(chat_id, message)
+        if success:
+            logger.info("飞书通知已通过lark-cli群消息发送成功")
+            return {"success": True, "results": [{"方式": "lark-cli群消息", "success": True}], "message": message}
+        else:
+            logger.error(f"lark-cli群消息发送失败: {error}，尝试其他方式")
+
+    # 以下方式需要应用凭证（逐个用户发送）
     if not app_id or not app_secret:
         logger.error("飞书应用凭证缺失")
         return {"success": False, "error": "飞书应用凭证缺失"}
@@ -225,80 +466,7 @@ def send_backup_notification(backup_result):
         logger.error(f"获取飞书token失败: {token_error}")
         return {"success": False, "error": token_error}
 
-    now = datetime.now().strftime("%Y年%m月%d日 %H:%M:%S")
-    filename = backup_result.get("filename", "未知")
-    file_size = backup_result.get("size", 0)
-    size_mb = file_size / (1024 * 1024) if file_size else 0
-    elapsed = backup_result.get("elapsed_seconds", 0)
-    results = backup_result.get("results", [])
-    failed_paths = backup_result.get("failed_paths", [])
-
-    # 统计连续成功/失败次数
-    from services.db_backup_service import get_status
-    status = get_status()
-    consecutive_failures = status.get("consecutive_failures", 0)
-    last_success_time = status.get("last_success_time", "无记录")
-
-    # 构建各位置状态行
-    def build_location_rows():
-        rows = []
-        for r in results:
-            label = r.get("label", "未知位置")
-            if r.get("success"):
-                rows.append(f"  ✅ {label}  — 成功")
-            elif r.get("skipped"):
-                rows.append(f"  ⏭️ {label}  — 已跳过")
-            else:
-                error = r.get("error", "未知错误")
-                rows.append(f"  ❌ {label}  — {error}")
-        return rows
-
-    location_rows = build_location_rows()
-
-    if is_success:
-        # 成功通知
-        msg_lines = [
-            f"【数据库备份成功】",
-            f"时间：{now}",
-            f"备份文件：{filename}",
-            f"文件大小：{size_mb:.2f} MB",
-        ]
-        if elapsed:
-            msg_lines.append(f"耗时：{elapsed:.1f} 秒")
-        msg_lines.append(f"────────────────────")
-        msg_lines.append(f"备份结果：")
-        msg_lines.extend(location_rows)
-        msg_lines.append(f"────────────────────")
-
-        # 归档清理信息
-        archive_info = backup_result.get("archive_info")
-        if archive_info:
-            msg_lines.append(f"归档清理：{archive_info}")
-
-        msg_lines.append(f"连续成功：{consecutive_failures} 天无失败")
-        msg_lines.append(f"")
-        msg_lines.append(f"—— ERP系统自动通知")
-    else:
-        # 失败通知
-        msg_lines = [
-            f"【数据库备份失败】",
-            f"时间：{now}",
-            f"备份文件：{filename}",
-        ]
-        if size_mb > 0:
-            msg_lines.append(f"文件大小：{size_mb:.2f} MB")
-        msg_lines.append(f"────────────────────")
-        msg_lines.append(f"备份结果：")
-        msg_lines.extend(location_rows)
-        msg_lines.append(f"────────────────────")
-        msg_lines.append(f"上次成功：{last_success_time}")
-        if consecutive_failures > 0:
-            msg_lines.append(f"连续失败：{consecutive_failures} 次")
-        msg_lines.append(f"")
-        msg_lines.append(f"请及时检查备份配置，确保数据安全！")
-        msg_lines.append(f"—— ERP系统自动通知")
-
-    message = "\n".join(msg_lines)
+    message = _build_backup_message(backup_result, is_success, now)
 
     # 发送给所有通知用户
     users = config.get("通知用户", [])
@@ -316,33 +484,33 @@ def send_backup_notification(backup_result):
         success = False
         error_msg = None
 
-        # 优先使用 API 直接发送（已有 open_id 时无需再查询）
-        if open_id:
+        # 方式1（首选）：通过邮箱直接发送，不依赖open_id，不受跨应用限制
+        if email:
+            success, error_msg = send_text_message_by_email(token, email, message)
+            if success:
+                logger.info(f"飞书通知已发送给 {name} (邮箱直发)")
+                notify_results.append({"用户": name, "success": True, "方式": "邮箱直发"})
+                continue
+            else:
+                logger.warning(f"邮箱直发失败 [{name}]: {error_msg}，尝试其他方式")
+
+        # 方式2：通过 open_id 发送（可能跨应用失败）
+        if not success and open_id:
             success, error_msg = send_text_message(token, open_id, message)
             if success:
-                logger.info(f"飞书通知已发送给 {name} (API)")
+                logger.info(f"飞书通知已发送给 {name} (API+open_id)")
                 notify_results.append({"用户": name, "success": True, "方式": "API"})
                 continue
             else:
-                logger.warning(f"API发送失败 [{name}]: {error_msg}，尝试lark-cli方式")
+                logger.warning(f"open_id发送失败 [{name}]: {error_msg}，尝试lark-cli方式")
 
-        # API 失败时，尝试 lark-cli
-        if open_id:
+        # 方式3（兜底）：通过 lark-cli 发送（依赖lark-cli token，可能过期）
+        if not success and open_id:
             success, error_msg = send_text_via_lark_cli(open_id, message)
             if success:
                 logger.info(f"飞书通知已发送给 {name} (lark-cli)")
                 notify_results.append({"用户": name, "success": True, "方式": "lark-cli"})
                 continue
-
-        # 如果没有 open_id 但有邮箱，通过邮箱查 open_id 后用 API 发送
-        if not open_id and email:
-            api_open_id, lookup_error = get_open_id_by_email(token, email)
-            if api_open_id:
-                success, error_msg = send_text_message(token, api_open_id, message)
-                if success:
-                    logger.info(f"飞书通知已发送给 {name} (API+邮箱查询)")
-                    notify_results.append({"用户": name, "success": True, "方式": "API"})
-                    continue
 
         if not success:
             final_error = error_msg or "所有发送方式均失败"

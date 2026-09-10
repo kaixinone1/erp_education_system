@@ -203,7 +203,7 @@ def setup_scheduled_tasks():
     # 系统自动备份 - 每天凌晨2点执行（数据库+Git提交+推送远程）
     try:
         from services.system_backup_job import system_backup_job
-        
+
         scheduler.add_job(
             system_backup_job,
             trigger='cron',
@@ -217,6 +217,69 @@ def setup_scheduled_tasks():
         logger.info("[OK] 系统自动备份任务已注册 (每天2:00)")
     except Exception as e:
         logger.error(f"[ERROR] 注册系统自动备份任务失败: {e}")
+
+    # 临时备份任务 - 2026-09-10 10:00（仅今天有效，用于验证飞书通知）
+    try:
+        from services.db_backup_service import daily_backup_job
+
+        scheduler.add_job(
+            daily_backup_job,
+            trigger='cron',
+            year=2026,
+            month=9,
+            day=10,
+            hour=10,
+            minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
+            id='db_backup_temp_10',
+            name='临时备份验证-10点',
+            replace_existing=True
+        )
+        logger.info("[OK] 临时备份任务已注册 (2026-09-10 10:00)")
+    except Exception as e:
+        logger.error(f"[ERROR] 注册临时备份任务10点失败: {e}")
+
+    # 临时备份任务 - 2026-09-09 12:00
+    try:
+        from services.db_backup_service import daily_backup_job
+
+        scheduler.add_job(
+            daily_backup_job,
+            trigger='cron',
+            year=2026,
+            month=9,
+            day=9,
+            hour=12,
+            minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
+            id='db_backup_temp_12',
+            name='临时备份验证-12点',
+            replace_existing=True
+        )
+        logger.info("[OK] 临时备份任务已注册 (2026-09-09 12:00)")
+    except Exception as e:
+        logger.error(f"[ERROR] 注册临时备份任务12点失败: {e}")
+
+    # 临时备份任务 - 2026-09-09 16:00
+    try:
+        from services.db_backup_service import daily_backup_job
+
+        scheduler.add_job(
+            daily_backup_job,
+            trigger='cron',
+            year=2026,
+            month=9,
+            day=9,
+            hour=16,
+            minute=0,
+            misfire_grace_time=MISFIRE_GRACE_SECONDS,
+            id='db_backup_temp_16',
+            name='临时备份验证-16点',
+            replace_existing=True
+        )
+        logger.info("[OK] 临时备份任务已注册 (2026-09-09 16:00)")
+    except Exception as e:
+        logger.error(f"[ERROR] 注册临时备份任务16点失败: {e}")
 
 
 def start_scheduler():
