@@ -504,17 +504,19 @@ TAG_IDS = {
     '基础工资': 1, '绩效工资': 2, '乡镇补贴': 3, '岗位聘用': 4,
     '新机制': 5, '年度考核': 6, '人事年报': 7, '工资年报': 8,
     '乡村定向': 9, '延迟退休': 10, 'gcdy': 11, 'dj': 12,
-    '组织关系挂靠': 26, 'gqty': 13, 'tj': 14, '群众': 15,
-    '在职': 16, '调出': 17, '调离': 18, '辞职': 19,
-    '借调': 20, '离休': 21, '退休': 22, '去世': 23,
-    '病休': 24, '病假': 25,
+    '组织关系挂靠': 13, 'gqty': 14, 'tj': 15, '群众': 16,
+    '在职': 17, '交流': 18, '调离': 19, '辞职': 20,
+    '借调': 21, '离休': 22, '退休': 23, '去世': 24,
+    '病休': 25, '病假': 26, '调出': 27,
 }
 
 # 政治面貌标签（退休/调离时保留，包含共产党员、党籍、共青团员、团籍、群众）
-POLITICAL_TAG_IDS = {11, 12, 13, 14, 15}  # gcdy, dj, gqty, tj, 群众
+# gcdy=11, dj=12, gqty=14, tj=15, 群众=16
+POLITICAL_TAG_IDS = {11, 12, 14, 15, 16}
 
 # 调离时保留至次年自然年的标签
-TRANSFER_AWAY_KEEP_TAGS = {6, 7, 8}  # 年度考核, 人事年报, 工资年报
+# 年度考核=6, 人事年报=7, 工资年报=8
+TRANSFER_AWAY_KEEP_TAGS = {6, 7, 8}
 
 
 def _sync_tags_on_status_change(cursor, teacher_id, teacher_name, old_status, target_status, transfer_direction=None):
@@ -527,7 +529,7 @@ def _sync_tags_on_status_change(cursor, teacher_id, teacher_name, old_status, ta
         teacher_name: 教师姓名
         old_status: 变更前状态
         target_status: 变更后状态
-        transfer_direction: 调出去向（'外乡镇' 或 '市直单位'），仅调出时需要
+        transfer_direction: 交流去向（'外乡镇' 或 '市直单位'），仅交流时需要
     
     返回:
         {"synced": bool, "actions": [str], "needs_manual": bool}
@@ -577,6 +579,21 @@ def _sync_tags_on_status_change(cursor, teacher_id, teacher_name, old_status, ta
         tags_to_add.add(TAG_IDS['去世'])
         actions.append(f"去世：取消全部标签，添加去世标签")
 
+    elif target_status == '交流':
+        tags_to_remove.add(TAG_IDS['在职'])
+        tags_to_add.add(TAG_IDS['交流'])
+
+        if transfer_direction == '外乡镇':
+            tags_to_remove.add(TAG_IDS['绩效工资'])
+            actions.append(f"交流（外乡镇）：取消在职、绩效工资标签")
+        elif transfer_direction == '市直单位':
+            tags_to_remove.add(TAG_IDS['绩效工资'])
+            tags_to_remove.add(TAG_IDS['乡镇补贴'])
+            actions.append(f"交流（市直单位）：取消在职、绩效工资、乡镇补贴标签")
+        else:
+            actions.append(f"交流：取消在职标签，其他标签待确认")
+        needs_manual = True
+
     elif target_status == '调出':
         tags_to_remove.add(TAG_IDS['在职'])
         tags_to_add.add(TAG_IDS['调出'])
@@ -612,7 +629,7 @@ def _sync_tags_on_status_change(cursor, teacher_id, teacher_name, old_status, ta
     elif target_status == '在职':
         # 恢复为在职状态，清除所有非在职状态标签
         non_active_tags = {
-            TAG_IDS['调出'], TAG_IDS['调离'], TAG_IDS['辞职'],
+            TAG_IDS['交流'], TAG_IDS['调离'], TAG_IDS['辞职'],
             TAG_IDS['借调'], TAG_IDS['离休'], TAG_IDS['退休'],
             TAG_IDS['去世'], TAG_IDS['病休'], TAG_IDS['病假'],
         }
@@ -769,7 +786,7 @@ async def process_status_change(data: dict[str, Any]):
         teacher_name = data.get("teacher_name")
         source_status = data.get("source_status")
         target_status = data.get("target_status")
-        transfer_direction = data.get("transfer_direction")  # 调出去向
+        transfer_direction = data.get("transfer_direction")  # 交流去向
         
         if not teacher_id or not target_status:
             raise HTTPException(status_code=400, detail="缺少必要参数")
@@ -814,18 +831,10 @@ async def process_status_change(data: dict[str, Any]):
         update_sql = 'UPDATE teacher_basic_info SET "任职状态" = %s'
         update_params = [actual_target_status]
         
-        if target_status == '调出' and transfer_direction:
-            update_sql += ', "调出去向" = %s, "调出日期" = %s'
-            update_params.extend([transfer_direction, today])
-        elif target_status == '调离':
-            update_sql += ', "调离日期" = %s'
-            update_params.append(today)
-        elif actual_target_status == '退休':
-            update_sql += ', "退休日期" = %s'
-            update_params.append(today)
-        elif actual_target_status == '离休':
-            update_sql += ', "退休日期" = %s'
-            update_params.append(today)
+        # 注意：teacher_basic_info表没有交流去向、交流日期等字段
+        # 这些信息记录在personnel_change_records表中
+        # 此处只更新任职状态
+        # 交流去向信息通过transfer_direction参数传入，由调用方处理
         
         update_sql += ' WHERE id = %s'
         update_params.append(teacher_id)
@@ -877,9 +886,9 @@ async def process_status_change(data: dict[str, Any]):
         # 实时触发提醒已经在下面的循环中处理了
         # 后续主流程会正确匹配并创建待办，这里不需要重复处理
         
-        # 检查是否需要党组织关系状态变更（调出、调离、去世、辞职）
+        # 检查是否需要党组织关系状态变更（交流、调离、去世、辞职）
         party_relation_result = None
-        party_relation_trigger_statuses = ['调出', '调离', '去世', '辞职']
+        party_relation_trigger_statuses = ['交流', '调出', '调离', '去世', '辞职']
         if actual_target_status in party_relation_trigger_statuses and teacher_id_card:
             try:
                 cursor.execute(

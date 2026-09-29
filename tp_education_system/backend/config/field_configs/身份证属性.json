@@ -331,8 +331,8 @@
       "value_mapping": {}
     },
     {
-      "sourceField": "调出",
-      "targetField": "调出",
+      "sourceField": "交流",
+      "targetField": "交流",
       "dataType": "VARCHAR",
       "length": 255,
       "precision": "",

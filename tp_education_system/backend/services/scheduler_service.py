@@ -125,10 +125,10 @@ def setup_scheduled_tasks():
     except Exception as e:
         logger.error(f"[ERROR] 注册80周岁高龄补贴扫描任务失败: {e}")
 
-    # 调出教师标签清理提醒 - 每月1日8点检查
+    # 交流教师标签清理提醒 - 每月1日8点检查
     try:
         from services.tag_sync_scheduler import check_transfer_out_reminders
-        
+
         scheduler.add_job(
             check_transfer_out_reminders,
             trigger='cron',
@@ -137,12 +137,12 @@ def setup_scheduled_tasks():
             minute=0,
             misfire_grace_time=MISFIRE_GRACE_SECONDS,
             id='transfer_out_reminder',
-            name='调出教师标签清理提醒',
+            name='交流教师标签清理提醒',
             replace_existing=True
         )
-        logger.info("[OK] 调出教师标签清理提醒任务已注册 (每月1日8:00)")
+        logger.info("[OK] 交流教师标签清理提醒任务已注册 (每月1日8:00)")
     except Exception as e:
-        logger.error(f"[ERROR] 注册调出教师标签清理提醒任务失败: {e}")
+        logger.error(f"[ERROR] 注册交流教师标签清理提醒任务失败: {e}")
 
     # 到期标签自动清理 - 每年1月1日8点执行
     try:

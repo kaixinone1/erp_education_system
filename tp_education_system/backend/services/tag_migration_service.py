@@ -188,7 +188,7 @@ FIELD_TO_TAG_MAPPING = {
     'tuan_ji': '团籍',
     'masses': '群众',
     'active': '在职',
-    'diao_chu': '调出',
+    'diao_chu': '交流',
     'diao_li': '调离',
     'ci_zhi': '辞职',
     'jie_diao': '借调',

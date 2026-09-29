@@ -62,6 +62,7 @@ async def get_employment_status_options():
             {"value": "退休", "label": "退休"},
             {"value": "离休", "label": "离休"},
             {"value": "调离", "label": "调离"},
+            {"value": "交流", "label": "交流"},
             {"value": "调出", "label": "调出"},
             {"value": "离职", "label": "离职"},
             {"value": "去世", "label": "去世"}

@@ -1348,3 +1348,21 @@
 [DEBUG] 填充后 行27列1 = 离休干部
 [DEBUG] 填充后 行27列2 = 1
 [DEBUG] 填充后 行27列4 = 
+[DEBUG] retired_cadre=447 worker=2 office=1
+[DEBUG] subsidy_count=339 standard=350 total=118650
+[DEBUG] perf_count=340 perf_total=441520.0
+[DEBUG] 填充后 行20列1 = 绩效工资合计
+[DEBUG] 填充后 行20列2 = 340
+[DEBUG] 填充后 行20列4 = 441520
+[DEBUG] 填充后 行21列1 = 乡镇补贴合计
+[DEBUG] 填充后 行21列2 = 339
+[DEBUG] 填充后 行21列4 = 118650
+[DEBUG] 填充后 行25列1 = 退休干部
+[DEBUG] 填充后 行25列2 = 447
+[DEBUG] 填充后 行25列4 = 
+[DEBUG] 填充后 行26列1 = 退休工人
+[DEBUG] 填充后 行26列2 = 2
+[DEBUG] 填充后 行26列4 = 
+[DEBUG] 填充后 行27列1 = 离休干部
+[DEBUG] 填充后 行27列2 = 1
+[DEBUG] 填充后 行27列4 = 

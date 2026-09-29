@@ -1164,8 +1164,8 @@
           "value_mapping": {}
         },
         {
-          "sourceField": "调出",
-          "targetField": "调出",
+          "sourceField": "交流",
+          "targetField": "交流",
           "dataType": "VARCHAR",
           "length": 255,
           "precision": "",
@@ -3831,7 +3831,7 @@
     "团籍": "团籍",
     "群众": "群众",
     "在职": "在职",
-    "调出": "调出",
+    "交流": "交流",
     "调离": "调离",
     "辞职": "辞职",
     "借调": "借调",

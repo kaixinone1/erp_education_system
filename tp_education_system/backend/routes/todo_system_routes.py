@@ -422,11 +422,12 @@ async def get_todo_list(
     try:
         # 先检查并更新已完成状态（进度100%自动变completed）
         cursor.execute("""
-            SELECT id, task_items FROM todo_items WHERE status = 'pending'
+            SELECT id, task_items, business_type FROM todo_items WHERE status = 'pending'
         """)
         for row in cursor.fetchall():
             todo_id = row[0]
             task_items = row[1]
+            biz_type = row[2] if row[2] else ''
             if task_items:
                 if isinstance(task_items, str):
                     try:
@@ -436,10 +437,12 @@ async def get_todo_list(
                 total = len(task_items) if task_items else 0
                 # 同时检查 completed 和 完成状态 字段
                 completed = sum(1 for t in task_items if t.get('completed') or t.get('完成状态')) if task_items else 0
-                if total > 0 and completed == total:
+                # 到龄退休提醒：选1项即算完成；其他类型：全部完成才算完成
+                should_complete = (completed >= 1) if biz_type == 'retirement_reminder' else (total > 0 and completed == total)
+                if should_complete:
                     # 自动更新为已完成
                     cursor.execute("""
-                        UPDATE todo_items 
+                        UPDATE todo_items
                         SET status = 'completed', completed_at = CURRENT_TIMESTAMP
                         WHERE id = %s
                     """, (todo_id,))
@@ -811,15 +814,24 @@ async def update_task_status(todo_id: int, data: dict = Body(...)):
         # 计算已完成数
         completed_count = sum(1 for t in task_items if t.get("completed") or t.get("完成状态"))
         total_count = len(task_items)
-        
-        # 更新状态
-        new_status = "completed" if completed_count >= total_count else "pending"
+
+        # 查询业务类型，根据业务类型判断完成条件
+        cursor.execute("SELECT business_type FROM todo_items WHERE id = %s", (todo_id,))
+        type_row = cursor.fetchone()
+        business_type = type_row[0] if type_row else ''
+
+        # 到龄退休提醒：选1项即算完成；其他类型：全部完成才算完成
+        if business_type == 'retirement_reminder':
+            new_status = "completed" if completed_count >= 1 else "pending"
+        else:
+            new_status = "completed" if completed_count >= total_count else "pending"
         
         cursor.execute("""
-            UPDATE todo_items 
-            SET task_items = %s, status = %s, updated_at = CURRENT_TIMESTAMP
+            UPDATE todo_items
+            SET task_items = %s, status = %s, updated_at = CURRENT_TIMESTAMP,
+                completed_at = CASE WHEN %s = 'completed' THEN CURRENT_TIMESTAMP ELSE completed_at END
             WHERE id = %s
-        """, (json.dumps(task_items), new_status, todo_id))
+        """, (json.dumps(task_items), new_status, new_status, todo_id))
         
         # 同步更新统计表
         update_stats_table(cursor, todo_id)

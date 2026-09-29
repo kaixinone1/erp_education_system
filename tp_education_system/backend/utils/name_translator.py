@@ -47,7 +47,7 @@ COMMON_WORDS = {
     "去世": "deceased",
     "死亡": "deceased",
     "调离": "transferred",
-    "调出": "transferred_out",
+    "交流": "transferred_out",
     "离职": "left",
     "辞职": "resigned",
     

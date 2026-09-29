@@ -302,16 +302,109 @@ def start_frontend(frontend_dir: Path) -> subprocess.Popen | None:
         return None
 
 
+# ================ 监督进程启动 ================
+
+def start_supervisor_daemon() -> subprocess.Popen | None:
+    """启动监督脚本的常驻进程模式（不依赖外部调度器）"""
+    try:
+        # 查找 supervisor.py
+        root = Path(os.getcwd())
+        supervisor_script = root / "supervisor" / "supervisor.py"
+        if not supervisor_script.exists():
+            log(f"监督脚本不存在: {supervisor_script}，跳过监督进程启动")
+            return None
+
+        # 使用当前 Python 启动
+        python = find_executable(['python', 'python3'])
+        if not python:
+            log("错误: 未找到 Python，无法启动监督进程")
+            return None
+
+        # 优先使用 Miniconda Python（有 requests 模块）
+        miniconda_python = Path.home() / "Miniconda3" / "python.exe"
+        if miniconda_python.exists():
+            python = str(miniconda_python)
+            log(f"使用 Miniconda Python 启动监督进程: {python}")
+        else:
+            log(f"使用系统 Python 启动监督进程: {python}")
+
+        cmd = [python, str(supervisor_script), "--daemon"]
+        log(f"启动监督进程（常驻模式）: {' '.join(cmd)}")
+
+        # DETACHED_PROCESS = 0x00000008, CREATE_NEW_PROCESS_GROUP = 0x00000200, CREATE_NO_WINDOW = 0x08000000
+        # 使用 DETACHED 让子进程独立于父进程运行，父进程退出子进程也不会被终止
+        DETACHED_PROCESS = 0x00000008
+        CREATE_NEW_PROCESS_GROUP = 0x00000200
+        process = subprocess.Popen(
+            cmd,
+            cwd=str(root / "supervisor"),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=CREATE_NO_WINDOW | DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
+        )
+        log(f"监督进程已启动，PID={process.pid}")
+        return process
+
+    except Exception as e:
+        log(f"监督进程启动失败: {e}")
+        return None
+
+
+def monitor_processes(backend_proc, frontend_proc, supervisor_proc):
+    """监控三个子进程，任何一个挂了就重启
+
+    互相监督闭环：
+    - 后端挂了 → 重启后端（supervisor.py 也会检测并重启，这里作为双重保障）
+    - 前端挂了 → 重启前端（supervisor.py 也会检测并重启，这里作为双重保障）
+    - supervisor 挂了 → 重启 supervisor（后端和前端不会重启它，这里负责）
+    """
+    root = Path(os.getcwd())
+    project = detect_project(root)
+
+    log("进入进程监控循环（每30秒检查一次）...")
+    check_interval = 30
+
+    while True:
+        try:
+            time.sleep(check_interval)
+
+            # 检查后端进程
+            if backend_proc and backend_proc.poll() is not None:
+                log(f"后端进程已退出（code={backend_proc.returncode}），重启中...")
+                backend_proc = start_backend(project["backend_dir"]) if project["backend_dir"] else None
+                if backend_proc:
+                    log(f"后端已重启，新PID={backend_proc.pid}")
+
+            # 检查前端进程
+            if frontend_proc and frontend_proc.poll() is not None:
+                log(f"前端进程已退出（code={frontend_proc.returncode}），重启中...")
+                frontend_proc = start_frontend(project["frontend_dir"]) if project["frontend_dir"] else None
+                if frontend_proc:
+                    log(f"前端已重启，新PID={frontend_proc.pid}")
+
+            # 检查监督进程
+            if supervisor_proc and supervisor_proc.poll() is not None:
+                log(f"监督进程已退出（code={supervisor_proc.returncode}），重启中...")
+                supervisor_proc = start_supervisor_daemon()
+
+        except KeyboardInterrupt:
+            log("收到终止信号，停止监控")
+            break
+        except Exception as e:
+            log(f"监控循环异常: {e}")
+            time.sleep(10)
+
+
 # ================ 主流程 ================
 
 def main():
     root = Path(os.getcwd())
     log(f"项目目录: {root}")
     log(f"{'='*50}")
-    
+
     # 检测项目结构
     project = detect_project(root)
-    
+
     if not project["backend_entry"]:
         log("错误: 未检测到后端项目 (main.py)")
         log(f"已扫描目录: {root}")
@@ -320,7 +413,7 @@ def main():
                 log(f"  - {d.name}/")
         input("\n按 Enter 退出...")
         return
-    
+
     if not project["frontend_entry"]:
         log("错误: 未检测到前端项目 (package.json)")
         log(f"已扫描目录: {root}")
@@ -329,38 +422,41 @@ def main():
                 log(f"  - {d.name}/")
         input("\n按 Enter 退出...")
         return
-    
+
     log(f"后端: {project['backend_dir']}")
     log(f"前端: {project['frontend_dir']}")
-    
+
     # 启动后端
     backend_proc = start_backend(project["backend_dir"])
     if not backend_proc:
         log("后端启动失败，请检查 .startup.log")
         input("\n按 Enter 退出...")
         return
-    
+
     # 启动前端
     frontend_proc = start_frontend(project["frontend_dir"])
     if not frontend_proc:
         log("前端启动失败，请检查 .startup.log")
-        # 清理后端
         backend_proc.terminate()
         input("\n按 Enter 退出...")
         return
-    
+
+    # 启动监督进程（常驻模式，不依赖外部调度器）
+    supervisor_proc = start_supervisor_daemon()
+
     # 等待端口就绪
     backend_ready = wait_for_port(BACKEND_PORT)
     frontend_ready = wait_for_port(FRONTEND_PORT)
-    
+
     if backend_ready and frontend_ready:
         log("=" * 50)
-        log(f"启动成功！")
+        log("启动成功！")
         log(f"后端: http://localhost:{BACKEND_PORT}")
         log(f"前端: http://localhost:{FRONTEND_PORT}")
+        log(f"监督进程: {'运行中' if supervisor_proc else '未启动'}")
         log(f"日志: {LOG_FILE}")
         log("=" * 50)
-        
+
         # 自动打开浏览器
         time.sleep(1)
         try:
@@ -368,19 +464,23 @@ def main():
             log(f"浏览器已打开: {BROWSER_URL}")
         except Exception as e:
             log(f"无法打开浏览器: {e}")
-        
-        # 退出，让服务器继续运行
-        sys.exit(0)
+
+        # 进入监控循环（常驻进程，不再退出）
+        # 监控后端、前端、监督进程，任何一个挂了就重启
+        # 互相监督闭环：supervisor 监督前后端，start_servers 监督 supervisor
+        monitor_processes(backend_proc, frontend_proc, supervisor_proc)
     else:
         log("启动失败！")
         if not backend_ready:
             log(f"后端端口 {BACKEND_PORT} 未就绪")
         if not frontend_ready:
             log(f"前端端口 {FRONTEND_PORT} 未就绪")
-        
+
         # 清理
         backend_proc.terminate()
         frontend_proc.terminate()
+        if supervisor_proc:
+            supervisor_proc.terminate()
         input("\n按 Enter 退出...")
         sys.exit(1)
 

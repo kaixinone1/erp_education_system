@@ -315,13 +315,36 @@ def backup_all_units():
         else:
             failed_count += 1
 
-    return {
+    result = {
         "success": failed_count == 0,
         "results": results,
         "total_units": len(units),
         "success_count": success_count,
         "failed_count": failed_count,
     }
+
+    # 更新 backup_slots（v2 新增：三个时段分离记录）
+    # 整体成功状态 = 三个时段任一成功即可（由 update_backup_slot 自动计算）
+    try:
+        from services.db_backup_service import update_backup_slot
+        slot_results = [{
+            "label": f"单位-{r.get('unit_name', '未知')}",
+            "success": r.get("success", False),
+            "file": r.get("file", ""),
+            "size": r.get("size", 0),
+            "error": r.get("error", ""),
+        } for r in results]
+        update_backup_slot(
+            slot_name="按单位备份",
+            success=result["success"],
+            results=slot_results,
+            detail=f"共{len(units)}个单位，成功{success_count}个，失败{failed_count}个",
+        )
+        logger.info("已更新 backup_slots[按单位备份]")
+    except Exception as e:
+        logger.warning(f"更新 backup_slots 失败（不影响本次备份结果）: {e}")
+
+    return result
 
 
 def restore_unit(unit_name, backup_filename):

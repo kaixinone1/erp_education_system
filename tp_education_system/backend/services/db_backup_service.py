@@ -139,17 +139,107 @@ def save_config(config):
 
 
 def get_status():
-    """读取备份状态"""
+    """读取备份状态
+
+    状态文件结构（v2，支持三个时段分离）：
+    - backup_slots: dict，key 为时段名（"数据库自动备份"/"按单位备份"/"系统自动备份"）
+        每个 slot: {success, time, results, detail}
+    - overall_success: bool，任一 slot 成功即为 True（用户要求：只看一个成功结果）
+    - last_backup_time / last_backup_success / backup_results / failed_paths: 兼容旧字段
+    - consecutive_failures: int，所有 slot 都失败才累计
+    """
     if os.path.exists(STATUS_FILE):
         with open(STATUS_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            status = json.load(f)
+        # 兼容旧状态：补充 backup_slots 字段
+        if "backup_slots" not in status:
+            status["backup_slots"] = {}
+        if "overall_success" not in status:
+            status["overall_success"] = status.get("last_backup_success")
+        return status
     return {
         "last_backup_time": None,
         "last_backup_success": None,
         "backup_results": [],
         "failed_paths": [],
         "consecutive_failures": 0,
+        "backup_slots": {},
+        "overall_success": None,
     }
+
+
+# 三个备份时段的标准 slot 名称（与 scheduler_service.py 中的 name 字段保持一致）
+BACKUP_SLOT_NAMES = ["数据库自动备份", "按单位备份", "系统自动备份"]
+
+
+def update_backup_slot(slot_name, success, results=None, detail=""):
+    """更新指定时段的备份 slot 状态
+
+    参数：
+        slot_name: 时段名称（"数据库自动备份"/"按单位备份"/"系统自动备份"）
+        success: 本次备份是否成功
+        results: 本次备份结果列表（可选）
+        detail: 备份详情/错误信息（可选）
+
+    返回：更新后的 status dict
+
+    设计原则（用户要求）：
+    - 三个时段任一成功，overall_success 即为 True
+    - 三个时段都失败，consecutive_failures 才累计
+    - 每个时段独立记录，互不影响
+    """
+    status = get_status()
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # 更新对应 slot
+    if "backup_slots" not in status:
+        status["backup_slots"] = {}
+    status["backup_slots"][slot_name] = {
+        "success": success,
+        "time": now,
+        "results": results if results is not None else [],
+        "detail": detail,
+    }
+
+    # 计算 overall_success：任一 slot 成功即可
+    all_slots = status.get("backup_slots", {})
+    any_success = any(
+        slot.get("success", False)
+        for name, slot in all_slots.items()
+        if name in BACKUP_SLOT_NAMES
+    )
+    status["overall_success"] = any_success
+
+    # 更新最近一次备份时间（兼容旧字段）
+    status["last_backup_time"] = now
+    status["last_backup_success"] = any_success
+
+    # 更新最近一次成功时间
+    if any_success:
+        status["last_success_time"] = now
+
+    # consecutive_failures：三个 slot 都失败才累计
+    # 只在所有已记录的 slot 都失败时才增加失败次数
+    recorded_slots = {
+        name: slot for name, slot in all_slots.items()
+        if name in BACKUP_SLOT_NAMES
+    }
+    if recorded_slots and not any_success:
+        # 所有已记录的 slot 都失败
+        status["consecutive_failures"] = status.get("consecutive_failures", 0) + 1
+    elif any_success:
+        # 任一成功，清零
+        status["consecutive_failures"] = 0
+
+    # 兼容旧字段 backup_results / failed_paths（取最新 slot 的结果）
+    if results is not None:
+        status["backup_results"] = results
+        # 从 results 提取 failed_paths
+        failed_paths = [r.get("path", "") for r in results if not r.get("success") and not r.get("skipped")]
+        status["failed_paths"] = failed_paths
+
+    save_status(status)
+    return status
 
 
 def save_status(status):
@@ -596,8 +686,12 @@ def run_backup() -> dict:
             "skipped": git_result.get("skipped", False),
             "type": "git",
         })
+        # Git推送失败只作为警告，不影响整体备份成功状态
+        # 核心备份是数据库文件备份（位置1/2/3），Git只是附加备份
+        git_warning = None
         if not git_result["success"] and not git_result.get("skipped"):
-            failed_paths.append(f"Git: {git_result.get('message', '')}")
+            git_warning = f"Git: {git_result.get('message', '')}"
+            logger.warning(f"Git推送失败（仅警告，不影响核心备份）: {git_warning}")
         
         # Git仓库备份子目录也应用归档策略
         if not git_result.get("skipped"):
@@ -608,7 +702,9 @@ def run_backup() -> dict:
                 except Exception as e:
                     logger.warning(f"Git仓库备份归档清理失败: {e}")
         
-        success = len(failed_paths) == 0
+        # 核心备份成功判断：只要有一个数据库文件备份位置成功，就算备份成功
+        core_success = any(r["success"] for r in results if r.get("type") != "git")
+        success = core_success
         elapsed_seconds = time_module.time() - start_time
         update_status(status, success, results, failed_paths)
         
@@ -616,6 +712,7 @@ def run_backup() -> dict:
             "success": success,
             "results": results,
             "failed_paths": failed_paths,
+            "git_warning": git_warning,
             "filename": filename,
             "size": file_size,
             "elapsed_seconds": round(elapsed_seconds, 1),
@@ -655,8 +752,22 @@ def run_backup() -> dict:
             pass
 
 
-def update_status(status, success, results=None, failed_paths=None):
-    """更新备份状态"""
+def update_status(status, success, results=None, failed_paths=None, slot_name="数据库自动备份"):
+    """更新备份状态
+
+    参数：
+        status: 已加载的状态 dict（兼容旧调用方式）
+        success: 本次备份是否成功
+        results: 备份结果列表
+        failed_paths: 失败的路径列表
+        slot_name: 时段名称，默认 "数据库自动备份"
+            可选值："数据库自动备份" / "按单位备份" / "系统自动备份"
+
+    说明：
+    - 同时更新 backup_slots[slot_name] 和 overall_success
+    - overall_success = 任一 slot 成功即为 True
+    - consecutive_failures = 所有已记录 slot 都失败才累计
+    """
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     status["last_backup_time"] = now
     status["last_backup_success"] = success
@@ -664,12 +775,41 @@ def update_status(status, success, results=None, failed_paths=None):
         status["backup_results"] = results
     if failed_paths is not None:
         status["failed_paths"] = failed_paths
-        if failed_paths:
-            status["consecutive_failures"] = status.get("consecutive_failures", 0) + 1
-        else:
-            status["consecutive_failures"] = 0
     if success:
         status["last_success_time"] = now
+
+    # 更新 backup_slots（v2 新增）
+    if "backup_slots" not in status:
+        status["backup_slots"] = {}
+    status["backup_slots"][slot_name] = {
+        "success": success,
+        "time": now,
+        "results": results if results is not None else [],
+        "detail": "",
+    }
+
+    # 计算 overall_success：任一 slot 成功即可
+    all_slots = status.get("backup_slots", {})
+    any_success = any(
+        slot.get("success", False)
+        for name, slot in all_slots.items()
+        if name in BACKUP_SLOT_NAMES
+    )
+    status["overall_success"] = any_success
+    status["last_backup_success"] = any_success
+    if any_success:
+        status["last_success_time"] = now
+
+    # consecutive_failures：所有已记录 slot 都失败才累计
+    recorded_slots = {
+        name: slot for name, slot in all_slots.items()
+        if name in BACKUP_SLOT_NAMES
+    }
+    if recorded_slots and not any_success:
+        status["consecutive_failures"] = status.get("consecutive_failures", 0) + 1
+    elif any_success:
+        status["consecutive_failures"] = 0
+
     save_status(status)
 
 

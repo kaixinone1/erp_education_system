@@ -2803,6 +2803,10 @@ table {{
                         level = original_post if original_post else '教师'
                         key = f'调离_{level}'
                         group_label = f'{level}调离'
+                    elif new_status in ['交流']:
+                        level = original_post if original_post else '教师'
+                        key = f'交流_{level}'
+                        group_label = f'{level}交流'
                     elif new_status in ['调出']:
                         level = original_post if original_post else '教师'
                         key = f'调出_{level}'

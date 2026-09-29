@@ -953,7 +953,7 @@
           "english_name": "employment_status"
         },
         {
-          "sourceField": "调出去向",
+          "sourceField": "交流去向",
           "targetField": "transfer_direction",
           "dataType": "VARCHAR",
           "length": 50,
@@ -963,7 +963,7 @@
           "unique": false,
           "indexed": false,
           "defaultValue": "",
-          "description": "调出去向：外乡镇/市直单位",
+          "description": "交流去向：外乡镇/市直单位",
           "confidence": "low",
           "relation_type": "none",
           "relation_table": "",
@@ -972,7 +972,7 @@
           "english_name": "transfer_direction"
         },
         {
-          "sourceField": "调出日期",
+          "sourceField": "交流日期",
           "targetField": "transfer_out_date",
           "dataType": "DATE",
           "length": 255,
@@ -982,7 +982,7 @@
           "unique": false,
           "indexed": false,
           "defaultValue": "",
-          "description": "调出日期",
+          "description": "交流日期",
           "confidence": "low",
           "relation_type": "none",
           "relation_table": "",
@@ -3379,7 +3379,7 @@
           "english_name": "active"
         },
         {
-          "sourceField": "调出",
+          "sourceField": "交流",
           "targetField": "diao_chu",
           "dataType": "VARCHAR",
           "length": 255,
@@ -6754,7 +6754,7 @@
       "table": "id_card",
       "data_type": "VARCHAR"
     },
-    "调出": {
+    "交流": {
       "target": "diao_chu",
       "table": "id_card",
       "data_type": "VARCHAR"

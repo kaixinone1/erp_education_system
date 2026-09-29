@@ -45,19 +45,19 @@ def migrate_octogenarian_todos():
         
         # 2. 查询教师基础信息表中即将年满80周岁的教师
         cursor.execute("""
-            SELECT 
+            SELECT
                 id,
-                name,
-                id_card,
-                archive_birth_date,
-                ethnicity,
-                native_place,
-                contact_phone
+                "姓名",
+                "身份证号码",
+                "档案出生日期",
+                "民族",
+                "籍贯",
+                "联系电话"
             FROM teacher_basic_info
-            WHERE archive_birth_date IS NOT NULL
-              AND id_card IS NOT NULL
-              AND id_card != ''
-            ORDER BY archive_birth_date
+            WHERE "档案出生日期" IS NOT NULL
+              AND "身份证号码" IS NOT NULL
+              AND "身份证号码" != ''
+            ORDER BY "档案出生日期"
         """)
         
         teachers = cursor.fetchall()

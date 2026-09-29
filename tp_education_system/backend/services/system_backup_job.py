@@ -127,14 +127,19 @@ def _send_notification(success: bool, errors: list, backup_file: str = "", file_
 
 
 def system_backup_job():
-    """系统自动备份任务（由调度器调用）"""
+    """系统自动备份任务（由调度器调用）
+
+    本任务对应"系统自动备份"时段（每天2:00）。
+    任务完成后会更新 db_backup_status.json 的 backup_slots["系统自动备份"]。
+    整体成功状态（overall_success）= 三个时段任一成功即可。
+    """
     logger.info("=" * 50)
     logger.info("开始执行系统自动备份...")
-    
+
     project_root = _get_project_root()
     backup_dir = os.path.join(project_root, "备份")
     errors = []
-    
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_file = ""
     file_size = 0
@@ -213,6 +218,28 @@ def system_backup_job():
 
     # 4. 发送飞书通知
     _send_notification(len(errors) == 0, errors, backup_file, file_size)
-    
+
+    # 5. 更新 backup_slots（v2 新增：三个时段分离记录）
+    # 整体成功状态 = 三个时段任一成功即可（由 update_backup_slot 自动计算）
+    try:
+        from services.db_backup_service import update_backup_slot
+        success = len(errors) == 0
+        slot_results = [{
+            "label": "系统自动备份",
+            "success": success,
+            "file": backup_file,
+            "size": file_size,
+            "errors": errors,
+        }]
+        update_backup_slot(
+            slot_name="系统自动备份",
+            success=success,
+            results=slot_results,
+            detail="；".join(errors) if errors else "系统自动备份成功（数据库+Git提交+推送）",
+        )
+        logger.info("已更新 backup_slots[系统自动备份]")
+    except Exception as e:
+        logger.warning(f"更新 backup_slots 失败（不影响本次备份结果）: {e}")
+
     logger.info("=" * 50)
     return {"success": len(errors) == 0, "errors": errors}

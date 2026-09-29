@@ -204,25 +204,25 @@ def scan_octogenarian_subsidy():
         
         # 2. 查询所有教师（只要有身份证号即可）
         cursor.execute("""
-            SELECT 
+            SELECT
                 id,
-                name,
-                id_card,
-                archive_birth_date
+                "姓名",
+                "身份证号码",
+                "档案出生日期"
             FROM teacher_basic_info
-            WHERE id_card IS NOT NULL
-              AND id_card != ''
+            WHERE "身份证号码" IS NOT NULL
+              AND "身份证号码" != ''
             ORDER BY id
         """)
-        
+
         teachers = cursor.fetchall()
         logger.info(f"  教师基础信息表总人数: {len(teachers)}")
-        
+
         # 3. 筛选符合条件的教师
         eligible_teachers = []
         for teacher in teachers:
             teacher_id, name, id_card, birth_date = teacher
-            
+
             # 优先使用数据库中的出生日期，如果没有则从身份证号解析
             if not birth_date:
                 birth_date = get_birth_date_from_id_card(id_card)
@@ -334,48 +334,49 @@ def scan_retirement_reminder():
         # 2. 查询教师基础信息表，排除已退休/离休/死亡/调离/离职等状态的教师
         # 关联字典表获取个人身份中文名称（如"干部"、"工人"）
         cursor.execute("""
-            SELECT 
+            SELECT
                 t.id,
-                t.name,
-                t.id_card,
-                t.archive_birth_date,
-                t.employment_status,
-                t.is_cadre,
+                t."姓名",
+                t."身份证号码",
+                t."档案出生日期",
+                t."出生日期",
+                t."任职状态",
                 u.unit_1 as unit_name,
                 dpi.ge_ren_shen_fen as identity_name
             FROM teacher_basic_info t
-            LEFT JOIN teacher_unit u ON t.id_card = u.id_card
-            LEFT JOIN teacher_personal_identity p ON t.id_card = p.id_card
+            LEFT JOIN teacher_unit u ON t."身份证号码" = u.id_card
+            LEFT JOIN teacher_personal_identity p ON t."身份证号码" = p.id_card
             LEFT JOIN dict_personal_identity_dictionary dpi ON p.ge_ren_shen_fen = dpi.id::varchar
-            WHERE t.id_card IS NOT NULL
-              AND t.id_card != ''
-              AND (t.employment_status IS NULL OR t.employment_status NOT IN %s)
+            WHERE t."身份证号码" IS NOT NULL
+              AND t."身份证号码" != ''
+              AND (t."任职状态" IS NULL OR t."任职状态" NOT IN %s)
             ORDER BY t.id
         """, (tuple(excluded_statuses),))
-        
+
         teachers = cursor.fetchall()
         logger.info(f"  未退休教师人数: {len(teachers)}")
-        
+
         # 3. 筛选符合条件的教师
         eligible_teachers = []
         for teacher in teachers:
-            teacher_id, name, id_card, birth_date, work_status, is_cadre, unit_name, identity_name = teacher
-            
-            # 优先使用数据库中的出生日期，如果没有则从身份证号解析
-            if not birth_date:
+            teacher_id, name, id_card, archive_birth_date, birth_date, work_status, unit_name, identity_name = teacher
+
+            # 优先使用档案出生日期，其次出生日期，最后从身份证号解析
+            if not archive_birth_date and not birth_date:
                 birth_date = get_birth_date_from_id_card(id_card)
-            
+            elif archive_birth_date:
+                birth_date = archive_birth_date
+
             if not birth_date:
                 continue
-            
+
             gender = get_gender_from_id_card(id_card)
             if not gender:
                 gender = '男'
-            
-            # 判断是否干部：优先使用字典表翻译的身份名称，其次使用is_cadre字段
+
+            # 判断是否干部：通过字典表翻译的身份名称
             # identity_name 来自 dict_personal_identity_dictionary，值为"干部"、"工人"等
-            # is_cadre 来自 teacher_basic_info，值为"是"/"否"
-            is_cadre_flag = (identity_name == '干部') or (is_cadre == '是')
+            is_cadre_flag = (identity_name == '干部')
             
             # 使用新政策计算退休日期
             original_date, delay_months, retirement_date = calculate_retirement_new_policy(

@@ -170,6 +170,61 @@ def get_dashboard_backup_status():
     }
 
 
+@router.get("/scheduler-status")
+def get_scheduler_status():
+    """检查定时任务调度器状态（临时调试用）"""
+    try:
+        from services.scheduler_service import scheduler
+        jobs = []
+        for job in scheduler.get_jobs():
+            jobs.append({
+                "id": job.id,
+                "name": job.name,
+                "trigger": str(job.trigger),
+                "next_run_time": str(job.next_run_time) if job.next_run_time else None,
+            })
+        return {
+            "success": True,
+            "scheduler_running": scheduler.running,
+            "jobs_count": len(jobs),
+            "jobs": jobs,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@router.get("/debug-env")
+def debug_env():
+    """调试后端进程环境（临时用）"""
+    import os
+    import getpass
+    test_paths = [
+        "D:/备份/数据库备份",
+        "D:/erp_fifteen/备份/数据库备份_位置3",
+        "D:/erp_fifteen/tp_education_system/备份/位置3",
+        "C:/Users/lmmwg/备份/数据库备份",
+    ]
+    results = []
+    for tp in test_paths:
+        ok = False
+        err = ""
+        try:
+            os.makedirs(tp, exist_ok=True)
+            test_file = os.path.join(tp, ".write_test_backend")
+            with open(test_file, 'w') as f:
+                f.write("test")
+            os.remove(test_file)
+            ok = True
+        except Exception as e:
+            err = f"{type(e).__name__}: {e}"
+        results.append({"path": tp, "write_ok": ok, "error": err})
+    return {
+        "user": getpass.getuser(),
+        "cwd": os.getcwd(),
+        "tests": results,
+    }
+
+
 @router.post("/run")
 def run_backup_now():
     """手动触发备份"""

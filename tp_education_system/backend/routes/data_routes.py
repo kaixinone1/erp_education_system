@@ -1680,7 +1680,7 @@ async def update_record(table_name: str, record_id: int, data: Dict[str, Any]):
                 if table_name == 'teacher_basic_info' and '任职状态' in data:
                     new_status = data.get('任职状态')
                     # 触发党组织关系变动的状态列表
-                    party_relation_trigger_statuses = ['调出', '调离', '去世', '辞职']
+                    party_relation_trigger_statuses = ['交流', '调出', '调离', '去世', '辞职']
                     if new_status in party_relation_trigger_statuses:
                         # 查询该教师是否在党员信息表中
                         teacher_info = conn.execute(

@@ -1749,13 +1749,13 @@ const handleStatusChange = async (row: any, newStatus: string) => {
 
       let transferDirection = null
 
-      // 如果是调出，需要选择调出去向
-      if (newStatus === '调出') {
+      // 如果是交流或调出，需要选择去向
+      if (newStatus === '交流' || newStatus === '调出') {
         try {
           transferDirection = await new Promise<string>((resolve, reject) => {
             ElMessageBox.confirm(
-              `请选择 ${teacherName} 的调出去向：`,
-              '选择调出去向',
+              `请选择 ${teacherName} 的${newStatus}去向：`,
+              `选择${newStatus}去向`,
               {
                 confirmButtonText: '市直单位',
                 cancelButtonText: '外乡镇',

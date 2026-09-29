@@ -19,7 +19,7 @@ def create_performance_tables():
         CREATE TABLE IF NOT EXISTS personnel_change_records (
             id SERIAL PRIMARY KEY,
             teacher_id INTEGER REFERENCES teacher_basic_info(id),
-            change_type VARCHAR(50) NOT NULL,  -- 退休、调离、调出、离职、辞职、去世、晋升
+            change_type VARCHAR(50) NOT NULL,  -- 退休、调离、交流、离职、辞职、去世、晋升
             previous_status VARCHAR(50),
             new_status VARCHAR(50),
             change_date DATE,  -- 实际发生日期

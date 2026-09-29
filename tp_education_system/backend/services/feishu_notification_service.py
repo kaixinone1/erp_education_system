@@ -337,6 +337,8 @@ def _build_backup_message(backup_result, is_success, now):
             error = r.get("error", "未知错误")
             location_rows.append(f"  ❌ {label}  — {error}")
 
+    git_warning = backup_result.get("git_warning")
+
     if is_success:
         msg_lines = [
             f"【数据库备份成功】",
@@ -350,6 +352,11 @@ def _build_backup_message(backup_result, is_success, now):
         msg_lines.append(f"备份结果：")
         msg_lines.extend(location_rows)
         msg_lines.append(f"────────────────────")
+
+        # Git推送警告（不影响核心备份成功）
+        if git_warning:
+            msg_lines.append(f"⚠️ Git推送警告：{git_warning}")
+            msg_lines.append(f"（数据库文件备份已成功，Git推送失败不影响数据安全）")
 
         archive_info = backup_result.get("archive_info")
         if archive_info:
